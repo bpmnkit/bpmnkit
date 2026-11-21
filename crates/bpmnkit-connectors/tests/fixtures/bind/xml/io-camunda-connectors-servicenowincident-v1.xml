@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:message id="Message_1" name="orders">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_2" name="solo"/>
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start_1" name="Start">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_1" zeebe:modelerTemplate="io.camunda.connectors.ServiceNowIncident.v1" zeebe:modelerTemplateVersion="3" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjAxIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6bXVsdGlwbHkiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yNTUuOTA1IDQyMS40NDJDMTgxLjk1OCA0MjEuNDQyIDEzMS4zMzggMzY1LjcxNSAxMzEuMzM4IDI5Ni43ODdDMTMxLjMzOCAyMjcuODI3IDE4MS45NTggMTcxLjE2NyAyNTUuOTA1IDE3MS4xNjdDMzI5Ljg5MiAxNzEuMTY3IDM4MC40NzEgMjI3LjgyNyAzODAuNDcxIDI5Ni43ODdDMzgwLjQ3MSAzNjUuNzE1IDMyOS44OTIgNDIxLjQ0MiAyNTUuOTA1IDQyMS40NDJaTTI1Ny4zNjIgNDYuMDM3MUMxMjAuODM4IDQ1LjI0NzUgNy45MjUyOCAxNTcuMDQ5IDYuNzcyMDcgMjk0LjE5M0M2LjE4NTM1IDM2Ni43OSAzNi4zNzExIDQzMi4zMzMgODUuMDI4MyA0NzguNDE5QzEwMi43MzEgNDk1LjE3MSAxMzAuMDg0IDQ5Ni44IDE0OS4yNjQgNDgxLjgyQzE3Ny42MjkgNDU5LjY1OSAyMTQuMDQ2IDQ0Ni40NTggMjU1LjkwNSA0NDYuNDU4QzI5Ny43NjQgNDQ2LjQ1OCAzMzQuMTgxIDQ1OS42NjcgMzYyLjU0NiA0ODEuODJDMzgxLjkwOCA0OTYuOTI2IDQwOS4zNjIgNDk0Ljk4OSA0MjcuMTY2IDQ3OC4wNTVDNDc1LjExNSA0MzIuNDQ0IDUwNS4wNTggMzY3Ljg2NiA1MDUuMDU4IDI5Ni4zMDVDNTA1LjA1OCAxNTguNTgzIDM5NC4yNjkgNDYuODI4OCAyNTcuMzYyIDQ2LjAzNzFaIiBmaWxsPSIjNkFDNjNGIi8+CjxjaXJjbGUgY3g9IjM4MC42MTgiIGN5PSIxNDQuNTI1IiByPSIxMjQuNjE4IiBmaWxsPSIjREExRTI4Ii8+CjxwYXRoIGQ9Ik0zMDUuNDg1IDE3MC40OTRMMzIwLjQ3OCAxOTYuNTA5TDM2NS4xOTQgMTcwLjY1MlYyMTkuNzIzSDM5NS4xOFYxNzAuNjQzTDQ0MC4zOTQgMTk2Ljc4OEw0NTUuMzg2IDE3MC43NzJMNDEwLjE4MyAxNDQuNjM0TDQ1NS4yMzkgMTE4LjU4MUw0NDAuMjQ2IDkyLjU2NjFMMzk1LjE4IDExOC42MjdWNjkuNTU3N0gzNjUuMTk0VjExOC42MkwzMjAuMjEzIDkyLjYxMTFMMzA1LjIyMSAxMTguNjI2TDM1MC4yMDEgMTQ0LjYzNEwzMDUuNDg1IDE3MC40OTRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" name="Do it">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" retries="3"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="create" target="operationGroup"/>
+          <zeebe:input source="incident" target="targetTable"/>
+          <zeebe:input source="={ &#10;  // Example payload fields&#10;  // Replace or remove as needed&#10;  &#10;  &quot;short_description&quot;: &quot;Process has encountered an error&quot;,&#10;  &quot;priority&quot;: 2,&#10;  &quot;assigned_to&quot;: &quot;9000e0c3c611227c017f673&quot;&#10;}&#10;" target="body_incident"/>
+          <zeebe:input source="={&#10; &quot;variables&quot;: [body_sc_req_item, body_change_request, body_change_task, body_sc_request, body_sc_task, body_incident, body__custom],&#10;  &quot;result&quot;: variables[item != null][1]&#10;}.result" target="body"/>
+          <zeebe:input source="basic" target="authentication.type"/>
+          <zeebe:input source="={&#10; &quot;operationMap&quot;: [&#10;   {&#10;     &quot;value&quot;:&quot;read&quot;,&#10;     &quot;mapsTo&quot;: &quot;GET&quot;&#10;   },&#10;   {&#10;     &quot;value&quot;:&quot;update&quot;,&#10;     &quot;mapsTo&quot;: &quot;PATCH&quot;&#10;   },&#10;   {&#10;     &quot;value&quot;:&quot;create&quot;,&#10;     &quot;mapsTo&quot;: &quot;POST&quot;&#10;   },&#10;   {&#10;     &quot;value&quot;:&quot;delete&quot;,&#10;     &quot;mapsTo&quot;: &quot;DELETE&quot;&#10;   }&#10; ],&#10; &quot;result&quot;: operationMap[value = operationGroup].mapsTo[1]&#10;}.result" target="method"/>
+          <zeebe:input source="={&#10;  &quot;baseUrl&quot;: &quot;https://&quot; + snInstance + &quot;.service-now.com/api/now/table/&quot;,&#10;  &quot;table&quot;: if targetTable = &quot;__custom&quot; then customRequestTarget else targetTable ,&#10;  &quot;updateOrDeleteOrReadSysId&quot;: if readTarget != null then readTarget else ((if updateTarget != null then updateTarget else (if deleteTarget != null then deleteTarget else null))) ,&#10;  &quot;fullUrl&quot;: baseUrl + table + (if updateOrDeleteOrReadSysId != null then &quot;/&quot; + updateOrDeleteOrReadSysId else &quot;&quot;)&#10;}.fullUrl" target="url"/>
+          <zeebe:input source="=false" target="storeResponse"/>
+          <zeebe:input source="=true" target="skipEncoding"/>
+          <zeebe:input source="=20" target="connectionTimeoutInSeconds"/>
+          <zeebe:input source="=20" target="readTimeoutInSeconds"/>
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="snQueryResult"/>
+          <zeebe:header key="retryBackoff" value="PT30S"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Service_1" name="Call it">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="old-worker" retries="5"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=old" target="oldInput"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="User_1" name="Review">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:receiveTask id="Receive_1" name="Wait" messageRef="Message_2">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:intermediateCatchEvent id="Catch_1" name="Catch one">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_1" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Catch_2" name="Catch two">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_2" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="Throw_1" name="Throw">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:subProcess id="Sub_1" name="Sub">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:startEvent id="Inner_Start">
+        <bpmn:outgoing>Inner_Flow_1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="Inner_1" name="Inner">
+        <bpmn:incoming>Inner_Flow_1</bpmn:incoming>
+        <bpmn:outgoing>Inner_Flow_2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="Inner_End">
+        <bpmn:incoming>Inner_Flow_2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Inner_Flow_1" sourceRef="Inner_Start" targetRef="Inner_1"/>
+      <bpmn:sequenceFlow id="Inner_Flow_2" sourceRef="Inner_1" targetRef="Inner_End"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="End_1" name="End">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Boundary_1" attachedToRef="Service_1">
+      <bpmn:timerEventDefinition id="TED_1">
+        <bpmn:timeDuration>PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:task id="Task_2" name="Loose"/>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_1"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_1" targetRef="Service_1"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Service_1" targetRef="User_1"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="User_1" targetRef="Receive_1"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Receive_1" targetRef="Catch_1"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Catch_1" targetRef="Catch_2"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Catch_2" targetRef="Throw_1"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Throw_1" targetRef="Sub_1"/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Sub_1" targetRef="End_1"/>
+  </bpmn:process>
+</bpmn:definitions>
+

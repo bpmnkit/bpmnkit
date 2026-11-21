@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info: {title: Composed, version: "1"}
+servers:
+  - url: http://localhost:8080
+paths:
+  /v1/things/{thing-id}/sub_items:
+    post:
+      parameters:
+        - {name: thing-id, in: path, required: true}
+        - {name: dry_run, in: query, schema: {type: boolean}}
+        - {name: X-Trace, in: header, required: true}
+        - {name: Accept-Language, in: header}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Base"
+                - type: object
+                  properties:
+                    extra: {type: string}
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Base"
+                  - type: object
+    get:
+      summary: |-
+        Multi line
+        summary
+      description: >
+        Folded description
+        over lines.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Missing"}
+  /v1/things:
+    put:
+      operationId: PUT_things-2
+      requestBody:
+        $ref: "#/components/requestBodies/Anything"
+    delete:
+      operationId: DeleteTheThing
+  /unicode/héllo/{naïve}:
+    get:
+      summary: Grüße from the café
+      parameters:
+        - {name: naïve, in: path}
+components:
+  securitySchemes:
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.test/token
+          scopes: {read: read}
+    other:
+      type: http
+      scheme: basic
+  requestBodies:
+    Anything:
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+  schemas:
+    Base:
+      type: object
+      properties:
+        id: {type: string}

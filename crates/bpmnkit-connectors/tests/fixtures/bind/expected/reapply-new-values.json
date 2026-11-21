@@ -1,0 +1,27 @@
+[
+	[
+		{
+			"key": "url",
+			"kind": "missing-required",
+			"message": "Missing required value for \"URL\" (url)"
+		}
+	],
+	[],
+	[
+		{
+			"key": "snInstance",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Instance name\" (snInstance)"
+		},
+		{
+			"key": "authentication.username",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Username\" (authentication.username)"
+		},
+		{
+			"key": "authentication.password",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Password\" (authentication.password)"
+		}
+	]
+]

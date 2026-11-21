@@ -1,0 +1,591 @@
+[
+	{
+		"name": "inbound-message-start",
+		"steps": [
+			{
+				"element": "Start_1",
+				"template": {
+					"catalog": "io.camunda.connectors.webhook.WebhookConnectorStartMessage.v1"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-message-start-values",
+		"steps": [
+			{
+				"element": "Start_1",
+				"template": {
+					"catalog": "io.camunda.connectors.webhook.WebhookConnectorStartMessage.v1"
+				},
+				"values": {
+					"name": "Hook start",
+					"inbound.context": "my-hook",
+					"messageName": "hook-msg"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-custom-start",
+		"steps": [
+			{
+				"element": "Start_1",
+				"template": {
+					"file": "templates/inbound-start.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-custom-start-reapply",
+		"steps": [
+			{
+				"element": "Start_1",
+				"template": {
+					"file": "templates/inbound-start.json"
+				}
+			},
+			{
+				"element": "Start_1",
+				"template": {
+					"file": "templates/inbound-start.json"
+				},
+				"values": {
+					"correlation": "=other"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-catch-shared-message",
+		"steps": [
+			{
+				"element": "Catch_1",
+				"template": {
+					"file": "templates/inbound-catch.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-catch-existing-name",
+		"steps": [
+			{
+				"element": "Catch_1",
+				"template": {
+					"file": "templates/inbound-catch.json"
+				},
+				"values": {
+					"messageName": "solo"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-catch-on-throw",
+		"steps": [
+			{
+				"element": "Throw_1",
+				"template": {
+					"file": "templates/inbound-catch.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-receive-rename-in-place",
+		"steps": [
+			{
+				"element": "Receive_1",
+				"template": {
+					"file": "templates/inbound-receive.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-receive-on-new-message",
+		"steps": [
+			{
+				"element": "Receive_1",
+				"template": {
+					"file": "templates/inbound-receive.json"
+				},
+				"values": {
+					"messageName": "orders"
+				}
+			},
+			{
+				"element": "Receive_1",
+				"template": {
+					"file": "templates/inbound-receive.json"
+				},
+				"values": {
+					"messageName": "fresh"
+				}
+			}
+		]
+	},
+	{
+		"name": "inbound-boundary",
+		"steps": [
+			{
+				"element": "Boundary_1",
+				"template": {
+					"catalog": "io.camunda.connectors.webhook.WebhookConnectorBoundary.v1"
+				}
+			}
+		]
+	},
+	{
+		"name": "message-no-name",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/no-message-name.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "message-on-service-task",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/message-on-task.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "event-other-definition",
+		"steps": [
+			{
+				"element": "Start_1",
+				"template": {
+					"file": "templates/event-other.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "event-plain-clears-definitions",
+		"steps": [
+			{
+				"element": "Boundary_1",
+				"template": {
+					"file": "templates/event-plain.json"
+				}
+			},
+			{
+				"element": "Catch_2",
+				"template": {
+					"file": "templates/event-plain.json"
+				}
+			},
+			{
+				"element": "End_1",
+				"template": {
+					"file": "templates/event-plain.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "reapply-idempotent",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				}
+			},
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				}
+			}
+		]
+	},
+	{
+		"name": "reapply-new-values",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				}
+			},
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				},
+				"values": {
+					"method": "post",
+					"url": "=base + \"/x\"",
+					"name": "Changed"
+				}
+			},
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.ServiceNowIncident.v1"
+				}
+			}
+		]
+	},
+	{
+		"name": "reapply-over-existing-worker",
+		"steps": [
+			{
+				"element": "Service_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				}
+			}
+		]
+	},
+	{
+		"name": "wrong-applies-to",
+		"steps": [
+			{
+				"element": "Service_1",
+				"template": {
+					"catalog": "io.camunda.connectors.webhook.WebhookConnector.v1"
+				}
+			}
+		]
+	},
+	{
+		"name": "wrong-applies-to-event",
+		"steps": [
+			{
+				"element": "Start_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				}
+			}
+		]
+	},
+	{
+		"name": "bad-element-id",
+		"steps": [
+			{
+				"element": "Nope_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				}
+			}
+		]
+	},
+	{
+		"name": "bad-element-type",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/bad-element-type.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "values-override",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				},
+				"values": {
+					"name": "Override",
+					"method": "put",
+					"url": "https://example.test/x",
+					"bogusKey": "1",
+					"authentication.type": "bearer",
+					"authentication.token": "{{secrets.T}}"
+				}
+			}
+		]
+	},
+	{
+		"name": "values-missing-and-invalid",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				},
+				"values": {
+					"url": "",
+					"method": "post",
+					"body": "={ a: }"
+				}
+			}
+		]
+	},
+	{
+		"name": "omit-defaults",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				},
+				"values": {
+					"url": "https://x.test"
+				},
+				"options": {
+					"omitDefaults": true
+				}
+			}
+		]
+	},
+	{
+		"name": "no-validation",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				},
+				"values": {
+					"url": ""
+				},
+				"options": {
+					"validate": false
+				}
+			}
+		]
+	},
+	{
+		"name": "validation-version-8.3",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.agenticai.ai-agent-task.v2"
+				},
+				"options": {
+					"camundaVersion": "8.3.1"
+				}
+			}
+		]
+	},
+	{
+		"name": "validation-bad-input",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				},
+				"values": {
+					"url": ""
+				},
+				"options": {
+					"camundaVersion": "9.0"
+				}
+			}
+		]
+	},
+	{
+		"name": "task-extensions-user-task",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/task-extensions.json"
+				}
+			},
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/task-extensions.json"
+				},
+				"values": {
+					"formBinding": "latest",
+					"assignee": ""
+				}
+			}
+		]
+	},
+	{
+		"name": "task-extensions-on-existing-user-task",
+		"steps": [
+			{
+				"element": "User_1",
+				"template": {
+					"file": "templates/task-extensions.json"
+				},
+				"values": {
+					"groups": ""
+				}
+			}
+		]
+	},
+	{
+		"name": "called-element",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/called-element.json"
+				}
+			},
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/called-element.json"
+				},
+				"values": {
+					"pid": "",
+					"bt": "latest"
+				}
+			}
+		]
+	},
+	{
+		"name": "called-decision",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/called-decision.json"
+				},
+				"values": {
+					"did": "my-decision"
+				}
+			},
+			{
+				"element": "Task_2",
+				"template": {
+					"file": "templates/called-decision.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "script-task",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/script.json"
+				},
+				"values": {
+					"expr": "=a + b"
+				}
+			}
+		]
+	},
+	{
+		"name": "bad-values",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/bad-values.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "adhoc-subprocess",
+		"steps": [
+			{
+				"element": "Sub_1",
+				"template": {
+					"file": "templates/adhoc.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "linked-resources",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/linked-resource.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "placement-refused",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/placement.json"
+				}
+			}
+		]
+	},
+	{
+		"name": "conditions",
+		"steps": [
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/conditions.json"
+				}
+			},
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/conditions.json"
+				},
+				"values": {
+					"mode": "b",
+					"flag": "false"
+				}
+			},
+			{
+				"element": "Task_1",
+				"template": {
+					"file": "templates/conditions.json"
+				},
+				"values": {
+					"2": "two",
+					"mode": "zzz",
+					"hidden": "x"
+				}
+			}
+		]
+	},
+	{
+		"name": "nested-element",
+		"steps": [
+			{
+				"element": "Inner_1",
+				"template": {
+					"catalog": "io.camunda.connectors.HttpJson.v2"
+				}
+			}
+		]
+	},
+	{
+		"name": "retype-drops-extensions",
+		"steps": [
+			{
+				"element": "Service_1",
+				"template": {
+					"file": "templates/called-element.json"
+				}
+			},
+			{
+				"element": "Service_1",
+				"template": {
+					"file": "templates/script.json"
+				}
+			}
+		]
+	}
+]

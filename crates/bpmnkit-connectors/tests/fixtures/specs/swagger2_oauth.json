@@ -1,0 +1,49 @@
+{
+  "swagger": "2.0",
+  "info": { "title": "Oauth Svc", "version": "1" },
+  "basePath": "/api",
+  "securityDefinitions": {
+    "oauth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://auth.test/token",
+      "scopes": { "read": "Read things" }
+    },
+    "code": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://auth.test/authorize",
+      "tokenUrl": "https://auth.test/token",
+      "scopes": {}
+    }
+  },
+  "paths": {
+    "/items/{id}": {
+      "parameters": [{ "name": "id", "in": "path", "required": true, "type": "string" }],
+      "patch": {
+        "summary": "Patch an item",
+        "consumes": ["application/merge-patch+json"],
+        "parameters": [
+          { "in": "body", "name": "patch", "schema": { "type": "object", "properties": { "title": { "type": "string" }, "done": { "type": "boolean" } } } }
+        ],
+        "responses": { "200": { "description": "ok", "schema": { "type": "object", "properties": { "id": {}, "title": {} } } }, "default": { "description": "err" } }
+      },
+      "get": {
+        "operationId": "getItem",
+        "produces": ["text/plain"],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "type": "integer" }],
+        "responses": { "200": { "description": "ok", "schema": { "type": "string" } } }
+      }
+    },
+    "/items": {
+      "post": {
+        "operationId": "createItem",
+        "parameters": [
+          { "name": "title", "in": "formData", "type": "string", "required": true },
+          { "name": "count", "in": "formData", "type": "integer" }
+        ],
+        "responses": { "201": { "description": "created" } }
+      }
+    }
+  }
+}

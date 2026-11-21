@@ -1,0 +1,7 @@
+[
+	[
+		{
+			"message": "Template \"io.camunda.connectors.webhook.WebhookConnector.v1\" applies to bpmn:StartEvent, not bpmn:serviceTask \"Service_1\""
+		}
+	]
+]

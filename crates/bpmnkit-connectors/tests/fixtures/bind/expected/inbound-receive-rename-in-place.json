@@ -1,0 +1,7 @@
+[
+	[
+		{
+			"message": "<zeebe:taskDefinition> is not allowed on <bpmn:receiveTask>; it was not written"
+		}
+	]
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "deploy/service-task-no-type",
+    "category": "deploy",
+    "severity": "error",
+    "message": "\"Charge\" (serviceTask) has no zeebe:taskDefinition type.",
+    "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition.",
+    "processId": "order",
+    "elementIds": [
+      "charge"
+    ]
+  },
+  {
+    "id": "deploy/service-task-no-type",
+    "category": "deploy",
+    "severity": "error",
+    "message": "\"Notify\" (sendTask) has no zeebe:taskDefinition type.",
+    "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition.",
+    "processId": "order",
+    "elementIds": [
+      "notify"
+    ]
+  }
+]

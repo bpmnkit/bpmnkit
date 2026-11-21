@@ -1,0 +1,328 @@
+[
+	{
+		"name": "petstore3_yaml-A",
+		"spec": "specs/petstore3.yaml",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"count": 6
+	},
+	{
+		"name": "petstore3_yaml-B",
+		"spec": "specs/petstore3.yaml",
+		"options": {
+			"idPrefix": "com.example.api",
+			"baseUrl": "https://override.test/v2/",
+			"expandBody": true
+		},
+		"count": 6
+	},
+	{
+		"name": "petstore3_yaml-C",
+		"spec": "specs/petstore3.yaml",
+		"options": {
+			"idPrefix": "io.acme",
+			"filter": "pet|order",
+			"defaultAuthType": "basic",
+			"icon": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="
+		},
+		"count": 6
+	},
+	{
+		"name": "petstore3_yaml-D",
+		"spec": "specs/petstore3.yaml",
+		"options": {
+			"idPrefix": "x",
+			"filter": "^get",
+			"expandBody": true,
+			"defaultAuthType": "oauth-client-credentials-flow"
+		},
+		"count": 0
+	},
+	{
+		"name": "petstore3_yaml-E",
+		"spec": "specs/petstore3.yaml",
+		"options": {
+			"idPrefix": "",
+			"baseUrl": ""
+		},
+		"count": 6
+	},
+	{
+		"name": "petstore3_json-A",
+		"spec": "specs/petstore3.json",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"count": 7
+	},
+	{
+		"name": "petstore3_json-B",
+		"spec": "specs/petstore3.json",
+		"options": {
+			"idPrefix": "com.example.api",
+			"baseUrl": "https://override.test/v2/",
+			"expandBody": true
+		},
+		"count": 7
+	},
+	{
+		"name": "petstore3_json-C",
+		"spec": "specs/petstore3.json",
+		"options": {
+			"idPrefix": "io.acme",
+			"filter": "pet|order",
+			"defaultAuthType": "basic",
+			"icon": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="
+		},
+		"count": 3
+	},
+	{
+		"name": "petstore3_json-D",
+		"spec": "specs/petstore3.json",
+		"options": {
+			"idPrefix": "x",
+			"filter": "^get",
+			"expandBody": true,
+			"defaultAuthType": "oauth-client-credentials-flow"
+		},
+		"count": 0
+	},
+	{
+		"name": "composed_yaml-A",
+		"spec": "specs/composed.yaml",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"count": 5
+	},
+	{
+		"name": "composed_yaml-B",
+		"spec": "specs/composed.yaml",
+		"options": {
+			"idPrefix": "com.example.api",
+			"baseUrl": "https://override.test/v2/",
+			"expandBody": true
+		},
+		"count": 5
+	},
+	{
+		"name": "composed_yaml-C",
+		"spec": "specs/composed.yaml",
+		"options": {
+			"idPrefix": "io.acme",
+			"filter": "pet|order",
+			"defaultAuthType": "basic",
+			"icon": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="
+		},
+		"count": 0
+	},
+	{
+		"name": "composed_yaml-D",
+		"spec": "specs/composed.yaml",
+		"options": {
+			"idPrefix": "x",
+			"filter": "^get",
+			"expandBody": true,
+			"defaultAuthType": "oauth-client-credentials-flow"
+		},
+		"count": 0
+	},
+	{
+		"name": "swagger2_pets_yaml-A",
+		"spec": "specs/swagger2_pets.yaml",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"count": 4
+	},
+	{
+		"name": "swagger2_pets_yaml-B",
+		"spec": "specs/swagger2_pets.yaml",
+		"options": {
+			"idPrefix": "com.example.api",
+			"baseUrl": "https://override.test/v2/",
+			"expandBody": true
+		},
+		"count": 4
+	},
+	{
+		"name": "swagger2_pets_yaml-C",
+		"spec": "specs/swagger2_pets.yaml",
+		"options": {
+			"idPrefix": "io.acme",
+			"filter": "pet|order",
+			"defaultAuthType": "basic",
+			"icon": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="
+		},
+		"count": 4
+	},
+	{
+		"name": "swagger2_pets_yaml-D",
+		"spec": "specs/swagger2_pets.yaml",
+		"options": {
+			"idPrefix": "x",
+			"filter": "^get",
+			"expandBody": true,
+			"defaultAuthType": "oauth-client-credentials-flow"
+		},
+		"count": 0
+	},
+	{
+		"name": "swagger2_pets_yaml-E",
+		"spec": "specs/swagger2_pets.yaml",
+		"options": {
+			"idPrefix": "",
+			"baseUrl": ""
+		},
+		"count": 4
+	},
+	{
+		"name": "swagger2_oauth_json-A",
+		"spec": "specs/swagger2_oauth.json",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"count": 3
+	},
+	{
+		"name": "swagger2_oauth_json-B",
+		"spec": "specs/swagger2_oauth.json",
+		"options": {
+			"idPrefix": "com.example.api",
+			"baseUrl": "https://override.test/v2/",
+			"expandBody": true
+		},
+		"count": 3
+	},
+	{
+		"name": "swagger2_oauth_json-C",
+		"spec": "specs/swagger2_oauth.json",
+		"options": {
+			"idPrefix": "io.acme",
+			"filter": "pet|order",
+			"defaultAuthType": "basic",
+			"icon": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="
+		},
+		"count": 0
+	},
+	{
+		"name": "swagger2_oauth_json-D",
+		"spec": "specs/swagger2_oauth.json",
+		"options": {
+			"idPrefix": "x",
+			"filter": "^get",
+			"expandBody": true,
+			"defaultAuthType": "oauth-client-credentials-flow"
+		},
+		"count": 1
+	},
+	{
+		"name": "unusual_yaml-A",
+		"spec": "specs/unusual.yaml",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"count": 4
+	},
+	{
+		"name": "unusual_yaml-B",
+		"spec": "specs/unusual.yaml",
+		"options": {
+			"idPrefix": "com.example.api",
+			"baseUrl": "https://override.test/v2/",
+			"expandBody": true
+		},
+		"count": 4
+	},
+	{
+		"name": "unusual_yaml-C",
+		"spec": "specs/unusual.yaml",
+		"options": {
+			"idPrefix": "io.acme",
+			"filter": "pet|order",
+			"defaultAuthType": "basic",
+			"icon": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="
+		},
+		"count": 0
+	},
+	{
+		"name": "unusual_yaml-D",
+		"spec": "specs/unusual.yaml",
+		"options": {
+			"idPrefix": "x",
+			"filter": "^get",
+			"expandBody": true,
+			"defaultAuthType": "oauth-client-credentials-flow"
+		},
+		"count": 1
+	},
+	{
+		"name": "empty_json-A",
+		"spec": "specs/empty.json",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"count": 0
+	},
+	{
+		"name": "no_version_json-A",
+		"spec": "specs/no_version.json",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"error": {
+			"exact": true
+		}
+	},
+	{
+		"name": "openapi2_string_yaml-A",
+		"spec": "specs/openapi2_string.yaml",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"error": {
+			"exact": true
+		}
+	},
+	{
+		"name": "bad_ref_json-A",
+		"spec": "specs/bad_ref.json",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"error": {
+			"exact": true
+		}
+	},
+	{
+		"name": "external_ref_json-A",
+		"spec": "specs/external_ref.json",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"error": {
+			"exact": true
+		}
+	},
+	{
+		"name": "broken_json-A",
+		"spec": "specs/broken.json",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"error": {
+			"exact": false
+		}
+	},
+	{
+		"name": "no_content_json-A",
+		"spec": "specs/no_content.json",
+		"options": {
+			"idPrefix": "io.acme"
+		},
+		"error": {
+			"exact": true
+		}
+	}
+]

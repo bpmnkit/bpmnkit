@@ -1,0 +1,10 @@
+{
+  "id": "test.EventPlain",
+  "name": "Plain end event",
+  "appliesTo": ["bpmn:EndEvent", "bpmn:IntermediateThrowEvent"],
+  "elementType": { "value": "bpmn:EndEvent" },
+  "properties": [
+    { "type": "Hidden", "value": "send", "binding": { "type": "zeebe:taskDefinition", "property": "type" } },
+    { "id": "payload", "label": "Payload", "type": "String", "value": "=x", "binding": { "type": "zeebe:input", "name": "payload" } }
+  ]
+}

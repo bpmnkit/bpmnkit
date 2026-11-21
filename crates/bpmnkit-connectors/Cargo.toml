@@ -1,0 +1,26 @@
+[package]
+name = "bpmnkit-connectors"
+description = "Connector element templates for BPMN Kit: generate them from OpenAPI/Swagger specs and bind them onto BPMN elements (Rust twin of @bpmnkit/connector-gen and core's applyTemplateToElement)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish = false
+keywords = ["bpmn", "camunda", "connectors", "openapi", "element-templates"]
+categories = ["development-tools", "parser-implementations"]
+# Tests read the TS-recorded fixtures next to the crate.
+exclude = ["tests/"]
+
+[dependencies]
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-compat = { workspace = true }
+bpmnkit-diff = { workspace = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.6.1", default-features = false }
+bpmnkit-spec = { workspace = true }
+indexmap = { workspace = true }
+regex = "1"
+serde = { workspace = true }
+serde_json = { workspace = true, features = ["preserve_order"] }
+yaml-rust2 = "0.10"

@@ -1,0 +1,9 @@
+[
+	[
+		{
+			"key": "bogusKey",
+			"kind": "unknown-key",
+			"message": "Unknown value key \"bogusKey\" for template \"io.camunda.connectors.HttpJson.v2\""
+		}
+	]
+]
