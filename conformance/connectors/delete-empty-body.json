@@ -1,0 +1,34 @@
+{
+  "description": "DELETE answered 204: body is null",
+  "exchanges": [
+    {
+      "request": {
+        "method": "DELETE",
+        "path": "/orders/o-1"
+      },
+      "response": {
+        "status": 204
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "body": null,
+        "status": 204
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={status: response.status, body: response.body}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "DELETE",
+      "url": "http://mock.local/orders/o-1"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#response"
+}

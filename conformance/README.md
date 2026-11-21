@@ -12,6 +12,9 @@ CI runs the record step and fails on `git diff --exit-code conformance/`; the vi
 `packages/feel/tests/conformance.test.ts` and `packages/core/tests/conformance.test.ts` fail on any
 drift. A Rust runner reads the same files.
 
+`connectors/` is the exception: its oracle is the real Camunda 8.8 connector runtime, not TS (see
+`connectors/README.md`).
+
 ## FEEL: `feel/<group>.jsonl`
 
 One case per line:

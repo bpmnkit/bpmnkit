@@ -1,0 +1,40 @@
+{
+  "description": "timeouts given as strings (Zeebe literal inputs)",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/t"
+      },
+      "response": {
+        "body": {
+          "ok": true
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myResponseBody": {
+          "ok": true
+        }
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "connectionTimeoutInSeconds": "20",
+      "method": "GET",
+      "readTimeoutInSeconds": "0",
+      "url": "http://mock.local/t"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#network-communication-timeouts"
+}

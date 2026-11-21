@@ -1,0 +1,51 @@
+{
+  "description": "resultVariable and resultExpression together",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/user"
+      },
+      "response": {
+        "body": {
+          "post": {
+            "userId": 42
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myUserId": 42,
+        "raw": {
+          "body": {
+            "post": {
+              "userId": 42
+            }
+          },
+          "headers": {
+            "content-length": "22",
+            "content-type": "application/json"
+          },
+          "status": 200
+        }
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={myUserId: response.body.post.userId}",
+      "resultVariable": "raw"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/user"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#response"
+}

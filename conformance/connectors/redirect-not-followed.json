@@ -1,0 +1,37 @@
+{
+  "description": "followRedirects false (default): the 302 is the response",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/old"
+      },
+      "response": {
+        "headers": {
+          "Location": "http://mock.local/new"
+        },
+        "status": 302
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "location": "http://mock.local/new",
+        "status": 302
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={status: response.status, location: response.headers.location}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/old"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/"
+}

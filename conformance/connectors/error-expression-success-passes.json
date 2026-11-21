@@ -1,0 +1,39 @@
+{
+  "description": "an error expression yielding null on 2xx lets the result through",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/station"
+      },
+      "response": {
+        "body": {
+          "main": {
+            "humidity": 40
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "humidity": 40
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "errorExpression": "=if response.body.main.humidity < 0 then bpmnError(\"HUMIDITY-FAIL\", \"Received invalid humidity\") else null",
+      "resultExpression": "={humidity: response.body.main.humidity}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/station"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

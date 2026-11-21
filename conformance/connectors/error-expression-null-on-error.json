@@ -1,0 +1,35 @@
+{
+  "description": "an error expression yielding null leaves the HTTP error to fail the job",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/x"
+      },
+      "response": {
+        "body": {},
+        "status": 503
+      }
+    }
+  ],
+  "expected": {
+    "fail": {
+      "errorMessage": "Service Unavailable",
+      "retries": 2,
+      "retryBackOff": 60000
+    }
+  },
+  "job": {
+    "headers": {
+      "errorExpression": "=if error.code = \"404\" then bpmnError(\"404\", \"Got a 404\") else null",
+      "retryBackoff": "PT1M"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/x"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

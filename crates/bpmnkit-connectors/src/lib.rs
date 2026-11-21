@@ -18,6 +18,10 @@
 //! templates as `serde_json::Value`s in TS key order; [`write_templates`] writes them as
 //! `JSON.stringify(x, null, 2)` would (no trailing newline).
 //!
+//! # API index
+//! [`api_service`] builds connector-gen's API-index service (`ApiService` JSON) from a spec; the
+//! worker rules of `bpmnkit-jobspec` read it. See the `api_index` module docs for the fields.
+//!
 //! # Binding
 //! [`apply_template_to_element`] writes a template onto one element of a parsed
 //! `BpmnDefinitions`; [`bind_xml`] is the XML-in/XML-out convenience. [`catalog_templates`] /
@@ -35,10 +39,16 @@
 //!   backreferences are rejected, `\d`/`\w` are Unicode-aware.
 //! - **Deployability** (`validate`) is checked with `bpmnkit_compat::zeebe`, the Rust twin of
 //!   TS's `zeebe-validate`, so findings are the same set; `Problem::kind` is an enum.
+//! - **API index**: [`api_service`] equals `scripts/api-index-ops.mjs` after removing its
+//!   Rust-only per-operation fields (`auth`, `requestMediaTypes`, `responseMediaTypes`,
+//!   `responseKeys`, `responseList`, `linkHeader`, `x-bpmnkit-paginate`) and the `id` of
+//!   operations that have a `summary` (TS drops it there, Rust keeps it so jobspec can resolve
+//!   `<service>#<operationId>`). The service `license` gate is not ported.
 //! - **Not ported** from `@bpmnkit/connectors`/core's connector module: `applyElementTemplate`
 //!   (builder options), search/cards/lines, `validateElementTemplate`; only
 //!   `applyTemplateToElement`, the bundled catalog and `getTemplate` are.
 
+mod api_index;
 mod apply;
 mod build;
 mod catalog;
@@ -51,6 +61,7 @@ mod swagger2;
 mod template;
 mod write;
 
+pub use api_index::api_service;
 pub use apply::{Problem, ProblemKind};
 pub use build::{build_template, build_templates, CONNECTOR_SCHEMA};
 pub use catalog::{get_catalog_entry, CatalogEntry, CATALOG};

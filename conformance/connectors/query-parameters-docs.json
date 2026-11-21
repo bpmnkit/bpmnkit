@@ -1,0 +1,53 @@
+{
+  "description": "the docs' OpenWeatherMap query map with a secret appid",
+  "env": {
+    "OPEN_WEATHER_MAP_API_KEY": "owm-0123456789"
+  },
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/data/2.5/weather",
+        "query": {
+          "appid": "owm-0123456789",
+          "lang": "en",
+          "q": "Berlin",
+          "units": "metric"
+        }
+      },
+      "response": {
+        "body": {
+          "main": {
+            "temp": 11.5
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "temp": 11.5
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={temp: response.body.main.temp}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "queryParameters": {
+        "appid": "{{secrets.OPEN_WEATHER_MAP_API_KEY}}",
+        "lang": "en",
+        "q": "Berlin",
+        "units": "metric"
+      },
+      "url": "http://mock.local/data/2.5/weather"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#query-parameters"
+}

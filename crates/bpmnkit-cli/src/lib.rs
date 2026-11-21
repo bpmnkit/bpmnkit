@@ -1,6 +1,7 @@
 //! `bpmnkit` (alias `casen`): a few native commands, `bpmnkit-<name>` subprocess plugins, and a
 //! fallback to the legacy Node CLI for everything not ported yet.
 
+mod connector;
 mod legacy;
 mod native;
 mod plugin;
@@ -94,6 +95,10 @@ enum ConnectorCmd {
     Gen(native::ConnectorGenArgs),
     /// Apply an element template to a task or event of a BPMN file
     Bind(native::ConnectorBindArgs),
+    /// Run REST connector jobs (io.camunda:http-json:1) from the cluster in CAMUNDA_* env vars
+    Run(connector::ConnectorRunArgs),
+    /// Run one REST connector job from a template and variables, print the resulting command
+    Test(connector::ConnectorTestArgs),
 }
 
 #[derive(Subcommand)]
@@ -183,6 +188,8 @@ pub fn run(args: Vec<OsString>) -> i32 {
         Cmd::Connector { action } => match action {
             ConnectorCmd::Gen(a) => native::connector_gen(a),
             ConnectorCmd::Bind(a) => native::connector_bind(a),
+            ConnectorCmd::Run(a) => connector::run(a),
+            ConnectorCmd::Test(a) => connector::test(a),
         },
         Cmd::Completion { shell } => {
             let mut cmd = Cli::command().bin_name(name);
@@ -248,7 +255,7 @@ fn route(rest: &[OsString]) -> Option<Vec<OsString>> {
         // The legacy verbs (`generate`, `apply`, `catalog`, `search` …) stay in the legacy CLI.
         "connector" => words
             .get(1)
-            .is_some_and(|w| w == "gen" || w == "bind")
+            .is_some_and(|w| ["gen", "bind", "run", "test"].contains(&w.as_str()))
             .then(|| rest.to_vec()),
         _ => Some(rest.to_vec()),
     }

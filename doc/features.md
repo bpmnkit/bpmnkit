@@ -1,5 +1,9 @@
 # Features
 
+## Local REST connector runner: `bpmnkit connector run|test` (2026-11-21)
+
+`bpmnkit connector run` executes Camunda REST connector jobs (`io.camunda:http-json:1`, plus private types via `--as` or `--templates dir`) against your cluster without the Java connector runtime; `bpmnkit connector test template.json --vars vars.json` runs one call from a template and prints the command the engine would get. Secrets as in the 8.8 runtime (`{{secrets.X}}` from env, `CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_PREFIX`, never logged), auth none / API key / basic / bearer / OAuth2 client credentials, FEEL `resultExpression` / `errorExpression` with `bpmnError`, `jobError`, `ignoreError`. Library: `bpmnkit-connector-runtime`. `connector gen --api-index` writes the API index the worker rules read.
+
 ## Camunda 8 job workers in Rust: `bpmnkit-worker` (2026-11-21)
 
 `Runtime::from_env()?.register(WorkerConfig::new("charge"), handler).run().await` runs job workers against the Camunda 8.8+ REST API (`/v2/jobs`), with camunda-client-java's defaults. Handlers are async functions `ActivatedJob → Result<Complete, JobError>`: `JobError::bpmn` throws a catchable BPMN error, `JobError::fail` (or any `?` error, or a panic) fails with retries − 1 and the `retryBackoff` header. Concurrency is bounded, activation long-polls and backs off with jitter, shutdown drains running handlers. Auth: none, Basic, Bearer, OAuth2 client credentials (cached, refreshed). Metrics trait with Prometheus text; `testing` feature for unit tests (`MockJob`, `run_handler`, `FakeClient`). Facade feature `worker`.

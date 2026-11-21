@@ -1,0 +1,42 @@
+{
+  "description": "a string body with Content-Type text/plain goes out verbatim",
+  "exchanges": [
+    {
+      "request": {
+        "bodyText": "hello world",
+        "headers": {
+          "content-type": "text/plain"
+        },
+        "method": "POST",
+        "path": "/notes"
+      },
+      "response": {
+        "bodyText": "created",
+        "status": 201
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myResponseBody": "created"
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "body": "hello world",
+      "headers": {
+        "Content-Type": "text/plain"
+      },
+      "method": "POST",
+      "url": "http://mock.local/notes"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#content-type"
+}

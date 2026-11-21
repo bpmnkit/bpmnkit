@@ -1071,7 +1071,7 @@ not code.
 - [x] P2: `bpmnkit-worker` REST runtime (client, auth, loop, backoff, drain, metrics, `testing`)
 - [ ] P3: Rust + template emitters, `worker gen --check`
 - [x] P4: `bpmnkit-codegen` Java emitter (Maven wrapper, plain + `--spring`, CPT stub), `bpmnkit worker gen --lang java`, CI `java-golden`
-- [ ] P5: `bpmnkit-connector-runtime` (`io.camunda:http-json:1`)
+- [x] P5: `bpmnkit-connector-runtime` (`io.camunda:http-json:1`), `connector run|test`, 48 replay fixtures (manual 8.8 recording pending)
 - [ ] P6: `grpc` feature (job streaming)
 - [x] P7: Rust connector-gen + `connector bind`; native `lint/layout/diff/render/convert/profile`
 - [ ] P8: distribution + rename

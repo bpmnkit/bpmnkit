@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - "crates/bpmnkit-worker/**"
+      - "crates/bpmnkit-connector-runtime/**"
       - "apps/reebe/**"
       - "Cargo.lock"
       - ".github/workflows/worker-e2e.yml"
@@ -15,6 +16,7 @@ on:
     branches: [main]
     paths:
       - "crates/bpmnkit-worker/**"
+      - "crates/bpmnkit-connector-runtime/**"
       - "apps/reebe/**"
       - "Cargo.lock"
       - ".github/workflows/worker-e2e.yml"
@@ -70,7 +72,9 @@ jobs:
           exit 1
 
       - name: E2E tests
-        run: cargo test -p bpmnkit-worker --test reebe_e2e --locked -- --ignored
+        run: |
+          cargo test -p bpmnkit-worker --test reebe_e2e --locked -- --ignored
+          cargo test -p bpmnkit-connector-runtime --test reebe_e2e --locked -- --ignored
 
       - name: reebe log
         if: failure()

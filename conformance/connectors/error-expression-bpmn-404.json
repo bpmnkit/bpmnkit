@@ -1,0 +1,33 @@
+{
+  "description": "docs: HTTP errors to BPMN errors (404)",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/missing"
+      },
+      "response": {
+        "body": {},
+        "status": 404
+      }
+    }
+  ],
+  "expected": {
+    "throwError": {
+      "errorCode": "404",
+      "errorMessage": "Got a 404"
+    }
+  },
+  "job": {
+    "headers": {
+      "errorExpression": "=if error.code = \"404\" then\n  bpmnError(\"404\", \"Got a 404\")\nelse if error.code = \"500\" then\n  bpmnError(\"500\", \"Got a 500\")\nelse\n  null"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/missing"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

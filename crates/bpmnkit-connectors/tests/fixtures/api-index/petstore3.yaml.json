@@ -1,0 +1,62 @@
+{
+  "id": "petstore3",
+  "name": "Petstore",
+  "baseUrl": "https://eu.petstore.test/v{basePath}3",
+  "auth": {
+    "type": "bearer"
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/pets",
+      "summary": "List all pets",
+      "query": [
+        "limit*",
+        "tag"
+      ],
+      "headers": [
+        "X-Request-Id"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/pets",
+      "summary": "Create a pet",
+      "body": [
+        "name*",
+        "tag"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/pets/{petId}",
+      "id": "showPetById"
+    },
+    {
+      "method": "PUT",
+      "path": "/pets/{petId}",
+      "summary": "Replace a pet",
+      "body": [
+        "name*",
+        "age*",
+        "1",
+        "9",
+        "vaccinated",
+        "owner"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/pets/{petId}",
+      "summary": "Remove a pet"
+    },
+    {
+      "method": "PATCH",
+      "path": "/pets/{petId}/photos/{photoId}.json",
+      "summary": "Patch a photo",
+      "body": [
+        "caption"
+      ]
+    }
+  ]
+}

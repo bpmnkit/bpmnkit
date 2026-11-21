@@ -19,6 +19,7 @@ path = "src/main.rs"
 
 [dependencies]
 bpmnkit-codegen = { path = "../bpmnkit-codegen", version = "0.6.1" }
+bpmnkit-connector-runtime = { path = "../bpmnkit-connector-runtime", version = "0.6.1" }
 bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.6.1" }
 bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.6.1" }
 bpmnkit-bpmn = { workspace = true }
@@ -28,6 +29,7 @@ bpmnkit-diff = { workspace = true }
 bpmnkit-layout = { workspace = true }
 bpmnkit-lint = { workspace = true }
 bpmnkit-spec = { workspace = true }
+bpmnkit-worker = { workspace = true }
 bpmnkit-render = { workspace = true, features = ["auto-layout", "png"] }
 indexmap = { workspace = true }
 serde = { workspace = true }

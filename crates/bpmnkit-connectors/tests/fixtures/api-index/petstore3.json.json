@@ -1,0 +1,38 @@
+{
+  "id": "petstore3",
+  "name": "Orders",
+  "auth": {
+    "type": "bearer"
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/{tenant}/orders",
+      "summary": "List orders",
+      "query": [
+        "q*",
+        "status"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/{tenant}/orders",
+      "summary": "Create an order",
+      "body": [
+        "sku*",
+        "qty",
+        "gift",
+        "note"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/orders/{id}/cancel"
+    },
+    {
+      "method": "GET",
+      "path": "/ref",
+      "summary": "Reached through a path-item $ref"
+    }
+  ]
+}

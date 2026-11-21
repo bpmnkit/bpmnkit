@@ -1,0 +1,44 @@
+{
+  "id": "composed",
+  "name": "Composed",
+  "baseUrl": "http://localhost:8080",
+  "auth": {
+    "type": "basic"
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/v1/things/{thing-id}/sub_items",
+      "summary": "Multi line"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/things/{thing-id}/sub_items",
+      "query": [
+        "dry_run"
+      ],
+      "headers": [
+        "X-Trace"
+      ],
+      "body": [
+        "id",
+        "extra"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/things",
+      "id": "PUT_things-2"
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/things",
+      "id": "DeleteTheThing"
+    },
+    {
+      "method": "GET",
+      "path": "/unicode/héllo/{naïve}",
+      "summary": "Grüße from the café"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "id": "swagger2_pets",
+  "name": "Swagger Pets",
+  "baseUrl": "https://api.pets.test/v2",
+  "auth": {
+    "type": "apiKey",
+    "in": "header",
+    "name": "api_key"
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/pets",
+      "summary": "List pets",
+      "query": [
+        "status*",
+        "limit"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/pets",
+      "id": "addPet",
+      "query": [
+        "limit"
+      ],
+      "body": [
+        "name*",
+        "id",
+        "tags"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/pets/{petId}/image",
+      "id": "uploadImage",
+      "body": [
+        "file*",
+        "additionalMetadata"
+      ],
+      "form": true
+    },
+    {
+      "method": "PUT",
+      "path": "/pets/{petId}",
+      "id": "updatePetWithForm",
+      "body": [
+        "status*",
+        "name"
+      ],
+      "form": true
+    }
+  ]
+}

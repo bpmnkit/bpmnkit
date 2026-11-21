@@ -46,6 +46,9 @@ pub struct ConnectorGenArgs {
     /// Print the templates instead of writing files
     #[arg(long)]
     pub dry_run: bool,
+    /// Also write the API index (ApiService JSON) for `worker classify|gen --openapi`
+    #[arg(long, value_name = "FILE")]
+    pub api_index: Option<PathBuf>,
 }
 
 #[derive(Args)]
@@ -691,6 +694,25 @@ pub fn connector_gen(a: ConnectorGenArgs) -> i32 {
         Ok(t) => t,
         Err(e) => return fail(&e.to_string()),
     };
+    if let Some(path) = &a.api_index {
+        let id = a
+            .spec
+            .file_stem()
+            .map_or_else(|| "api".into(), |s| s.to_string_lossy().into_owned());
+        let index = match bpmnkit_connectors::api_service(
+            &text,
+            &id,
+            &id,
+            auth.unwrap_or(AuthHint::NoAuth),
+        ) {
+            Ok(i) => i,
+            Err(e) => return fail(&e.to_string()),
+        };
+        if let Err(e) = std::fs::write(path, format!("{}\n", json_line(&index))) {
+            return fail(&format!("cannot write {}: {e}", path.display()));
+        }
+        out(&format!("✓ API index → {}", path.display()));
+    }
     if a.dry_run {
         out(&json_line(&templates));
         out(&format!("→ Would generate {} template(s)", templates.len()));

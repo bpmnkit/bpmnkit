@@ -1,0 +1,49 @@
+{
+  "description": "ignoreNullValues drops nulls from the body",
+  "exchanges": [
+    {
+      "request": {
+        "body": {
+          "a": 1,
+          "c": {
+            "e": "x"
+          }
+        },
+        "method": "POST",
+        "path": "/p"
+      },
+      "response": {
+        "body": {},
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myResponseBody": {}
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "body": {
+        "a": 1,
+        "b": null,
+        "c": {
+          "d": null,
+          "e": "x"
+        }
+      },
+      "ignoreNullValues": true,
+      "method": "POST",
+      "url": "http://mock.local/p"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/"
+}

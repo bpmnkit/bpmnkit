@@ -1,10 +1,9 @@
 //! OpenAPI operations, read from connector-gen's API index JSON (`ApiService` in
 //! `packages/connector-gen/src/api-index.ts`: `{id, name, baseUrl?, auth, operations[]}`), not
-//! from raw OpenAPI. The rules need a few facts the TS index does not carry yet; they are
-//! optional fields on each operation (absent = JSON in and out, no pagination) until the native
-//! connector-gen (plan P7) emits them:
-//! `auth`, `requestMediaTypes`, `responseMediaTypes`, `responseKeys`, `responseList`,
-//! `linkHeader`, `x-bpmnkit-paginate`.
+//! from raw OpenAPI. The rules need a few facts the TS index does not carry; the Rust generator
+//! (`bpmnkit_connectors::api_service`) emits them as optional fields on each operation (absent =
+//! JSON in and out, no pagination): `auth`, `requestMediaTypes`, `responseMediaTypes`,
+//! `responseKeys`, `responseList`, `linkHeader`, `x-bpmnkit-paginate`.
 
 use std::collections::BTreeMap;
 

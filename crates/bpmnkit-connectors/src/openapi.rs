@@ -118,6 +118,13 @@ fn parse_spec_text(text: &str) -> Result<Value> {
     }
 }
 
+/// Parses JSON or YAML spec text as it is, Swagger 2.0 included (the API index reads it raw).
+pub(crate) fn parse_raw(text: &str) -> Result<Value> {
+    let mut doc = parse_spec_text(text)?;
+    normalize(&mut doc);
+    Ok(doc)
+}
+
 /// Parses JSON or YAML spec text; Swagger 2.0 is upgraded to OpenAPI 3 here so every caller
 /// works with one shape.
 pub fn parse_openapi(text: &str) -> Result<Value> {

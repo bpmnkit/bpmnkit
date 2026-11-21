@@ -1,0 +1,71 @@
+{
+  "description": "OAuth 2.0 client credentials sent as a Basic header",
+  "env": {
+    "AUDIENCE": "api.example",
+    "CLIENT_ID": "cid-4242",
+    "CLIENT_SECRET": "csecret-9999"
+  },
+  "exchanges": [
+    {
+      "request": {
+        "form": {
+          "audience": "api.example",
+          "grant_type": "client_credentials",
+          "scope": "read:clients"
+        },
+        "headers": {
+          "authorization": "Basic Y2lkLTQyNDI6Y3NlY3JldC05OTk5"
+        },
+        "method": "POST",
+        "path": "/oauth/token"
+      },
+      "response": {
+        "body": {
+          "access_token": "at-778"
+        },
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "headers": {
+          "authorization": "Bearer at-778"
+        },
+        "method": "GET",
+        "path": "/clients"
+      },
+      "response": {
+        "body": [],
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myResponseBody": []
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "authentication": {
+        "audience": "{{secrets.AUDIENCE}}",
+        "clientAuthentication": "basicAuthHeader",
+        "clientId": "{{secrets.CLIENT_ID}}",
+        "clientSecret": "{{secrets.CLIENT_SECRET}}",
+        "oauthTokenEndpoint": "http://mock.local/oauth/token",
+        "scopes": "read:clients",
+        "type": "oauth-client-credentials-flow"
+      },
+      "method": "GET",
+      "url": "http://mock.local/clients"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#rest-connector-oauth-token"
+}

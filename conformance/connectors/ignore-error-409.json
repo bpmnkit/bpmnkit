@@ -1,0 +1,42 @@
+{
+  "description": "docs: ignoreError completes the job on a 409",
+  "exchanges": [
+    {
+      "request": {
+        "body": {
+          "id": "a"
+        },
+        "method": "POST",
+        "path": "/items"
+      },
+      "response": {
+        "body": {
+          "error": "exists"
+        },
+        "status": 409
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "created": true
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "errorExpression": "=if error.code = \"409\" then ignoreError({\"created\":true}) else null"
+    },
+    "retries": 3,
+    "variables": {
+      "body": {
+        "id": "a"
+      },
+      "method": "POST",
+      "url": "http://mock.local/items"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}
