@@ -13,3 +13,7 @@ packages/connector-gen/src/stats.ts linguist-generated
 apps/landing/src/data/feel-functions.ts linguist-generated
 # Embedded Maven Wrapper scripts keep upstream bytes (mvnw.cmd is CRLF), and so do their goldens.
 crates/bpmnkit-codegen/assets/** -text
+# Embedded into generated Java projects byte for byte (Gradle Wrapper).
+crates/bpmnkit-codegen/assets/java/gradle/wrapper/*.jar binary
+crates/bpmnkit-codegen/assets/java/gradle/gradlew text eol=lf
+crates/bpmnkit-codegen/assets/java/gradle/gradlew.bat text eol=crlf

@@ -1,6 +1,6 @@
 //! Goldens (insta), determinism (I1, I2, I3), stub preservation and `--check` for the Java target.
 
-use bpmnkit_codegen::java::JavaEmitter;
+use bpmnkit_codegen::java::{Build, JavaEmitter, Versions};
 use bpmnkit_codegen::write::{check, write, Drift};
 use bpmnkit_codegen::{EmitError, Emitter, GenFile, Kind};
 use bpmnkit_jobspec::{analyze, ApiIndex, Catalog, Inputs, WorkerConfig, WorkerProject};
@@ -29,12 +29,23 @@ fn emitter(spring: bool) -> JavaEmitter {
     }
 }
 
+fn gradle(spring: bool) -> JavaEmitter {
+    JavaEmitter {
+        spring,
+        build: Build::Gradle,
+        ..JavaEmitter::default()
+    }
+}
+
 /// All files in one text, the crate version masked so releases do not touch the goldens.
 fn dump(files: &[GenFile]) -> String {
     let mut s = String::new();
     for f in files {
         // The wrapper scripts are upstream bytes: pin their hash instead of inlining them.
-        let body = if f.path == "mvnw" || f.path == "mvnw.cmd" {
+        let body = if matches!(
+            f.path.as_str(),
+            "mvnw" | "mvnw.cmd" | "gradlew" | "gradlew.bat" | "gradle/wrapper/gradle-wrapper.jar"
+        ) {
             format!("<{} bytes>\n", f.content.len())
         } else {
             String::from_utf8(f.content.clone()).unwrap()
@@ -60,6 +71,121 @@ fn golden_plain() {
 fn golden_spring() {
     let files = emitter(true).emit(&project(&[ORDER])).unwrap();
     insta::assert_snapshot!(dump(&files));
+}
+
+#[test]
+fn golden_gradle() {
+    let files = gradle(false).emit(&project(&[ORDER])).unwrap();
+    insta::assert_snapshot!(dump(&files));
+}
+
+#[test]
+fn golden_gradle_spring() {
+    let files = gradle(true).emit(&project(&[ORDER])).unwrap();
+    insta::assert_snapshot!(dump(&files));
+}
+
+#[test]
+fn gradle_same_sources_as_maven() {
+    // Only build files differ: sources, records, stubs and the README body stay the same.
+    for spring in [false, true] {
+        let src = |b: Build| {
+            JavaEmitter {
+                spring,
+                build: b,
+                ..JavaEmitter::default()
+            }
+            .emit(&project(&[ORDER]))
+            .unwrap()
+            .into_iter()
+            .filter(|f| {
+                f.path.ends_with(".java")
+                    || f.path.ends_with(".properties") && f.path.contains("resources")
+            })
+            .collect::<Vec<_>>()
+        };
+        assert_eq!(src(Build::Maven), src(Build::Gradle));
+    }
+}
+
+#[test]
+fn gradle_has_no_maven_files_and_vice_versa() {
+    let paths = |e: JavaEmitter| -> Vec<String> {
+        e.emit(&project(&[ORDER]))
+            .unwrap()
+            .into_iter()
+            .map(|f| f.path)
+            .collect()
+    };
+    let g = paths(gradle(false));
+    for p in [
+        "build.gradle.kts",
+        "settings.gradle.kts",
+        "gradlew",
+        "gradlew.bat",
+        "gradle/wrapper/gradle-wrapper.jar",
+        "gradle/wrapper/gradle-wrapper.properties",
+    ] {
+        assert!(g.contains(&p.to_owned()), "{p}");
+    }
+    assert!(!g.iter().any(|p| p == "pom.xml" || p.contains("mvn")));
+    let m = paths(emitter(false));
+    assert!(!m.iter().any(|p| p.contains("gradle")));
+}
+
+#[test]
+fn gradle_wrapper_is_pinned_and_verified() {
+    use sha2::{Digest, Sha256};
+    let files = gradle(false).emit(&project(&[ORDER])).unwrap();
+    let get = |p: &str| files.iter().find(|f| f.path == p).unwrap();
+    let hex = |b: &[u8]| {
+        Sha256::digest(b)
+            .iter()
+            .map(|x| format!("{x:02x}"))
+            .collect::<String>()
+    };
+    assert_eq!(
+        hex(&get("gradle/wrapper/gradle-wrapper.jar").content),
+        Versions::GRADLE_WRAPPER_JAR_SHA256
+    );
+    let props = String::from_utf8(
+        get("gradle/wrapper/gradle-wrapper.properties")
+            .content
+            .clone(),
+    )
+    .unwrap();
+    assert!(props.contains(&format!(
+        "distributionSha256Sum={}\n",
+        Versions::GRADLE_SHA256
+    )));
+    assert!(props.contains(&format!("gradle-{}-bin.zip", Versions::GRADLE)));
+    assert!(get("gradlew").executable);
+}
+
+#[test]
+fn gradle_is_deterministic_and_portable() {
+    for spring in [false, true] {
+        let a = gradle(spring).emit(&project(&[ORDER])).unwrap();
+        assert_eq!(a, gradle(spring).emit(&project(&[ORDER])).unwrap());
+        for f in a {
+            assert!(
+                !f.path.contains('\\') && !f.path.starts_with('/'),
+                "{}",
+                f.path
+            );
+            if f.path.ends_with(".jar") || f.path == "gradlew.bat" {
+                continue; // binary / upstream CRLF
+            }
+            let text = String::from_utf8(f.content).unwrap();
+            assert!(!text.contains('\r'), "{} has CR", f.path);
+            assert!(text.ends_with('\n'), "{} lacks trailing newline", f.path);
+            assert!(
+                !text.contains("/home/") && !text.contains("/tmp/"),
+                "{}",
+                f.path
+            );
+        }
+    }
 }
 
 #[test]
@@ -199,7 +325,7 @@ fn regeneration_keeps_stubs_and_restores_generated() {
 
 #[cfg(unix)]
 #[test]
-fn mvnw_is_executable() {
+fn wrappers_are_executable() {
     use std::os::unix::fs::PermissionsExt;
     let dir = tempfile::tempdir().unwrap();
     write(
@@ -207,11 +333,14 @@ fn mvnw_is_executable() {
         &emitter(false).emit(&project(&[ORDER])).unwrap(),
     )
     .unwrap();
-    let mode = std::fs::metadata(dir.path().join("mvnw"))
-        .unwrap()
-        .permissions()
-        .mode();
-    assert_eq!(mode & 0o111, 0o111);
+    write(dir.path(), &gradle(false).emit(&project(&[ORDER])).unwrap()).unwrap();
+    for f in ["mvnw", "gradlew"] {
+        let mode = std::fs::metadata(dir.path().join(f))
+            .unwrap()
+            .permissions()
+            .mode();
+        assert_eq!(mode & 0o111, 0o111, "{f}");
+    }
 }
 
 fn file_text(files: &[GenFile], suffix: &str) -> String {

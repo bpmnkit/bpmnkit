@@ -1076,7 +1076,7 @@ not code.
 - [x] P7: Rust connector-gen + `connector bind`; native `lint/layout/diff/render/convert/profile`
 - [ ] P8: distribution + rename
 - [ ] P9: remaining commands, fallback removal
-- [ ] P10: Gradle emitter
+- [x] P10: Gradle emitter (`--build gradle`, Kotlin DSL, pinned wrapper, `java-golden-gradle` CI)
 
 ## Completed
 
