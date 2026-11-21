@@ -91,6 +91,8 @@ Locally: `node scripts/crates-publish.mjs --check | --print | --check-features |
 
 ## What the maintainer has to do
 
+First release of the native CLI and the crates it added (npm names, trusted publishers, Homebrew): `doc/release-setup.md`.
+
 1. Create a crates.io API token with the `publish-new`, `publish-update` and `trusted-publishing` scopes and add it as the secret `CARGO_REGISTRY_TOKEN` of a GitHub environment named `crates-io`. Add required reviewers to that environment. (Done.)
 2. Names: re-check just before a release that adds a crate that the name is free (`https://index.crates.io/bp/mn/<name>` answers 404).
 3. First release under changesets (0.2.0): merge the PR that adds the package.json shells. The push touches `crates/*/package.json`, so the workflow starts; approve the `crates-io` environment. Its `--release` step creates the first tag `crates-v0.2.0` and its release (no `crates-v0.1.0` tag exists). The manual 0.1.0 flow was: run the workflow without `publish`, read the dry-run output, run it again with `publish` and approve. It is a bootstrap run: it publishes with the secret (12 crates, `bpmnkit` last) and registers the trusted publishers. On 2026-11-08, `bpmnkit-spec`, `-xml`, `-bpmn`, `-feel` and `-form` 0.1.0 were already on crates.io, so the next run publishes the other 7 and registers all 12. Then tag and write the notes by hand.

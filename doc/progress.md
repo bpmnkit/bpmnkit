@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-21 — One-time release setup for the native CLI
+
+- `doc/release-setup.md`: what to do on npmjs.com (placeholder `0.0.0` for the 7 new names, trusted publishers; `@bpmnkit/cli` moves from `release.yml` to `release-cli.yml`), crates.io (bootstrap token for the 7 new crates), Homebrew (`bpmnkit/homebrew-tap`, `HOMEBREW_TAP_TOKEN`) and the release order (Changesets first, then the `bpmnkit-cli-v*` tag, then `latest`). Linked from `doc/rust-crates-release.md`.
+
 ## 2026-11-21 — CI fixes for the C8 workers / Rust CLI branch
 
 - Clippy on Rust 1.100 flags `result_large_err` on the connector runtime's `execute`/`run`; allowed there like `outcome_to_result` (JobError is the worker's Handler contract).
