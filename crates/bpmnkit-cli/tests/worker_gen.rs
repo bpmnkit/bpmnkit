@@ -48,6 +48,31 @@ fn writes_then_checks_then_detects_drift_and_keeps_stubs() {
 }
 
 #[test]
+fn gradle_build_writes_kotlin_dsl_wrapper_and_checks() {
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("p");
+    let out_s = out.to_str().unwrap();
+    gen(&["--out", out_s, "--build", "gradle"]).success();
+    gen(&["--out", out_s, "--build", "gradle", "--check"]).success();
+    for f in [
+        "build.gradle.kts",
+        "settings.gradle.kts",
+        "gradlew",
+        "gradle/wrapper/gradle-wrapper.jar",
+        "gradle/wrapper/gradle-wrapper.properties",
+        "bpmnkit.lock.json",
+    ] {
+        assert!(out.join(f).exists(), "{f}");
+    }
+    assert!(!out.join("pom.xml").exists());
+    // Maven stays the default.
+    let m = dir.path().join("m");
+    gen(&["--out", m.to_str().unwrap()]).success();
+    assert!(m.join("pom.xml").exists() && !m.join("build.gradle.kts").exists());
+    gen(&["--out", out_s, "--build", "ant"]).failure();
+}
+
+#[test]
 fn explain_lists_rules_and_files_and_writes_nothing() {
     let dir = tempfile::tempdir().unwrap();
     let out = dir.path().join("p");

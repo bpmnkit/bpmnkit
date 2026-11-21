@@ -3,7 +3,7 @@
 
 use std::path::PathBuf;
 
-use bpmnkit_codegen::java::JavaEmitter;
+use bpmnkit_codegen::java::{Build, JavaEmitter};
 use bpmnkit_codegen::lock::lock_file;
 use bpmnkit_codegen::rust::RustEmitter;
 use bpmnkit_codegen::template::TemplateEmitter;
@@ -20,6 +20,12 @@ pub enum Lang {
     Template,
 }
 
+#[derive(Clone, Copy, ValueEnum)]
+pub enum BuildTool {
+    Maven,
+    Gradle,
+}
+
 #[derive(Args)]
 pub struct GenArgs {
     /// BPMN files or directories (searched for *.bpmn)
@@ -31,6 +37,9 @@ pub struct GenArgs {
     /// Java: use the Spring Boot starter (@JobWorker) instead of the plain client
     #[arg(long)]
     spring: bool,
+    /// Java: build tool (Gradle emits Kotlin DSL files and a pinned Gradle Wrapper)
+    #[arg(long, value_enum, default_value = "maven")]
+    build: BuildTool,
     /// Java package [default: com.example.<name>]
     #[arg(long, default_value = "")]
     package: String,
@@ -76,6 +85,10 @@ pub fn run(a: &GenArgs) -> Result<i32, String> {
             Box::new(JavaEmitter {
                 package: a.package.clone(),
                 spring: a.spring,
+                build: match a.build {
+                    BuildTool::Maven => Build::Maven,
+                    BuildTool::Gradle => Build::Gradle,
+                },
                 all: a.all,
             }),
             "java",

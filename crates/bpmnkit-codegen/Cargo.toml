@@ -25,6 +25,7 @@ serde_json = { workspace = true }
 [dev-dependencies]
 bpmnkit-bpmn = { workspace = true }
 insta = "1"
+sha2 = "0.10"
 tempfile = "3"
 
 [[bench]]

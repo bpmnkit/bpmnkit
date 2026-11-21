@@ -1,4 +1,4 @@
-//! Java target: Maven, Java 21, `camunda-client-java` (plain) or the Spring Boot starter
+//! Java target: Maven (default) or Gradle Kotlin DSL (`--build gradle`), Java 21, `camunda-client-java` (plain) or the Spring Boot starter
 //! (`--spring`). Layout in plan §5; coordinates and signatures were checked against the 8.8.47
 //! jars (see [`Versions`]).
 
@@ -23,17 +23,40 @@ impl Versions {
     pub const COMPILER_PLUGIN: &'static str = "3.14.1";
     pub const SUREFIRE_PLUGIN: &'static str = "3.5.4";
     pub const EXEC_PLUGIN: &'static str = "3.6.2";
+    /// Gradle Wrapper target (`gradle-wrapper.properties`). Checked against
+    /// services.gradle.org/versions/current; `GRADLE_SHA256` is its published `-bin.zip.sha256`.
+    pub const GRADLE: &'static str = "9.9.2";
+    pub const GRADLE_SHA256: &'static str =
+        "971fcd7150ca4ba04852c0b2ca0d2d0ab9468e14b03473eab19528809914c76b";
+    /// sha256 of the embedded `gradle-wrapper.jar` (the published `-wrapper.jar.sha256`).
+    pub const GRADLE_WRAPPER_JAR_SHA256: &'static str =
+        "621008afc4f5d59357fcf06ffa644dd5aade5e091bdc363742710445f73cdaf8";
 }
 
 const MVNW: &str = include_str!("../assets/java/mvnw");
 const MVNW_CMD: &str = include_str!("../assets/java/mvnw.cmd");
 const WRAPPER_PROPERTIES: &str = include_str!("../assets/java/maven-wrapper.properties");
+// Upstream Gradle 9.9.2 wrapper files, byte for byte; the jar is binary, so bytes, not str.
+const GRADLEW: &[u8] = include_bytes!("../assets/java/gradle/gradlew");
+const GRADLEW_BAT: &[u8] = include_bytes!("../assets/java/gradle/gradlew.bat");
+pub(crate) const GRADLE_WRAPPER_JAR: &[u8] =
+    include_bytes!("../assets/java/gradle/wrapper/gradle-wrapper.jar");
+
+/// Build tool of the generated project.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum Build {
+    #[default]
+    Maven,
+    /// Kotlin DSL (`build.gradle.kts`) with a pinned Gradle Wrapper.
+    Gradle,
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct JavaEmitter {
     /// Java package; empty derives `com.example.<name>`.
     pub package: String,
     pub spring: bool,
+    pub build: Build,
     /// Generate for every job type, not only those classified as worker.
     pub all: bool,
 }
@@ -315,21 +338,49 @@ impl Emitter for JavaEmitter {
                     .to_owned(),
             ));
         }
-        files.push(GenFile::once("pom.xml", pom(&slug, &pkg, self.spring)));
+        let build = self.build;
         files.push(GenFile::once(
             "README.md",
-            readme(&project.name, &js, self.spring),
+            readme(&project.name, &js, self.spring, build),
         ));
-        files.push(GenFile::once(".gitignore", "target/\n".to_owned()));
-        let mut mvnw = GenFile::once("mvnw", MVNW);
-        mvnw.executable = true;
-        files.push(mvnw);
-        files.push(GenFile::once("mvnw.cmd", MVNW_CMD));
-        let props = WRAPPER_PROPERTIES.replace("3.9.11", Versions::MAVEN);
-        files.push(GenFile::once(
-            ".mvn/wrapper/maven-wrapper.properties",
-            props,
-        ));
+        match build {
+            Build::Maven => {
+                files.push(GenFile::once("pom.xml", pom(&slug, &pkg, self.spring)));
+                files.push(GenFile::once(".gitignore", "target/\n".to_owned()));
+                let mut mvnw = GenFile::once("mvnw", MVNW);
+                mvnw.executable = true;
+                files.push(mvnw);
+                files.push(GenFile::once("mvnw.cmd", MVNW_CMD));
+                let props = WRAPPER_PROPERTIES.replace("3.9.11", Versions::MAVEN);
+                files.push(GenFile::once(
+                    ".mvn/wrapper/maven-wrapper.properties",
+                    props,
+                ));
+            }
+            Build::Gradle => {
+                files.push(GenFile::once(
+                    "build.gradle.kts",
+                    build_gradle(&pkg, self.spring),
+                ));
+                files.push(GenFile::once(
+                    "settings.gradle.kts",
+                    format!("// Written once by bpmnkit; yours from now on.\nrootProject.name = \"{slug}\"\n"),
+                ));
+                files.push(GenFile::once(".gitignore", ".gradle/\nbuild/\n".to_owned()));
+                let mut gradlew = GenFile::once("gradlew", GRADLEW);
+                gradlew.executable = true;
+                files.push(gradlew);
+                files.push(GenFile::once("gradlew.bat", GRADLEW_BAT));
+                files.push(GenFile::once(
+                    "gradle/wrapper/gradle-wrapper.jar",
+                    GRADLE_WRAPPER_JAR,
+                ));
+                files.push(GenFile::once(
+                    "gradle/wrapper/gradle-wrapper.properties",
+                    format!("distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionSha256Sum={}\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-{}-bin.zip\nnetworkTimeout=10000\nvalidateDistributionUrl=true\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\n", Versions::GRADLE_SHA256, Versions::GRADLE),
+                ));
+            }
+        }
         finish(files)
     }
 }
@@ -486,15 +537,69 @@ fn pom(artifact: &str, pkg: &str, spring: bool) -> String {
     )
 }
 
-fn readme(name: &str, js: &[J], spring: bool) -> String {
-    let run = if spring {
-        "./mvnw spring-boot:run"
+fn build_gradle(pkg: &str, spring: bool) -> String {
+    let v = Versions::CAMUNDA;
+    let (plugins, deps, app) = if spring {
+        (
+            format!("    id(\"org.springframework.boot\") version \"{}\"\n", Versions::SPRING_BOOT),
+            format!("    implementation(\"io.camunda:camunda-spring-boot-starter:{v}\")\n    testImplementation(\"org.springframework.boot:spring-boot-starter-test:{}\")\n    testImplementation(\"io.camunda:camunda-process-test-spring:{v}\")\n", Versions::SPRING_BOOT),
+            format!("springBoot {{\n    mainClass.set(\"{pkg}.App\")\n}}\n"),
+        )
     } else {
-        "./mvnw -q compile exec:java"
+        (
+            "    application\n".to_owned(),
+            format!("    implementation(\"io.camunda:camunda-client-java:{v}\")\n    runtimeOnly(\"org.slf4j:slf4j-simple:{}\")\n    testImplementation(\"io.camunda:camunda-process-test-java:{v}\")\n", Versions::SLF4J),
+            format!("application {{\n    mainClass.set(\"{pkg}.App\")\n}}\n"),
+        )
     };
+    format!(
+        "// Written once by bpmnkit; yours from now on. Versions are pinned exactly.\nplugins {{\n    java\n{plugins}}}\n\ngroup = \"{pkg}\"\nversion = \"0.1.0\"\n\nrepositories {{\n    mavenCentral()\n}}\n\ndependencies {{\n{deps}    testImplementation(platform(\"org.junit:junit-bom:{j}\"))\n    testImplementation(\"org.junit.jupiter:junit-jupiter\")\n    testRuntimeOnly(\"org.junit.platform:junit-platform-launcher\")\n}}\n\n{app}\ntasks.withType<JavaCompile>().configureEach {{\n    options.encoding = \"UTF-8\"\n    options.release.set(21)\n}}\n\ntasks.test {{\n    useJUnitPlatform()\n}}\n\n// Same bytes for the same sources.\ntasks.withType<AbstractArchiveTask>().configureEach {{\n    isPreserveFileTimestamps = false\n    isReproducibleFileOrder = true\n}}\n",
+        j = Versions::JUNIT,
+    )
+}
+
+fn readme(name: &str, js: &[J], spring: bool, build: Build) -> String {
+    let (run, verify, tool, wrapper, files) = match (build, spring) {
+        (Build::Maven, true) => (
+            "./mvnw spring-boot:run",
+            "./mvnw -B verify",
+            "Maven",
+            "mvnw",
+            "`pom.xml`",
+        ),
+        (Build::Maven, false) => (
+            "./mvnw -q compile exec:java",
+            "./mvnw -B verify",
+            "Maven",
+            "mvnw",
+            "`pom.xml`",
+        ),
+        (Build::Gradle, true) => (
+            "./gradlew bootRun",
+            "./gradlew build",
+            "Gradle",
+            "gradlew",
+            "`build.gradle.kts`, `settings.gradle.kts`",
+        ),
+        (Build::Gradle, false) => (
+            "./gradlew run",
+            "./gradlew build",
+            "Gradle",
+            "gradlew",
+            "`build.gradle.kts`, `settings.gradle.kts`",
+        ),
+    };
+    let flags = format!(
+        "{}{}",
+        if build == Build::Gradle {
+            " --build gradle"
+        } else {
+            ""
+        },
+        if spring { " --spring" } else { "" }
+    );
     let mut s = format!(
-        "# {name}\n\nCamunda 8 job workers generated by `bpmnkit worker gen --lang java{sp}`. No Maven install needed: `mvnw` is the Maven Wrapper (Java 21 required).\n\n```sh\n{run}        # start the workers (REST, CAMUNDA_REST_ADDRESS, default http://localhost:8080)\n./mvnw -B verify   # build and test (Camunda Process Test needs a Docker-compatible runtime)\n```\n\n## Job types\n\n",
-        sp = if spring { " --spring" } else { "" },
+        "# {name}\n\nCamunda 8 job workers generated by `bpmnkit worker gen --lang java{flags}`. No {tool} install needed: `{wrapper}` is the {tool} Wrapper (Java 21 required).\n\n```sh\n{run}        # start the workers (REST, CAMUNDA_REST_ADDRESS, default http://localhost:8080)\n{verify}   # build and test (Camunda Process Test needs a Docker-compatible runtime)\n```\n\n## Job types\n\n",
     );
     for j in js {
         let _ = writeln!(
@@ -503,8 +608,9 @@ fn readme(name: &str, js: &[J], spring: bool) -> String {
             j.spec.job_type, j.class
         );
     }
-    s.push_str(
-        "\n## Ownership\n\n- `src/main/java/**/gen/` is overwritten by `bpmnkit worker gen` (`DO NOT EDIT`). Check drift in CI with `--check`.\n- Everything else (handlers, tests, `App.java`, `pom.xml`, the wrapper) is written once and never overwritten.\n- Delivery is at-least-once: handlers must be idempotent.\n",
+    let _ = write!(
+        s,
+        "\n## Ownership\n\n- `src/main/java/**/gen/` is overwritten by `bpmnkit worker gen` (`DO NOT EDIT`). Check drift in CI with `--check`.\n- Everything else (handlers, tests, `App.java`, {files}, the wrapper) is written once and never overwritten.\n- Delivery is at-least-once: handlers must be idempotent.\n"
     );
     s
 }
