@@ -30,16 +30,18 @@ on it. Each README and each package page on this site shows it.
 
 | Tier | What it promises |
 |---|---|
-| **Core** | The promises on this page, from 1.0: nothing breaks without a major release. Core is exactly the twelve packages at 1.0. |
+| **Core** | The promises on this page, from 1.0: nothing breaks without a major release. Core is exactly the packages at 1.0 or later. |
 | **Tools** | Maintained: bugs are fixed and releases continue. Versions are 0.x, so a minor release can break. Pin a version. |
 | **Experimental** | May change a lot or be discontinued. Not for production. Always below 1.0. |
 
 - **Core:** `@bpmnkit/core`, `@bpmnkit/canvas`, `@bpmnkit/editor`, `@bpmnkit/plugins`,
   `@bpmnkit/engine`, `@bpmnkit/feel`, `@bpmnkit/api`, `@bpmnkit/ascii`, `@bpmnkit/docspack`,
-  `@bpmnkit/connector-gen`, `@bpmnkit/connectors`, `@bpmnkit/cli`.
+  `@bpmnkit/connector-gen`, `@bpmnkit/connectors`, `@bpmnkit/cli`, `@bpmnkit/cli-legacy`, and the
+  binaries `@bpmnkit/cli` installs: `@bpmnkit/cli-linux-x64`, `@bpmnkit/cli-linux-arm64`,
+  `@bpmnkit/cli-darwin-x64`, `@bpmnkit/cli-darwin-arm64`, `@bpmnkit/cli-win32-x64`.
 - **Tools:** BPMN Kit for VS Code, Drop, `@bpmnkit/proxy` (the MCP server, `bpmnkit proxy mcp`),
   `@bpmnkit/markdown`, `@bpmnkit/viewer-lite`, `@bpmnkit/camunda-docspack`, `@bpmnkit/patterns`,
-  `@bpmnkit/worker-client`, `@bpmnkit/cli-sdk`, `@bpmnkit/create-casen-plugin`,
+  `@bpmnkit/worker-client`, `@bpmnkit/cli-sdk`, `@bpmnkit/create-bpmnkit-plugin`, `@bpmnkit/create-casen-plugin`,
   `@bpmnkit/casen-report`, `@bpmnkit/casen-worker-http`, `@bpmnkit/casen-worker-ai`, and the
   shared plumbing `@bpmnkit/ui`, `@bpmnkit/profiles` and `@bpmnkit/astro-shared`.
 - **Experimental:** Reebe, `@bpmnkit/reebe-wasm`, `@bpmnkit/operate`, `@bpmnkit/user-tasks`,

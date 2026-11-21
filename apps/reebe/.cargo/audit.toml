@@ -10,4 +10,9 @@ ignore = [
     # under its own data directory (or the one the operator configures), never a file a less
     # trusted party supplies. Remove this once an sqlx release allows libsqlite3-sys 0.39.
     "RUSTSEC-2026-0459",
+    # chrono / chrono-tz flagged unmaintained (informational, no vulnerability). No fixed
+    # release or drop-in successor exists; FEEL date/time semantics depend on them. Same
+    # entries as the root .cargo/audit.toml. Remove once a maintained replacement lands.
+    "RUSTSEC-2026-0543",
+    "RUSTSEC-2026-0555",
 ]

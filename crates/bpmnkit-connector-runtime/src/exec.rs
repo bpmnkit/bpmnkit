@@ -85,12 +85,15 @@ impl HttpJsonConnector {
     }
 
     /// Runs the job and returns what the worker should send. Every message is redacted.
+    // JobError is the worker's Handler contract (see outcome_to_result).
+    #[allow(clippy::result_large_err)]
     pub async fn execute(&self, job: &ActivatedJob) -> Result<Complete, JobError> {
         let mut redactor = Redactor::default();
         let result = self.run(job, &mut redactor).await;
         result.map_err(|e| redact_error(e, &redactor))
     }
 
+    #[allow(clippy::result_large_err)]
     async fn run(&self, job: &ActivatedJob, redactor: &mut Redactor) -> Result<Complete, JobError> {
         let mut vars = Value::Object(job.variables.clone());
         resolve(&mut vars, &self.secrets, redactor).map_err(JobError::fail)?;

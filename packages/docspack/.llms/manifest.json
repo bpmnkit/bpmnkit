@@ -21,7 +21,7 @@
 		{
 			"id": "agent-cards.bpmn",
 			"file": "chunks/agent-cards.bpmn.md",
-			"tokens": 421,
+			"tokens": 414,
 			"tags": [
 				"agent-card",
 				"cheat-sheet",
@@ -1686,7 +1686,7 @@
 		{
 			"id": "getting-started.stability.product-tiers",
 			"file": "chunks/getting-started.stability.product-tiers.md",
-			"tokens": 425,
+			"tokens": 458,
 			"tags": [
 				"getting-started",
 				"stability",

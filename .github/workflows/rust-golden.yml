@@ -60,6 +60,11 @@ jobs:
     name: codegen-windows
     runs-on: windows-latest
     steps:
+      - name: Allow long paths (Windows)
+        # Camunda docspack chunk names exceed MAX_PATH; git on Windows refuses them otherwise.
+        if: runner.os == 'Windows'
+        run: git config --global core.longpaths true
+
       - name: Checkout
         uses: actions/checkout@v4
 

@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-21 — CI fixes for the C8 workers / Rust CLI branch
+
+- Clippy on Rust 1.100 flags `result_large_err` on the connector runtime's `execute`/`run`; allowed there like `outcome_to_result` (JobError is the worker's Handler contract).
+- `apps/reebe/.cargo/audit.toml` ignores the chrono / chrono-tz "unmaintained" advisories (RUSTSEC-2026-0543, -0555) like the root one; Reebe tests failed on main too.
+- Windows jobs (`cli npm smoke`, `codegen-windows`) set `core.longpaths` before checkout: camunda docspack chunk names exceed MAX_PATH.
+- Stability page lists `@bpmnkit/cli-legacy`, the five platform binaries (Core) and `@bpmnkit/create-bpmnkit-plugin` (Tools).
+- BPMN agent card trimmed back under 2k tokens after the `casen` → `bpmnkit` rename.
+- Changesets for every published package the rename touched and for the new crates.
+
 ## 2026-11-21 — Final review of the C8 workers / Rust CLI branch (P0–P8, P10)
 
 - Five parallel area reviews (cli+profiles, jobspec+codegen, worker+grpc, connector runtime, distribution+rename); each finding re-read in code before fixing. Open items go to plan §15 and the roadmap.
