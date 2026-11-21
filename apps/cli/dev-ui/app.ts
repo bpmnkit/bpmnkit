@@ -1,5 +1,5 @@
 /**
- * The browser half of `casen dev`: a file list, the BPMN Kit editor for the
+ * The browser half of `bpmnkit dev`: a file list, the BPMN Kit editor for the
  * selected file, and the checks the server runs after every save.
  *
  * The editors are the same ones the VS Code extension and the studio mount.
@@ -491,7 +491,7 @@ function connect(): void {
 			void onRemoteChange(event.path, event.etag)
 		}
 	}
-	events.onerror = () => setSaveState("Disconnected from casen dev — is it still running?", "bad")
+	events.onerror = () => setSaveState("Disconnected from bpmnkit dev — is it still running?", "bad")
 	events.onopen = () => {
 		if (saveState.dataset.tone === "bad" && open?.unsaved === null) setSaveState("Saved")
 	}
@@ -508,7 +508,7 @@ async function start(): Promise<void> {
 	files = initial.files
 	for (const result of initial.checks) checks.set(result.path, result)
 	projectTitle.replaceChildren(
-		el("span", "dev-eyebrow", "casen dev"),
+		el("span", "dev-eyebrow", "bpmnkit dev"),
 		el("strong", undefined, initial.project),
 	)
 	renderFiles()
@@ -525,5 +525,5 @@ window.addEventListener("hashchange", () => {
 })
 
 void start().catch((error: unknown) =>
-	setSaveState(`Cannot reach casen dev — ${reason(error)}`, "bad"),
+	setSaveState(`Cannot reach bpmnkit dev — ${reason(error)}`, "bad"),
 )

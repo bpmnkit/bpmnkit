@@ -4,8 +4,8 @@ The plugin installs two background hooks:
 
 | Hook | Trigger | What it does |
 |---|---|---|
-| SessionStart | Every Claude Code session | Checks `casen` is installed |
-| PostToolUse | After any Write or Edit | Runs `casen check <file> --deploy` on any `.bpmn` file that was written |
+| SessionStart | Every Claude Code session | Checks `bpmnkit` is installed |
+| PostToolUse | After any Write or Edit | Runs `bpmnkit check <file> --deploy` on any `.bpmn` file that was written |
 
 The PostToolUse hook means every `.bpmn` file you (or Claude) writes is automatically
 checked by the [deploy gate](/docs/guides/deploy-gate): when Camunda 8 would refuse it, the

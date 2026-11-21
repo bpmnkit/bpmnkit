@@ -91,7 +91,7 @@ Both runs and the fixture lose the same points, except bk3's process name.
 
 ## Friction the agents reported
 
-- Both: `c8ctl element-template get-properties` needed a cache that was not present. Both dumped template property ids with `getTemplate()` from `@bpmnkit/core/connectors`. Neither used `casen connector show --condensed`, because casen was not built in the sandbox.
+- Both: `c8ctl element-template get-properties` needed a cache that was not present. Both dumped template property ids with `getTemplate()` from `@bpmnkit/core/connectors`. Neither used `bpmnkit connector show --condensed`, because bpmnkit was not built in the sandbox.
 - bk3: `sub.annotate` inside the ad-hoc sub-process produced no diagram shape, so lint failed with `no-bpmndi` and the agent needed a second gate attempt. It fixed this by annotating on the process builder. This is the known deferred minor from Task 4.
 - Both: annotations can only go above or below. "Left of the agent" and "right, below the user task" cannot be requested.
 
@@ -103,6 +103,6 @@ None of these is implemented. Each is a candidate task.
 - (b) Support left and right annotation sides. The spec words positions that the builder cannot express.
 - (c) Add an option for `applyTemplates` to leave out unchanged template defaults. These cost configuration points in both runs and the report says every method lost them, so the effect is report-wide.
 - (d) Question: how should `ignoreNullValues` on GET be handled? The canonical has it and the HttpJson v18 template does not offer it for GET. Options include leaving it out and accepting the loss, or a documented override. This needs a decision before any change.
-- (e) Make the template-key lookup easier to find. Both agents fell back to `getTemplate`. Consider pointing the recipe at a `casen connector show --condensed` that works without a build, or documenting the `getTemplate` route.
+- (e) Make the template-key lookup easier to find. Both agents fell back to `getTemplate`. Consider pointing the recipe at a `bpmnkit connector show --condensed` that works without a build, or documenting the `getTemplate` route.
 - (f) Improve layout closeness. The mean shape offset is 194 px and layout scores 7.7 of 15, below the report's 8.3.
 - (g) Re-measure with a dollar cost breakdown (input, cache write, cache read, output) and more than two runs per side, so cost and time can be compared with the targets.

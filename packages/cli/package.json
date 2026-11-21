@@ -1,0 +1,46 @@
+{
+	"name": "@bpmnkit/cli",
+	"version": "2.0.0",
+	"private": true,
+	"description": "BPMN Kit command line for Camunda 8 (bpmnkit, alias casen): a native binary with a Node fallback for commands not ported yet",
+	"mcpName": "io.github.bpmnkit/bpmnkit",
+	"type": "module",
+	"bin": {
+		"bpmnkit": "./bin/bpmnkit.js",
+		"casen": "./bin/casen.js"
+	},
+	"files": ["LICENSE", "README.md", "bin/*.js", "lib/*.js"],
+	"engines": {
+		"node": ">=20"
+	},
+	"bpmnkit": {
+		"binaryVersion": "0.6.1"
+	},
+	"scripts": {
+		"test": "node --test test/launch.test.mjs"
+	},
+	"dependencies": {
+		"@bpmnkit/cli-legacy": "workspace:^"
+	},
+	"optionalDependencies": {
+		"@bpmnkit/cli-linux-x64": "workspace:^",
+		"@bpmnkit/cli-linux-arm64": "workspace:^",
+		"@bpmnkit/cli-darwin-x64": "workspace:^",
+		"@bpmnkit/cli-darwin-arm64": "workspace:^",
+		"@bpmnkit/cli-win32-x64": "workspace:^"
+	},
+	"publishConfig": {
+		"access": "public",
+		"tag": "next"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bpmnkit/bpmnkit"
+	},
+	"keywords": ["camunda", "bpmn", "cli", "terminal", "zeebe", "workflow", "rust"],
+	"homepage": "https://bpmnkit.com",
+	"bugs": {
+		"url": "https://github.com/bpmnkit/bpmnkit/issues"
+	}
+}

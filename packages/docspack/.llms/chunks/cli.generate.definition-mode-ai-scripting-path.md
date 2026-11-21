@@ -1,17 +1,17 @@
-# casen generate — Definition mode (AI / scripting path)
+# bpmnkit generate — Definition mode (AI / scripting path)
 
 Pass a full **CompactDiagram** JSON object directly. This covers all 23 BPMN element types, all event
 definition types, boundary events, sub-processes, and Zeebe extensions.
 
 ```sh
 # Inline JSON
-casen generate bpmn --definition '{"id":"Definitions_order","processes":[...]}'
+bpmnkit generate bpmn --definition '{"id":"Definitions_order","processes":[...]}'
 
 # Pipe from a file or AI output
-cat definition.json | casen generate bpmn --output order.bpmn
+cat definition.json | bpmnkit generate bpmn --output order.bpmn
 
 # Write to stdout
-echo '{"id":"Defs","processes":[...]}' | casen generate bpmn --output -
+echo '{"id":"Defs","processes":[...]}' | bpmnkit generate bpmn --output -
 ```
 
 ### Print the JSON schema
@@ -20,7 +20,7 @@ Run `--help-schema` to print the full CompactDiagram reference — element types
 field descriptions, and a worked example — formatted for quick AI consumption:
 
 ```sh
-casen generate bpmn --help-schema
+bpmnkit generate bpmn --help-schema
 ```
 
 ### CompactDiagram structure

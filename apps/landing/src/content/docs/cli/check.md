@@ -1,16 +1,16 @@
 ---
-title: casen check
+title: bpmnkit check
 description: Check .bpmn, .dmn and .form files in one call — BPMN lint, DMN and form validation and the references between them, each finding with a rule id, element id and a concrete fix.
 sidebar:
   order: 3
 ---
 
-`casen check` is the gate to run before you deploy, or after every edit in an agent loop.
+`bpmnkit check` is the gate to run before you deploy, or after every edit in an agent loop.
 It takes any mix of BPMN, DMN and form files and checks each one, then the references
 between them. It exits non-zero when there is an error.
 
 ```sh
-casen check order.bpmn review.form discount.dmn
+bpmnkit check order.bpmn review.form discount.dmn
 ```
 
 ```
@@ -28,7 +28,7 @@ discount.dmn
 
 | Option | Description |
 |--------|-------------|
-| `--deploy` | Deploy-readiness gate. Camunda 8 rules run even on a model that names no platform, user tasks need a form, and cross-file references are errors. Each BPMN file also goes through the [deploy gate](/docs/guides/deploy-gate) on its exact bytes (XML schema included), so anything `casen deploy` would refuse is reported here first. Only errors are shown. |
+| `--deploy` | Deploy-readiness gate. Camunda 8 rules run even on a model that names no platform, user tasks need a form, and cross-file references are errors. Each BPMN file also goes through the [deploy gate](/docs/guides/deploy-gate) on its exact bytes (XML schema included), so anything `bpmnkit deploy` would refuse is reported here first. Only errors are shown. |
 | `--sketch` | Sketch profile. Skips every Camunda 8 deployability rule on BPMN files. |
 | `--user-task-forms require\|off` | Report user tasks that have no form, or not. Default: `require` with `--deploy`, `off` otherwise. |
 | `--json` | Print `{ ok, errors, warnings, findings }`. |
@@ -58,12 +58,12 @@ Each finding has the same fields for every file kind:
 
 Zeebe deploys a user task that has no form. So outside the deploy gate the "user task needs a
 form" rule is off: it would push you to invent a form reference only to clear a warning. Turn
-it on with `--user-task-forms require`. `casen lint lint` has the same `--profile sketch|deploy`
+it on with `--user-task-forms require`. `bpmnkit lint lint` has the same `--profile sketch|deploy`
 and `--user-task-forms` options.
 
 ## What is checked
 
-**BPMN** — the XML is well-formed, then every [`casen lint`](/docs/cli/casen) rule runs
+**BPMN** — the XML is well-formed, then every [`bpmnkit lint`](/docs/cli/casen) rule runs
 (a project `.bpmnlintrc` is honoured).
 
 **DMN**

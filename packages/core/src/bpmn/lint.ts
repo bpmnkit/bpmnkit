@@ -252,7 +252,7 @@ const ALL_CATEGORIES: readonly OptimizationCategory[] = [
  *
  * Exported because more than one surface needs the same answer and they must
  * not disagree: the canvas plugin lints through {@link lintDiagram}, while
- * `casen lint` calls `optimize` directly so it can keep the `applyFix` closures
+ * `bpmnkit lint` calls `optimize` directly so it can keep the `applyFix` closures
  * that `LintDiagnostic` deliberately drops. Both ask here which rules apply.
  *
  * @param definitions - The model whose execution platform decides.

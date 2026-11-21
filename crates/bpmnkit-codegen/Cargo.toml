@@ -1,0 +1,33 @@
+[package]
+name = "bpmnkit-codegen"
+description = "Deterministic job worker code generation for BPMN Kit: target-agnostic emitters, write/check helpers, Java (Maven) target"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "camunda", "zeebe", "codegen", "workflow"]
+categories = ["development-tools"]
+# Release (with jobspec) is a separate decision, see doc/plans/c8-workers-and-rust-cli.md §3.
+# Tests read goldens and the shared corpus outside the package.
+exclude = ["tests/", "benches/"]
+
+# WASM-safe core: no tokio, no network. `write` is the only module touching the filesystem.
+[dependencies]
+bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.6.1" }
+# Generated Rust is parsed and pretty-printed, so it is rustfmt-stable and syntactically valid.
+prettyplease = "0.2"
+syn = { version = "2", default-features = false, features = ["full", "parsing", "printing", "clone-impls"] }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+bpmnkit-bpmn = { workspace = true }
+insta = "1"
+sha2 = "0.10"
+tempfile = "3"
+
+[[bench]]
+name = "codegen"
+harness = false

@@ -38,7 +38,7 @@ const review = defineFlow("pr-review", { name: "PR review" })
   .run("merge", async ({ prKey, verdict }) => ({ merged: await gh.merge(prKey, verdict) }))
   .build()
 
-writeFileSync("pr-review.bpmn", review.toXml()) // deploy with `casen deploy deploy pr-review.bpmn`
+writeFileSync("pr-review.bpmn", review.toXml()) // deploy with `bpmnkit deploy deploy pr-review.bpmn`
 const worker = review.worker() // serves fetch-diff and merge
 ```
 
@@ -190,7 +190,7 @@ engine.registerJobWorker("agent:pr-review", (job) => job.complete({ verdict: "ap
 ## The agent contract
 
 An `.agent()` step is a service task with two task headers: `prompt` (the template) and
-`resultVariable` (where the output goes). `casen agent work` serves it — see
+`resultVariable` (where the output goes). `bpmnkit agent work` serves it — see
 [Durable Agent Flows](/docs/guides/durable-agent-flows). To write your own agent worker, use
 the same helpers:
 

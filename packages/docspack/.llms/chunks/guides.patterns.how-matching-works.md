@@ -1,6 +1,6 @@
 # Pattern Library — How matching works
 
-`casen pattern get <query>` (via `findPattern()`) scores each pattern by counting how
+`bpmnkit pattern get <query>` (via `findPattern()`) scores each pattern by counting how
 many of its keywords appear in the request. The highest-scoring pattern is selected.
 Exact pattern ID matches take priority over keyword scoring.
 

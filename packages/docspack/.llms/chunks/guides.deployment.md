@@ -2,7 +2,7 @@
 
 The `@bpmnkit/api` package is a fully-typed Camunda 8 REST API client. Use it to deploy
 processes, start instances, and manage your cluster from Node.js scripts, backend services,
-or CI/CD pipelines. The [`casen` CLI](#from-the-cli) does the same from a terminal.
+or CI/CD pipelines. The [`bpmnkit` CLI](#from-the-cli) does the same from a terminal.
 
 
 ## Setup

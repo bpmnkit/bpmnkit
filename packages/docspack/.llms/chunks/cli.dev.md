@@ -1,17 +1,17 @@
-# casen dev
+# bpmnkit dev
 
-`casen dev` turns a folder of `.bpmn`, `.dmn` and `.form` files into a local development
+`bpmnkit dev` turns a folder of `.bpmn`, `.dmn` and `.form` files into a local development
 environment. It starts a small web server, opens the BPMN Kit editor in your browser, and
 re-checks each file every time it changes — whether you saved it in the browser or in another
 editor.
 
 ```sh
-casen dev              # the current folder
-casen dev ./processes  # another folder
+bpmnkit dev              # the current folder
+bpmnkit dev ./processes  # another folder
 ```
 
 ```
-  casen dev  /home/me/shop
+  bpmnkit dev  /home/me/shop
   UI        http://127.0.0.1:4747/
   files     3 (2 bpmn, 1 dmn, 0 form)
   scenarios @bpmnkit/engine

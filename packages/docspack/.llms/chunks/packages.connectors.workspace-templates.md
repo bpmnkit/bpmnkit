@@ -24,11 +24,11 @@ Per-file resolution is what Camunda Desktop Modeler does: a diagram in `a/` sees
 
 | Host | Resolution |
 |---|---|
-| `casen lint`, `casen dev` checks | Per file. Each diagram's `connector/*` findings use the templates from its folder up to the project root (`casen lint`: the current directory; `casen dev`: the served folder), then the bundled catalog. |
+| `bpmnkit lint`, `bpmnkit dev` checks | Per file. Each diagram's `connector/*` findings use the templates from its folder up to the project root (`bpmnkit lint`: the current directory; `bpmnkit dev`: the served folder), then the bundled catalog. |
 | VS Code extension | Per file. The extension host calls `discoverElementTemplates` directly — no proxy — with the workspace folder as the root, and the Problems panel checks connector inputs against them. |
 | Studio (project opened from disk) | Per file. The connector-catalog plugin asks the proxy for `GET /element-templates?root=<project>&file=<model path>` and swaps the set when you open another model. |
-| `casen connector list/search/show` | Upward from the current directory. |
-| `casen connector validate` | Downward: every template in the project (`collectElementTemplates`). |
+| `bpmnkit connector list/search/show` | Upward from the current directory. |
+| `bpmnkit connector validate` | Downward: every template in the project (`collectElementTemplates`). |
 | bpmnkit.com/editor, Drop | Bundled templates only. A browser with no filesystem has no path to resolve from. |
 
 In a browser host, the [connector-catalog plugin](/docs/packages/plugins) does the swapping:
@@ -45,7 +45,7 @@ await catalog.setDiagramPath("processes/billing/invoice.bpmn");
 ```
 
 The proxy serves `/element-templates` only for a `workspaceRoot` it accepts as a workspace: a
-folder passed with `casen proxy start --root`, or a project folder that is not your home
+folder passed with `bpmnkit proxy start --root`, or a project folder that is not your home
 directory, the filesystem root or a hidden folder. The diagram path must resolve inside that
 root. See [Local proxy](/docs/cli/casen#local-proxy).
 

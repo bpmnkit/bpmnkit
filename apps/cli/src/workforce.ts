@@ -44,7 +44,7 @@ interface WorkforceFile {
 	agents: AgentProfile[]
 }
 
-/** `workforce.json`, next to casen's profile config. */
+/** `workforce.json`, next to bpmnkit's profile config. */
 export function workforcePath(): string {
 	return join(dirname(getConfigFilePath()), "workforce.json")
 }

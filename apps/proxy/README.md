@@ -22,7 +22,7 @@
 
 - **AI chat bridge** — SSE streaming endpoint for AI-assisted diagram editing; connects to any OpenAI-compatible LLM API
 - **MCP server** — Model Context Protocol server for AI agent integrations (`stdio` transport)
-- **Camunda API proxy** — transparent HTTP proxy that injects auth from your `casen` CLI profiles
+- **Camunda API proxy** — transparent HTTP proxy that injects auth from your `bpmnkit` CLI profiles
 
 While the AI is working, `/chat` emits `preview` events carrying the diagram as it
 stands, so a client can render the process being drawn instead of waiting for the model
@@ -74,13 +74,13 @@ bpmn-mcp
 |--------|------|-------------|
 | `GET` | `/status` | Health check; returns server version and active profile |
 | `POST` | `/chat` | AI chat — SSE stream; sends `token`, `preview`, `xml`, `error` and `done` events |
-| `GET` | `/profiles` | List all configured `casen` profiles |
+| `GET` | `/profiles` | List all configured `bpmnkit` profiles |
 | `ALL` | `/api/*` | Transparent proxy to your Camunda cluster (adds auth header) |
 | `GET` | `/operate/stream` | SSE stream for the `@bpmnkit/operate` monitoring frontend |
 
 ## Configuration
 
-The proxy reads from the active `casen` CLI profile. Set an `AI_API_KEY` environment variable for the AI bridge:
+The proxy reads from the active `bpmnkit` CLI profile. Set an `AI_API_KEY` environment variable for the AI bridge:
 
 ```sh
 AI_API_KEY=sk-... bpmn-ai-server
@@ -118,13 +118,13 @@ CLIs, so it is locked down by default:
   without your own MCP servers, settings or extensions. A `/chat` diagram edit may call only
   the proxy's diagram MCP tools, and `compose_diagram` runs the model's code in an
   `isolated-vm` isolate. Request data reaches the model fenced as untrusted input.
-  `askText` gives other callers, such as `casen ask`, the same lockdown.
+  `askText` gives other callers, such as `bpmnkit ask`, the same lockdown.
 
 Programs that send no `Origin` header — the CLI, the MCP server, `curl` — are served as
 before.
 
 ```sh
-casen proxy start --allow-origin https://modeler.example.com --root ~/work/processes
+bpmnkit proxy start --allow-origin https://modeler.example.com --root ~/work/processes
 ```
 
 ---
@@ -150,14 +150,15 @@ casen proxy start --allow-origin https://modeler.example.com --root ~/work/proce
 | [`@bpmnkit/operate`](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
 | [`@bpmnkit/connector-gen`](https://www.npmjs.com/package/@bpmnkit/connector-gen) | Generate connector templates from OpenAPI specs |
 | [`@bpmnkit/connectors`](https://www.npmjs.com/package/@bpmnkit/connectors) | Camunda 8 OOTB connector catalog and deterministic template application |
-| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (casen) |
+| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (bpmnkit, alias casen) |
+| [`@bpmnkit/cli-legacy`](https://www.npmjs.com/package/@bpmnkit/cli-legacy) | Node fallback behind the native bpmnkit binary |
 | [`@bpmnkit/patterns`](https://www.npmjs.com/package/@bpmnkit/patterns) | Domain process patterns for BPMNKit AIKit |
 | [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm) | WebAssembly BPMN engine for browser simulation |
 | [`@bpmnkit/worker-client`](https://www.npmjs.com/package/@bpmnkit/worker-client) | Thin Zeebe REST client for standalone workers |
 | [`@bpmnkit/flow`](https://www.npmjs.com/package/@bpmnkit/flow) | Code-first durable flows that derive BPMN, job types and workers |
 | [`@bpmnkit/user-tasks`](https://www.npmjs.com/package/@bpmnkit/user-tasks) | Embeddable user task widget for Camunda 8 |
-| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the casen CLI |
-| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new casen CLI plugin in seconds |
+| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the bpmnkit CLI |
+| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new bpmnkit CLI plugin in seconds |
 | [`@bpmnkit/casen-report`](https://www.npmjs.com/package/@bpmnkit/casen-report) | HTML reports from Camunda 8 incident and SLA data |
 | [`@bpmnkit/casen-worker-http`](https://www.npmjs.com/package/@bpmnkit/casen-worker-http) | Example HTTP worker plugin — completes jobs with live JSONPlaceholder API data |
 | [`@bpmnkit/casen-worker-ai`](https://www.npmjs.com/package/@bpmnkit/casen-worker-ai) | AI task worker — classify, summarize, extract, and decide using Claude |

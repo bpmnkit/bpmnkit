@@ -1,6 +1,6 @@
 # AI Agents — Deploy-grade validation
 
-`casen lint --profile deploy` includes `agentic/*` rules specific to this pattern:
+`bpmnkit lint --profile deploy` includes `agentic/*` rules specific to this pattern:
 
 | Rule | Catches |
 |---|---|

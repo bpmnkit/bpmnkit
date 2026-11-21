@@ -58,15 +58,15 @@ const exportHtmlCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "order.html next to the file", command: "casen export html order.bpmn" },
+		{ description: "order.html next to the file", command: "bpmnkit export html order.bpmn" },
 		{
 			description: "Choose the path and title",
-			command: 'casen export html order.bpmn -o site/order.html --title "Order process"',
+			command: 'bpmnkit export html order.bpmn -o site/order.html --title "Order process"',
 		},
 		{
 			description: "Dark page with a brand stroke colour",
 			command:
-				"casen export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820",
+				"bpmnkit export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820",
 		},
 	],
 	async run(ctx) {

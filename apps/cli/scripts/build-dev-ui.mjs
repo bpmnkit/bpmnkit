@@ -1,8 +1,8 @@
-// Bundles the `casen dev` browser UI into dist/dev-ui/app.js.
+// Bundles the `bpmnkit dev` browser UI into dist/dev-ui/app.js.
 //
 // The editor, its plugins and the engine run in the browser, so they are
 // bundled here, at build time, rather than installed with the CLI: a user of
-// `casen` downloads one pre-built script instead of the editor's dependency
+// `bpmnkit` downloads one pre-built script instead of the editor's dependency
 // tree, and the dev server needs nothing but Node built-ins to serve it.
 // dist/**/*.js is already in the package's `files`, so the tarball carries it.
 import { rm } from "node:fs/promises"

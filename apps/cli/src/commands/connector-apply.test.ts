@@ -25,7 +25,7 @@ beforeEach(() => {
 	dir = mkdtempSync(join(tmpdir(), "casen-connector-apply-"))
 })
 
-/** Runs a command the way `casen` does: argv through the real flag parser. */
+/** Runs a command the way `bpmnkit` does: argv through the real flag parser. */
 async function run(
 	name: "apply" | "show",
 	argv: string[],
@@ -56,7 +56,7 @@ function writeProcess(): string {
 	return file
 }
 
-describe("casen connector apply", () => {
+describe("bpmnkit connector apply", () => {
 	it("writes a multi-line value from --values with real newlines", async () => {
 		const file = writeProcess()
 		const values = join(dir, "v.json")
@@ -167,7 +167,7 @@ describe("casen connector apply", () => {
 	})
 })
 
-describe("casen connector show --filter / --condensed", () => {
+describe("bpmnkit connector show --filter / --condensed", () => {
 	it("prints one line per matching property", async () => {
 		const { info } = await run("show", [HTTP, "--filter", "timeout", "--condensed"])
 		expect(info.map((l) => l.split(/\s{2,}/)[0])).toEqual([
@@ -206,7 +206,7 @@ describe("casen connector show --filter / --condensed", () => {
 			]),
 		)
 		expect(show?.examples?.map((e) => e.command)).toContain(
-			"casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed",
+			"bpmnkit connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed",
 		)
 	})
 

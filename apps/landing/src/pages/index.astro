@@ -225,7 +225,7 @@ const CAPABILITIES = [
           <span class="quick-go">Read the AI guide &rarr;</span>
         </a>
         <a class="quick-card" href="/docs/guides/ai#mcp-server">
-          <span class="quick-eyebrow">casen proxy mcp &middot; stdio</span>
+          <span class="quick-eyebrow">bpmnkit proxy mcp &middot; stdio</span>
           <h2>Hand it to your coding agent</h2>
           <p>
             An MCP server lets Claude Code, Cursor or VS Code create, validate, simulate and
@@ -394,7 +394,7 @@ const CAPABILITIES = [
       </div>
       <p class="section-sub">
         A fully typed REST client — 180 methods across 30+ resource classes, three auth
-        modes, retry with backoff — plus <code>casen</code>, a terminal UI for the same API.
+        modes, retry with backoff — plus <code>bpmnkit</code>, a terminal UI for the same API.
         And {CONNECTOR_STATS.services} built-in OpenAPI specs covering
         {" "}{CONNECTOR_STATS.endpoints.toLocaleString("en")} endpoints that generate typed
         Zeebe connector templates. <a href="/integrations">Browse the catalog →</a>
@@ -437,7 +437,7 @@ const CAPABILITIES = [
       <div class="camunda-layout camunda-layout--flip">
         <div class="camunda-side">
           <div class="inset-card">
-            <div class="inset-card-label">$ casen</div>
+            <div class="inset-card-label">$ bpmnkit</div>
             <p>
               Interactive TUI over the same API: connection profiles for dev/staging/prod,
               processes, jobs, incidents, decisions and variables, with scrollable tabular
@@ -456,17 +456,17 @@ const CAPABILITIES = [
         </div>
 
         <div>
-          <div class="panel-label">casen — interactive TUI</div>
+          <div class="panel-label">bpmnkit — interactive TUI</div>
           <div class="cli-terminal-wrap">
             <p class="sr-only">
-              This terminal animates a demo session of casen, the BPMN Kit CLI: navigating
+              This terminal animates a demo session of bpmnkit, the BPMN Kit CLI: navigating
               the main menu, opening the process command group, listing process definitions
               and viewing a tabular result.
             </p>
             <!-- aria-hidden — the text alternative above covers it. -->
             <div id="cli-terminal" aria-hidden="true">
               <div class="cli-topbar">
-                <span class="cli-topbar-title">casen</span>
+                <span class="cli-topbar-title">bpmnkit</span>
               </div>
               <div class="cli-content"></div>
             </div>
@@ -501,22 +501,22 @@ const CAPABILITIES = [
 
 <span class="comment"># optional</span>
 <span class="comment">$</span> pnpm add @bpmnkit/api
-<span class="comment">$</span> pnpm add -g casen</code></pre>
+<span class="comment">$</span> pnpm add -g bpmnkit</code></pre>
           <pre class="pkg-cmd" data-pkg="bun"><code><span class="comment">$</span> bun add @bpmnkit/core
 
 <span class="comment"># optional</span>
 <span class="comment">$</span> bun add @bpmnkit/api
-<span class="comment">$</span> bun add -g casen</code></pre>
+<span class="comment">$</span> bun add -g bpmnkit</code></pre>
           <pre class="pkg-cmd" data-pkg="npm"><code><span class="comment">$</span> npm install @bpmnkit/core
 
 <span class="comment"># optional</span>
 <span class="comment">$</span> npm install @bpmnkit/api
-<span class="comment">$</span> npm install -g casen</code></pre>
+<span class="comment">$</span> npm install -g bpmnkit</code></pre>
           <pre class="pkg-cmd" data-pkg="yarn"><code><span class="comment">$</span> yarn add @bpmnkit/core
 
 <span class="comment"># optional</span>
 <span class="comment">$</span> yarn add @bpmnkit/api
-<span class="comment">$</span> yarn global add casen</code></pre>
+<span class="comment">$</span> yarn global add bpmnkit</code></pre>
         </div>
 
         <div class="step">
@@ -977,7 +977,7 @@ const CAPABILITIES = [
           <div class="chips">
             <span class="chip">Step-through simulation</span>
             <span class="chip">FEEL playground</span>
-            <span class="chip">Deploy from casen profiles</span>
+            <span class="chip">Deploy from bpmnkit profiles</span>
             <span class="chip">Copy diagram as ASCII</span>
             <span class="chip">MIT</span>
           </div>
@@ -998,7 +998,7 @@ const CAPABILITIES = [
           <div class="cap-card">
             <h3>Findings in the Problems panel</h3>
             <p>
-              The same static analysis <code>casen lint</code> runs, reported against the element
+              The same static analysis <code>bpmnkit lint</code> runs, reported against the element
               that caused it. An engine-neutral diagram is not judged against Camunda 8 rules.
             </p>
             <div class="cap-api">bpmnkit.lint.run</div>
@@ -1009,7 +1009,7 @@ const CAPABILITIES = [
               A second view of the change the text diff already shows, in Source Control — where a
               box somebody dragged reads as <em>moved</em>, not as two unrelated pictures.
             </p>
-            <div class="cap-api">casen diff bpmn a.bpmn b.bpmn</div>
+            <div class="cap-api">bpmnkit diff bpmn a.bpmn b.bpmn</div>
           </div>
           <div class="cap-card">
             <h3>Saves a diff you can read</h3>

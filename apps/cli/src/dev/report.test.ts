@@ -37,7 +37,7 @@ const red: CheckResult = {
 	},
 }
 
-describe("casen dev terminal report", () => {
+describe("bpmnkit dev terminal report", () => {
 	it("prints one line per file", () => {
 		expect(formatCheckLine(green, plain)).toBe("✓ orders/order.bpmn  lint 0✖ 1⚠  tests 2/2")
 		expect(formatCheckLine(red, plain)).toBe("✖ refund.bpmn  lint 1✖ 0⚠  tests 0/1 (wasm)")

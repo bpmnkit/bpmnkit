@@ -23,7 +23,7 @@ The main entry point — natural language to a compiled, tested BPMN process.
 /bpmnkit:implement employee onboarding process with HR approval
 ```
 
-Resolves connectors, writes a `ProcessPlan`, compiles it with `casen synth`, tests it,
+Resolves connectors, writes a `ProcessPlan`, compiles it with `bpmnkit synth`, tests it,
 scaffolds any missing workers, and asks where to deploy.
 
 ---
@@ -36,8 +36,8 @@ Extend an existing process from a natural-language change.
 /bpmnkit:extend order-fulfillment.bpmn add a timeout boundary on the payment step
 ```
 
-Lifts the process to plan form (`casen plan extract`), writes a small delta plan, and
-merges it in (`casen synth --merge`) — the summary is at the element level, not an XML diff.
+Lifts the process to plan form (`bpmnkit plan extract`), writes a small delta plan, and
+merges it in (`bpmnkit synth --merge`) — the summary is at the element level, not an XML diff.
 
 ---
 
@@ -104,7 +104,7 @@ Gate on deploy-readiness, then deploy to local Reebe or Camunda 8.
 
 Write a process as a TypeScript build script, a DMN decision table or a Camunda form. Each
 skill carries its [agent card](/docs/agent-cards/bpmn): a runnable script, the top options
-and the traps. Outside Claude Code, `casen agent-card bpmn|dmn|form` prints the same card.
+and the traps. Outside Claude Code, `bpmnkit agent-card bpmn|dmn|form` prints the same card.
 
 ```
 /bpmnkit:dmn order risk by amount and country

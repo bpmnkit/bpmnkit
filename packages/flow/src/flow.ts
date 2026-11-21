@@ -189,7 +189,7 @@ export class FlowBuilder<V extends object> {
 		})
 	}
 
-	/** A step served by a coding agent from the workforce (`casen agent work`). */
+	/** A step served by a coding agent from the workforce (`bpmnkit agent work`). */
 	agent<const S extends string, const R extends string = typeof DEFAULT_AGENT_RESULT>(
 		id: string,
 		options: AgentOptions<S & CheckedPrompt<S, V>, R>,

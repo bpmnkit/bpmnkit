@@ -57,7 +57,7 @@ merged into whatever comes after it in the source document.
 
 ## Step 2: Deploy it
 
-Deploy with \`casen deploy\`. Again this section carries enough prose to clear the
+Deploy with \`bpmnkit deploy\`. Again this section carries enough prose to clear the
 minimum chunk size so the assertions below can count sections rather than merges,
 which keeps the test about splitting instead of about packing.
 `

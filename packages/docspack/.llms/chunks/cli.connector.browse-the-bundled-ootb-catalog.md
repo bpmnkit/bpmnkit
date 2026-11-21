@@ -1,8 +1,8 @@
-# casen connector — Browse the bundled OOTB catalog
+# bpmnkit connector — Browse the bundled OOTB catalog
 
 ```sh
-casen connector search slack
-casen connector show io.camunda.connectors.Slack.v1
+bpmnkit connector search slack
+bpmnkit connector show io.camunda.connectors.Slack.v1
 ```
 
 `search` scores the bundled templates by keyword match and prints a table (template id,
@@ -11,7 +11,7 @@ required/optional input keys — these are the keys a `ProcessPlan` `connector` 
 object uses (see [Building Processes with AI](/docs/guides/ai-implement)):
 
 ```
-$ casen connector show io.camunda.connectors.Slack.v1
+$ bpmnkit connector show io.camunda.connectors.Slack.v1
 Slack connector  (io.camunda.connectors.Slack.v1)
 Task type: io.camunda:slack:1
 Direction: outbound
@@ -29,7 +29,7 @@ the text, and `--condensed` prints one line each (`key  type  default  required 
 part naming the condition that switches the property on):
 
 ```sh
-casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
+bpmnkit connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
 ```
 
 A field marked `(secret)` should be supplied as a `{{secrets.NAME}}` placeholder, never a literal
@@ -41,7 +41,7 @@ for each of its operations. `cards` answers a request with one card per operatio
 only the inputs that operation uses, and the `values` that select it:
 
 ```
-$ casen connector cards "create a github issue" --limit 1
+$ bpmnkit connector cards "create a github issue" --limit 1
 github createIssue — GitHub Outbound Connector: Issues / Create an issue | owner* repo* issueTitle* | optional: authentication.pat(secret) githubBody issueAssignees(=FEEL) issueLabels(=FEEL) issueMilestone resultVariable resultExpressionCreateIssue(=FEEL) | authentication.authType=pat: pat | github_app
   values: {"operationGroup":"issues","issueOperationType":"createIssue"}
 ```

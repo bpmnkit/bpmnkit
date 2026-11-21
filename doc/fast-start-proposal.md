@@ -58,19 +58,19 @@ What BPMN Kit already has:
 - **Build:**
   - AI drafts processes and fills in the 133 Camunda connector templates, with
     `{{secrets.…}}` placeholders.
-  - `casen synth --check` dry-runs a process with every outside call mocked. Studio has
+  - `bpmnkit synth --check` dry-runs a process with every outside call mocked. Studio has
     "Try it".
 - **Run locally:**
   - Local engines (TypeScript and WASM, Reebe).
-  - `casen dev`.
+  - `bpmnkit dev`.
   - Live mode with token overlays.
 - **Deploy and watch:**
   - The Studio deploy pane and Operate views.
-  - About 25 templates (`casen template use`).
+  - About 25 templates (`bpmnkit template use`).
   - Proxy triggers for webhooks, timers and file watches.
 - **Camunda SaaS:**
-  - `casen profile import` reads the Hub credentials file.
-  - The generated `casen clusters create-secret`.
+  - `bpmnkit profile import` reads the Hub credentials file.
+  - The generated `bpmnkit clusters create-secret`.
 
 The path that existed did not run on SaaS. Phase 0 below fixes it.
 
@@ -97,7 +97,7 @@ integrations.
   proxy worker daemon, its triggers, the MCP deploy, run history and the VS Code deploy added
   `/v2` again. Every one of those requests to SaaS went to `/v2/v2/…`. `clusterApiUrl()` in
   `@bpmnkit/profiles` now joins the URL for all of them.
-- [x] **`casen resource create-deployment` sent no file.** The API generator read only JSON
+- [x] **`bpmnkit resource create-deployment` sent no file.** The API generator read only JSON
   request bodies, so every multipart operation (deployments, documents) had no body. These
   operations now take `FormData`, and the CLI commands take file arguments.
 - [x] **Search queries had no `filter` or `sort`, and results had no `items`.** The generator
@@ -106,12 +106,12 @@ integrations.
   `@bpmnkit/api` page called `client.process.deploy` and `client.process.startInstance` and
   used the Console API URL. They now use the real API, and every snippet type-checks. They also
   show the CLI path:
-  `casen profile import` → `casen deploy deploy --target camunda8` →
-  `casen process-instance create`.
-- [x] **The READMEs and the CLI page listed commands that do not exist**: `casen profile add`,
-  `casen deploy <file>` and `casen instances list`. They now list the real ones.
+  `bpmnkit profile import` → `bpmnkit deploy deploy --target camunda8` →
+  `bpmnkit process-instance create`.
+- [x] **The READMEs and the CLI page listed commands that do not exist**: `bpmnkit profile add`,
+  `bpmnkit deploy <file>` and `bpmnkit instances list`. They now list the real ones.
 
-### Phase 1 — `npm create bpmnkit` / `casen new`
+### Phase 1 — `npm create bpmnkit` / `bpmnkit new`
 
 - [ ] Pick a template from one gallery (the patterns and Studio's templates together), or
   describe the process and let the AI draft it.
@@ -121,7 +121,7 @@ integrations.
     `@bpmnkit/flow` or `@bpmnkit/worker-client`;
   - `.env.example`, with the secrets that `listSecrets()` finds;
   - sample start data.
-- [ ] `casen dev` opens Studio on the project with the local engine.
+- [ ] `bpmnkit dev` opens Studio on the project with the local engine.
 
 ### Phase 2 — build by running, as in n8n, on the local engine
 
@@ -138,13 +138,13 @@ integrations.
 - [ ] **Inline code.** A "Code" task has its body written in Studio and becomes
   `workers/<type>.ts`. This answers "write and host a worker".
 
-### Phase 3 — `casen ship`: one command from local to SaaS
+### Phase 3 — `bpmnkit ship`: one command from local to SaaS
 
-1. [ ] **Login.** `casen login` opens the browser on the page that creates an API client, then
+1. [ ] **Login.** `bpmnkit login` opens the browser on the page that creates an API client, then
    imports the credentials from the clipboard or a file. A true device flow is possible only if
    Camunda offers one. Check that first instead of promising it.
 2. [ ] **Checks before deploy.** One checklist, before anything is sent:
-   - `casen lint` against the Camunda version of the cluster;
+   - `bpmnkit lint` against the Camunda version of the cluster;
    - the `synth --check` dry run;
    - for each `{{secrets.X}}`, check that it exists on the cluster (`clusters get-secrets`).
      Offer to push it from `.env`, with confirmation, and never print the values. Rewrite the
@@ -152,7 +152,7 @@ integrations.
    - check that client credentials exist when the process needs them.
 3. [ ] **Deploy** the BPMN, its DMN tables and its forms as one deployment.
 4. [ ] **Workers.** Run custom job types against SaaS from the developer's machine
-   (`casen worker start --profile saas`). Later, generate a deploy target: a Dockerfile, or a
+   (`bpmnkit worker start --profile saas`). Later, generate a deploy target: a Dockerfile, or a
    Fly or Cloud Run snippet.
 5. [ ] **Smoke run.** Start one instance with the pinned sample data and follow it to
    completion or to an incident. Print the SaaS webhook URL for a webhook start event, or the
@@ -170,7 +170,7 @@ When it is done, one command ends like this:
 
 - [ ] A template page on bpmnkit.com, with "Open in Studio" and "Ship to my cluster".
 - [ ] Drop → "Run it": the AI draft and connectors from Drop become a project with
-  `casen new --from-drop <id>`.
+  `bpmnkit new --from-drop <id>`.
 - [ ] "Debug in editor" for SaaS runs: load the variables of an Operate instance as pinned data
   for a local run.
 
@@ -179,7 +179,7 @@ When it is done, one command ends like this:
 | Order | Work | Measure |
 |---|---|---|
 | 1 | Phase 0 | No broken step in the guides. ✅ |
-| 2 | `casen ship`, with the checks before deploy and the smoke run | It fixes the largest SaaS pain: credentials, secrets, "did it run?". |
+| 2 | `bpmnkit ship`, with the checks before deploy and the smoke run | It fixes the largest SaaS pain: credentials, secrets, "did it run?". |
 | 3 | The scaffold and one template gallery | — |
 | 4 | Step runs, the data panel and drag mapping | The largest work; this is the n8n feeling itself. |
 
@@ -190,7 +190,7 @@ on SaaS. A scripted end-to-end test on a trial cluster measures it.
 
 - [x] The XML endpoints (`getProcessDefinitionXML`, `getDecisionDefinitionXML`,
   `getDecisionRequirementsXML`) were typed `Promise<void>` and parsed their XML as JSON. They
-  now ask for `text/xml` and return a `string`. `casen pd get-x-m-l <key>` prints the XML as is,
+  now ask for `text/xml` and return a `string`. `bpmnkit pd get-x-m-l <key>` prints the XML as is,
   so it can be redirected to a file.
 - [x] The proxy's timer trigger started instances of timer start events, which every engine it
   talks to (SaaS, Self-Managed, Reebe) already does. It is removed. The file-watch trigger had

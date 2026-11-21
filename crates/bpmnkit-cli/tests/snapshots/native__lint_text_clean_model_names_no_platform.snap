@@ -1,0 +1,10 @@
+---
+source: crates/bpmnkit-cli/tests/native.rs
+expression: "run(&[\"lint\", &f(\"deployable.bpmn\")], 0)"
+---
+→ ℹ [naming] [start] Start event "start" has no name. [naming/unlabeled-start-event]
+→ ℹ [naming] [end] End event "end" has no name. [naming/unlabeled-end-event]
+→ ⚠ [pattern] [charge] Service task "Charge" has no output variable mapping. [pattern/service-task-no-output]
+→ ⚠ [pattern] [start] Start event "start" has no documentation describing expected input variables. [pattern/start-no-documentation]
+→ 
+4 findings: 0 errors, 2 warnings, 2 info

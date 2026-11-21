@@ -179,7 +179,7 @@ The compact format is designed for AI agents:
 >
 > Use it to **show** a model to an LLM and to build a **new** model from one. Do not use it as
 > an edit path for a file you need to keep — read the file, apply the change to the
-> `BpmnDefinitions`, and export that. For the same reason `casen generate bpmn --input`
+> `BpmnDefinitions`, and export that. For the same reason `bpmnkit generate bpmn --input`
 > refuses to overwrite its input unless you pass `--force`.
 
 ## Zeebe Extensions

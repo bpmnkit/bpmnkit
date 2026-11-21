@@ -33,7 +33,8 @@ cargo add bpmnkit --no-default-features --features feel
 | `diff`    | `bpmnkit::diff`     | `bpmnkit-diff`    |         | Semantic diff with field-level changes, layout-only moves and a semantic hash |
 | `diff-html` | `bpmnkit::diff`   | `bpmnkit-diff`    |         | Self-contained HTML diff viewer and the diff-over-diagram SVG (implies `diff`, `render`) |
 | `viewer`  | `bpmnkit::viewer`   | `bpmnkit-viewer`  |         | One self-contained HTML viewer page per diagram (same bytes as viewer-lite `toHtml`), or its head/body/scripts parts |
-| `full`    |                     |                   |         | All of the above except the PNG features |
+| `worker`  | `bpmnkit::worker`   | `bpmnkit-worker`  |         | Camunda 8 job workers over the REST `/v2` API (tokio + reqwest; not in `full`) |
+| `full`    |                     |                   |         | All of the above except the PNG and `worker` features |
 
 A feature turns on the crates it needs; for example `text` also builds `bpmn`, `dmn` and `layout`, but only the modules you name are re-exported.
 

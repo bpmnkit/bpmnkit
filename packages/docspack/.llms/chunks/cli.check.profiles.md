@@ -1,4 +1,4 @@
-# casen check — Profiles
+# bpmnkit check — Profiles
 
 | Profile | Use it when | What runs |
 |---------|-------------|-----------|
@@ -8,7 +8,7 @@
 
 Zeebe deploys a user task that has no form. So outside the deploy gate the "user task needs a
 form" rule is off: it would push you to invent a form reference only to clear a warning. Turn
-it on with `--user-task-forms require`. `casen lint lint` has the same `--profile sketch|deploy`
+it on with `--user-task-forms require`. `bpmnkit lint lint` has the same `--profile sketch|deploy`
 and `--user-task-forms` options.
 
 ---

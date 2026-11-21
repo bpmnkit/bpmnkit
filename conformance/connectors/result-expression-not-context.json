@@ -1,0 +1,36 @@
+{
+  "description": "a result expression that is not a context fails the job",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/n"
+      },
+      "response": {
+        "body": {
+          "n": 1
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "fail": {
+      "errorMessage": "resultExpression must yield a context, got number",
+      "retries": 2,
+      "retryBackOff": 0
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "=response.body.n"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/n"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#response"
+}

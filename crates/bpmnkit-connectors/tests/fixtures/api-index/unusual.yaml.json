@@ -1,0 +1,38 @@
+{
+  "id": "unusual",
+  "name": "Unusual",
+  "baseUrl": "https://api.unusual.test//",
+  "auth": {
+    "type": "apiKey",
+    "in": "query",
+    "name": "k"
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/files/{path}/",
+      "id": "getFile"
+    },
+    {
+      "method": "POST",
+      "path": "/files/{path}/",
+      "id": "uploadFile2",
+      "body": [
+        "camelCaseName",
+        "snake_case_name",
+        "kebab-case-name",
+        "2fast",
+        "éé"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "summary": "Search \"everything\" \\ now",
+      "query": [
+        "q*",
+        "page"
+      ]
+    }
+  ]
+}

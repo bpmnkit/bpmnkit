@@ -64,10 +64,10 @@ async function generateConnectors() {
 ${all.length} bundled connector templates from \`@bpmnkit/connectors\`: Camunda 8's out-of-the-box ones and the few BPMN Kit maintains. This is an **index** — look up full input specs at plan-authoring time, don't guess at property keys:
 
 \`\`\`sh
-casen connector cards "<what the step does>"   # one card per operation: its inputs, and the values that select it
-casen connector api "<what the step does>"     # real endpoints of an HTTP API with no connector (Stripe, Notion, …)
-casen connector search "<query>"               # find templates by name/keyword
-casen connector show <template-id>             # every input of a template, all operations mixed
+bpmnkit connector cards "<what the step does>"   # one card per operation: its inputs, and the values that select it
+bpmnkit connector api "<what the step does>"     # real endpoints of an HTTP API with no connector (Stripe, Notion, …)
+bpmnkit connector search "<query>"               # find templates by name/keyword
+bpmnkit connector show <template-id>             # every input of a template, all operations mixed
 \`\`\`
 
 A **card** is one operation of one connector with only the inputs that operation uses, e.g.
@@ -101,12 +101,12 @@ A \`connector\` step (or an \`aiAgent\` tool's \`connector\` field) references a
 \`\`\`
 
 Rules:
-- **Value keys** come from \`casen connector cards\` (dotted paths like \`data.channel\`, not the display label). Include the card's \`values\`, which pick the operation.
-- **Secrets**: any input marked \`(secret)\` — API keys, tokens, passwords — must use the \`{{secrets.NAME}}\` placeholder, never a literal credential. \`casen synth\` does not resolve secrets; the target engine (Reebe/Camunda 8) does at runtime from its configured secret store.
-- **FEEL values**: a leading \`=\` makes a value a FEEL expression (variables, string concatenation, etc.); without it, the value is a literal string. \`casen synth\`/\`casen lint\` parse-validate every FEEL value — a syntax error surfaces as a plan problem before you ever write BPMN.
-- **Conditional fields**: some inputs only apply for a specific dropdown choice (e.g. Slack's \`data.channel\` only applies when \`method\` is \`chat.postMessage\`). A card lists only the inputs of its operation; \`casen connector show\` lists them all. \`applyTemplates\` and \`casen connector apply\` report a value for a field that doesn't apply as a problem (\`apply\` then leaves the file unchanged).
-- **HTTP APIs without a connector** (Stripe, Notion, GitHub's workflow runs, …) use the REST connector (\`io.camunda.connectors.HttpJson.v2\`). Take the base URL, path, auth and required headers from \`casen connector api\`, never from memory; credentials are \`{{secrets.NAME}}\` here too.
-- **Prove it runs**: \`casen synth <plan> --check\` dry-runs the result with every connector mocked and lists the secrets to create in the cluster; a process that cannot reach its end fails the command.
+- **Value keys** come from \`bpmnkit connector cards\` (dotted paths like \`data.channel\`, not the display label). Include the card's \`values\`, which pick the operation.
+- **Secrets**: any input marked \`(secret)\` — API keys, tokens, passwords — must use the \`{{secrets.NAME}}\` placeholder, never a literal credential. \`bpmnkit synth\` does not resolve secrets; the target engine (Reebe/Camunda 8) does at runtime from its configured secret store.
+- **FEEL values**: a leading \`=\` makes a value a FEEL expression (variables, string concatenation, etc.); without it, the value is a literal string. \`bpmnkit synth\`/\`bpmnkit lint\` parse-validate every FEEL value — a syntax error surfaces as a plan problem before you ever write BPMN.
+- **Conditional fields**: some inputs only apply for a specific dropdown choice (e.g. Slack's \`data.channel\` only applies when \`method\` is \`chat.postMessage\`). A card lists only the inputs of its operation; \`bpmnkit connector show\` lists them all. \`applyTemplates\` and \`bpmnkit connector apply\` report a value for a field that doesn't apply as a problem (\`apply\` then leaves the file unchanged).
+- **HTTP APIs without a connector** (Stripe, Notion, GitHub's workflow runs, …) use the REST connector (\`io.camunda.connectors.HttpJson.v2\`). Take the base URL, path, auth and required headers from \`bpmnkit connector api\`, never from memory; credentials are \`{{secrets.NAME}}\` here too.
+- **Prove it runs**: \`bpmnkit synth <plan> --check\` dry-runs the result with every connector mocked and lists the secrets to create in the cluster; a process that cannot reach its end fails the command.
 - Direction \`agentic\` connectors (the AI Agent Sub-process) are configured with \`applyTemplates\` (v2, Camunda 8.10) or the \`aiAgent\` plan step, not \`connector\` — see \`references/agentic.md\`.
 
 ## Full index
@@ -127,7 +127,7 @@ async function generateFeel() {
 	const content = `${GENERATED_NOTICE}
 # FEEL syntax reference
 
-BPMNKit's FEEL implementation (\`@bpmnkit/feel\`) backs every expression \`casen synth\`/\`casen lint\` parse-validates. This is a crib sheet, not the full DMN FEEL spec.
+BPMNKit's FEEL implementation (\`@bpmnkit/feel\`) backs every expression \`bpmnkit synth\`/\`bpmnkit lint\` parse-validates. This is a crib sheet, not the full DMN FEEL spec.
 
 ## The "=" convention
 
@@ -158,7 +158,7 @@ Call signature reference for any of these: consult the [DMN 1.3 FEEL spec](https
 
 ## Common gotchas
 
-- Writing a literal where FEEL was intended (or vice versa) is the single most common plan mistake — when in doubt, run \`casen lint lint --categories feel-syntax <file>.bpmn\` (or let \`casen synth\` surface it — it parse-validates every FEEL-looking value and reports \`steps[N]...\`-scoped problems before compiling).
+- Writing a literal where FEEL was intended (or vice versa) is the single most common plan mistake — when in doubt, run \`bpmnkit lint lint --categories feel-syntax <file>.bpmn\` (or let \`bpmnkit synth\` surface it — it parse-validates every FEEL-looking value and reports \`steps[N]...\`-scoped problems before compiling).
 - FEEL string literals need escaped double quotes inside JSON: \`"=\\"Order \\" + orderId"\`.
 - \`fromAi(...)\` (used inside \`aiAgent\` tool parameter mappings) is its own thing layered on FEEL — see \`references/agentic.md\`.
 `
@@ -174,7 +174,7 @@ async function generatePlanFormat() {
 	const content = `${GENERATED_NOTICE}
 # ProcessPlan format reference
 
-The \`ProcessPlan\` JSON IR is the **only** thing skills author by hand — never BPMN XML directly. \`casen synth <plan>.json\` compiles it deterministically to laid-out, deployable BPMN.
+The \`ProcessPlan\` JSON IR is the **only** thing skills author by hand — never BPMN XML directly. \`bpmnkit synth <plan>.json\` compiles it deterministically to laid-out, deployable BPMN.
 
 ## Schema summary
 
@@ -289,9 +289,9 @@ For an \`aiAgent\` step example, see \`references/agentic.md\`.
 ## Workflow
 
 1. Write \`<name>.plan.json\`.
-2. \`casen synth <name>.plan.json -o <name>.bpmn\` — if problems are reported, they're keyed by \`path\` (e.g. \`steps[1].branches[0].condition\`); fix the **plan**, never the XML, and re-run. Bound retries to 2 attempts before surfacing the problem to the user.
-3. Extending an existing process: \`casen plan extract <name>.bpmn\` to get the current plan back (elements it can't losslessly lift are reported, not guessed at), write a small delta plan with just the new/changed steps, then \`casen synth <delta>.plan.json --merge <name>.bpmn\`.
-4. \`plan.tests\` (see schema above) compiles to a \`<name>.bpmn.tests.json\` sidecar automatically — run \`casen test <name>.bpmn\` to execute them.
+2. \`bpmnkit synth <name>.plan.json -o <name>.bpmn\` — if problems are reported, they're keyed by \`path\` (e.g. \`steps[1].branches[0].condition\`); fix the **plan**, never the XML, and re-run. Bound retries to 2 attempts before surfacing the problem to the user.
+3. Extending an existing process: \`bpmnkit plan extract <name>.bpmn\` to get the current plan back (elements it can't losslessly lift are reported, not guessed at), write a small delta plan with just the new/changed steps, then \`bpmnkit synth <delta>.plan.json --merge <name>.bpmn\`.
+4. \`plan.tests\` (see schema above) compiles to a \`<name>.bpmn.tests.json\` sidecar automatically — run \`bpmnkit test <name>.bpmn\` to execute them.
 `
 	writeFileSync(join(REFS_DIR, "plan-format.md"), content, "utf-8")
 	console.log("Wrote references/plan-format.md")

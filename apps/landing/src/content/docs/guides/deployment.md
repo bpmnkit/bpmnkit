@@ -7,7 +7,7 @@ sidebar:
 
 The `@bpmnkit/api` package is a fully-typed Camunda 8 REST API client. Use it to deploy
 processes, start instances, and manage your cluster from Node.js scripts, backend services,
-or CI/CD pipelines. The [`casen` CLI](#from-the-cli) does the same from a terminal.
+or CI/CD pipelines. The [`bpmnkit` CLI](#from-the-cli) does the same from a terminal.
 
 ## Setup
 
@@ -181,16 +181,16 @@ client.on("error", (e) => {
 
 ## From the CLI
 
-`casen profile import` reads the credentials file, so the CLI needs no flags after it:
+`bpmnkit profile import` reads the credentials file, so the CLI needs no flags after it:
 
 ```sh
-casen profile import saas ./camunda-credentials.sh
-casen profile use saas
-casen deploy deploy invoice-approval.bpmn --target camunda8
-casen process-instance create --data '{"processDefinitionId":"invoice-approval"}'
+bpmnkit profile import saas ./camunda-credentials.sh
+bpmnkit profile use saas
+bpmnkit deploy deploy invoice-approval.bpmn --target camunda8
+bpmnkit process-instance create --data '{"processDefinitionId":"invoice-approval"}'
 ```
 
-`casen resource create-deployment <file...>` deploys several files, such as a process and
+`bpmnkit resource create-deployment <file...>` deploys several files, such as a process and
 its DMN tables, as one deployment.
 
 ## CI/CD: Deploy on Push

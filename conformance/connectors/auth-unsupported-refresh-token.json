@@ -1,0 +1,26 @@
+{
+  "description": "oauth-refresh-token is not supported locally: the job fails",
+  "exchanges": [],
+  "expected": {
+    "fail": {
+      "errorMessage": "authentication type 'oauth-refresh-token' is not supported by the local runner (use none, apiKey, basic, bearer or oauth-client-credentials-flow)",
+      "retries": 2,
+      "retryBackOff": 0
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "authentication": {
+        "type": "oauth-refresh-token"
+      },
+      "method": "GET",
+      "url": "http://mock.local/x"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/"
+}

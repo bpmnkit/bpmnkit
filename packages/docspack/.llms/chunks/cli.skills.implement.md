@@ -10,10 +10,10 @@ End-to-end process implementation from a natural language description.
 
 **What it does:**
 
-1. Resolves external interactions via `casen connector search`/`show`
+1. Resolves external interactions via `bpmnkit connector search`/`show`
 2. Writes a `ProcessPlan` JSON file
-3. Compiles it with `casen synth`, fixing any reported problems in the plan and retrying
-4. Adds test scenarios and runs `casen test`
+3. Compiles it with `bpmnkit synth`, fixing any reported problems in the plan and retrying
+4. Adds test scenarios and runs `bpmnkit test`
 5. Scaffolds a worker stub for every job type with no existing worker or connector
 6. Presents a summary and asks where to deploy
 

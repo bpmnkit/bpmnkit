@@ -1,0 +1,22 @@
+{
+  "description": "no url fails the job",
+  "exchanges": [],
+  "expected": {
+    "fail": {
+      "errorMessage": "missing required property 'url'",
+      "retries": 2,
+      "retryBackOff": 0
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/"
+}

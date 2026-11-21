@@ -79,7 +79,7 @@ export async function run(argv: string[]): Promise<void> {
 	const allGroups = [...commandGroups, profileGroup, pluginGroup, ...pluginGroups]
 
 	// ── Completion protocol ───────────────────────────────────────────────────
-	// casen --complete <cursorWordIndex> -- <words...>
+	// bpmnkit --complete <cursorWordIndex> -- <words...>
 	const completeIdx = argv.indexOf("--complete")
 	if (completeIdx !== -1) {
 		const cursorIdx = Number(argv[completeIdx + 1] ?? "0")
@@ -93,8 +93,8 @@ export async function run(argv: string[]): Promise<void> {
 	// ── Global parse ──────────────────────────────────────────────────────────
 	const { positional, flags, repeated } = parseArgs(argv)
 
-	// `casen test <file>`: the group has one command, so the file may follow directly (as with
-	// `dev`); `casen test test <file>` keeps working. Inserting the command name keeps the
+	// `bpmnkit test <file>`: the group has one command, so the file may follow directly (as with
+	// `dev`); `bpmnkit test test <file>` keeps working. Inserting the command name keeps the
 	// generic path (audit, error handling, help) in charge.
 	if (positional[0] === "test" && positional.length >= 2 && positional[1] !== "test") {
 		positional.splice(1, 0, "test")
@@ -143,7 +143,7 @@ export async function run(argv: string[]): Promise<void> {
 
 	if (!group) {
 		printError(
-			`Unknown resource: "${groupToken}". Run \`casen --help\` to see all resources.`,
+			`Unknown resource: "${groupToken}". Run \`bpmnkit --help\` to see all resources.`,
 			colors,
 		)
 		process.exitCode = 1
@@ -159,9 +159,9 @@ export async function run(argv: string[]): Promise<void> {
 		return
 	}
 
-	// ── dev: `casen dev [dir]` — the one positional is a directory, not a subcommand ──
-	// ── check: `casen check <file...>` — every positional is a file ──
-	// ── build: `casen build <spec> [resources…]`; -o is the output file there, not the format ──
+	// ── dev: `bpmnkit dev [dir]` — the one positional is a directory, not a subcommand ──
+	// ── check: `bpmnkit check <file...>` — every positional is a file ──
+	// ── build: `bpmnkit build <spec> [resources…]`; -o is the output file there, not the format ──
 	if (group.name === "dev" || group.name === "check" || group.name === "build") {
 		const cmd = group.commands[0]
 		if (wantHelp) {
@@ -187,10 +187,10 @@ export async function run(argv: string[]): Promise<void> {
 		return
 	}
 
-	// ── worker: route `casen worker start [name]` or treat positional[1] as job type ──
+	// ── worker: route `bpmnkit worker start [name]` or treat positional[1] as job type ──
 	if (group.name === "worker" && positional.length >= 2 && !wantHelp) {
 		const output = createOutputWriter(outputFormat, noColor)
-		// `casen worker start [name]` → route to the start command
+		// `bpmnkit worker start [name]` → route to the start command
 		if (positional[1] === "start") {
 			const startCmd = group.commands.find((c) => c.name === "start")
 			if (startCmd) {
@@ -273,7 +273,7 @@ export async function run(argv: string[]): Promise<void> {
 
 	if (!cmd) {
 		printError(
-			`Unknown command: "${group.name} ${cmdToken}". Run \`casen ${group.name} --help\` to see available commands.`,
+			`Unknown command: "${group.name} ${cmdToken}". Run \`bpmnkit ${group.name} --help\` to see available commands.`,
 			colors,
 		)
 		process.exitCode = 1

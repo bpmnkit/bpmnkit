@@ -20,7 +20,7 @@
 
 `@bpmnkit/operate` is a small, Operate-like web UI for a Camunda 8 cluster. Mount it into any element to get a dashboard and lists of process definitions, decisions, instances, incidents, jobs and user tasks, with detail pages that draw the BPMN diagram. It is built for development clusters, Camunda 8 Run and SaaS trial clusters — not as a replacement for Camunda Operate in production.
 
-The UI does not call the cluster directly. It polls the BPMN Kit proxy (`@bpmnkit/proxy`, started with `casen proxy start`), which holds your connection profiles and credentials and adds the auth header to each Camunda request. The browser never sees a credential.
+The UI does not call the cluster directly. It polls the BPMN Kit proxy (`@bpmnkit/proxy`, started with `bpmnkit proxy start`), which holds your connection profiles and credentials and adds the auth header to each Camunda request. The browser never sees a credential.
 
 A **mock mode** (`mock: true`) ships fixture data and makes no network calls — useful for demos and UI work.
 
@@ -43,7 +43,7 @@ A **mock mode** (`mock: true`) ships fixture data and makes no network calls —
 
 ```sh
 npm install @bpmnkit/operate
-npm install -g @bpmnkit/cli   # casen proxy start, casen profile
+npm install -g @bpmnkit/cli   # bpmnkit proxy start, bpmnkit profile
 ```
 
 ## Quick Start
@@ -62,9 +62,9 @@ createOperate({
 ### Camunda 8 Run
 
 ```sh
-casen profile create c8run --base-url http://localhost:8080/v2 --auth-type none
-casen profile use c8run
-casen proxy start   # http://localhost:3033
+bpmnkit profile create c8run --base-url http://localhost:8080/v2 --auth-type none
+bpmnkit profile use c8run
+bpmnkit proxy start   # http://localhost:3033
 ```
 
 ### Camunda SaaS
@@ -72,9 +72,9 @@ casen proxy start   # http://localhost:3033
 Create client credentials in the Camunda Console, download the credentials file, then:
 
 ```sh
-casen profile import saas ./camunda-credentials.sh
-casen profile use saas
-casen proxy start
+bpmnkit profile import saas ./camunda-credentials.sh
+bpmnkit profile use saas
+bpmnkit proxy start
 ```
 
 ### Mount against the proxy
@@ -90,7 +90,7 @@ createOperate({
 })
 ```
 
-The proxy acts with the stored credentials, so it only answers browser origins it trusts: bpmnkit.com, Studio, the desktop app and any `localhost` origin. To mount Operate on another origin, start the proxy with `casen proxy start --allow-origin https://your.app`.
+The proxy acts with the stored credentials, so it only answers browser origins it trusts: bpmnkit.com, Studio, the desktop app and any `localhost` origin. To mount Operate on another origin, start the proxy with `bpmnkit proxy start --allow-origin https://your.app`.
 
 ## API Reference
 
@@ -146,15 +146,16 @@ Full guide: [bpmnkit.com/docs/packages/operate](https://bpmnkit.com/docs/package
 | [`@bpmnkit/profiles`](https://www.npmjs.com/package/@bpmnkit/profiles) | Shared auth, profile storage, and client factories for CLI & proxy |
 | [`@bpmnkit/connector-gen`](https://www.npmjs.com/package/@bpmnkit/connector-gen) | Generate connector templates from OpenAPI specs |
 | [`@bpmnkit/connectors`](https://www.npmjs.com/package/@bpmnkit/connectors) | Camunda 8 OOTB connector catalog and deterministic template application |
-| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (casen) |
+| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (bpmnkit, alias casen) |
+| [`@bpmnkit/cli-legacy`](https://www.npmjs.com/package/@bpmnkit/cli-legacy) | Node fallback behind the native bpmnkit binary |
 | [`@bpmnkit/proxy`](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
 | [`@bpmnkit/patterns`](https://www.npmjs.com/package/@bpmnkit/patterns) | Domain process patterns for BPMNKit AIKit |
 | [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm) | WebAssembly BPMN engine for browser simulation |
 | [`@bpmnkit/worker-client`](https://www.npmjs.com/package/@bpmnkit/worker-client) | Thin Zeebe REST client for standalone workers |
 | [`@bpmnkit/flow`](https://www.npmjs.com/package/@bpmnkit/flow) | Code-first durable flows that derive BPMN, job types and workers |
 | [`@bpmnkit/user-tasks`](https://www.npmjs.com/package/@bpmnkit/user-tasks) | Embeddable user task widget for Camunda 8 |
-| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the casen CLI |
-| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new casen CLI plugin in seconds |
+| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the bpmnkit CLI |
+| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new bpmnkit CLI plugin in seconds |
 | [`@bpmnkit/casen-report`](https://www.npmjs.com/package/@bpmnkit/casen-report) | HTML reports from Camunda 8 incident and SLA data |
 | [`@bpmnkit/casen-worker-http`](https://www.npmjs.com/package/@bpmnkit/casen-worker-http) | Example HTTP worker plugin — completes jobs with live JSONPlaceholder API data |
 | [`@bpmnkit/casen-worker-ai`](https://www.npmjs.com/package/@bpmnkit/casen-worker-ai) | AI task worker — classify, summarize, extract, and decide using Claude |

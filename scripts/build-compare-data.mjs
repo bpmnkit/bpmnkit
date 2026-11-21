@@ -6,7 +6,7 @@
  * Outputs are committed so CI never needs a recording or an LLM. No XML or recording is copied.
  *
  * Each run's BPMN also runs the scenario's `scripts/compare/references/<scenario>.test.json` on
- * reebe-wasm (`casen test`'s engine). That needs `packages/engine` and `pnpm build:wasm`; without
+ * reebe-wasm (`bpmnkit test`'s engine). That needs `packages/engine` and `pnpm build:wasm`; without
  * them the tests column is written as "unavailable", never as a pass. Cost comes from the run's
  * recorded model and token split and `scripts/lib/model-prices.mjs`; either missing gives null.
  *

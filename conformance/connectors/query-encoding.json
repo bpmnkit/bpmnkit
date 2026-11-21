@@ -1,0 +1,42 @@
+{
+  "description": "query values with spaces and reserved characters are encoded",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/search",
+        "query": {
+          "n": "5",
+          "q": "a b&c=d"
+        }
+      },
+      "response": {
+        "body": [],
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "count": 0
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={count: count(response.body)}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "queryParameters": {
+        "n": 5,
+        "q": "a b&c=d"
+      },
+      "url": "http://mock.local/search"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#query-parameters"
+}

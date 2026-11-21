@@ -27,7 +27,7 @@ async function run(
 	return captured
 }
 
-describe("casen connector cards", () => {
+describe("bpmnkit connector cards", () => {
 	it("prints the best card first, with the values that select its operation", async () => {
 		const { info } = await run(["post a message to slack"], { limit: "1" })
 		expect(info[1]).toMatch(/^slack chat\.postMessage — .*token\*\(secret\)/)

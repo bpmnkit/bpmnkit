@@ -32,7 +32,7 @@ const VERSION: string = (() => {
 		return "unknown"
 	}
 })()
-const BINARY = "casen"
+const BINARY = "bpmnkit"
 
 export function printVersion(): void {
 	process.stdout.write(`${BINARY} ${VERSION}\n`)
@@ -59,7 +59,7 @@ export function printGlobalHelp(groups: CommandGroup[], colors: boolean): void {
 	process.stdout.write(`  ${dim("# Switch profile", colors)}\n`)
 	process.stdout.write(`  ${BINARY} profile use production\n\n`)
 	process.stdout.write(`  ${dim("# Enable shell completions (zsh)", colors)}\n`)
-	process.stdout.write(`  ${BINARY} completion zsh > ~/.zfunc/_casen\n\n`)
+	process.stdout.write(`  ${BINARY} completion zsh > ~/.zfunc/_bpmnkit\n\n`)
 
 	process.stdout.write(
 		`${dim(`Run \`${BINARY} <resource> --help\` for resource-level help.`, colors)}\n`,
@@ -92,7 +92,7 @@ export function printGroupHelp(group: CommandGroup, colors: boolean): void {
 }
 
 export function printCommandHelp(group: CommandGroup, cmd: Command, colors: boolean): void {
-	// A group whose only command shares its name (`casen dev`) is invoked without repeating it.
+	// A group whose only command shares its name (`bpmnkit dev`) is invoked without repeating it.
 	const path = cmd.name === group.name ? group.name : `${group.name} ${cmd.name}`
 	process.stdout.write(`${bold(`${BINARY} ${path}`, colors)} — ${cmd.description}\n\n`)
 

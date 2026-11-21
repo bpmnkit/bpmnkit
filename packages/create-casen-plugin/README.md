@@ -1,7 +1,7 @@
 <div align="center">
   <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>@bpmnkit/create-casen-plugin</h1>
-  <p>Scaffold a new casen CLI plugin in seconds</p>
+  <p>Scaffold a new bpmnkit CLI plugin in seconds</p>
 
   [![npm](https://img.shields.io/npm/v/@bpmnkit/create-casen-plugin?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin)
   [![license](https://img.shields.io/npm/l/@bpmnkit/create-casen-plugin?style=flat-square)](https://github.com/bpmnkit/bpmnkit/blob/main/LICENSE)
@@ -18,7 +18,7 @@
 
 ## Overview
 
-`create-casen-plugin` is the official scaffolding tool for `casen` CLI plugins. Run it with any package manager's `create` shorthand — no prior install required.
+`create-casen-plugin` is the official scaffolding tool for `bpmnkit` CLI plugins. Run it with any package manager's `create` shorthand — no prior install required.
 
 ```sh
 pnpm create @bpmnkit/casen-plugin
@@ -29,11 +29,11 @@ pnpm create @bpmnkit/casen-plugin
 ## Interactive Flow
 
 ```
-  create-casen-plugin — casen plugin scaffolding
+  create-casen-plugin — bpmnkit plugin scaffolding
 
   Plugin name (npm package name): casen-deploy
   Display name             (Deploy):
-  Description              (): Git-tag-aware deploys for casen
+  Description              (): Git-tag-aware deploys for bpmnkit
   Author                   (): acme
 
   Initialize git repo? (Y/n): Y
@@ -48,7 +48,7 @@ pnpm create @bpmnkit/casen-plugin
     cd casen-deploy
     pnpm install
     pnpm build
-    casen plugin install ./casen-deploy
+    bpmnkit plugin install ./casen-deploy
 ```
 
 ## Non-Interactive Mode
@@ -57,7 +57,7 @@ pnpm create @bpmnkit/casen-plugin
 pnpm create @bpmnkit/casen-plugin \
   --name casen-deploy \
   --display-name Deploy \
-  --description "Git-tag-aware deploys for casen" \
+  --description "Git-tag-aware deploys for bpmnkit" \
   --author acme \
   --no-git
 ```
@@ -112,7 +112,7 @@ export default plugin
 
 ## Plugin Discovery
 
-All plugins with `"casen-plugin"` in their `keywords` appear in `casen plugin search`. The scaffold injects this keyword automatically.
+All plugins with `"casen-plugin"` in their `keywords` appear in `bpmnkit plugin search`. The scaffold injects this keyword automatically.
 
 ---
 
@@ -137,14 +137,15 @@ All plugins with `"casen-plugin"` in their `keywords` appear in `casen plugin se
 | [`@bpmnkit/operate`](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
 | [`@bpmnkit/connector-gen`](https://www.npmjs.com/package/@bpmnkit/connector-gen) | Generate connector templates from OpenAPI specs |
 | [`@bpmnkit/connectors`](https://www.npmjs.com/package/@bpmnkit/connectors) | Camunda 8 OOTB connector catalog and deterministic template application |
-| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (casen) |
+| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (bpmnkit, alias casen) |
+| [`@bpmnkit/cli-legacy`](https://www.npmjs.com/package/@bpmnkit/cli-legacy) | Node fallback behind the native bpmnkit binary |
 | [`@bpmnkit/proxy`](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
 | [`@bpmnkit/patterns`](https://www.npmjs.com/package/@bpmnkit/patterns) | Domain process patterns for BPMNKit AIKit |
 | [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm) | WebAssembly BPMN engine for browser simulation |
 | [`@bpmnkit/worker-client`](https://www.npmjs.com/package/@bpmnkit/worker-client) | Thin Zeebe REST client for standalone workers |
 | [`@bpmnkit/flow`](https://www.npmjs.com/package/@bpmnkit/flow) | Code-first durable flows that derive BPMN, job types and workers |
 | [`@bpmnkit/user-tasks`](https://www.npmjs.com/package/@bpmnkit/user-tasks) | Embeddable user task widget for Camunda 8 |
-| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the casen CLI |
+| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the bpmnkit CLI |
 | [`@bpmnkit/casen-report`](https://www.npmjs.com/package/@bpmnkit/casen-report) | HTML reports from Camunda 8 incident and SLA data |
 | [`@bpmnkit/casen-worker-http`](https://www.npmjs.com/package/@bpmnkit/casen-worker-http) | Example HTTP worker plugin — completes jobs with live JSONPlaceholder API data |
 | [`@bpmnkit/casen-worker-ai`](https://www.npmjs.com/package/@bpmnkit/casen-worker-ai) | AI task worker — classify, summarize, extract, and decide using Claude |

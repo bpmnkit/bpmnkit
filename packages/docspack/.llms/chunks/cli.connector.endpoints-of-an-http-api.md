@@ -1,4 +1,4 @@
-# casen connector — Endpoints of an HTTP API
+# bpmnkit connector — Endpoints of an HTTP API
 
 Most systems have no dedicated connector, so the REST connector calls them. `api` prints the
 real base URL, authentication and endpoints from the offline
@@ -6,7 +6,7 @@ real base URL, authentication and endpoints from the offline
 or the one `--service` gives:
 
 ```
-$ casen connector api "refund a stripe payment" --limit 1
+$ bpmnkit connector api "refund a stripe payment" --limit 1
 api stripe — Stripe API https://api.stripe.com auth=bearer secret=STRIPE_TOKEN
 POST /v1/refunds — Create a refund | form body: amount currency charge customer expand instructions_email
 ```

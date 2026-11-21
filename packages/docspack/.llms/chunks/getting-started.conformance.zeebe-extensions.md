@@ -13,7 +13,7 @@ and applies `zeebe:linkedResource` bindings.
 
 Camunda 7 (`camunda:` extensions) is not modelled: those attributes and elements are kept on
 round trip, including those on multi-instance loops and event definitions.
-`convertCamunda7()` / `casen migrate c7` convert
+`convertCamunda7()` / `bpmnkit migrate c7` convert
 Camunda 7 models to Camunda 8 and report what needs manual work. See
 [Migrate from Camunda 7](/docs/guides/migrate-from-camunda-7).
 

@@ -13,7 +13,7 @@ const BPMN = `<?xml version="1.0" encoding="UTF-8"?>
   </bpmn:process>
 </bpmn:definitions>`
 
-describe("casen export html", () => {
+describe("bpmnkit export html", () => {
 	let dir: string
 	const lines: string[] = []
 

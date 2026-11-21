@@ -129,7 +129,7 @@ templates only ever come from the *generated built-in catalogue*
 templates. Discovering `.camunda/element-templates/*.json` — walking up from the file to the
 project root — would make the `connector-catalog` plugin work with in-house connectors, which
 is the single most common real-world Camunda 8 need it currently cannot serve. Small change,
-large surface-area gain. The `casen` CLI can validate them against the same schema.
+large surface-area gain. The `bpmnkit` CLI can validate them against the same schema.
 
 **B. Visual BPMN diff.** — **shipped 2026-09-09** as `@bpmnkit/plugins/diff`. Two canvases,
 four categories, legend, synchronised viewports, and `diffDiagram()` in `@bpmnkit/core` for
@@ -157,7 +157,7 @@ desktop app and any future host.
 
 ### Tier 2 — worth doing, larger
 
-**F. A lint story that is not only CLI-deep.** `casen lint` has categories (`deploy`,
+**F. A lint story that is not only CLI-deep.** `bpmnkit lint` has categories (`deploy`,
 `connector`, `feel`, `feel-syntax`, `agentic`) built on `packages/core/src/bpmn/optimize/`,
 which is arguably a *better* rule set than bpmnlint's. But the findings never reach the
 canvas. Miragon's shape — overlays on offending elements, a summary badge, and entries in the
@@ -165,7 +165,7 @@ host's problem list — is the right target, and here it needs no host at all fo
 Their zero-config default (lint sensibly with no config file present, switch the engine layer
 from the diagram's detected platform) is a good default to copy.
 
-**G. Deployment as an editor surface.** `casen deploy` and the `deploy` plugin exist; what is
+**G. Deployment as an editor surface.** `bpmnkit deploy` and the `deploy` plugin exist; what is
 missing is Miragon's convention layer — payload files discovered from `.camunda/payloads/`
 so starting an instance with real test data is a two-click operation rather than a paste.
 
@@ -215,7 +215,7 @@ scoped as a viewer-and-review extension first, not a modeler.**
 - **Differentiation is available.** Miragon owns "the bpmn.io modeler, embedded". BPMN Kit
   could own things bpmn.io cannot do in an editor: in-canvas process simulation
   (`@bpmnkit/engine`), the FEEL playground, the AI bridge, ASCII rendering of a diagram into
-  a code review, the optimizer's findings, and `casen` deployment. None of that exists in the
+  a code review, the optimizer's findings, and `bpmnkit` deployment. None of that exists in the
   Marketplace today.
 
 ### Why to scope it down
@@ -238,11 +238,11 @@ scoped as a viewer-and-review extension first, not a modeler.**
 `dmn-viewer` / `form-viewer` plugins, plus minimap and zoom. Add the visual diff for `.bpmn`
 in the Source Control panel (item B above) — that alone justifies the install for a team
 reviewing process changes in pull requests, and read-only sidesteps the entire document
-protocol. Surface `casen lint` findings in the Problems panel from the extension host, where
+protocol. Surface `bpmnkit lint` findings in the Problems panel from the extension host, where
 Node is available and `@bpmnkit/core` runs unchanged.
 
 **Phase 2 — the things only this stack can do.** Step-through simulation of the open diagram
-with `@bpmnkit/engine` and token highlighting; deploy/start against a `casen` profile; the
+with `@bpmnkit/engine` and token highlighting; deploy/start against a `bpmnkit` profile; the
 FEEL playground as a webview panel.
 
 **Phase 3 — editing.** Only after Tier-1 items C, D and E have landed in `@bpmnkit/editor`,

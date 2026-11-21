@@ -322,15 +322,15 @@ const buildCmd: Command = {
 	examples: [
 		{
 			description: "Build, lint and deploy a text spec",
-			command: "casen build expense.txt --deploy",
+			command: "bpmnkit build expense.txt --deploy",
 		},
 		{
 			description: "Insert a task into an existing file, layout kept",
-			command: "casen build edit.mjs --edit order.bpmn",
+			command: "bpmnkit build edit.mjs --edit order.bpmn",
 		},
 		{
 			description: "Edit and move the file to Camunda 8.10",
-			command: "casen build edit.mjs --edit order.bpmn --camunda 8.10",
+			command: "bpmnkit build edit.mjs --edit order.bpmn --camunda 8.10",
 		},
 	],
 	async run(ctx) {
@@ -471,6 +471,7 @@ const buildCmd: Command = {
 
 export const buildGroup: CommandGroup = {
 	name: "build",
-	description: "Build a .bpmn (+ forms) from a short spec, lint and deploy it — casen build <spec>",
+	description:
+		"Build a .bpmn (+ forms) from a short spec, lint and deploy it — bpmnkit build <spec>",
 	commands: [buildCmd],
 }

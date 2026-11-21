@@ -67,9 +67,9 @@ the drop.
 ## From the CLI
 
 ```sh
-casen doc export order.bpmn                                  # order.html, print-ready
-casen doc export order.bpmn credit.dmn review.form --format docx
-casen doc export order.bpmn --format md --out docs/order.md
+bpmnkit doc export order.bpmn                                  # order.html, print-ready
+bpmnkit doc export order.bpmn credit.dmn review.form --format docx
+bpmnkit doc export order.bpmn --format md --out docs/order.md
 ```
 
 | Flag | Meaning |

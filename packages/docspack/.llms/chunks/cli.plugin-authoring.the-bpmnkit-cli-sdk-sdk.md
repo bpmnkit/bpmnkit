@@ -1,4 +1,4 @@
-# casen Plugin Authoring — The `@bpmnkit/cli-sdk` SDK
+# bpmnkit Plugin Authoring — The `@bpmnkit/cli-sdk` SDK
 
 Install the SDK as a devDependency in your plugin:
 
@@ -6,7 +6,7 @@ Install the SDK as a devDependency in your plugin:
 pnpm add -D @bpmnkit/cli-sdk
 ```
 
-It exports all types you need — no runtime dependency on casen internals.
+It exports all types you need — no runtime dependency on bpmnkit internals.
 
 ### `CasenPlugin`
 
@@ -15,7 +15,7 @@ The root export. Default-export one instance of this from `dist/index.js`:
 ```typescript
 interface CasenPlugin {
   id: string          // reverse-domain ID, e.g. "com.acme.casen-deploy"
-  name: string        // shown in "casen plugin list"
+  name: string        // shown in "bpmnkit plugin list"
   version: string
   groups: CommandGroup[]
 }
@@ -23,8 +23,8 @@ interface CasenPlugin {
 
 ### `CommandGroup`
 
-Maps to one top-level token in the CLI (`casen <group>`). The name must be unique across all
-installed plugins and the casen core commands:
+Maps to one top-level token in the CLI (`bpmnkit <group>`). The name must be unique across all
+installed plugins and the bpmnkit core commands:
 
 ```typescript
 interface CommandGroup {
@@ -37,7 +37,7 @@ interface CommandGroup {
 
 ### `Command`
 
-A single executable action within a group (`casen <group> <command>`):
+A single executable action within a group (`bpmnkit <group> <command>`):
 
 ```typescript
 interface Command {

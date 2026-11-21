@@ -8,7 +8,7 @@ AI-first BPMN development and operations for Claude Code — implement, extend, 
 npm install -g @bpmnkit/cli
 ```
 
-That's it — this plugin is **CLI-first**: every skill drives `casen` via Bash. No MCP server, no proxy daemon, no nested LLM required. (The `@bpmnkit/proxy` MCP server still exists separately for Studio/other AI hosts — it's unrelated to this plugin.)
+That's it — this plugin is **CLI-first**: every skill drives `bpmnkit` via Bash. No MCP server, no proxy daemon, no nested LLM required. (The `@bpmnkit/proxy` MCP server still exists separately for Studio/other AI hosts — it's unrelated to this plugin.)
 
 ## Documentation lookup
 
@@ -66,7 +66,7 @@ On first enable, Claude Code prompts for two optional values:
 | `/bpmnkit:instances [id] [--active\|--failed]` | List running process instances |
 | `/bpmnkit:incidents [--process-id X]` | List open incidents with suggested actions |
 
-Every skill that writes or changes a process goes through the same pipeline: **plan JSON → `casen synth` → compiled, laid-out BPMN.** No skill ever hand-writes BPMN XML, element IDs, or connector property keys — grep the plugin for `bpmndi`/`<bpmn:` and you'll find none.
+Every skill that writes or changes a process goes through the same pipeline: **plan JSON → `bpmnkit synth` → compiled, laid-out BPMN.** No skill ever hand-writes BPMN XML, element IDs, or connector property keys — grep the plugin for `bpmndi`/`<bpmn:` and you'll find none.
 
 ## Reference docs (read by skills, useful to read yourself)
 
@@ -96,8 +96,8 @@ Steps: fetch → group by type → investigate root cause → **propose fix (app
 
 ## Hooks
 
-- **SessionStart** — checks `casen` is installed
-- **PostToolUse** — runs the deploy gate (`casen check <file> --deploy`) on any `.bpmn` file written during the session; when the file would not deploy on Camunda 8, its errors go back to Claude to fix
+- **SessionStart** — checks `bpmnkit` is installed
+- **PostToolUse** — runs the deploy gate (`bpmnkit check <file> --deploy`) on any `.bpmn` file written during the session; when the file would not deploy on Camunda 8, its errors go back to Claude to fix
 
 ## Structure
 

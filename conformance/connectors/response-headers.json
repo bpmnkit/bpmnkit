@@ -1,0 +1,39 @@
+{
+  "description": "response headers are in response.headers (lower-case names)",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/h"
+      },
+      "response": {
+        "body": {},
+        "headers": {
+          "ETag": "\"v1\"",
+          "X-RateLimit-Remaining": "99"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "etag": "\"v1\"",
+        "left": "99"
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={etag: response.headers.etag, left: get value(response.headers, \"x-ratelimit-remaining\")}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/h"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#response"
+}

@@ -48,7 +48,7 @@ The promise is enforced by checks, not only by prose:
 | [`@bpmnkit/connector-gen`](/docs/packages/connector-gen) | OpenAPI to connector templates |
 | [`@bpmnkit/ascii`](/docs/packages/ascii) | BPMN as Unicode art |
 | [`@bpmnkit/docspack`](/docs/packages/docspack) | These docs, offline, for AI agents |
-| [`@bpmnkit/cli`](/docs/cli/casen) | `casen`, the command-line interface |
+| [`@bpmnkit/cli`](/docs/cli/casen) | `bpmnkit`, the command-line interface |
 
 The other fifteen published packages stay on 0.x on purpose. Some are not ready to freeze;
 the rest are examples, scaffolders or generated builds with no API of their own. Under
@@ -90,7 +90,7 @@ We would rather show a number than an adjective, so the new
 - **Installers and extensions.** The VS Code extension is now packaged on every release and
   attached to GitHub Releases, with Visual Studio Marketplace and Open VSX listings to
   follow. The desktop app gets Windows, macOS and Linux installers the same way.
-- **Your coding agent.** Each CLI release submits the MCP server (`casen proxy mcp`) to the
+- **Your coding agent.** Each CLI release submits the MCP server (`bpmnkit proxy mcp`) to the
   official MCP Registry, so Claude Code, Cursor and VS Code can find it.
 - **Interoperability.** `bpmnlint` compatibility, and more real-world models in the round-trip
   corpus.

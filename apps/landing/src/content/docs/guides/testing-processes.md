@@ -212,7 +212,7 @@ result.error        // why: the incident, or what it still waited for
 
 A process that cannot finish does not throw: `reachedEnd` is false, and `stoppedAt` and
 `error` say where and why. For example, a gateway with no matching condition and no default
-flow. `casen synth --check` and Drop's generator run it on what they produce.
+flow. `bpmnkit synth --check` and Drop's generator run it on what they produce.
 
 ## AI agents
 
@@ -339,16 +339,16 @@ Vitest runs each file in isolation.
 
 `@bpmnkit/engine/wasm-runner` runs `.bpmn.tests.json` scenarios on Reebe, which has more
 of Zeebe's semantics. A `mode: "wasm"` option for `createProcessTest` is planned but not
-yet available. The runner drives a scenario from start to end in one call; `casen test`
+yet available. The runner drives a scenario from start to end in one call; `bpmnkit test`
 uses it, and every scenario in the [template gallery](/templates) passes on it.
 
 ### Camunda process-test JSON
 
-`casen test test <file>.bpmn` also runs Camunda process-test JSON files on Reebe, with no
-Java or Maven. See [Does it run? Test it with casen test](/docs/guides/executable-camunda-process#does-it-run-test-it-with-casen-test).
+`bpmnkit test test <file>.bpmn` also runs Camunda process-test JSON files on Reebe, with no
+Java or Maven. See [Does it run? Test it with bpmnkit test](/docs/guides/executable-camunda-process#does-it-run-test-it-with-casen-test).
 
 ## See also
 
 - [Simulation](/docs/guides/simulation): the `Engine` API under these helpers.
-- `casen test test`: runs the `.bpmn.tests.json` scenario sidecars that `casen synth` writes,
+- `bpmnkit test test`: runs the `.bpmn.tests.json` scenario sidecars that `bpmnkit synth` writes,
   without a test runner.

@@ -11,9 +11,9 @@ Extract the `.bpmn` filename (find the single `.bpmn` in cwd, or ask, if not giv
 ## Step 1 — Gate on deploy-readiness
 
 ```sh
-casen lint lint <file>.bpmn --profile deploy
+bpmnkit lint lint <file>.bpmn --profile deploy
 # with forms or decisions shipping alongside: one call checks them all and their references
-casen check <file>.bpmn <name>.form <name>.dmn --deploy --json
+bpmnkit check <file>.bpmn <name>.form <name>.dmn --deploy --json
 ```
 
 If this reports any errors, stop and fix them first (or run `/review`) — do not deploy with deploy-profile errors.
@@ -21,18 +21,18 @@ If this reports any errors, stop and fix them first (or run `/review`) — do no
 ## Step 2 — Deploy
 
 ```sh
-casen deploy deploy <file>.bpmn                     # local Reebe
-casen deploy deploy <file>.bpmn --target camunda8   # active Camunda 8 profile
+bpmnkit deploy deploy <file>.bpmn                     # local Reebe
+bpmnkit deploy deploy <file>.bpmn --target camunda8   # active Camunda 8 profile
 ```
 
-Local deploy unreachable → tell the user to run `casen reebe start --port 26500` first, then retry. Camunda 8 deploy with no active profile → tell the user to run `casen profile create <name> --base-url <url> --auth-type bearer --token <token>` then `casen profile use <name>`, then retry.
+Local deploy unreachable → tell the user to run `bpmnkit reebe start --port 26500` first, then retry. Camunda 8 deploy with no active profile → tell the user to run `bpmnkit profile create <name> --base-url <url> --auth-type bearer --token <token>` then `bpmnkit profile use <name>`, then retry.
 
 ## Step 3 — Verify and summarize
 
 ```sh
-casen process-definition list --output json
+bpmnkit process-definition list --output json
 ```
 
 Report: `Deployed: <process-id>  version: <N>  target: <local|camunda8>`.
 
-If any scaffolded workers exist in `./workers/`, remind: `casen worker start`. Remind about any `{{secrets.NAME}}` the process references — they must be provisioned in the target engine's secret store.
+If any scaffolded workers exist in `./workers/`, remind: `bpmnkit worker start`. Remind about any `{{secrets.NAME}}` the process references — they must be provisioned in the target engine's secret store.

@@ -35,7 +35,7 @@ const STATES: Record<string, string[]> = {
 	ASSERT_PROCESS_INSTANCE: ["IS_ACTIVE", "IS_COMPLETED"],
 }
 
-const NOT_YET = "is not supported by casen test yet"
+const NOT_YET = "is not supported by bpmnkit test yet"
 
 function parseInstruction(raw: unknown, where: string, errors: string[]): CptInstruction | null {
 	if (!isObj(raw)) {

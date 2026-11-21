@@ -39,7 +39,7 @@ no benchmark figures are published yet.
 
 The same engine compiles to WebAssembly as
 [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm), which
-`@bpmnkit/engine/wasm-runner` and `casen test` use to run scenarios in the browser and Node.js.
+`@bpmnkit/engine/wasm-runner` and `bpmnkit test` use to run scenarios in the browser and Node.js.
 
 ---
 

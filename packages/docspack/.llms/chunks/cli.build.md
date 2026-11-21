@@ -1,12 +1,12 @@
-# casen build
+# bpmnkit build
 
-`casen build` takes a short spec and does everything after it: lay out, write the `.bpmn`,
+`bpmnkit build` takes a short spec and does everything after it: lay out, write the `.bpmn`,
 generate a Camunda form for every user task without one, lint (deploy gate plus the warnings
 bpmnlint and camunda-compat report), and with `--deploy` send the model and its forms in one
 deployment. It prints one line when all is well and one line per problem otherwise.
 
 ```sh
-casen build expense.txt --deploy
+bpmnkit build expense.txt --deploy
 ```
 
 ```

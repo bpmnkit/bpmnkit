@@ -1,6 +1,6 @@
 ---
 title: One-File BPMN Viewer
-description: Turn a .bpmn file into one self-contained HTML page that shows the diagram offline — with the casen export html command, the toHtml Node helper, the bpmnkit-viewer Rust crate, or a string replace in any other language.
+description: Turn a .bpmn file into one self-contained HTML page that shows the diagram offline — with the bpmnkit export html command, the toHtml Node helper, the bpmnkit-viewer Rust crate, or a string replace in any other language.
 sidebar:
   order: 23
 ---
@@ -14,8 +14,8 @@ small enough to inline into the page that carries the diagram.
 ## From the CLI
 
 ```sh
-casen export html order.bpmn                      # writes order.html next to the file
-casen export html order.bpmn -o site/order.html --title "Order process"
+bpmnkit export html order.bpmn                      # writes order.html next to the file
+bpmnkit export html order.bpmn -o site/order.html --title "Order process"
 ```
 
 The file has no layout (no `bpmndi` section)? The page shows a short message instead of a diagram:
@@ -53,7 +53,7 @@ throws on a value that could break out of the CSS. In your own page, set the var
 element or an ancestor, or put `data-theme="light|dark|auto"` on the script. In code,
 `render(xml, el, { theme })` also takes a partial palette, which wins over the variables.
 
-From the shell: `casen export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`.
+From the shell: `bpmnkit export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`.
 
 ## From Rust
 

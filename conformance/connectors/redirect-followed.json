@@ -1,0 +1,51 @@
+{
+  "description": "followRedirects true follows the Location",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/old"
+      },
+      "response": {
+        "headers": {
+          "Location": "http://mock.local/new"
+        },
+        "status": 302
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/new"
+      },
+      "response": {
+        "body": {
+          "moved": true
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myResponseBody": {
+          "moved": true
+        }
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "followRedirects": true,
+      "method": "GET",
+      "url": "http://mock.local/old"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/"
+}

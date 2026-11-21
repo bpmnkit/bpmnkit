@@ -39,7 +39,7 @@ beforeEach(() => {
 	dir = mkdtempSync(join(tmpdir(), "casen-template-"))
 })
 
-describe("casen template", () => {
+describe("bpmnkit template", () => {
 	it("lists every template, or one category", async () => {
 		const all = (await run("list", [])).listed[0] as Array<{ id: string }>
 		expect(all.length).toBeGreaterThanOrEqual(20)
@@ -84,6 +84,6 @@ describe("casen template", () => {
 	})
 
 	it("names the list command when the id is unknown", async () => {
-		await expect(run("use", ["no-such-template", dir])).rejects.toThrow(/casen template list/)
+		await expect(run("use", ["no-such-template", dir])).rejects.toThrow(/bpmnkit template list/)
 	})
 })

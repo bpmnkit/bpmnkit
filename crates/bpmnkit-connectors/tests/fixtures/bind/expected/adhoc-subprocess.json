@@ -1,0 +1,20 @@
+[
+	[
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Sub_1: Expected path expression '=agent' but doesn't match the pattern '[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*'. (zeebe/output-mapping)"
+		},
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Sub_1: Must not contain a start event. (zeebe/ad-hoc-start-event)"
+		},
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Sub_1: Must not contain an end event. (zeebe/ad-hoc-end-event)"
+		},
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Sub_1: Must not define activeElementsCollection in combination with zeebe:taskDefinition. (zeebe/ad-hoc-agent-active-elements)"
+		}
+	]
+]

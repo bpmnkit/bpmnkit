@@ -1,12 +1,12 @@
 /**
  * Deploying the open diagram to a Camunda 8 cluster, and starting an instance.
  *
- * The clusters are the ones `casen` already knows about: this reads the same
+ * The clusters are the ones `bpmnkit` already knows about: this reads the same
  * profile store the CLI writes, so there is no second place to configure a
  * connection and no credentials living in workspace settings. A profile holds
  * secrets; nothing in here returns one, logs one, or puts one in a message.
  *
- * Deployment goes over `fetch` with a multipart body, the way `casen deploy`
+ * Deployment goes over `fetch` with a multipart body, the way `bpmnkit deploy`
  * does, because the endpoint takes files. Starting an instance goes through the
  * generated `CamundaClient`, because that one takes JSON and is typed.
  */
@@ -38,7 +38,7 @@ export interface DeployedProcess {
 export class DeployError extends Error {}
 
 /**
- * The Camunda 8 profiles `casen` knows about, active one first.
+ * The Camunda 8 profiles `bpmnkit` knows about, active one first.
  *
  * Admin profiles are left out: they authenticate against the administration
  * API and cannot deploy a process, so offering one is offering a failure.

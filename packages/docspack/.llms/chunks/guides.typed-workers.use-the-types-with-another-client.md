@@ -25,7 +25,7 @@ camunda.createJobWorker({
 ## Check workers against the BPMN
 
 ```sh
-casen gen types processes/ --check-workers "src/**/*.ts" --strict
+bpmnkit gen types processes/ --check-workers "src/**/*.ts" --strict
 ```
 
 The check scans your sources for worker registrations. It then reports two types of mismatch:
@@ -35,7 +35,7 @@ The check scans your sources for worker registrations. It then reports two types
 
 `--strict` makes the command exit 1 when there is a mismatch. The scan is a heuristic: it finds
 only job types that are string literals in the common registration forms. The
-[`casen generate` reference](/docs/cli/generate#check-workers-against-the-bpmn) lists these forms.
+[`bpmnkit generate` reference](/docs/cli/generate#check-workers-against-the-bpmn) lists these forms.
 Job types that start with `io.camunda` are Camunda connectors. The connector runtime runs them, so
 the check never reports them as missing.
 

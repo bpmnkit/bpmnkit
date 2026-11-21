@@ -1,7 +1,7 @@
 /**
  * @bpmnkit/plugins/lint — static analysis on the canvas.
  *
- * `casen lint` has had five categories of rules for a while; none of them were
+ * `bpmnkit lint` has had five categories of rules for a while; none of them were
  * visible while modelling. This puts them on the diagram: a marker on every
  * offending element, a control that counts them and steps through them, and a
  * report a host can forward to its own problem list.

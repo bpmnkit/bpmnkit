@@ -14,9 +14,9 @@ await worker.done
 The workforce serves the `.agent()` steps. Start both, then an instance:
 
 ```sh
-casen agent work                  # every hired agent, until Ctrl+C
+bpmnkit agent work                  # every hired agent, until Ctrl+C
 npx tsx flows/worker.ts
-casen process-instance create --data '{"processDefinitionId":"pr-review","variables":{"repo":"acme/api","prKey":"42"}}'
+bpmnkit process-instance create --data '{"processDefinitionId":"pr-review","variables":{"repo":"acme/api","prKey":"42"}}'
 ```
 
 For each job, the workforce renders the task's prompt with the instance's variables, runs the

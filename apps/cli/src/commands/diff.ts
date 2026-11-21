@@ -156,18 +156,18 @@ const diffBpmnCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Compare two files", command: "casen diff bpmn old.bpmn new.bpmn" },
+		{ description: "Compare two files", command: "bpmnkit diff bpmn old.bpmn new.bpmn" },
 		{
 			description: "Fail a pipeline when a process changed",
-			command: "casen diff bpmn main.bpmn branch.bpmn --exit-code",
+			command: "bpmnkit diff bpmn main.bpmn branch.bpmn --exit-code",
 		},
 		{
 			description: "Open the changes in a browser, or attach them to a review",
-			command: "casen diff bpmn old.bpmn new.bpmn --html diff.html --png diff.png",
+			command: "bpmnkit diff bpmn old.bpmn new.bpmn --html diff.html --png diff.png",
 		},
 		{
 			description: "Machine-readable output",
-			command: "casen diff bpmn old.bpmn new.bpmn --format json",
+			command: "bpmnkit diff bpmn old.bpmn new.bpmn --format json",
 		},
 	],
 	async run(ctx) {

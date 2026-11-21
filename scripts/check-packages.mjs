@@ -13,6 +13,7 @@ import { existsSync, readFileSync } from "node:fs"
 import { resolve } from "node:path"
 import {
 	APPS,
+	DOCUMENTED_BY,
 	LICENSE_OVERRIDES,
 	PUBLISHED,
 	STABLE,
@@ -149,7 +150,7 @@ function checkStable() {
 
 		const pkg = JSON.parse(readFileSync(resolve(ROOT, dir, "package.json"), "utf8"))
 		const label = pkg.name ?? dir
-		const short = String(pkg.name ?? "").replace("@bpmnkit/", "")
+		const short = DOCUMENTED_BY[dir] ?? String(pkg.name ?? "").replace("@bpmnkit/", "")
 		const issues = []
 
 		const test = pkg.scripts?.test
@@ -159,7 +160,7 @@ function checkStable() {
 			)
 		}
 
-		// A page under `packages/`, or a whole section of its own — `casen` has one.
+		// A page under `packages/`, or a whole section of its own — `bpmnkit` has one.
 		const documented =
 			existsSync(resolve(docsDir, "packages", `${short}.md`)) || existsSync(resolve(docsDir, short))
 		if (!documented) {

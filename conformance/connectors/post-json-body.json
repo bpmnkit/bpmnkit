@@ -1,0 +1,48 @@
+{
+  "description": "POST sends the body as JSON with Content-Type application/json by default",
+  "exchanges": [
+    {
+      "request": {
+        "body": {
+          "item": "book",
+          "qty": 2
+        },
+        "headers": {
+          "content-type": "application/json"
+        },
+        "method": "POST",
+        "path": "/orders"
+      },
+      "response": {
+        "body": {
+          "id": "o-1"
+        },
+        "status": 201
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "orderId": "o-1",
+        "status": 201
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={orderId: response.body.id, status: response.status}"
+    },
+    "retries": 3,
+    "variables": {
+      "body": {
+        "item": "book",
+        "qty": 2
+      },
+      "method": "POST",
+      "url": "http://mock.local/orders"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#content-type"
+}

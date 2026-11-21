@@ -1,0 +1,12 @@
+---
+source: crates/bpmnkit-cli/tests/native.rs
+expression: "run(&[\"diff\", &a, &b], 0)"
+---
+  + f3
+  + Notify (notify)
+  ~ Charge (charge)
+  ~ end
+  ~ f2
+  ~ order
+
+6 differences: 2 added, 4 changed

@@ -9,7 +9,7 @@
 Publish the message when the outside event happens — from a CI webhook, for example:
 
 ```sh
-casen message publish --data '{"name":"ci-passed","correlationKey":"42"}'
+bpmnkit message publish --data '{"name":"ci-passed","correlationKey":"42"}'
 ```
 
 Nothing holds a worker, an agent slot or a context window while the instance waits.

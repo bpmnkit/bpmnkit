@@ -1,0 +1,5 @@
+# I5 (doc/plans/c8-workers-and-rust-cli.md §4): iteration order must be deterministic.
+disallowed-types = [
+  { path = "std::collections::HashMap", reason = "use BTreeMap: output order must be deterministic" },
+  { path = "std::collections::HashSet", reason = "use BTreeSet: output order must be deterministic" },
+]

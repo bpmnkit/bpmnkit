@@ -1,0 +1,11 @@
+[
+	[
+		{
+			"message": "bpmn:serviceTask \"Task_1\" cannot reference a message; the message bindings were not written"
+		},
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Task_1: Must have exactly one 'zeebe:taskDefinition' extension element (zeebe/service-task-definition)"
+		}
+	]
+]

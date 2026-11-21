@@ -1,17 +1,17 @@
 ---
-title: casen build
+title: bpmnkit build
 description: One command from a short spec to a deployed process — writes the laid-out .bpmn and a form per user task, lints it like c8ctl and deploys it with its forms.
 sidebar:
   order: 2
 ---
 
-`casen build` takes a short spec and does everything after it: lay out, write the `.bpmn`,
+`bpmnkit build` takes a short spec and does everything after it: lay out, write the `.bpmn`,
 generate a Camunda form for every user task without one, lint (deploy gate plus the warnings
 bpmnlint and camunda-compat report), and with `--deploy` send the model and its forms in one
 deployment. It prints one line when all is well and one line per problem otherwise.
 
 ```sh
-casen build expense.txt --deploy
+bpmnkit build expense.txt --deploy
 ```
 
 ```
@@ -96,4 +96,4 @@ Each finding names the element, the BPMN Kit rule id and the key the rule has in
 | `--no-forms` | Do not generate forms for form-less user tasks (with `--edit`, only new ones get forms anyway) |
 | `--verbose` | Also list what the text reader completed (ends, joins, renamed ids) |
 
-casen silences Node's process warnings (such as the proxy agent notice); `NODE_NO_WARNINGS=0` keeps them.
+bpmnkit silences Node's process warnings (such as the proxy agent notice); `NODE_NO_WARNINGS=0` keeps them.

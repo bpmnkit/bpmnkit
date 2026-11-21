@@ -12,6 +12,9 @@ CI runs the record step and fails on `git diff --exit-code conformance/`; the vi
 `packages/feel/tests/conformance.test.ts` and `packages/core/tests/conformance.test.ts` fail on any
 drift. A Rust runner reads the same files.
 
+`connectors/` is the exception: its oracle is the real Camunda 8.8 connector runtime, not TS (see
+`connectors/README.md`).
+
 ## FEEL: `feel/<group>.jsonl`
 
 One case per line:
@@ -610,6 +613,14 @@ empty process, no process, unnamed elements); `opt-*` set `title` to text, `""` 
 - `expected/diff.json`: `diffBpmn(parseBpmn(before), parseBpmn(after))` as JSON, keys sorted, 2-space indent. It carries `beforeHash` / `afterHash`, so `semanticHash` parity is checked too (the Rust runner compares numbers by value).
 
 Cases: `rename`, `retype`, `rewire-flow`, `condition-change`, `zeebe-header-change`, `lane-add`, `lane-remove`, `move-only` (DI only), `noop-reformat` (reordered, re-spaced, attribute order and sub-pixel noise: no changes, equal hashes), `ids-only-change`.
+
+## Jobspec: `jobspec/jobs.json`
+
+The job list of `extractProcessContract` (what `casen gen types` reads) for every
+`bpmn/<case>/input.bpmn`, keyed by case: per job type its elements
+(`processId#elementId#elementType`), headers and catchable error codes (`"any"` for a catch-all),
+plus the elements with a FEEL job type. Recorded by `packages/core/tests/conformance-jobspec.test.ts`;
+`crates/bpmnkit-jobspec/tests/conformance.rs` must extract the same.
 
 ## `pending.json`
 

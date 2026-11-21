@@ -1,6 +1,6 @@
-# casen CLI
+# bpmnkit CLI
 
-`casen` is an interactive terminal UI (TUI) for managing Camunda 8. Navigate with arrow keys,
+`bpmnkit` is an interactive terminal UI (TUI) for managing Camunda 8. Navigate with arrow keys,
 no flags to memorize.
 
 
@@ -14,7 +14,7 @@ pnpm add -g @bpmnkit/cli
 ## Quick Start
 
 ```sh
-casen
+bpmnkit
 ```
 
 The main menu appears. Use ↑ ↓ to navigate, Enter to select, Escape to go back.
@@ -23,7 +23,7 @@ The main menu appears. Use ↑ ↓ to navigate, Enter to select, Escape to go ba
 ## Navigation Structure
 
 ```
-casen
+bpmnkit
 ├── generate        — generate or modify BPMN files without the TUI (alias: gen)
 │   ├── bpmn        — templates, CompactDiagram JSON, or patch existing files
 │   └── types       — TypeScript types for job workers, generated from BPMN
@@ -32,8 +32,8 @@ casen
 │   ├── bpmn        — BPMN diagrams rendered as SVG
 │   ├── dmn         — DMN decision tables
 │   └── form        — Camunda form layouts
-├── build           — spec → .bpmn + forms → lint → deploy in one call (casen build <spec>)
-├── check           — check .bpmn, .dmn and .form files in one call (casen check <file...>)
+├── build           — spec → .bpmn + forms → lint → deploy in one call (bpmnkit build <spec>)
+├── check           — check .bpmn, .dmn and .form files in one call (bpmnkit check <file...>)
 ├── lint            — static analysis and auto-fix for BPMN files
 │   ├── lint        — run all checks, report findings
 │   └── improve     — AI-assisted improvement suggestions

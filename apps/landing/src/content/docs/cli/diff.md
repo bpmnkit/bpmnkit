@@ -1,16 +1,16 @@
 ---
-title: casen diff
+title: bpmnkit diff
 description: Compare two BPMN files and report what a reviewer would see change — added, removed, changed and moved elements, as text or JSON, with an exit code for CI.
 sidebar:
   order: 4
 ---
 
-`casen diff bpmn` answers the question a text diff cannot: *what changed about the process?*
+`bpmnkit diff bpmn` answers the question a text diff cannot: *what changed about the process?*
 Two files go in, and what comes out is the list of elements a reviewer would see differ —
 named, not just identified.
 
 ```sh
-casen diff bpmn old.bpmn new.bpmn
+bpmnkit diff bpmn old.bpmn new.bpmn
 ```
 
 ```
@@ -33,7 +33,7 @@ casen diff bpmn old.bpmn new.bpmn
 `moved` is the category that earns the command. The semantic hash behind
 [`diffSemantics()`](/docs/packages/core#diffsemanticsbefore-after) deliberately drops all
 diagram interchange — that is what makes it stable across a re-layout — so a task somebody
-dragged reads there as no change at all. `casen diff` computes the layout half separately
+dragged reads there as no change at all. `bpmnkit diff` computes the layout half separately
 from DI (bounds, waypoints, label placement, flags such as collapsed/expanded) and reports it
 as its own category. An element that changed *and* moved is reported as changed, because a
 semantic change is what a reviewer needs first.
@@ -56,7 +56,7 @@ viewer until the reader drills into it.
 ### As a pipeline gate
 
 ```sh
-casen diff bpmn main/order.bpmn branch/order.bpmn --exit-code
+bpmnkit diff bpmn main/order.bpmn branch/order.bpmn --exit-code
 ```
 
 Exits non-zero when anything differs, so a job can fail — or a review can be requested —
@@ -65,7 +65,7 @@ whenever a pull request touches the shape of a process rather than only its form
 ### Machine-readable
 
 ```sh
-casen diff bpmn old.bpmn new.bpmn --format json
+bpmnkit diff bpmn old.bpmn new.bpmn --format json
 ```
 
 ```json
@@ -82,17 +82,17 @@ casen diff bpmn old.bpmn new.bpmn --format json
 ### Alongside the picture
 
 ```sh
-casen diff bpmn old.bpmn new.bpmn --ascii
+bpmnkit diff bpmn old.bpmn new.bpmn --ascii
 ```
 
 Prints both diagrams as ASCII art above the summary — the same rendering
-[`casen view`](/docs/cli/view) produces, and the same one the VS Code extension copies into a
+[`bpmnkit view`](/docs/cli/view) produces, and the same one the VS Code extension copies into a
 pull request.
 
 ### A page to open or attach
 
 ```sh
-casen diff bpmn old.bpmn new.bpmn --html diff.html --png diff.png
+bpmnkit diff bpmn old.bpmn new.bpmn --html diff.html --png diff.png
 ```
 
 `diff.html` is one file that loads nothing: both diagrams side by side or overlaid (with a

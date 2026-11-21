@@ -52,14 +52,14 @@ const docExportCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Print-ready HTML", command: "casen doc export order.bpmn" },
+		{ description: "Print-ready HTML", command: "bpmnkit doc export order.bpmn" },
 		{
 			description: "Word, with the decision and form the process links to",
-			command: "casen doc export order.bpmn credit.dmn review.form --format docx",
+			command: "bpmnkit doc export order.bpmn credit.dmn review.form --format docx",
 		},
 		{
 			description: "Markdown for a wiki",
-			command: "casen doc export order.bpmn --format md --out README.md",
+			command: "bpmnkit doc export order.bpmn --format md --out README.md",
 		},
 	],
 	async run(ctx) {

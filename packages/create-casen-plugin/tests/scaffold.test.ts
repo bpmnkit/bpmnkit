@@ -73,7 +73,7 @@ describe("non-interactive scaffold", () => {
 		expect(read(dir, ".gitignore")).toBe("node_modules/\ndist/\n")
 	})
 
-	it("writes a package.json casen can discover and install", () => {
+	it("writes a package.json bpmnkit can discover and install", () => {
 		expect(pkgJson(dir)).toEqual({
 			name: "casen-deploy",
 			version: "0.1.0",
@@ -276,7 +276,7 @@ describe("the generated project", () => {
 		expect(existsSync(join(dir, "dist/index.js"))).toBe(true)
 	}, 60_000)
 
-	it("builds a default export casen's plugin loader accepts, with a runnable command", async () => {
+	it("builds a default export bpmnkit's plugin loader accepts, with a runnable command", async () => {
 		const mod = (await import(pathToFileURL(join(dir, "dist/index.js")).href)) as {
 			default: {
 				id: string

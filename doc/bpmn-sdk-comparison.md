@@ -135,7 +135,7 @@ Two consequences worth having:
   hash, so DI churn can never be confused with a model change.
 - **`write()` returns a change report** — `{ added, changed, removed }` keyed by element
   ID, with before/after projections. That is exactly the diff an AI review loop or a
-  `casen` command needs to show a user what it is about to do.
+  `bpmnkit` command needs to show a user what it is about to do.
 
 ### 3.4 Fidelity as an executable gate
 
@@ -229,7 +229,7 @@ gap at the edges of the model, not a systemic parser failure.
 
 ### 4.2 `compactify()` → `applyOperations()` → `expand()`
 
-This is the path the CLI (`casen generate bpmn --input`), the MCP server
+This is the path the CLI (`bpmnkit generate bpmn --input`), the MCP server
 (`get_diagram` / `replace_diagram`) and the AI review loop all run on. It is far more
 destructive, because `CompactElement` models about fifteen properties and discards the
 rest by design.
@@ -255,7 +255,7 @@ does not exist (`if (found) …` throughout, `operations.ts:100-160`), and `reso
 falls back to the process root when `parent` does not resolve. An AI-generated patch that
 misspells an ID reports success and changes nothing.
 
-**The sharpest edge:** `casen generate bpmn --input model.bpmn` with no `--output`
+**The sharpest edge:** `bpmnkit generate bpmn --input model.bpmn` with no `--output`
 **overwrites the input file in place** (`apps/cli/src/commands/generate.ts:670-676`) with
 `expand(compactify(parse(xml)))` — a full lossy round trip — with no backup, no `--force`,
 no verification, and a success message. Run on a real blueprint, it destroys pools, lanes,
@@ -359,7 +359,7 @@ source — only the problem statement can be. Concretely:
 | G10 ✅ | No change report on write | no such module | A2 (`diffSemantics`) | golden diff per corpus fixture |
 | G11 ✅ | No verified write boundary — nothing re-reads what it wrote | `writeFile` at 11 CLI sites | A4 | injected lossy serializer must be refused |
 | G12 ✅ | Non-atomic writes; no overwrite guard; output may alias input | `apps/cli/src/commands/*` | A4 | interrupted-write and alias tests |
-| G13 ✅ | `casen generate bpmn --input` overwrites its input with a lossy round trip | `generate.ts:670-676` | A5a | CLI test: refuses without `--output`/`--force` |
+| G13 ✅ | `bpmnkit generate bpmn --input` overwrites its input with a lossy round trip | `generate.ts:670-676` | A5a | CLI test: refuses without `--output`/`--force` |
 | G14 ✅ | `applyOperations()` no-ops silently on unresolved element/flow/parent IDs | `operations.ts:100-160` | A5b | unresolved-ID test expects a failure |
 | G15 ✅ | Edit path runs through lossy `CompactDiagram` (CLI, MCP, AI review) | §4.2 | A5c | corpus edit round trip preserves hash |
 | G16 ✅ | Docs assert a round-trip guarantee we do not hold; example uses `bpmn-moddle`'s API | `concepts.md:80,90` | A6 | docspack rebuilt; claim matches A1's result |
@@ -491,7 +491,7 @@ Effort: ~2 days.
 
 ### A5 — Route the CLI and MCP edit paths off `CompactDiagram` (P0 for the CLI)
 
-- **Immediate, small:** `casen generate bpmn --input` must not overwrite its input by
+- **Immediate, small:** `bpmnkit generate bpmn --input` must not overwrite its input by
   default. Require `--output`, or require `--force` to replace in place, and route the
   write through A4. This is a one-file change in `apps/cli/src/commands/generate.ts` and
   it stops the worst case today. Ship it ahead of the rest of A5.

@@ -1,0 +1,14 @@
+{
+  "id": "external_ref",
+  "name": "External ref",
+  "auth": {
+    "type": "noAuth"
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/x",
+      "id": "x"
+    }
+  ]
+}

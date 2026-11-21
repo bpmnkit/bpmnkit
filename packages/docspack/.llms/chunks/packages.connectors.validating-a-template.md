@@ -20,7 +20,7 @@ is collected rather than stopping at the first. Warnings are kept separate from 
 CI gate can fail on one and not the other. `readTemplateDocument` parses a file that may hold
 one template or an array of them.
 
-The CLI wraps this as [`casen connector validate`](/docs/cli/connector), which exits non-zero
+The CLI wraps this as [`bpmnkit connector validate`](/docs/cli/connector), which exits non-zero
 for CI and takes `--format json`.
 
 ---

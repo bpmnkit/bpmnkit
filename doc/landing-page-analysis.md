@@ -114,7 +114,7 @@ Line numbers refer to the current state of the files on this branch.
 | M-09 | M | ARCH | **Compare pages miss the comparisons architects actually need.** Only bpmn-js and Camunda Modeler exist (`compare/index.astro:7-18`). Missing: official `@camunda8/sdk` (the default alternative for the API client), `bpmn-moddle` + `bpmn-auto-layout` (the honest generation alternative), raw XML templating. |
 | M-10 | M | BIZ | **Business-relevant value props exist but are buried in dev phrasing.** "AI generates it, the SDK validates and renders it" (`index.astro:178`) is a headline-grade business benefit ("AI drafts your process diagrams, guaranteed valid") left untranslated; same for Camunda-compat and the connector catalog. |
 | M-11 | L | BIZ | **Meta description narrows the audience at the SERP stage.** `content.ts:6-9` / `index.astro:37` lead with "A TypeScript SDK…" — a business searcher never clicks. |
-| M-12 | L | BIZ | **Insider strings:** CLI terminal titled "casen" with zero introduction (`index.astro:578`); "FEEL Functions" footer link is the only FEEL mention on the page (`index.astro:817`); "from code, not clicks" implicitly disparages the analyst persona whose job is clicks (keep the headline — reconcile in the subtitle, see Phase 4). |
+| M-12 | L | BIZ | **Insider strings:** CLI terminal titled "bpmnkit" with zero introduction (`index.astro:578`); "FEEL Functions" footer link is the only FEEL mention on the page (`index.astro:817`); "from code, not clicks" implicitly disparages the analyst persona whose job is clicks (keep the headline — reconcile in the subtitle, see Phase 4). |
 
 ### A.5 Structure & information architecture
 
@@ -431,7 +431,7 @@ existing voice (confident, concrete, no fluff) and keep every claim verifiable.
       toolkit for building, simulating, and deploying business-process (BPMN)
       diagrams with code and AI. TypeScript, MIT-licensed, Camunda 8
       compatible."
-    - CLI section: add one introducing line "casen — the BPMN Kit command
+    - CLI section: add one introducing line "bpmnkit — the BPMN Kit command
       line" above or in the section sub-copy (`index.astro:526-529`).
     - Animated-demo caption (`index.astro:420`): "Watch a process get built —
       each line of code (or AI instruction) instantly becomes a diagram your

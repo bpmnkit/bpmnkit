@@ -1,11 +1,11 @@
 # VS Code Extension — What it does — Deploy against your own clusters
 
-Deployment targets come from `casen`'s profile store — the same file
-[`casen profile create`](/docs/cli/casen#connection-profiles) writes — so there is no second
+Deployment targets come from `bpmnkit`'s profile store — the same file
+[`bpmnkit profile create`](/docs/cli/casen#connection-profiles) writes — so there is no second
 place to configure a cluster and no credentials in your workspace settings:
 
 ```sh
-casen profile create staging --base-url https://<cluster>.camunda.io/<id> \
+bpmnkit profile create staging --base-url https://<cluster>.camunda.io/<id> \
   --auth-type oauth --client-id … --client-secret …
 ```
 

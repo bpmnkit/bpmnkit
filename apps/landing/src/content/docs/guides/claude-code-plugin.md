@@ -7,8 +7,8 @@ sidebar:
 
 The bpmnkit Claude Code plugin adds BPMN-aware slash commands, autonomous agents, and
 ambient quality hooks directly into Claude Code. It's **CLI-first**: every skill drives
-`casen` via Bash — no MCP server, no proxy daemon. Every process is authored as a
-`ProcessPlan` JSON file and compiled deterministically by `casen synth`; no skill ever
+`bpmnkit` via Bash — no MCP server, no proxy daemon. Every process is authored as a
+`ProcessPlan` JSON file and compiled deterministically by `bpmnkit synth`; no skill ever
 writes BPMN XML by hand.
 
 ## Prerequisites
@@ -70,7 +70,7 @@ The main entry point — natural language to a compiled, tested BPMN process.
 /bpmnkit:implement employee onboarding process with HR approval
 ```
 
-Resolves connectors, writes a `ProcessPlan`, compiles it with `casen synth`, tests it,
+Resolves connectors, writes a `ProcessPlan`, compiles it with `bpmnkit synth`, tests it,
 scaffolds any missing workers, and asks where to deploy.
 
 ---
@@ -83,8 +83,8 @@ Extend an existing process from a natural-language change.
 /bpmnkit:extend order-fulfillment.bpmn add a timeout boundary on the payment step
 ```
 
-Lifts the process to plan form (`casen plan extract`), writes a small delta plan, and
-merges it in (`casen synth --merge`) — the summary is at the element level, not an XML diff.
+Lifts the process to plan form (`bpmnkit plan extract`), writes a small delta plan, and
+merges it in (`bpmnkit synth --merge`) — the summary is at the element level, not an XML diff.
 
 ---
 
@@ -151,7 +151,7 @@ Gate on deploy-readiness, then deploy to local Reebe or Camunda 8.
 
 Write a process as a TypeScript build script, a DMN decision table or a Camunda form. Each
 skill carries its [agent card](/docs/agent-cards/bpmn): a runnable script, the top options
-and the traps. Outside Claude Code, `casen agent-card bpmn|dmn|form` prints the same card.
+and the traps. Outside Claude Code, `bpmnkit agent-card bpmn|dmn|form` prints the same card.
 
 ```
 /bpmnkit:dmn order risk by amount and country
@@ -208,13 +208,13 @@ Build me an invoice approval process for accounts payable
 **What it does:**
 
 1. Asks clarifying questions (error paths, user tasks, deploy target)
-2. Checks domain patterns (`casen pattern list`/`get`)
+2. Checks domain patterns (`bpmnkit pattern list`/`get`)
 3. Resolves connectors, writes the plan
-4. Compiles it with `casen synth`
+4. Compiles it with `bpmnkit synth`
 5. Shows a preview and **waits for your approval**
 6. Tests the process, fixing failures by adjusting the plan
 7. Scaffolds a worker stub for every job type with no connector
-8. Gates on `casen lint --profile deploy`, then deploys to the chosen target
+8. Gates on `bpmnkit lint --profile deploy`, then deploys to the chosen target
 9. Reports the process ID, files created, and next steps
 
 ---
@@ -229,7 +229,7 @@ Investigate and resolve the open incidents
 
 **What it does:**
 
-1. Fetches all open incidents (`casen incident list`)
+1. Fetches all open incidents (`bpmnkit incident list`)
 2. Groups by process + error type, sorted by count
 3. Investigates root cause per group
 4. **Proposes a fix and waits for your approval** before executing
@@ -245,8 +245,8 @@ The plugin installs two background hooks:
 
 | Hook | Trigger | What it does |
 |---|---|---|
-| SessionStart | Every Claude Code session | Checks `casen` is installed |
-| PostToolUse | After any Write or Edit | Runs `casen check <file> --deploy` on any `.bpmn` file that was written |
+| SessionStart | Every Claude Code session | Checks `bpmnkit` is installed |
+| PostToolUse | After any Write or Edit | Runs `bpmnkit check <file> --deploy` on any `.bpmn` file that was written |
 
 The PostToolUse hook means every `.bpmn` file you (or Claude) writes is automatically
 checked by the [deploy gate](/docs/guides/deploy-gate): when Camunda 8 would refuse it, the
@@ -258,6 +258,6 @@ moves on. A file that deploys produces no output.
 ## No MCP server required
 
 Unlike earlier versions of this plugin, none of the skills above call an MCP tool — they
-call `casen` directly via Bash. The separate `@bpmnkit/proxy` MCP server (`bpmn-aikit`)
+call `bpmnkit` directly via Bash. The separate `@bpmnkit/proxy` MCP server (`bpmn-aikit`)
 still exists for Claude Desktop, Cursor, or other MCP-only hosts, but it's unrelated to
 this plugin.

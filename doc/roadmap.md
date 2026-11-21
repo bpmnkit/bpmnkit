@@ -105,7 +105,7 @@ Medium effort. Closes the process correctness gap end-to-end.
   - [x] Run all / run selected buttons
   - [x] Expandable diff on failure: expected vs actual path, variable mismatches highlighted
 - [x] Storage plugin integration: auto-discover and open sidecar test file alongside BPMN
-- [x] CLI command: `casen test <file.bpmn>` — runs all scenarios, reports pass/fail
+- [x] CLI command: `bpmnkit test <file.bpmn>` — runs all scenarios, reports pass/fail
 - [x] AI integration: "Generate test scenarios" uses compact format → drafts scenario JSON
       covering all gateway branches and error paths
 - [x] Integration with Phase 1 chaos: chaos findings exportable as failing test scenarios
@@ -175,13 +175,13 @@ Medium effort. Expands the builder experience to non-technical stakeholders.
 
 - [x] `@bpmnkit/worker-client` — thin Zeebe REST wrapper with OAuth2 support
 - [x] `worker_scaffold` upgraded to generate TypeScript using `@bpmnkit/worker-client`
-- [x] `casen worker start [name]` — starts scaffolded workers from `./workers/`
+- [x] `bpmnkit worker start [name]` — starts scaffolded workers from `./workers/`
 
 ### Phase 4 — Claude Code Skills
 
 - [x] `/implement` — end-to-end orchestration skill
 - [x] `/review`, `/test`, `/deploy` — standalone skills
-- [x] `casen skills install` — copies bundled skills to `.claude/commands/`
+- [x] `bpmnkit skills install` — copies bundled skills to `.claude/commands/`
 
 ### Phase 5 — Docs
 
@@ -199,17 +199,17 @@ Medium effort. Expands the builder experience to non-technical stakeholders.
 
 > Full spec: [`doc/spec-bpmn-generation-skills.md`](spec-bpmn-generation-skills.md); analysis: [`doc/ai-bpmn-generation-analysis.md`](ai-bpmn-generation-analysis.md)
 
-Supersedes Phase 1-4 of "AIKit — Intent-Driven Process Automation" above: the LLM never writes BPMN XML — every process is authored as a `ProcessPlan` JSON IR and compiled deterministically by `casen synth`.
+Supersedes Phase 1-4 of "AIKit — Intent-Driven Process Automation" above: the LLM never writes BPMN XML — every process is authored as a `ProcessPlan` JSON IR and compiled deterministically by `bpmnkit synth`.
 
 - [x] **WP0 — Bug fixes & hygiene**: fixed `scripts/update-connectors.mjs`'s stale output path + added a `catalog-meta.json` sidecar; corrected the `deploy`/`worker` plugin skills to match the real tool/API signatures
 - [x] **WP1 — `@bpmnkit/connectors`**: catalog (`listConnectors`/`searchConnectors`/`getTemplate`) + complete deterministic template application (`applyElementTemplate`/`applyConnectorTemplate`) covering every binding kind, dropdown-gated conditions, and FEEL validation
 - [x] **WP2 — Core builder additions**: `buildAiAgentSubProcess()` (AI Agent Sub-process constructor with `fromAi()` tooling), `documentation`, `zeebe:properties`, ad-hoc `completionCondition`/`cancelRemainingInstances`, message `correlationKey`, user-task assignment/schedule/priority
-- [x] **WP3 — ProcessPlan IR + compiler**: `compilePlan()`/`extractPlan()`/`mergePlan()`; `casen synth`, `casen plan extract|schema`, `casen connector search|list|show`
-- [x] **WP4 — Deploy-grade validation**: `feel-syntax`, `deploy`, `agentic` optimizer categories + `connector/missing-required`; `casen lint --profile deploy` deploy-readiness gate
-- [x] **WP5 — Honest simulation**: engine dispatches job-worker-backed ad-hoc sub-processes (e.g. AI Agent) through the job-mock mechanism; `bpmn_simulate` actually executes scenarios (`mode: "execution"`) instead of always doing structural-only analysis; `casen synth` writes a `.bpmn.tests.json` sidecar from `plan.tests`
-- [x] **WP6 — Skills v2**: consolidated CLI-first `plugins-claude/bpmnkit-claude` plugin (`implement`/`extend`/`agent`/`connect`/`review`/`test`/`deploy`), no MCP server required; generated + hand-written reference docs; new `casen deploy deploy` command
+- [x] **WP3 — ProcessPlan IR + compiler**: `compilePlan()`/`extractPlan()`/`mergePlan()`; `bpmnkit synth`, `bpmnkit plan extract|schema`, `bpmnkit connector search|list|show`
+- [x] **WP4 — Deploy-grade validation**: `feel-syntax`, `deploy`, `agentic` optimizer categories + `connector/missing-required`; `bpmnkit lint --profile deploy` deploy-readiness gate
+- [x] **WP5 — Honest simulation**: engine dispatches job-worker-backed ad-hoc sub-processes (e.g. AI Agent) through the job-mock mechanism; `bpmn_simulate` actually executes scenarios (`mode: "execution"`) instead of always doing structural-only analysis; `bpmnkit synth` writes a `.bpmn.tests.json` sidecar from `plan.tests`
+- [x] **WP6 — Skills v2**: consolidated CLI-first `plugins-claude/bpmnkit-claude` plugin (`implement`/`extend`/`agent`/`connect`/`review`/`test`/`deploy`), no MCP server required; generated + hand-written reference docs; new `bpmnkit deploy deploy` command
 - [x] **WP7 — Golden-prompt eval harness**: `scripts/eval-generation/` — 15 golden prompts, plan-level CI-safe subset + opt-in full-LLM mode
-- [x] **WP8 — Documentation & roadmap**: this section + `doc/features.md`/`doc/progress.md` entries; `apps/docs` guides rewritten for the plan/synth flow (`guides/ai-implement.md`, new `guides/ai-agents.md`, `guides/claude-code-plugin.md`, `guides/patterns.md`), `cli/skills.md` rewritten CLI-first, `cli/casen.md`/`cli/connector.md` document `casen synth|plan|connector`; new `casen pattern list|get` CLI command (the domain-pattern lookup the skills/agent were missing); `packages/connectors` README reconfirmed via `scripts/generate-readmes.mjs`
+- [x] **WP8 — Documentation & roadmap**: this section + `doc/features.md`/`doc/progress.md` entries; `apps/docs` guides rewritten for the plan/synth flow (`guides/ai-implement.md`, new `guides/ai-agents.md`, `guides/claude-code-plugin.md`, `guides/patterns.md`), `cli/skills.md` rewritten CLI-first, `cli/casen.md`/`cli/connector.md` document `bpmnkit synth|plan|connector`; new `bpmnkit pattern list|get` CLI command (the domain-pattern lookup the skills/agent were missing); `packages/connectors` README reconfirmed via `scripts/generate-readmes.mjs`
 
 ---
 
@@ -226,7 +226,7 @@ Supersedes Phase 1-4 of "AIKit — Intent-Driven Process Automation" above: the 
       definition yields the BPMN (`toXml()`), the job types, the message correlation and a
       worker (`flow.worker()`) that serves every handler step. Each step's output type is
       added to the variables the next step sees, so a misspelt variable is a compile error
-- [x] **Agent workforce — `casen agent`**: `hire` saves a profile (a coding-agent CLI
+- [x] **Agent workforce — `bpmnkit agent`**: `hire` saves a profile (a coding-agent CLI
       command, optional rank, roles, instance count), `list`/`fire` manage them, `work` runs
       the fleet against the active profile's engine. A worker serves `agent:<role>` and
       `agent:<rank>:<role>`, renders the task's `prompt` header with the job's variables,
@@ -240,7 +240,7 @@ Supersedes Phase 1-4 of "AIKit — Intent-Driven Process Automation" above: the 
       CI-aware merge and human escalation, as a `packages/patterns` entry and a
       `bpmnkit-claude` skill that keeps Claude Code's plan on the engine
 - [ ] **Trace capture → regression scenarios**: replay a recorded instance's inputs as a
-      `casen test` scenario
+      `bpmnkit test` scenario
 - [ ] **Workforce `--auto`**: serve every `agent:*` job type the deployed processes use
 
 ---
@@ -280,10 +280,10 @@ Supersedes Phase 1-4 of "AIKit — Intent-Driven Process Automation" above: the 
 
 ## CLI Enhancements
 
-- [x] `casen test <file.bpmn>` — run process spec scenarios (Phase 3)
-- [x] `casen lint <file.bpmn>` — run optimizer + pattern advisor + variable flow analysis,
+- [x] `bpmnkit test <file.bpmn>` — run process spec scenarios (Phase 3)
+- [x] `bpmnkit lint <file.bpmn>` — run optimizer + pattern advisor + variable flow analysis,
       exit code 1 on errors (CI integration)
-- [x] `casen story <file.bpmn>` — render story mode to static HTML for sharing without the editor
+- [x] `bpmnkit story <file.bpmn>` — render story mode to static HTML for sharing without the editor
 
 ---
 
@@ -467,10 +467,10 @@ reuses one of these surfaces.
 - [x] `diffDiagram()` promoted to `@bpmnkit/core` (`src/bpmn/diagram-diff.ts`), beside
       `diffSemantics` — the CLI should not depend on a canvas-plugin package, and that is where
       a reader looks for it. The plugin re-exports it
-- [x] `casen diff bpmn <before> <after>` (`apps/cli/src/commands/diff.ts`) — names elements
+- [x] `bpmnkit diff bpmn <before> <after>` (`apps/cli/src/commands/diff.ts`) — names elements
       rather than printing bare ids, `--format json` for scripting, `--exit-code` to gate a
-      pipeline, `--ascii` to render both diagrams. Its own group, mirroring `casen view bpmn`,
-      rather than the `casen bpmn diff` this list first proposed: the pinned groups are verbs
+      pipeline, `--ascii` to render both diagrams. Its own group, mirroring `bpmnkit view bpmn`,
+      rather than the `bpmnkit bpmn diff` this list first proposed: the pinned groups are verbs
 - [x] Two-pane diff view in `apps/studio` (`src/pages/ModelDiff.tsx`, `/models/diff`) — two
       pickers, a swap button, a summary bar, and a **Compare** entry point on the Models page.
       Comparing a file against *its own last saved version* is not included: nothing in the
@@ -497,7 +497,7 @@ reach the editor at all.
       never costing the good ones beside it. Warnings are separate from problems
 - [x] Merge into the catalogue via `registerElementTemplates`, later registration winning on an
       id collision, so `listConnectors` / `getTemplate` / `searchConnectors` see a project's own
-- [x] `casen connector validate [path]` — whole project or one file, `--format json`, non-zero
+- [x] `bpmnkit connector validate [path]` — whole project or one file, `--format json`, non-zero
       exit for CI. `list` / `search` / `show` include workspace templates, with `--workspace`
       and `--config-folder`
 - [x] Browser path: `GET /element-templates?root=…` on the proxy, `workspaceRoot` /
@@ -521,7 +521,7 @@ reach the editor at all.
 
 ### Phase 3 — Findings on the canvas ✅
 
-`casen lint` had five categories built on `packages/core/src/bpmn/optimize/` — arguably a better
+`bpmnkit lint` had five categories built on `packages/core/src/bpmn/optimize/` — arguably a better
 rule set than bpmnlint's — and none of it was visible while modelling.
 
 - [x] `@bpmnkit/plugins/lint` — a marker per offending element, worst severity winning, so a task
@@ -533,7 +533,7 @@ rule set than bpmnlint's — and none of it was visible while modelling.
 - [x] `lintDiagram()` in `@bpmnkit/core` — the host-facing seam. `LintDiagnostic` is plain data
       that survives a `postMessage`, which `OptimizationFinding` cannot because of its `applyFix`
       closure, and each diagnostic names the plane its elements are on
-- [x] `casen lint` follows the same engine rule and says why it skipped the deployability
+- [x] `bpmnkit lint` follows the same engine rule and says why it skipped the deployability
       categories; `--profile deploy` forces them back on. Both surfaces ask `lintCategories`
       rather than keeping separate lists
 - [x] Installed in the studio editor, so findings appear where the modelling happens
@@ -616,7 +616,7 @@ extension** — the seams Phases 1–4 built were the whole of what it needed.
       diff editor pairs two *text* editors and a custom editor cannot stand in for either side.
       `HEAD` comes from the built-in Git extension's API, whose two needed methods are declared
       structurally rather than by adding a dependency
-- [x] `casen lint` findings in the Problems panel, run in the extension host where Node is
+- [x] `bpmnkit lint` findings in the Problems panel, run in the extension host where Node is
       available and `@bpmnkit/core` runs unchanged (Phase 3's host-facing seam). Each finding is
       placed on the element that caused it by `src/host/locate.ts`, a scanner over the raw text —
       a parser is the wrong tool here, since `Bpmn.parse()` discards source positions and the file
@@ -662,9 +662,9 @@ deciding where each one belongs in an editor.
       difference between a playground and a debugger. One panel, re-seeded rather than
       stacked, because the expression under the cursor changes far more often than the wish
       for another tab
-- [x] Deploy and start an instance against a `casen` profile. The profile store the CLI
+- [x] Deploy and start an instance against a `bpmnkit` profile. The profile store the CLI
       writes is the only source of clusters, so there is no second place to configure one and
-      no credentials in workspace settings. Deployment posts multipart the way `casen deploy`
+      no credentials in workspace settings. Deployment posts multipart the way `bpmnkit deploy`
       does; starting goes through the generated client, by definition **key** so the instance
       runs the version this deploy produced. More than one profile always asks
 - [x] ASCII rendering of a diagram, for pasting into a code review. Fenced, because every
@@ -687,7 +687,7 @@ worked around in the host:
 
 - [ ] Scenario tests in the editor. The runner's Tests tab needs `runScenario` **and**
       somewhere to keep scenarios; in an editor that is a `.bpmn.tests.json` sidecar beside
-      the diagram — the same file `casen test` already reads — not the IndexedDB the studio
+      the diagram — the same file `bpmnkit test` already reads — not the IndexedDB the studio
       uses because it has no filesystem. That is a feature with a story of its own, not a
       checkbox on this phase, and hiding the tab is the honest interim
 
@@ -704,7 +704,7 @@ as a box nobody will ever tick.
       starting an instance with nothing. The walk is deliberately *not* shared with
       `@bpmnkit/connectors/node`: it is thirty lines, the two conventions could diverge, and
       one consumer does not justify widening a published package's API. A second consumer
-      (`casen deploy`, most likely) is when that changes
+      (`bpmnkit deploy`, most likely) is when that changes
 - [x] **UI localisation — the method, which was the adaptable part.** `createTranslationRecorder()`
       in `@bpmnkit/editor` is a `Translate` that records what it is asked for; the harvest in
       `tests/i18n-harvest.test.ts` runs a real editor, presses every button it can reach, and
@@ -768,7 +768,7 @@ for the rule-by-rule table.
 - [x] Run the project's own bpmnlint when it is installed (`@bpmnkit/core/node`, dynamic
       `import()` from the `.bpmnlintrc`'s folder, never a dependency), prefer it for the rules
       it ran, and drop BPMN Kit's equivalents of those so nothing is reported twice
-- [x] `casen lint` finds the file from the diagram's folder upwards (`--no-bpmnlintrc` to
+- [x] `bpmnkit lint` finds the file from the diagram's folder upwards (`--no-bpmnlintrc` to
       ignore it) and prints the rule name; the VS Code Problems panel honours the same file
       (`bpmnkit.lint.bpmnlintrc`)
 - [ ] Walk sub-processes in the existing flow and naming rules. `fake-join`,
@@ -882,7 +882,7 @@ differentiator itself.
       is 6 hand-written fixtures covering every §4 loss plus the parser's declared surface;
       it found two further gaps (G22, G23). **Still to add:** real-world models, which need a
       licensing decision per file — see the directory's PROVENANCE.md
-- [x] **A5a** `casen generate bpmn --input` must not overwrite its input by default —
+- [x] **A5a** `bpmnkit generate bpmn --input` must not overwrite its input by default —
       require `--output` or `--force` (`apps/cli/src/commands/generate.ts`). The guard also
       runs before stdin is read, so an unwritable target fails fast
 - [x] **A6** Correct the round-trip claim in
@@ -1063,6 +1063,21 @@ not code.
 - [x] Phase 9: nightly differential fuzzing, crates.io publishing setup, crate docs
 - [ ] First crates.io publish (needs the `CARGO_REGISTRY_TOKEN` secret and `crates-io` environment)
 - [x] `bpmnkit` facade crate re-exporting the others behind features (§3)
+
+## C8 job workers + `bpmnkit` Rust CLI (`doc/plans/c8-workers-and-rust-cli.md`)
+
+- [x] P0: `bpmnkit-cli` skeleton, `bpmnkit-profiles`, `packages/profiles` dual lookup
+- [x] P1: `bpmnkit-jobspec` (BPMN + connector-gen API index → IR, catalog lookup, rules R1–R13), `bpmnkit worker classify`
+- [x] P2: `bpmnkit-worker` REST runtime (client, auth, loop, backoff, drain, metrics, `testing`)
+- [x] P3: Rust + template emitters, `worker gen --check`, `bpmnkit.lock.json`, JSON Schema subset extractor, `rust-golden` + Windows CI (I8), bench rows (I7)
+- [x] P4: `bpmnkit-codegen` Java emitter (Maven wrapper, plain + `--spring`, CPT stub), `bpmnkit worker gen --lang java`, CI `java-golden`
+- [x] P5: `bpmnkit-connector-runtime` (`io.camunda:http-json:1`), `connector run|test`, 48 replay fixtures (manual 8.8 recording pending)
+- [x] P6: `grpc` feature (job streaming)
+- [x] P7: Rust connector-gen + `connector bind`; native `lint/layout/diff/render/convert/profile`
+- [x] P8: cargo-dist (`release-cli.yml`), axoupdater `self update`, `@bpmnkit/cli` 2.0.0 launcher + 5 platform packages (dist-tag `next`), `@bpmnkit/cli-legacy`, crates publishable, rename to `bpmnkit` (alias `casen`) + `check-casen` guard, npm smoke matrix (first real release + npm trusted-publisher setup pending)
+- [ ] P9: remaining commands, fallback removal
+- [ ] Review follow-ups (plan §15): `rest_max_rps` limiter, completion retries, connector total deadline + redirect key stripping, stale generated files in `--check`, launcher signal forwarding, `binaryVersion` sync, native `.bpmnlintrc` + `convert --to camunda7`
+- [x] P10: Gradle emitter (`--build gradle`, Kotlin DSL, pinned wrapper, `java-golden-gradle` CI)
 
 ## Completed
 

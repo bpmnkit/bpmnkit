@@ -70,15 +70,15 @@ export const slaCommand: Command = {
 	examples: [
 		{
 			description: "Check SLA with 30-minute threshold",
-			command: "casen report sla --threshold 30",
+			command: "bpmnkit report sla --threshold 30",
 		},
 		{
 			description: "SLA report for a specific process",
-			command: "casen report sla --threshold 60 --process-id order-process",
+			command: "bpmnkit report sla --threshold 60 --process-id order-process",
 		},
 		{
 			description: "Save SLA report to file",
-			command: "casen report sla --threshold 30 --out sla.html",
+			command: "bpmnkit report sla --threshold 30 --out sla.html",
 		},
 	],
 	async run(ctx: RunContext): Promise<void> {

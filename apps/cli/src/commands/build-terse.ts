@@ -1,5 +1,5 @@
 /**
- * Shorthand the `casen build` text spec accepts on top of the line format, rewritten
+ * Shorthand the `bpmnkit build` text spec accepts on top of the line format, rewritten
  * line by line (line numbers stay) before the spec is read:
  *
  * - `[user Review expense]` without an id gets one from its name (`reviewExpense`);

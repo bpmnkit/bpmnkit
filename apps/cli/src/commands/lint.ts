@@ -40,7 +40,7 @@ export function resolveConnectorRequirements(templateId: string, boundKeys: stri
  * first, then the bundled catalogue — so a project template, including one
  * that shadows a bundled id, is checked as the project wrote it.
  *
- * Scoped to the call rather than registered globally: `casen dev` lints many
+ * Scoped to the call rather than registered globally: `bpmnkit dev` lints many
  * diagrams in one process, and one folder's templates must not decide how
  * another folder's diagram is judged.
  */
@@ -101,7 +101,7 @@ const BPMNLINT_CATEGORY = "bpmnlint"
 /** What the sketch profile leaves out: everything that only means something to a Camunda 8 engine. */
 const SKETCH_SKIPPED: readonly OptimizationCategory[] = ["deploy", "connector", "agentic"]
 
-/** One line of `casen lint` output — a BPMN Kit finding or a report from real bpmnlint. */
+/** One line of `bpmnkit lint` output — a BPMN Kit finding or a report from real bpmnlint. */
 export interface LintRow {
 	id: string
 	category: string
@@ -137,7 +137,7 @@ function describeUnsupported(rule: UnsupportedBpmnlintRule): string {
 	}
 }
 
-/** What `casen lint` needs to decide on a file, before any of it is printed. */
+/** What `bpmnkit lint` needs to decide on a file, before any of it is printed. */
 export interface LintOutcome {
 	defs: BpmnDefinitions
 	findings: (OptimizationFinding | LintRow)[]
@@ -174,7 +174,7 @@ export interface LintBpmnOptions {
 }
 
 /**
- * Lints one BPMN document the way `casen lint` does — shared with `casen dev`,
+ * Lints one BPMN document the way `bpmnkit lint` does — shared with `bpmnkit dev`,
  * which re-lints on every save and must not disagree with the command.
  *
  * @param filePath - Where the document lives; the `.bpmnlintrc` search starts here.
@@ -221,7 +221,7 @@ export async function lintBpmn(
 	})
 	const resolvedCategories = sketch ? linted.filter((c) => !SKETCH_SKIPPED.includes(c)) : linted
 
-	// The templates this diagram sees. A broken template file is `casen connector
+	// The templates this diagram sees. A broken template file is `bpmnkit connector
 	// validate`'s to report; here it simply is not one of the diagram's templates.
 	const discovered = await discoverElementTemplates({
 		from: filePath,
@@ -327,14 +327,14 @@ const lintCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Lint a file", command: "casen lint lint order-process.bpmn" },
+		{ description: "Lint a file", command: "bpmnkit lint lint order-process.bpmn" },
 		{
 			description: "Deploy-readiness gate (errors only)",
-			command: "casen lint lint order-process.bpmn --profile deploy",
+			command: "bpmnkit lint lint order-process.bpmn --profile deploy",
 		},
 		{
 			description: "Ignore the project's .bpmnlintrc",
-			command: "casen lint lint order-process.bpmn --no-bpmnlintrc",
+			command: "bpmnkit lint lint order-process.bpmn --no-bpmnlintrc",
 		},
 	],
 	async run(ctx) {

@@ -7,7 +7,7 @@
   and any `localhost`, `127.0.0.1` or `[::1]` origin on any port (for example a Vite dev
   server on `:5173`). It sends that origin back in `Access-Control-Allow-Origin`, never
   `*`. A page on any other origin gets `403`. To embed Operate in an app on another
-  origin, start the proxy with `casen proxy start --allow-origin https://your.app`. You do
+  origin, start the proxy with `bpmnkit proxy start --allow-origin https://your.app`. You do
   not need to configure CORS on the cluster, because the browser does not call it.
 - **Same-origin reverse proxy.** `proxyUrl` can be relative. If your dev server forwards
   `/bpmnkit-proxy/*` to `http://localhost:3033/*`, use `proxyUrl: "/bpmnkit-proxy"`. Keep

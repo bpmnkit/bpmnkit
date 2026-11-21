@@ -29,6 +29,12 @@ bpmnkit-render = { workspace = true, optional = true }
 bpmnkit-diff = { workspace = true, optional = true }
 bpmnkit-ascii = { workspace = true, optional = true }
 bpmnkit-viewer = { workspace = true, optional = true }
+bpmnkit-worker = { workspace = true, optional = true }
+bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.6.1", optional = true }
+bpmnkit-codegen = { path = "../bpmnkit-codegen", version = "0.6.1", optional = true }
+bpmnkit-connectors = { path = "../bpmnkit-connectors", version = "0.6.1", optional = true }
+bpmnkit-connector-runtime = { path = "../bpmnkit-connector-runtime", version = "0.6.1", optional = true }
+bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.6.1", optional = true }
 serde_json = { workspace = true }
 
 [features]
@@ -62,6 +68,16 @@ diff-html = ["diff", "render", "bpmnkit-diff/html"]
 ascii = ["dep:bpmnkit-ascii"]
 # One self-contained HTML page per diagram (the viewer-lite script inlined), or its parts.
 viewer = ["dep:bpmnkit-viewer"]
+# Camunda 8 job workers over REST (tokio + reqwest). Not in `full`: an async network stack.
+worker = ["dep:bpmnkit-worker", "bpmnkit-worker/oauth"]
+# Job worker IR (BPMN/OpenAPI → job list, decision rules) and the worker code generators.
+jobspec = ["dep:bpmnkit-jobspec"]
+codegen = ["dep:bpmnkit-codegen"]
+# Connector element templates from OpenAPI, and the local REST connector runner (tokio).
+connectors = ["dep:bpmnkit-connectors"]
+connector-runtime = ["dep:bpmnkit-connector-runtime"]
+# Profile store paths and the bpmnkit → bpmnkit copy migration.
+profiles = ["dep:bpmnkit-profiles"]
 
 [package.metadata.docs.rs]
 all-features = true

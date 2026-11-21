@@ -1,11 +1,11 @@
 ---
-title: casen Plugin Authoring
-description: Build and publish plugins that extend the casen CLI with new command groups.
+title: bpmnkit Plugin Authoring
+description: Build and publish plugins that extend the bpmnkit CLI with new command groups.
 sidebar:
   order: 8
 ---
 
-casen plugins are ordinary npm packages that export a `CasenPlugin` object. Once installed, their
+bpmnkit plugins are ordinary npm packages that export a `CasenPlugin` object. Once installed, their
 commands appear in the main TUI and in shell tab-completion alongside the built-in ones.
 
 ## Scaffold a new plugin
@@ -21,11 +21,11 @@ pnpm create @bpmnkit/casen-plugin
 The tool runs interactively:
 
 ```
-  @bpmnkit/create-casen-plugin — casen plugin scaffolding
+  @bpmnkit/create-casen-plugin — bpmnkit plugin scaffolding
 
   Plugin name (npm package name): casen-deploy
   Display name             (Deploy):
-  Description              (): Git-tag-aware deploys for casen
+  Description              (): Git-tag-aware deploys for bpmnkit
   Author                   (): acme
 
   Initialize git repo? (Y/n): Y
@@ -46,7 +46,7 @@ Pass flags to skip all prompts — useful in CI or cookiecutter scripts:
 ```sh
 pnpm create @bpmnkit/casen-plugin \
   --name casen-deploy \
-  --description "Git-tag-aware deploys for casen" \
+  --description "Git-tag-aware deploys for bpmnkit" \
   --author acme \
   --no-git
 ```
@@ -54,7 +54,7 @@ pnpm create @bpmnkit/casen-plugin \
 | Flag | Description |
 |---|---|
 | `--name` / `-n` | npm package name (first positional arg also works) |
-| `--display-name` | Human-readable name shown in `casen plugin list` |
+| `--display-name` | Human-readable name shown in `bpmnkit plugin list` |
 | `--description` / `-d` | One-line description |
 | `--author` / `-a` | Author name or npm username |
 | `--no-git` | Skip `git init` |
@@ -76,7 +76,7 @@ casen-deploy/
 {
   "name": "casen-deploy",
   "version": "0.1.0",
-  "description": "Git-tag-aware deploys for casen",
+  "description": "Git-tag-aware deploys for bpmnkit",
   "type": "module",
   "main": "dist/index.js",
   "keywords": ["casen-plugin"],
@@ -92,7 +92,7 @@ casen-deploy/
 }
 ```
 
-The `"casen-plugin"` keyword is injected automatically — it is how `casen plugin search` discovers
+The `"casen-plugin"` keyword is injected automatically — it is how `bpmnkit plugin search` discovers
 your package on npm once published.
 
 ### Generated `src/index.ts`
@@ -134,7 +134,7 @@ Install the SDK as a devDependency in your plugin:
 pnpm add -D @bpmnkit/cli-sdk
 ```
 
-It exports all types you need — no runtime dependency on casen internals.
+It exports all types you need — no runtime dependency on bpmnkit internals.
 
 ### `CasenPlugin`
 
@@ -143,7 +143,7 @@ The root export. Default-export one instance of this from `dist/index.js`:
 ```typescript
 interface CasenPlugin {
   id: string          // reverse-domain ID, e.g. "com.acme.casen-deploy"
-  name: string        // shown in "casen plugin list"
+  name: string        // shown in "bpmnkit plugin list"
   version: string
   groups: CommandGroup[]
 }
@@ -151,8 +151,8 @@ interface CasenPlugin {
 
 ### `CommandGroup`
 
-Maps to one top-level token in the CLI (`casen <group>`). The name must be unique across all
-installed plugins and the casen core commands:
+Maps to one top-level token in the CLI (`bpmnkit <group>`). The name must be unique across all
+installed plugins and the bpmnkit core commands:
 
 ```typescript
 interface CommandGroup {
@@ -165,7 +165,7 @@ interface CommandGroup {
 
 ### `Command`
 
-A single executable action within a group (`casen <group> <command>`):
+A single executable action within a group (`bpmnkit <group> <command>`):
 
 ```typescript
 interface Command {
@@ -277,7 +277,7 @@ async run(ctx) {
 
 ### Throwing errors
 
-Throw a plain `Error` for user-facing errors. casen catches it, prints `error: <message>` to
+Throw a plain `Error` for user-facing errors. bpmnkit catches it, prints `error: <message>` to
 stderr, and exits with code 1:
 
 ```typescript
@@ -297,15 +297,15 @@ cd casen-deploy
 pnpm install
 pnpm build
 
-casen plugin install ./casen-deploy
+bpmnkit plugin install ./casen-deploy
 ```
 
-Restart casen. Your commands appear under `casen deploy` (or whatever group name you chose).
+Restart bpmnkit. Your commands appear under `bpmnkit deploy` (or whatever group name you chose).
 
 To uninstall during development:
 
 ```sh
-casen plugin remove casen-deploy
+bpmnkit plugin remove casen-deploy
 ```
 
 ## Publish to npm
@@ -323,7 +323,7 @@ publishing, so `dist/` is always up to date.
 Because `"casen-plugin"` is in `keywords`, your package is immediately discoverable via:
 
 ```sh
-casen plugin search deploy
+bpmnkit plugin search deploy
 ```
 
 ## Plugin naming conventions
@@ -332,5 +332,5 @@ casen plugin search deploy
 |---|---|
 | Name packages `casen-<feature>` | Predictable, easy to search |
 | Set `id` to a reverse-domain string | Avoids conflicts across organisations |
-| Keep each group name unique | casen merges all groups into one flat namespace |
+| Keep each group name unique | bpmnkit merges all groups into one flat namespace |
 | Prefix group name with your org for internal plugins | e.g. `acme-deploy` avoids clashing with a published `casen-deploy` |

@@ -3,7 +3,7 @@
 Camunda Modeler checks a diagram against the Camunda 8 version it targets. The version is in
 `modeler:executionPlatformVersion` on `<bpmn:definitions>`, and the rules come from
 `@camunda/linting`, which runs `bpmnlint-plugin-camunda-compat`. BPMN Kit does the same check
-itself, as `compat/…` findings in the `deploy` category. It runs in `casen lint`, in `optimize()`, in the editor's lint
+itself, as `compat/…` findings in the `deploy` category. It runs in `bpmnkit lint`, in `optimize()`, in the editor's lint
 panel and in the VS Code extension, on every model that names a Camunda Cloud / Camunda 8
 platform and version. A model without them gets no `compat` findings.
 

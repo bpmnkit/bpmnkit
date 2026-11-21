@@ -1,0 +1,8 @@
+{
+  "id": "no_version",
+  "name": "No version",
+  "auth": {
+    "type": "noAuth"
+  },
+  "operations": []
+}

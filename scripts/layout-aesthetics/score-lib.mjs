@@ -3,8 +3,8 @@
  * Compiler functions are injected so the CLI script (tsx) and the vitest ratchet share one code path.
  *
  * Case kinds in a folder:
- *   NAME.txt          `casen build` text spec, laid out with applyAutoLayout
- *   NAME.edit.mjs     paired with NAME.txt: the base is laid out, then the edit is applied the way `casen build --edit` does
+ *   NAME.txt          `bpmnkit build` text spec, laid out with applyAutoLayout
+ *   NAME.edit.mjs     paired with NAME.txt: the base is laid out, then the edit is applied the way `bpmnkit build --edit` does
  *   NAME.bpmn         existing model; any DI is discarded, then laid out
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs"

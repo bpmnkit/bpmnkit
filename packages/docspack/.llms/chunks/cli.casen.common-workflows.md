@@ -1,4 +1,4 @@
-# casen CLI — Common Workflows
+# bpmnkit CLI — Common Workflows
 
 ### List process definitions
 

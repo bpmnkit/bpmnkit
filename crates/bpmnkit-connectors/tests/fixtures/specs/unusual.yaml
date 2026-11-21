@@ -1,0 +1,71 @@
+openapi: 3.1.0
+info: {title: Unusual, version: "0"}
+x-defaults: &defaults
+  type: string
+  description: shared
+servers:
+  - url: "https://api.unusual.test///"
+paths:
+  /files/{path}/:
+    get:
+      operationId: getFile
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema: *defaults
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  b: {type: string}
+                  a: {type: string}
+                  2: {type: string}
+                  1: {type: string}
+    post:
+      operationId: uploadFile2
+      summary: ~
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                camelCaseName: *defaults
+                snake_case_name: *defaults
+                kebab-case-name: *defaults
+                "2fast": {type: number}
+                éé: {type: string}
+  /search:
+    get:
+      operationId: searchEverything
+      summary: Search "everything" \ now
+      description: yes
+      parameters:
+        - {name: 'q', in: query, required: yes}
+        - {name: "page", in: query}
+      responses:
+        default:
+          description: x
+          content:
+            application/json:
+              schema: {type: object, properties: {hits: {}}}
+  /noop: {}
+  /deprecated:
+    delete:
+      deprecated: true
+      description: ""
+      summary: Deprecated delete
+components:
+  securitySchemes:
+    k:
+      type: openIdConnect
+      openIdConnectUrl: https://id.test/.well-known
+    key:
+      type: apiKey
+      name: k
+      in: query

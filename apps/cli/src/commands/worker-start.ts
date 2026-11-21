@@ -20,8 +20,8 @@ export const workerStartCmd: Command = {
 	],
 	flags: [],
 	examples: [
-		{ description: "Start all scaffolded workers", command: "casen worker start" },
-		{ description: "Start a specific worker", command: "casen worker start send-invoice" },
+		{ description: "Start all scaffolded workers", command: "bpmnkit worker start" },
+		{ description: "Start a specific worker", command: "bpmnkit worker start send-invoice" },
 	],
 
 	async run(ctx) {

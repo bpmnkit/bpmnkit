@@ -88,7 +88,7 @@ beforeEach(() => {
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
-describe("casen connector validate", () => {
+describe("bpmnkit connector validate", () => {
 	it("is registered in the connector group", () => {
 		expect(validate).toBeDefined()
 	})

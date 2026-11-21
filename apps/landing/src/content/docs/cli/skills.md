@@ -5,9 +5,9 @@ sidebar:
   order: 6
 ---
 
-`casen` ships six lightweight Claude Code slash commands that automate the process
+`bpmnkit` ships six lightweight Claude Code slash commands that automate the process
 development lifecycle — from natural language description to deployed, running process.
-They drive `casen` directly (no MCP server, no proxy daemon).
+They drive `bpmnkit` directly (no MCP server, no proxy daemon).
 
 For the full skill set — `/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, `:bpmn-script`, `:dmn`, `:form`, plus generated
 reference docs the skills read before authoring a plan — install the
@@ -16,7 +16,7 @@ reference docs the skills read before authoring a plan — install the
 ## Installation
 
 ```sh
-casen skills install
+bpmnkit skills install
 ```
 
 Copies the skill files into `.claude/commands/` in the current project directory.
@@ -24,7 +24,7 @@ Once installed, they appear in Claude Code's slash command picker.
 
 ```sh
 # Reinstall or overwrite existing skills
-casen skills install --force
+bpmnkit skills install --force
 ```
 
 ---
@@ -41,10 +41,10 @@ End-to-end process implementation from a natural language description.
 
 **What it does:**
 
-1. Resolves external interactions via `casen connector search`/`show`
+1. Resolves external interactions via `bpmnkit connector search`/`show`
 2. Writes a `ProcessPlan` JSON file
-3. Compiles it with `casen synth`, fixing any reported problems in the plan and retrying
-4. Adds test scenarios and runs `casen test`
+3. Compiles it with `bpmnkit synth`, fixing any reported problems in the plan and retrying
+4. Adds test scenarios and runs `bpmnkit test`
 5. Scaffolds a worker stub for every job type with no existing worker or connector
 6. Presents a summary and asks where to deploy
 
@@ -74,9 +74,9 @@ Run the full static analyzer on a BPMN file and get a structured findings report
 
 **What it does:**
 
-1. Runs `casen lint lint <file> --profile deploy` (the deploy-readiness gate) and the default profile (all categories)
+1. Runs `bpmnkit lint lint <file> --profile deploy` (the deploy-readiness gate) and the default profile (all categories)
 2. Groups findings by severity: errors, warnings, info
-3. Offers `casen lint lint <file> --fix` to apply auto-fixable findings
+3. Offers `bpmnkit lint lint <file> --fix` to apply auto-fixable findings
 4. Ends with an explicit **"Deploy-ready: yes/no"** verdict
 
 **Example output:**
@@ -104,8 +104,8 @@ Run scenario tests on a BPMN process and report path/branch coverage.
 
 **What it does:**
 
-1. Looks for the `<file>.bpmn.tests.json` sidecar (written automatically by `casen synth` from a plan's `tests` array); writes one if missing
-2. Runs `casen test test <file>.bpmn`
+1. Looks for the `<file>.bpmn.tests.json` sidecar (written automatically by `bpmnkit synth` from a plan's `tests` array); writes one if missing
+2. Runs `bpmnkit test test <file>.bpmn`
 3. Cross-references gateway branches and error/timer boundaries against which scenarios exercise them
 4. Reports pass/fail counts and any uncovered paths
 
@@ -135,22 +135,22 @@ Gate a BPMN process on deploy-readiness, then deploy it to local Reebe or Camund
 
 **What it does:**
 
-1. Runs `casen lint lint <file> --profile deploy` — stops if it reports any errors
-2. Deploys via `casen deploy deploy <file>` (local) or `casen deploy deploy <file> --target camunda8`
-3. Verifies with `casen process-definition list`
+1. Runs `bpmnkit lint lint <file> --profile deploy` — stops if it reports any errors
+2. Deploys via `bpmnkit deploy deploy <file>` (local) or `bpmnkit deploy deploy <file> --target camunda8`
+3. Verifies with `bpmnkit process-definition list`
 4. Reminds you to start any scaffolded workers and provision any `{{secrets.NAME}}` the process references
 
 **Targets:**
 
-- **Local Reebe** — deploys via `ZEEBE_ADDRESS` (default `http://localhost:26500`). Start Reebe first: `casen reebe start --port 26500`
-- **Camunda 8** — deploys using the active `casen` profile. Set one up: `casen profile create`
+- **Local Reebe** — deploys via `ZEEBE_ADDRESS` (default `http://localhost:26500`). Start Reebe first: `bpmnkit reebe start --port 26500`
+- **Camunda 8** — deploys using the active `bpmnkit` profile. Set one up: `bpmnkit profile create`
 
 ---
 
 ## `/dmn` and `/form`
 
-Write or edit a DMN decision table or a Camunda form. Each runs `casen agent-card dmn` or
-`casen agent-card form` and follows the [agent card](/docs/agent-cards/dmn) it prints: a
+Write or edit a DMN decision table or a Camunda form. Each runs `bpmnkit agent-card dmn` or
+`bpmnkit agent-card form` and follows the [agent card](/docs/agent-cards/dmn) it prints: a
 runnable build script, the top builder options and the traps (decision and form ids, hit
 policy, keeping the layout on edit).
 
@@ -163,4 +163,4 @@ policy, keeping the layout on edit).
 
 ## No MCP server required
 
-These skills are plain Bash + Read/Write — they call `casen` directly and never depend on an MCP server or a running proxy. The `@bpmnkit/proxy` MCP server (`bpmn-aikit`) still exists separately, for Claude Desktop/Cursor or other MCP-only hosts — it's unrelated to these slash commands.
+These skills are plain Bash + Read/Write — they call `bpmnkit` directly and never depend on an MCP server or a running proxy. The `@bpmnkit/proxy` MCP server (`bpmn-aikit`) still exists separately, for Claude Desktop/Cursor or other MCP-only hosts — it's unrelated to these slash commands.

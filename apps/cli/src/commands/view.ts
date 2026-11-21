@@ -310,12 +310,12 @@ const viewBpmnCmd: Command = {
 	],
 	flags: [PORT_FLAG, THEME_FLAG, NO_OPEN_FLAG],
 	examples: [
-		{ description: "View a single file", command: "casen view bpmn process.bpmn" },
-		{ description: "View all files in a folder", command: "casen view bpmn ./processes/" },
-		{ description: "View multiple files", command: "casen view bpmn order.bpmn payment.bpmn" },
+		{ description: "View a single file", command: "bpmnkit view bpmn process.bpmn" },
+		{ description: "View all files in a folder", command: "bpmnkit view bpmn ./processes/" },
+		{ description: "View multiple files", command: "bpmnkit view bpmn order.bpmn payment.bpmn" },
 		{
 			description: "Dark theme on custom port",
-			command: "casen view bpmn process.bpmn --theme dark --port 8080",
+			command: "bpmnkit view bpmn process.bpmn --theme dark --port 8080",
 		},
 	],
 	async run(ctx) {
@@ -336,8 +336,8 @@ const viewDmnCmd: Command = {
 	],
 	flags: [PORT_FLAG, THEME_FLAG, NO_OPEN_FLAG],
 	examples: [
-		{ description: "View a single DMN file", command: "casen view dmn decision.dmn" },
-		{ description: "View all DMN files in a folder", command: "casen view dmn ./decisions/" },
+		{ description: "View a single DMN file", command: "bpmnkit view dmn decision.dmn" },
+		{ description: "View all DMN files in a folder", command: "bpmnkit view dmn ./decisions/" },
 	],
 	async run(ctx) {
 		if (ctx.positional.length === 0) throw new Error("Provide at least one file or folder path")
@@ -357,8 +357,8 @@ const viewFormCmd: Command = {
 	],
 	flags: [PORT_FLAG, THEME_FLAG, NO_OPEN_FLAG],
 	examples: [
-		{ description: "View a single form file", command: "casen view form my-form.form" },
-		{ description: "View all forms in a folder", command: "casen view form ./forms/" },
+		{ description: "View a single form file", command: "bpmnkit view form my-form.form" },
+		{ description: "View all forms in a folder", command: "bpmnkit view form ./forms/" },
 	],
 	async run(ctx) {
 		if (ctx.positional.length === 0) throw new Error("Provide at least one file or folder path")
@@ -384,12 +384,12 @@ const viewOpenCmd: Command = {
 	examples: [
 		{
 			description: "Open any supported file",
-			command: "casen view open process.bpmn decision.dmn",
+			command: "bpmnkit view open process.bpmn decision.dmn",
 		},
-		{ description: "Open a folder (all supported types)", command: "casen view open ./project/" },
+		{ description: "Open a folder (all supported types)", command: "bpmnkit view open ./project/" },
 		{
 			description: "Mix files and folders",
-			command: "casen view open ./processes/ extra.dmn review.form",
+			command: "bpmnkit view open ./processes/ extra.dmn review.form",
 		},
 	],
 	async run(ctx) {

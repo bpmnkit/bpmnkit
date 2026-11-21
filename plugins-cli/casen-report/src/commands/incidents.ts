@@ -44,14 +44,14 @@ export const incidentsCommand: Command = {
 		},
 	],
 	examples: [
-		{ description: "Report all active incidents", command: "casen report incidents" },
+		{ description: "Report all active incidents", command: "bpmnkit report incidents" },
 		{
 			description: "Report incidents for a specific process",
-			command: "casen report incidents --process-id order-process",
+			command: "bpmnkit report incidents --process-id order-process",
 		},
 		{
 			description: "Save HTML report to file",
-			command: "casen report incidents --out incidents.html",
+			command: "bpmnkit report incidents --out incidents.html",
 		},
 	],
 	async run(ctx: RunContext): Promise<void> {

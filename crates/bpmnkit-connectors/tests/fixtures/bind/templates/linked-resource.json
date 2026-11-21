@@ -1,0 +1,15 @@
+{
+  "id": "test.LinkedResource",
+  "name": "RPA",
+  "version": 1,
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:ServiceTask" },
+  "properties": [
+    { "type": "Hidden", "value": "io.camunda:rpa:1", "binding": { "type": "zeebe:taskDefinition", "property": "type" } },
+    { "id": "rid", "type": "String", "value": "script-1", "binding": { "type": "zeebe:linkedResource", "property": "resourceId", "linkName": "RPA" } },
+    { "id": "rtype", "type": "Hidden", "value": "RPA", "binding": { "type": "zeebe:linkedResource", "property": "resourceType", "linkName": "RPA" } },
+    { "id": "rbind", "type": "Hidden", "value": "latest", "binding": { "type": "zeebe:linkedResource", "property": "bindingType", "linkName": "RPA" } },
+    { "id": "rid2", "type": "String", "value": "script-2", "binding": { "type": "zeebe:linkedResource", "property": "resourceId", "linkName": "Other" } },
+    { "id": "rtype2", "type": "Hidden", "value": "RPA", "binding": { "type": "zeebe:linkedResource", "property": "resourceType", "linkName": "Other" } }
+  ]
+}

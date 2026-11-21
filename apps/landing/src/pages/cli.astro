@@ -12,8 +12,8 @@ import Nav from "../components/Nav.astro"
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <Seo
-    title="casen CLI — Manage Camunda 8 from your terminal · BPMN Kit"
-    description="casen is the official command-line interface for Camunda 8. Deploy processes, manage incidents, query instances, and generate connectors — all from your terminal."
+    title="bpmnkit CLI — Manage Camunda 8 from your terminal · BPMN Kit"
+    description="bpmnkit is the official command-line interface for Camunda 8. Deploy processes, manage incidents, query instances, and generate connectors — all from your terminal."
   />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.css" />
   <style is:global>
@@ -467,7 +467,7 @@ import Nav from "../components/Nav.astro"
       Command-Line Interface
     </div>
     <h1 class="cli-hero-title">
-      casen
+      bpmnkit
     </h1>
     <p class="cli-hero-sub">
       Manage Camunda&nbsp;8 clusters from your terminal.
@@ -517,7 +517,7 @@ import Nav from "../components/Nav.astro"
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
           </div>
           <h3>Interactive TUI</h3>
-          <p>Navigate menus, commands, and input forms with arrow keys. Run <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">casen</code> with no arguments to enter the full TUI.</p>
+          <p>Navigate menus, commands, and input forms with arrow keys. Run <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">bpmnkit</code> with no arguments to enter the full TUI.</p>
         </div>
 
         <div class="cli-feat-card">
@@ -525,7 +525,7 @@ import Nav from "../components/Nav.astro"
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
           <h3>Connection Profiles</h3>
-          <p>Store multiple clusters — dev, staging, prod. Switch with <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">--profile</code> or <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">casen profile use</code>. Supports Bearer, OAuth2, and Basic auth.</p>
+          <p>Store multiple clusters — dev, staging, prod. Switch with <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">--profile</code> or <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">bpmnkit profile use</code>. Supports Bearer, OAuth2, and Basic auth.</p>
         </div>
 
         <div class="cli-feat-card">
@@ -541,7 +541,7 @@ import Nav from "../components/Nav.astro"
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           </div>
           <h3>Connector Generation</h3>
-          <p>Point <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">casen connector generate</code> at an OpenAPI or Swagger spec and get ready-to-use Camunda element templates.</p>
+          <p>Point <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">bpmnkit connector generate</code> at an OpenAPI or Swagger spec and get ready-to-use Camunda element templates.</p>
         </div>
 
         <div class="cli-feat-card">
@@ -580,11 +580,11 @@ import Nav from "../components/Nav.astro"
           </div>
           <table class="cli-cmd-table" aria-label="Profile commands">
             <tbody>
-              <tr><td>casen profile list</td><td>List all saved profiles</td></tr>
-              <tr><td>casen profile import &lt;name&gt; &lt;file&gt;</td><td>Add a profile from a Camunda credentials file</td></tr>
-              <tr><td>casen profile create &lt;name&gt;</td><td>Add a profile from flags</td></tr>
-              <tr><td>casen profile use &lt;name&gt;</td><td>Switch the active profile</td></tr>
-              <tr><td>casen profile delete &lt;name&gt;</td><td>Delete a profile</td></tr>
+              <tr><td>bpmnkit profile list</td><td>List all saved profiles</td></tr>
+              <tr><td>bpmnkit profile import &lt;name&gt; &lt;file&gt;</td><td>Add a profile from a Camunda credentials file</td></tr>
+              <tr><td>bpmnkit profile create &lt;name&gt;</td><td>Add a profile from flags</td></tr>
+              <tr><td>bpmnkit profile use &lt;name&gt;</td><td>Switch the active profile</td></tr>
+              <tr><td>bpmnkit profile delete &lt;name&gt;</td><td>Delete a profile</td></tr>
             </tbody>
           </table>
         </div>
@@ -597,10 +597,10 @@ import Nav from "../components/Nav.astro"
           </div>
           <table class="cli-cmd-table" aria-label="Process commands">
             <tbody>
-              <tr><td>casen pd list</td><td>List deployed process definitions</td></tr>
-              <tr><td>casen pi list</td><td>List process instances</td></tr>
-              <tr><td>casen pi cancel &lt;key&gt;</td><td>Cancel a running instance</td></tr>
-              <tr><td>casen deploy deploy &lt;file&gt;</td><td>Deploy a BPMN, DMN, or form file</td></tr>
+              <tr><td>bpmnkit pd list</td><td>List deployed process definitions</td></tr>
+              <tr><td>bpmnkit pi list</td><td>List process instances</td></tr>
+              <tr><td>bpmnkit pi cancel &lt;key&gt;</td><td>Cancel a running instance</td></tr>
+              <tr><td>bpmnkit deploy deploy &lt;file&gt;</td><td>Deploy a BPMN, DMN, or form file</td></tr>
             </tbody>
           </table>
         </div>
@@ -613,9 +613,9 @@ import Nav from "../components/Nav.astro"
           </div>
           <table class="cli-cmd-table" aria-label="Incident and job commands">
             <tbody>
-              <tr><td>casen incident list</td><td>List incidents</td></tr>
-              <tr><td>casen incident resolve &lt;key&gt;</td><td>Resolve an incident</td></tr>
-              <tr><td>casen job list</td><td>List jobs</td></tr>
+              <tr><td>bpmnkit incident list</td><td>List incidents</td></tr>
+              <tr><td>bpmnkit incident resolve &lt;key&gt;</td><td>Resolve an incident</td></tr>
+              <tr><td>bpmnkit job list</td><td>List jobs</td></tr>
             </tbody>
           </table>
         </div>
@@ -628,9 +628,9 @@ import Nav from "../components/Nav.astro"
           </div>
           <table class="cli-cmd-table" aria-label="Decision and variable commands">
             <tbody>
-              <tr><td>casen decisions list</td><td>List deployed decision definitions</td></tr>
-              <tr><td>casen variables list &lt;key&gt;</td><td>List variables for a process instance</td></tr>
-              <tr><td>casen messages publish</td><td>Publish a message correlation</td></tr>
+              <tr><td>bpmnkit decisions list</td><td>List deployed decision definitions</td></tr>
+              <tr><td>bpmnkit variables list &lt;key&gt;</td><td>List variables for a process instance</td></tr>
+              <tr><td>bpmnkit messages publish</td><td>Publish a message correlation</td></tr>
             </tbody>
           </table>
         </div>
@@ -643,7 +643,7 @@ import Nav from "../components/Nav.astro"
           </div>
           <table class="cli-cmd-table" aria-label="Connector commands">
             <tbody>
-              <tr><td>casen connector generate &lt;spec&gt;</td><td>Generate element templates from OpenAPI/Swagger</td></tr>
+              <tr><td>bpmnkit connector generate &lt;spec&gt;</td><td>Generate element templates from OpenAPI/Swagger</td></tr>
             </tbody>
           </table>
         </div>
@@ -662,7 +662,7 @@ import Nav from "../components/Nav.astro"
         <div class="cli-output-card">
           <div class="cli-output-card-header">
             <span class="cli-output-card-title">Table (default)</span>
-            <span class="cli-output-flag">casen pd list</span>
+            <span class="cli-output-flag">bpmnkit pd list</span>
           </div>
           <pre>  <span class="h">Name                  Version  Deployed</span>
   <span class="h">─────────────────────────────────────────────</span>
@@ -738,19 +738,19 @@ import Nav from "../components/Nav.astro"
         <div class="cli-completion-card">
           <div class="cli-completion-card-header">bash</div>
           <pre><span class="c"># Add to ~/.bashrc</span>
-<span class="cmd">eval "$(casen completion bash)"</span></pre>
+<span class="cmd">eval "$(bpmnkit completion bash)"</span></pre>
         </div>
 
         <div class="cli-completion-card">
           <div class="cli-completion-card-header">zsh</div>
           <pre><span class="c"># Add to ~/.zshrc</span>
-<span class="cmd">eval "$(casen completion zsh)"</span></pre>
+<span class="cmd">eval "$(bpmnkit completion zsh)"</span></pre>
         </div>
 
         <div class="cli-completion-card">
           <div class="cli-completion-card-header">fish</div>
           <pre><span class="c"># Add to fish config</span>
-<span class="cmd">casen completion fish \
+<span class="cmd">bpmnkit completion fish \
   | source</span></pre>
         </div>
 
@@ -778,8 +778,8 @@ import Nav from "../components/Nav.astro"
         <pre class="cli-pkg-cmd" data-pkg="yarn"><code><span class="prompt">$</span> yarn global add @bpmnkit/cli</code></pre>
 
         <p style="margin-top: 24px; font-size: 13.5px; color: var(--text-muted);">
-          Then run <code style="font-family:var(--font-mono);color:var(--accent);font-size:13px;">casen</code> to launch the interactive TUI,
-          or <code style="font-family:var(--font-mono);color:var(--accent);font-size:13px;">casen --help</code> to see all commands.
+          Then run <code style="font-family:var(--font-mono);color:var(--accent);font-size:13px;">bpmnkit</code> to launch the interactive TUI,
+          or <code style="font-family:var(--font-mono);color:var(--accent);font-size:13px;">bpmnkit --help</code> to see all commands.
         </p>
       </div>
     </div>

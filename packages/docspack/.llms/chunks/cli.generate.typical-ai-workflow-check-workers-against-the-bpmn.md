@@ -1,12 +1,12 @@
-# casen generate — Typical AI workflow — Check workers against the BPMN
+# bpmnkit generate — Typical AI workflow — Check workers against the BPMN
 
 `--check-workers <glob>` scans TypeScript and JavaScript sources for job worker registrations. It
 reports job types that have no worker, and workers whose job type no BPMN element uses. Add
 `--strict` to exit 1 when there is a mismatch.
 
 ```sh
-casen gen types processes/ --check-workers "src/**/*.ts" --strict
-casen gen types processes/ --check-workers src,workers --format json
+bpmnkit gen types processes/ --check-workers "src/**/*.ts" --strict
+bpmnkit gen types processes/ --check-workers src,workers --format json
 ```
 
 The scan is a heuristic. It finds a job type only when it is a string literal in one of these forms:

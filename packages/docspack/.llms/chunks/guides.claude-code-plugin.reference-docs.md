@@ -26,13 +26,13 @@ Build me an invoice approval process for accounts payable
 **What it does:**
 
 1. Asks clarifying questions (error paths, user tasks, deploy target)
-2. Checks domain patterns (`casen pattern list`/`get`)
+2. Checks domain patterns (`bpmnkit pattern list`/`get`)
 3. Resolves connectors, writes the plan
-4. Compiles it with `casen synth`
+4. Compiles it with `bpmnkit synth`
 5. Shows a preview and **waits for your approval**
 6. Tests the process, fixing failures by adjusting the plan
 7. Scaffolds a worker stub for every job type with no connector
-8. Gates on `casen lint --profile deploy`, then deploys to the chosen target
+8. Gates on `bpmnkit lint --profile deploy`, then deploys to the chosen target
 9. Reports the process ID, files created, and next steps
 
 ---
@@ -47,7 +47,7 @@ Investigate and resolve the open incidents
 
 **What it does:**
 
-1. Fetches all open incidents (`casen incident list`)
+1. Fetches all open incidents (`bpmnkit incident list`)
 2. Groups by process + error type, sorted by count
 3. Investigates root cause per group
 4. **Proposes a fix and waits for your approval** before executing

@@ -65,18 +65,20 @@ describe("parseCptFile", () => {
 			],
 		})
 		expect(r).toEqual({
-			errors: ['case "c", instruction 2: PUBLISH_MESSAGE is not supported by casen test yet'],
+			errors: ['case "c", instruction 2: PUBLISH_MESSAGE is not supported by bpmnkit test yet'],
 		})
 	})
 
 	it("names an unsupported selector field", () => {
 		expect(
 			errorsOf({ type: "COMPLETE_JOB", jobSelector: { jobType: "a", tenantId: "x" } }),
-		).toEqual(['case "c", instruction 0: jobSelector.tenantId is not supported by casen test yet'])
+		).toEqual([
+			'case "c", instruction 0: jobSelector.tenantId is not supported by bpmnkit test yet',
+		])
 		expect(
 			errorsOf({ type: "COMPLETE_USER_TASK", userTaskSelector: { elementId: "a", taskName: "x" } }),
 		).toEqual([
-			'case "c", instruction 0: userTaskSelector.taskName is not supported by casen test yet',
+			'case "c", instruction 0: userTaskSelector.taskName is not supported by bpmnkit test yet',
 		])
 		expect(
 			errorsOf({
@@ -86,7 +88,7 @@ describe("parseCptFile", () => {
 				state: "IS_ACTIVE",
 			}),
 		).toContain(
-			'case "c", instruction 0: elementSelectors[0].elementName is not supported by casen test yet',
+			'case "c", instruction 0: elementSelectors[0].elementName is not supported by bpmnkit test yet',
 		)
 	})
 
@@ -98,13 +100,13 @@ describe("parseCptFile", () => {
 				elementSelectors: [{ elementId: "e" }],
 				state: "IS_TERMINATED",
 			}),
-		).toEqual(['case "c", instruction 0: state IS_TERMINATED is not supported by casen test yet'])
+		).toEqual(['case "c", instruction 0: state IS_TERMINATED is not supported by bpmnkit test yet'])
 	})
 
 	it("names an unsupported instruction field", () => {
 		const job = { type: "COMPLETE_JOB", jobSelector: { jobType: "a" } }
 		expect(errorsOf({ ...job, useExampleData: true })).toEqual([
-			'case "c", instruction 0: COMPLETE_JOB.useExampleData is not supported by casen test yet',
+			'case "c", instruction 0: COMPLETE_JOB.useExampleData is not supported by bpmnkit test yet',
 		])
 		const create = { type: "CREATE_PROCESS_INSTANCE", processDefinitionSelector: PD }
 		expect(errorsOf({ ...create, startInstructions: [] })[0]).toContain(
@@ -206,7 +208,7 @@ describe("parseCptFile: instruction validation", () => {
 		[
 			"unsupported state",
 			{ type: "ASSERT_PROCESS_INSTANCE", processInstanceSelector: PD, state: "IS_GONE" },
-			"state IS_GONE is not supported by casen test yet",
+			"state IS_GONE is not supported by bpmnkit test yet",
 		],
 		[
 			"non-string selector value",
@@ -251,7 +253,7 @@ describe("parseCptFile: instruction validation", () => {
 		[
 			"activateElements unknown key",
 			adhoc({ activateElements: [{ elementId: "e", foo: 1 }] }),
-			"activateElements[0].foo is not supported by casen test yet",
+			"activateElements[0].foo is not supported by bpmnkit test yet",
 		],
 		[
 			"activateElements variables not an object",
@@ -261,10 +263,10 @@ describe("parseCptFile: instruction validation", () => {
 		[
 			"type that is a built-in key",
 			{ type: "constructor" },
-			"constructor is not supported by casen test yet",
+			"constructor is not supported by bpmnkit test yet",
 		],
-		["type __proto__", { type: "__proto__" }, "__proto__ is not supported by casen test yet"],
-		["type toString", { type: "toString" }, "toString is not supported by casen test yet"],
+		["type __proto__", { type: "__proto__" }, "__proto__ is not supported by bpmnkit test yet"],
+		["type toString", { type: "toString" }, "toString is not supported by bpmnkit test yet"],
 	])("%s", (_name, ins, message) => {
 		expect(errorsOf(ins)).toEqual([`${W}: ${message}`])
 	})

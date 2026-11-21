@@ -1,0 +1,57 @@
+[
+  {
+    "id": "naming/unlabeled-start-event",
+    "category": "naming",
+    "severity": "info",
+    "message": "Start event \"start\" has no name.",
+    "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\".",
+    "processId": "order",
+    "elementIds": [
+      "start"
+    ]
+  },
+  {
+    "id": "naming/unlabeled-end-event",
+    "category": "naming",
+    "severity": "info",
+    "message": "End event \"end\" has no name.",
+    "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\".",
+    "processId": "order",
+    "elementIds": [
+      "end"
+    ]
+  },
+  {
+    "id": "pattern/start-no-documentation",
+    "category": "pattern",
+    "severity": "warning",
+    "message": "Start event \"start\" has no documentation describing expected input variables.",
+    "suggestion": "Add documentation listing the process input variables so callers know the expected contract.",
+    "processId": "order",
+    "elementIds": [
+      "start"
+    ]
+  },
+  {
+    "id": "deploy/service-task-no-type",
+    "category": "deploy",
+    "severity": "error",
+    "message": "\"Charge\" (serviceTask) has no zeebe:taskDefinition type.",
+    "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition.",
+    "processId": "order",
+    "elementIds": [
+      "charge"
+    ]
+  },
+  {
+    "id": "deploy/service-task-no-type",
+    "category": "deploy",
+    "severity": "error",
+    "message": "\"Notify\" (sendTask) has no zeebe:taskDefinition type.",
+    "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition.",
+    "processId": "order",
+    "elementIds": [
+      "notify"
+    ]
+  }
+]

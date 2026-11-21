@@ -1,11 +1,11 @@
-# casen dev — Deploying and AI
+# bpmnkit dev — Deploying and AI
 
-`casen dev` does not start the AI bridge or connect to a cluster. For those, run the proxy
+`bpmnkit dev` does not start the AI bridge or connect to a cluster. For those, run the proxy
 alongside it:
 
 ```sh
-casen proxy start   # port 3033: AI bridge, Camunda API proxy, run history
-casen deploy ...    # deploy what you built
+bpmnkit proxy start   # port 3033: AI bridge, Camunda API proxy, run history
+bpmnkit deploy ...    # deploy what you built
 ```
 
 

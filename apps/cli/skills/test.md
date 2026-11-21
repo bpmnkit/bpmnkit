@@ -10,12 +10,12 @@ If no file is given, find the single `.bpmn` in cwd or ask.
 
 ## Step 1 — Ensure scenarios exist
 
-Look for `<file>.bpmn.tests.json` (written automatically by `casen synth` from a plan's `tests` array). If missing: `casen plan extract <file>.bpmn`, add a `tests` array covering the happy path and every branch/boundary, then `casen synth <plan>.json --merge <file>.bpmn` to regenerate it — or hand-write the sidecar directly (array of `{ id, name, inputs?, mocks?, expect? }`).
+Look for `<file>.bpmn.tests.json` (written automatically by `bpmnkit synth` from a plan's `tests` array). If missing: `bpmnkit plan extract <file>.bpmn`, add a `tests` array covering the happy path and every branch/boundary, then `bpmnkit synth <plan>.json --merge <file>.bpmn` to regenerate it — or hand-write the sidecar directly (array of `{ id, name, inputs?, mocks?, expect? }`).
 
 ## Step 2 — Run
 
 ```sh
-casen test <file>.bpmn
+bpmnkit test <file>.bpmn
 ```
 
 ## Step 3 — Report

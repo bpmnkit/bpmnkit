@@ -20,7 +20,7 @@ engine.registerJobWorker("agent:pr-review", (job) => job.complete({ verdict: "ap
 ## The agent contract
 
 An `.agent()` step is a service task with two task headers: `prompt` (the template) and
-`resultVariable` (where the output goes). `casen agent work` serves it — see
+`resultVariable` (where the output goes). `bpmnkit agent work` serves it — see
 [Durable Agent Flows](/docs/guides/durable-agent-flows). To write your own agent worker, use
 the same helpers:
 

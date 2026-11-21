@@ -1,0 +1,428 @@
+[
+	{
+		"id": "io.camunda.connectors.AWSCOMPREHEND.v1",
+		"name": "AWS Comprehend Outbound Connector",
+		"taskType": "io.camunda:aws-comprehend:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AWSDynamoDB.v1",
+		"name": "AWS DynamoDB Outbound Connector",
+		"taskType": "io.camunda:aws-dynamodb:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AWSEventBridge.v1",
+		"name": "Send Event to AWS EventBridge",
+		"taskType": "io.camunda:aws-eventbridge:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AWSLAMBDA.v2",
+		"name": "Invoke AWS Lambda Function",
+		"taskType": "io.camunda:aws-lambda:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AWSSAGEMAKER.v1",
+		"name": "Run Inference with AWS SageMaker",
+		"taskType": "io.camunda:aws-sagemaker:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AWSSNS.v1",
+		"name": "Publish Message to AWS SNS",
+		"taskType": "io.camunda:aws-sns:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AWSSQS.v1",
+		"name": "Send Message to AWS SQS",
+		"taskType": "io.camunda:aws-sqs:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AWSTEXTRACT.v1",
+		"name": "Extract Text from Document with AWS Textract",
+		"taskType": "io.camunda:aws-textract:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AppIntegrations.v1",
+		"name": "App Integrations Connector",
+		"taskType": "io.camunda:app-integrations",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.Asana.v1",
+		"name": "Asana Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AutomationAnywhere",
+		"name": "Automation Anywhere Outbound Connector",
+		"taskType": "io.camunda:connector-automationanywhere:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AutomationAnywhere.v1",
+		"name": "Automation Anywhere Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.AzureOpenAI.outbound.v1",
+		"name": "Azure OpenAI Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.BluePrism.v1",
+		"name": "Blue Prism Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.CamundaOperate.v1",
+		"name": "Camunda Operate Outbound connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.CamundaOrchestrationCluster.v1",
+		"name": "Camunda Orchestration Cluster API connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.EasyPost.v1",
+		"name": "Easy Post Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.EmbeddingsVectorDB.v1",
+		"name": "Embeddings Vector DB Outbound Connector",
+		"taskType": "io.camunda:embeddings-vector-database:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.GitHub.v1",
+		"name": "GitHub Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.GitLab.v1",
+		"name": "GitLab Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.GoogleDrive.v1",
+		"name": "Google Drive Outbound Connector",
+		"taskType": "io.camunda:google-drive:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.GoogleGemini.v1",
+		"name": "Generate Content with Google Gemini",
+		"taskType": "io.camunda:google-gemini:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.GoogleMapsPlatform.v1",
+		"name": "Google Maps Platform Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.GoogleSheets.v1",
+		"name": "Google Sheets Outbound Connector",
+		"taskType": "io.camunda:google-sheets:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.GraphQL.v1",
+		"name": "Send GraphQL Request",
+		"taskType": "io.camunda:connector-graphql:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.HttpJson.v2",
+		"name": "Send REST Request",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.HubSpot.v1",
+		"name": "HubSpot Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.HuggingFace.v1",
+		"name": "Run Inference on Hugging Face",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.Jdbc.v1",
+		"name": "Execute SQL Statement on Database",
+		"taskType": "io.camunda:connector-jdbc:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.KAFKA.v1",
+		"name": "Publish Message to Kafka",
+		"taskType": "io.camunda:connector-kafka:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.MSFT.O365.Mail.v1",
+		"name": "Microsoft Office 365 Mail Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.MSTeams.v1",
+		"name": "Microsoft Teams Outbound Connector",
+		"taskType": "io.camunda:connector-microsoft-teams:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.ManagedScript.v1",
+		"name": "Managed script",
+		"taskType": "io.camunda:managed-script:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.OpenAI.v1",
+		"name": "OpenAI Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.PowerAutomate.v1",
+		"name": "Power Automate Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.RabbitMQ.v1",
+		"name": "Publish Message to RabbitMQ",
+		"taskType": "io.camunda:connector-rabbitmq:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.Salesforce.v1",
+		"name": "Salesforce Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.SendGrid.v2",
+		"name": "Send Email with SendGrid",
+		"taskType": "io.camunda:sendgrid:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.ServiceNow.v1",
+		"name": "ServiceNow Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.ServiceNowFlow.v1",
+		"name": "ServiceNow Flow Starter",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.ServiceNowIncident.v1",
+		"name": "ServiceNow Incident Handler",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.Slack.v1",
+		"name": "Slack Outbound Connector",
+		"taskType": "io.camunda:slack:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.Twilio.v1",
+		"name": "Twilio Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.UIPath.v1",
+		"name": "UiPath Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.WhatsApp.v1",
+		"name": "WhatsApp Business Outbound Connector",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.a2a.client.v0",
+		"name": "A2A Client (early access)",
+		"taskType": "io.camunda.agenticai:a2aclient:0",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.adhoctoolsschema.v0",
+		"name": "Ad-hoc subprocess tools schema (alpha)",
+		"taskType": "io.camunda.agenticai:adhoctoolsschema:0",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.adhoctoolsschema.v1",
+		"name": "Ad-hoc tools schema",
+		"taskType": "io.camunda.agenticai:adhoctoolsschema:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
+		"name": "AI Agent Sub-process",
+		"taskType": "io.camunda.agenticai:aiagent:subprocess:2",
+		"elementType": "bpmn:AdHocSubProcess"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.ai-agent-task.v2",
+		"name": "AI Agent Task",
+		"taskType": "io.camunda.agenticai:aiagent:task:2",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.aiagent.jobworker.v1",
+		"name": "AI Agent Sub-process (Deprecated)",
+		"taskType": "io.camunda.agenticai:aiagent-job-worker:1",
+		"elementType": "bpmn:AdHocSubProcess"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.aiagent.v0",
+		"name": "AI Agent (alpha)",
+		"taskType": "io.camunda.agenticai:aiagent:0",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.aiagent.v1",
+		"name": "AI Agent Task (Deprecated)",
+		"taskType": "io.camunda.agenticai:aiagent:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.mcp.client.v0",
+		"name": "MCP Client",
+		"taskType": "io.camunda.agenticai:mcpclient:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.mcp.remoteclient.v0",
+		"name": "MCP Remote Client",
+		"taskType": "io.camunda.agenticai:mcpremoteclient:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.agentcore.memory.longterm.v1",
+		"name": "AWS Bedrock AgentCore Long-Term Memory Connector",
+		"taskType": "io.camunda:aws-bedrock-agentcore-lt-memory:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.agentcore.runtime.v1",
+		"name": "Invoke Agent in AWS Bedrock AgentCore Runtime",
+		"taskType": "io.camunda:aws-bedrock-agentcore-runtime:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.codeinterpreter.v1",
+		"name": "Run Code with AWS Bedrock Code Interpreter",
+		"taskType": "io.camunda:aws-bedrock-codeinterpreter:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.knowledgebase.v1",
+		"name": "Retrieve Documents from AWS Bedrock Knowledge Base",
+		"taskType": "io.camunda:aws-bedrock-knowledgebase:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.v1",
+		"name": "AWS Bedrock Outbound Connector",
+		"taskType": "io.camunda:aws-bedrock:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.aws.s3.v1",
+		"name": "AWS S3 Outbound Connector",
+		"taskType": "io.camunda:aws-s3:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.azure.blobstorage.v1",
+		"name": "Azure Blob Storage Outbound Connector",
+		"taskType": "io.camunda:azure-blobstorage:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.box",
+		"name": "Box Outbound Connector",
+		"taskType": "io.camunda:box:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.csv",
+		"name": "CSV Connector",
+		"taskType": "io.camunda:csv-connector",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.databricks.rest.v1",
+		"name": "Databricks",
+		"taskType": "io.camunda:http-json:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.email.v1",
+		"name": "Email Connector",
+		"taskType": "io.camunda:email:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.google.gcp.v1",
+		"name": "Google Cloud Storage Outbound Connector",
+		"taskType": "io.camunda:google-gcs:1",
+		"elementType": "bpmn:ServiceTask"
+	},
+	{
+		"id": "io.camunda.connectors.message.end.v1",
+		"name": "Send Message Connector (Message End Event)",
+		"taskType": "io.camunda:sendMessage:1",
+		"elementType": "bpmn:EndEvent"
+	},
+	{
+		"id": "io.camunda.connectors.message.intermediate.v1",
+		"name": "Send Message Connector (Intermediate Throw Event)",
+		"taskType": "io.camunda:sendMessage:1",
+		"elementType": "bpmn:IntermediateThrowEvent"
+	},
+	{
+		"id": "io.camunda.connectors.message.sendtask.v1",
+		"name": "Send Message Connector (Send Task)",
+		"taskType": "io.camunda:sendMessage:1",
+		"elementType": "bpmn:SendTask"
+	},
+	{
+		"id": "io.camunda:soap",
+		"name": "Send SOAP Request",
+		"taskType": "io.camunda:soap:1",
+		"elementType": "bpmn:ServiceTask"
+	}
+]

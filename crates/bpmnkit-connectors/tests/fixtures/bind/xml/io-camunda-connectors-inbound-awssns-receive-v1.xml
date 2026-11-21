@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:message id="Message_1" name="orders">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_2" name="solo"/>
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start_1" name="Start">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_1" name="Do it">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="Service_1" name="Call it">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="old-worker" retries="5"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=old" target="oldInput"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="User_1" name="Review">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:receiveTask id="Receive_1" zeebe:modelerTemplate="io.camunda.connectors.inbound.AWSSNS.Receive.v1" zeebe:modelerTemplateVersion="7" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA4MCA4MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS82NC9BcmNoX0FXUy1TaW1wbGUtTm90aWZpY2F0aW9uLVNlcnZpY2VfNjQ8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgeDE9JzAlJyB5MT0nMTAwJScgeDI9JzEwMCUnIHkyPScwJScgaWQ9J2xpbmVhckdyYWRpZW50LTEnPgogICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPScjQjAwODREJyBvZmZzZXQ9JzAlJz48L3N0b3A+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNGRjRGOEInIG9mZnNldD0nMTAwJSc+PC9zdG9wPgogICAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8L2RlZnM+CiAgICA8ZyBpZD0nSWNvbi1BcmNoaXRlY3R1cmUvNjQvQXJjaF9BV1MtU2ltcGxlLU5vdGlmaWNhdGlvbi1TZXJ2aWNlXzY0JyBzdHJva2U9J25vbmUnIHN0cm9rZS13aWR0aD0nMScgZmlsbD0nbm9uZScKICAgICAgIGZpbGwtcnVsZT0nZXZlbm9kZCc+CiAgICAgICAgPGcgaWQ9J0ljb24tQXJjaGl0ZWN0dXJlLUJHLzY0L0FwcGxpY2F0aW9uLUludGVncmF0aW9uJyBmaWxsPSd1cmwoI2xpbmVhckdyYWRpZW50LTEpJz4KICAgICAgICAgICAgPHJlY3QgaWQ9J1JlY3RhbmdsZScgeD0nMCcgeT0nMCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzgwJz48L3JlY3Q+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGQ9J00xNywzOCBDMTguMTAzLDM4IDE5LDM4Ljg5NyAxOSw0MCBDMTksNDEuMTAzIDE4LjEwMyw0MiAxNyw0MiBDMTUuODk3LDQyIDE1LDQxLjEwMyAxNSw0MCBDMTUsMzguODk3IDE1Ljg5NywzOCAxNywzOCBMMTcsMzggWiBNNDEsNjQgQzI5LjMxNCw2NCAxOS4yODksNTUuNDY2IDE3LjE5NCw0My45OCBDMTguOTY1LDQzLjg5NCAyMC40MjcsNDIuNjU5IDIwLjg1Nyw0MSBMMjcsNDEgTDI3LDM5IEwyMC44NTcsMzkgQzIwLjQyNywzNy4zNDIgMTguOTY2LDM2LjEwNyAxNy4xOTUsMzYuMDIgQzE5LjI4NSwyNC43MSAyOS41MTEsMTYgNDEsMTYgQzQ1LjMxMywxNiA0OS44MzIsMTcuNjIyIDU0LjQyOSwyMC44MjEgTDU1LjU3MSwxOS4xNzkgQzUwLjYzMywxNS43NDMgNDUuNzMsMTQgNDEsMTQgQzI4LjI3LDE0IDE2Ljk0OSwyMy44NjUgMTUuMDYzLDM2LjUyMSBDMTMuODM5LDM3LjIwNyAxMywzOC41IDEzLDQwIEMxMyw0MS41IDEzLjgzOSw0Mi43OTMgMTUuMDYzLDQzLjQ3OCBDMTYuOTcsNTYuMzQxIDI4LjA1Niw2NiA0MSw2NiBDNDYuNDA3LDY2IDUxLjk0Miw2NC4xNTcgNTYuNTg1LDYwLjgxMSBMNTUuNDE1LDU5LjE4OSBDNTEuMTEsNjIuMjkyIDQ1Ljk5MSw2NCA0MSw2NCBMNDEsNjQgWiBNMzAuMTAxLDM2LjQ0MiBDMzEuOTU1LDM2Ljg5NSAzNC4yNzUsMzcgMzYsMzcgQzM3LjY0MiwzNyAzOS44MjMsMzYuOTA1IDQxLjYyOSwzNi41MDYgTDM3LjEwNSw0NS41NTMgQzM3LjAzNiw0NS42OTEgMzcsNDUuODQ1IDM3LDQ2IEwzNyw1MC40NTMgQzM2LjE5OSw1MC45NjQgMzQuODMzLDUxLjgxMiAzNCw1MS45ODYgTDM0LDQ2IEMzNCw0NS44NjggMzMuOTc0LDQ1LjczNyAzMy45MjMsNDUuNjE1IEwzMC4xMDEsMzYuNDQyIFogTTM2LDMzIEM0MC4wMjUsMzMgNDIuMTc0LDMzLjYwNCA0Mi44NDEsMzQgQzQyLjE3NCwzNC4zOTYgNDAuMDI1LDM1IDM2LDM1IEMzMS45NzUsMzUgMjkuODI2LDM0LjM5NiAyOS4xNTksMzQgQzI5LjgyNiwzMy42MDQgMzEuOTc1LDMzIDM2LDMzIEwzNiwzMyBaIE0zMyw1NCBMMzQsNTQgQzM0LjA0Myw1NCAzNC4wODYsNTMuOTk3IDM0LjEyOCw1My45OTIgQzM1LjM1Miw1My44MzMgMzYuOTA5LDUyLjg4NyAzOC4yNzIsNTIuMDEzIEwzOC41MzUsNTEuODQ1IEMzOC44MjQsNTEuNjYxIDM5LDUxLjM0MiAzOSw1MSBMMzksNDYuMjM2IEw0NC41NTksMzUuMTIgQzQ0LjgzMywzNC44MDEgNDUsMzQuNDM0IDQ1LDM0IEM0NSwzMS4zOSAzOS4zNjEsMzEgMzYsMzEgQzMyLjYzOSwzMSAyNywzMS4zOSAyNywzNCBDMjcsMzQuMzY2IDI3LjEyLDM0LjY4NCAyNy4zMiwzNC45NjcgTDMyLDQ2LjIgTDMyLDUzIEMzMiw1My41NTIgMzIuNDQ3LDU0IDMzLDU0IEwzMyw1NCBaIE02Miw1MyBDNjMuMTAzLDUzIDY0LDUzLjg5NyA2NCw1NSBDNjQsNTYuMTAzIDYzLjEwMyw1NyA2Miw1NyBDNjAuODk3LDU3IDYwLDU2LjEwMyA2MCw1NSBDNjAsNTMuODk3IDYwLjg5Nyw1MyA2Miw1MyBMNjIsNTMgWiBNNjIsMjMgQzYzLjEwMywyMyA2NCwyMy44OTcgNjQsMjUgQzY0LDI2LjEwMyA2My4xMDMsMjcgNjIsMjcgQzYwLjg5NywyNyA2MCwyNi4xMDMgNjAsMjUgQzYwLDIzLjg5NyA2MC44OTcsMjMgNjIsMjMgTDYyLDIzIFogTTY0LDM4IEM2NS4xMDMsMzggNjYsMzguODk3IDY2LDQwIEM2Niw0MS4xMDMgNjUuMTAzLDQyIDY0LDQyIEM2Mi44OTcsNDIgNjIsNDEuMTAzIDYyLDQwIEM2MiwzOC44OTcgNjIuODk3LDM4IDY0LDM4IEw2NCwzOCBaIE01NCw0MSBMNjAuMTQzLDQxIEM2MC41ODksNDIuNzIgNjIuMTQyLDQ0IDY0LDQ0IEM2Ni4yMDYsNDQgNjgsNDIuMjA2IDY4LDQwIEM2OCwzNy43OTQgNjYuMjA2LDM2IDY0LDM2IEM2Mi4xNDIsMzYgNjAuNTg5LDM3LjI4IDYwLjE0MywzOSBMNTQsMzkgTDU0LDI2IEw1OC4xNDMsMjYgQzU4LjU4OSwyNy43MiA2MC4xNDIsMjkgNjIsMjkgQzY0LjIwNiwyOSA2NiwyNy4yMDYgNjYsMjUgQzY2LDIyLjc5NCA2NC4yMDYsMjEgNjIsMjEgQzYwLjE0MiwyMSA1OC41ODksMjIuMjggNTguMTQzLDI0IEw1MywyNCBDNTIuNDQ3LDI0IDUyLDI0LjQ0OCA1MiwyNSBMNTIsMzkgTDQ1LDM5IEw0NSw0MSBMNTIsNDEgTDUyLDU1IEM1Miw1NS41NTIgNTIuNDQ3LDU2IDUzLDU2IEw1OC4xNDMsNTYgQzU4LjU4OSw1Ny43MiA2MC4xNDIsNTkgNjIsNTkgQzY0LjIwNiw1OSA2Niw1Ny4yMDYgNjYsNTUgQzY2LDUyLjc5NCA2NC4yMDYsNTEgNjIsNTEgQzYwLjE0Miw1MSA1OC41ODksNTIuMjggNTguMTQzLDU0IEw1NCw1NCBMNTQsNDEgWicKICAgICAgICAgICAgICBpZD0nQVdTLVNpbXBsZS1Ob3RpZmljYXRpb24tU2VydmljZV9JY29uXzY0X1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg==" name="Wait" messageRef="Message_2">
+      <bpmn:extensionElements>
+        <zeebe:properties>
+          <zeebe:property name="inbound.type" value="io.camunda:aws-sns-webhook:1"/>
+          <zeebe:property name="inbound.securitySubscriptionAllowedFor" value="specific"/>
+          <zeebe:property name="consumeUnmatchedEvents" value="true"/>
+          <zeebe:property name="deduplicationModeManualFlag" value="false"/>
+          <zeebe:property name="deduplicationMode" value="AUTO"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:intermediateCatchEvent id="Catch_1" name="Catch one">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_1" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Catch_2" name="Catch two">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_2" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="Throw_1" name="Throw">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:subProcess id="Sub_1" name="Sub">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:startEvent id="Inner_Start">
+        <bpmn:outgoing>Inner_Flow_1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="Inner_1" name="Inner">
+        <bpmn:incoming>Inner_Flow_1</bpmn:incoming>
+        <bpmn:outgoing>Inner_Flow_2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="Inner_End">
+        <bpmn:incoming>Inner_Flow_2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Inner_Flow_1" sourceRef="Inner_Start" targetRef="Inner_1"/>
+      <bpmn:sequenceFlow id="Inner_Flow_2" sourceRef="Inner_1" targetRef="Inner_End"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="End_1" name="End">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Boundary_1" attachedToRef="Service_1">
+      <bpmn:timerEventDefinition id="TED_1">
+        <bpmn:timeDuration>PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:task id="Task_2" name="Loose"/>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_1"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_1" targetRef="Service_1"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Service_1" targetRef="User_1"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="User_1" targetRef="Receive_1"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Receive_1" targetRef="Catch_1"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Catch_1" targetRef="Catch_2"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Catch_2" targetRef="Throw_1"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Throw_1" targetRef="Sub_1"/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Sub_1" targetRef="End_1"/>
+  </bpmn:process>
+</bpmn:definitions>
+

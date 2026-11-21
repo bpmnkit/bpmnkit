@@ -1,0 +1,42 @@
+{
+  "description": "GET with the template's default result expression",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/posts/1"
+      },
+      "response": {
+        "body": {
+          "id": 1,
+          "title": "t",
+          "userId": 1
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myResponseBody": {
+          "id": 1,
+          "title": "t",
+          "userId": 1
+        }
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/posts/1"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#response"
+}

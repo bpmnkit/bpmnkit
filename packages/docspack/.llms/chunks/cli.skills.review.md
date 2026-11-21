@@ -9,9 +9,9 @@ Run the full static analyzer on a BPMN file and get a structured findings report
 
 **What it does:**
 
-1. Runs `casen lint lint <file> --profile deploy` (the deploy-readiness gate) and the default profile (all categories)
+1. Runs `bpmnkit lint lint <file> --profile deploy` (the deploy-readiness gate) and the default profile (all categories)
 2. Groups findings by severity: errors, warnings, info
-3. Offers `casen lint lint <file> --fix` to apply auto-fixable findings
+3. Offers `bpmnkit lint lint <file> --fix` to apply auto-fixable findings
 4. Ends with an explicit **"Deploy-ready: yes/no"** verdict
 
 **Example output:**

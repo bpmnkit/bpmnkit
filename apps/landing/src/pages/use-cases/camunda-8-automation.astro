@@ -5,7 +5,7 @@ const faqs = [
 	{
 		question: "Do I need the Camunda Modeler to deploy processes built this way?",
 		answer:
-			"No — the casen CLI (or a direct multipart request to Camunda 8's deployment endpoint) deploys BPMN 2.0 XML straight to your cluster, whether that XML came from @bpmnkit/core, was hand-authored in Camunda Modeler, or came from anywhere else. Once deployed, @bpmnkit/api's typed client starts and manages instances.",
+			"No — the bpmnkit CLI (or a direct multipart request to Camunda 8's deployment endpoint) deploys BPMN 2.0 XML straight to your cluster, whether that XML came from @bpmnkit/core, was hand-authored in Camunda Modeler, or came from anywhere else. Once deployed, @bpmnkit/api's typed client starts and manages instances.",
 	},
 	{
 		question: "Can this run in a CI pipeline?",
@@ -56,9 +56,9 @@ const xml = Bpmn.export(
 writeFileSync("invoice-approval.bpmn", xml);
 
 // 2. Deploy to Camunda 8 — the deployment endpoint takes a multipart file
-// upload, so it's deployed via the casen CLI rather than @bpmnkit/api's
+// upload, so it's deployed via the bpmnkit CLI rather than @bpmnkit/api's
 // (JSON-only) typed client.
-execSync("casen deploy deploy invoice-approval.bpmn --target camunda8", { stdio: "inherit" });
+execSync("bpmnkit deploy deploy invoice-approval.bpmn --target camunda8", { stdio: "inherit" });
 
 // 3. Start a new instance through the typed API client
 const client = new CamundaClient({
@@ -78,18 +78,18 @@ await client.processInstance.createProcessInstance({ processDefinitionId: "invoi
     cluster, and the whole flow — generate, test, deploy — runs as ordinary CI steps.
   </p>
 
-  <h2>The <code>casen</code> CLI</h2>
+  <h2>The <code>bpmnkit</code> CLI</h2>
   <p>
     For interactive or scripted operations against a running Camunda 8 cluster — deploying
     resources, and managing process instances, jobs, incidents, and decisions from the
-    terminal — the <code>casen</code> CLI wraps <code>@bpmnkit/api</code> (and, for the
+    terminal — the <code>bpmnkit</code> CLI wraps <code>@bpmnkit/api</code> (and, for the
     multipart deployment endpoint, a direct authenticated request).
   </p>
 
   <div class="uc-links">
     <a href="/docs/packages/api">@bpmnkit/api reference</a>
     <a href="/docs/guides/deployment">Deployment guide</a>
-    <a href="/cli">casen CLI</a>
+    <a href="/cli">bpmnkit CLI</a>
     <a href="/blog/connect-camunda-8-nodejs-rest-client">Connect to Camunda 8 from Node.js</a>
   </div>
 </UseCase>

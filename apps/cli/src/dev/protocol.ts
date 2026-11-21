@@ -1,5 +1,5 @@
 /**
- * What the `casen dev` server and its browser UI say to each other.
+ * What the `bpmnkit dev` server and its browser UI say to each other.
  *
  * Types only, and no imports: the browser bundle type-checks against this file
  * under DOM typings, where nothing from Node may leak in.

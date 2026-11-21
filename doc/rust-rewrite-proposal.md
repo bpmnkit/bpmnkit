@@ -26,7 +26,7 @@ Status: phases 0–9 implemented (2026-11-07; see `doc/progress.md`). The crates
 | FEEL | lexer, parser, evaluator, builtins, formatter/generator, token stream | highlighter UI |
 | Tooling | lint + optimize, camunda-compat, C7 migrate + JUEL, auto-layout, process-text/compact | — |
 | Data | connector templates, profiles (shared JSON, see §4.3) | — |
-| Everything else | — | canvas, editor, ui, plugins, studio, operate, drop, vscode, landing, learn, cli (`casen`), proxy, worker-client |
+| Everything else | — | canvas, editor, ui, plugins, studio, operate, drop, vscode, landing, learn, cli (`bpmnkit`), proxy, worker-client |
 
 ## 3. Layout
 
@@ -105,7 +105,7 @@ This removes the largest error-prone part from hand-porting. Only behaviour (eva
 | Consumer | Uses |
 |---|---|
 | Browser, Node, Deno, Bun | TS packages, unchanged |
-| Rust CLIs (yours, a future Rust `casen`) | `bpmnkit` crate from crates.io |
+| Rust CLIs (yours, a future Rust `bpmnkit`) | `bpmnkit` crate from crates.io |
 | reebe, proxy-rs, desktop (Tauri) | crates by path |
 | Python (later) | PyO3 bindings over the crates |
 | Other languages (later) | UniFFI or cbindgen over the crates |
@@ -126,7 +126,7 @@ No WASM build of the twin is planned. JS hosts already have TS.
 | 7 Layout | BPMN + DMN layout, coordinates within tolerance | 5–7 |
 | 8 Builder + text | Rust builder with the same output as TS, process-text and compact | 4–5 |
 | 9 Release | nightly fuzzing, crates.io publishing, docs (done 2026-11-07) | 1–2 |
-| Later | Rust `casen` 12–20 (start with a plugin-bridge spike), proxy-rs parity 6–10, Python bindings | — |
+| Later | Rust `bpmnkit` 12–20 (start with a plugin-bridge spike), proxy-rs parity 6–10, Python bindings | — |
 
 Phases 1–9 come to about 35–47 person-weeks. Each phase ships on its own:
 - After phase 3, Rust CLIs and reebe get FEEL.
@@ -150,7 +150,7 @@ Phases 1–9 come to about 35–47 person-weeks. Each phase ships on its own:
 
 1. Goal: both native tooling and JS performance. Met by the twin.
 2. License: crates are dual `MIT OR Apache-2.0`.
-3. Rust CLI: yes, after the core, starting with a plugin-bridge spike (a Node subprocess over JSON-RPC, or WASM components). TS `casen` stays until the Rust CLI matches it.
+3. Rust CLI: yes, after the core, starting with a plugin-bridge spike (a Node subprocess over JSON-RPC, or WASM components). TS `bpmnkit` stays until the Rust CLI matches it.
 4. Strategy: twin with conformance sync (this document), replacing the "Rust core under a TS facade" plan of 2026-11-04.
 
 ## 11. Phase 0 results (2026-11-04)

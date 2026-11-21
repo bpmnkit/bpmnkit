@@ -1,0 +1,18 @@
+[package]
+name = "bpmnkit-profiles"
+description = "Profile store paths and casen-to-bpmnkit copy migration for the BPMN Kit CLI (Rust twin of @bpmnkit/profiles' config lookup)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "camunda", "profiles", "cli", "config"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+serde_json = { workspace = true, features = ["preserve_order"] }
+
+[dev-dependencies]
+tempfile = "3"

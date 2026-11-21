@@ -1,0 +1,49 @@
+{
+  "description": "resultVariable stores the whole response context",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/status"
+      },
+      "response": {
+        "body": {
+          "up": true
+        },
+        "headers": {
+          "X-Request-Id": "r-1"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "resp": {
+          "body": {
+            "up": true
+          },
+          "headers": {
+            "content-length": "11",
+            "content-type": "application/json",
+            "x-request-id": "r-1"
+          },
+          "status": 200
+        }
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultVariable": "resp"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/status"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#response"
+}

@@ -119,7 +119,7 @@ function writeTemplates(templates: ConnectorTemplate[], opts: WriteOptions): voi
 **3.1 New command group `connector`**
 
 ```
-casen connector generate --swagger <file> [--output <dir>] [--base-url <url>]
+bpmnkit connector generate --swagger <file> [--output <dir>] [--base-url <url>]
                          [--id-prefix <prefix>] [--single] [--expand-body]
                          [--filter <regex>]  # filter operations by operationId
 ```

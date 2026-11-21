@@ -1,4 +1,4 @@
-# casen Plugin Authoring — Writing commands
+# bpmnkit Plugin Authoring — Writing commands
 
 ### Positional arguments
 
@@ -69,7 +69,7 @@ async run(ctx) {
 
 ### Throwing errors
 
-Throw a plain `Error` for user-facing errors. casen catches it, prints `error: <message>` to
+Throw a plain `Error` for user-facing errors. bpmnkit catches it, prints `error: <message>` to
 stderr, and exits with code 1:
 
 ```typescript

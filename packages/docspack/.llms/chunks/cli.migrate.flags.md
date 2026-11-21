@@ -1,4 +1,4 @@
-# casen migrate — Flags
+# bpmnkit migrate — Flags
 
 | Flag | Default | What it does |
 | --- | --- | --- |
@@ -9,12 +9,12 @@
 | `--placeholders` | off | Fill placeholder values the conversion cannot derive, instead of refusing the model |
 | `--no-validate` | validate | Write the converted model even when Camunda 8 would not deploy it |
 
-Put the flags after the file names: `casen migrate c7 models/*.bpmn --check`.
+Put the flags after the file names: `bpmnkit migrate c7 models/*.bpmn --check`.
 
 ### As a pipeline gate
 
 ```sh
-casen migrate c7 models/*.bpmn --check --format json
+bpmnkit migrate c7 models/*.bpmn --check --format json
 ```
 
 The JSON is an array with one entry per file: `file`, `output` (`null` with `--check`),

@@ -1,5 +1,5 @@
 /**
- * The `casen build` text spec: the core line format (`PROCESS_TEXT_GUIDE`) plus
+ * The `bpmnkit build` text spec: the core line format (`PROCESS_TEXT_GUIDE`) plus
  * pools, lanes, message flows, data objects and form fields, so a whole
  * collaboration is one short file a model can write in one go.
  *
@@ -26,7 +26,7 @@ import {
 } from "@bpmnkit/core"
 import { desugarSpec } from "./build-terse.js"
 
-/** The guide `casen build --help` and the agent card show. */
+/** The guide `bpmnkit build --help` and the agent card show. */
 export const BUILD_SPEC_GUIDE = `# Title | id=<process id> camunda=8.10   first line; one pool = one process
 <line format paths>                     a > b[user Review | form=f fields=amount:number,ok:checkbox] > c
 ## Pool name | id=<process id>          starts a pool (its own process); "| blackbox" = partner without a process
@@ -169,7 +169,7 @@ function unsupported(message: string): string {
 	const m = /^unknown kind "([^"]*)" for "([^"]*)"; used \w+$/.exec(message)
 	return m === null
 		? message
-		: `"${m[2]}": kind "${m[1]}" is not in the text spec (kinds: casen build --help); write a builder module (.mjs) instead, see the card's "Not in the text spec"`
+		: `"${m[2]}": kind "${m[1]}" is not in the text spec (kinds: bpmnkit build --help); write a builder module (.mjs) instead, see the card's "Not in the text spec"`
 }
 
 function* walk(elements: readonly BpmnFlowElement[]): Generator<BpmnFlowElement> {
@@ -233,7 +233,7 @@ function renameCollisions(process: CompactProcess, taken: Set<string>, fixes: st
 }
 
 /**
- * Compiles a `casen build` text spec into a laid-out model. The model is not
+ * Compiles a `bpmnkit build` text spec into a laid-out model. The model is not
  * gated: `Bpmn.export` does that, with one line per problem.
  */
 export function compileTextSpec(text: string): SpecBuild {

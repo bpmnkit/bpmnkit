@@ -46,7 +46,7 @@ templates directly.
 `CAMUNDA_CONNECTOR_TEMPLATES` mirrors Camunda's marketplace and is regenerated from it.
 Templates for services Camunda does not ship one for live beside it in
 `BPMNKIT_CONNECTOR_TEMPLATES`, and join the same catalog: `listConnectors`,
-`searchConnectors`, `getTemplate` and `casen connector` find them like any other. Each runs on
+`searchConnectors`, `getTemplate` and `bpmnkit connector` find them like any other. Each runs on
 a connector the Camunda runtime already has — the REST connector, `io.camunda:http-json:1` —
 so a cluster needs no extra job worker.
 

@@ -2,7 +2,7 @@
 
 # ProcessPlan format reference
 
-The `ProcessPlan` JSON IR is the **only** thing skills author by hand — never BPMN XML directly. `casen synth <plan>.json` compiles it deterministically to laid-out, deployable BPMN.
+The `ProcessPlan` JSON IR is the **only** thing skills author by hand — never BPMN XML directly. `bpmnkit synth <plan>.json` compiles it deterministically to laid-out, deployable BPMN.
 
 ## Schema summary
 
@@ -25,7 +25,7 @@ FEEL convention: a leading "=" makes a string a FEEL expression; without it, the
 
 steps[0] must be kind "start". "gateway" steps carry { gatewayType, branches: [{ condition?, default?, steps }] }.
 "connector"/"aiAgent" tool steps reference a bundled Camunda template via { template, values } —
-see `casen connector search <query>` / `casen connector show <templateId>` for available templates
+see `bpmnkit connector search <query>` / `bpmnkit connector show <templateId>` for available templates
 and their required/optional input keys.
 
 Full type definitions: packages/core/src/plan/types.ts in the bpmnkit monorepo.
@@ -138,6 +138,6 @@ For an `aiAgent` step example, see `references/agentic.md`.
 ## Workflow
 
 1. Write `<name>.plan.json`.
-2. `casen synth <name>.plan.json -o <name>.bpmn` — if problems are reported, they're keyed by `path` (e.g. `steps[1].branches[0].condition`); fix the **plan**, never the XML, and re-run. Bound retries to 2 attempts before surfacing the problem to the user.
-3. Extending an existing process: `casen plan extract <name>.bpmn` to get the current plan back (elements it can't losslessly lift are reported, not guessed at), write a small delta plan with just the new/changed steps, then `casen synth <delta>.plan.json --merge <name>.bpmn`.
-4. `plan.tests` (see schema above) compiles to a `<name>.bpmn.tests.json` sidecar automatically — run `casen test test <name>.bpmn` to execute them.
+2. `bpmnkit synth <name>.plan.json -o <name>.bpmn` — if problems are reported, they're keyed by `path` (e.g. `steps[1].branches[0].condition`); fix the **plan**, never the XML, and re-run. Bound retries to 2 attempts before surfacing the problem to the user.
+3. Extending an existing process: `bpmnkit plan extract <name>.bpmn` to get the current plan back (elements it can't losslessly lift are reported, not guessed at), write a small delta plan with just the new/changed steps, then `bpmnkit synth <delta>.plan.json --merge <name>.bpmn`.
+4. `plan.tests` (see schema above) compiles to a `<name>.bpmn.tests.json` sidecar automatically — run `bpmnkit test test <name>.bpmn` to execute them.

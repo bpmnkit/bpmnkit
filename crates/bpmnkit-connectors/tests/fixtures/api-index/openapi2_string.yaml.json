@@ -1,0 +1,8 @@
+{
+  "id": "openapi2_string",
+  "name": "Wrong",
+  "auth": {
+    "type": "noAuth"
+  },
+  "operations": []
+}

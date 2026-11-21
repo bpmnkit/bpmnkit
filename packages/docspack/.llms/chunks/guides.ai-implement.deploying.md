@@ -4,8 +4,8 @@
 Deploy to local Reebe, deploy to Camunda 8, or skip?
 ```
 
-- **Local Reebe** — deploys via `ZEEBE_ADDRESS` (default `http://localhost:26500`). Start Reebe first: `casen reebe start --port 26500`.
-- **Camunda 8** — deploys using the active `casen` profile. Set one up with `casen profile create`.
+- **Local Reebe** — deploys via `ZEEBE_ADDRESS` (default `http://localhost:26500`). Start Reebe first: `bpmnkit reebe start --port 26500`.
+- **Camunda 8** — deploys using the active `bpmnkit` profile. Set one up with `bpmnkit profile create`.
 - **Skip** — leaves the plan and BPMN file on disk for manual review and deployment.
 
 
@@ -40,7 +40,7 @@ npm start
 Or start all workers at once:
 
 ```sh
-casen worker start
+bpmnkit worker start
 ```
 
 See [Standalone Workers](/docs/guides/workers-standalone) for deployment options.

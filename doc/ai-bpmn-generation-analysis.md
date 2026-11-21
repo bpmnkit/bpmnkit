@@ -15,7 +15,7 @@ The monorepo already contains **~90 % of the deterministic machinery** needed fo
 3. **The agentic building blocks exist but there is no high-level constructor.** The model, builder, and templates all know about `zeebe:adHoc` and `io.camunda.agenticai:aiagent-job-worker:1`, but nothing assembles a correct AI Agent sub-process (provider bindings, prompts, tool root-nodes with `fromAi()` input mappings, output collection) in one deterministic call.
 4. **Validation has the wrong blind spots for AI output.** The linter never surfaces FEEL *parse errors*, never checks that a service task has a `zeebe:taskDefinition`, and knows nothing about connector-template required fields — exactly the three most common LLM failure modes (Camunda's own copilot research confirms: invalid DI, broken FEEL, wrong connector props).
 5. **The current generation architecture is non-deterministic at the wrong layer.** `bpmn_create` spawns a *nested* `claude` CLI through the proxy. When the caller *is already Claude Code*, this adds a second LLM, a proxy daemon, and schema drift — three failure sources — while removing the calling model's context.
-6. **Two overlapping skill sets have drifted apart** (plugin `/bpmnkit:*` vs bundled `/implement`), with concrete bugs (`casen lint lint`, `bpmn_deploy` argument mismatch, `/test` promising execution coverage that the structural-only `bpmn_simulate` cannot deliver).
+6. **Two overlapping skill sets have drifted apart** (plugin `/bpmnkit:*` vs bundled `/implement`), with concrete bugs (`bpmnkit lint lint`, `bpmn_deploy` argument mismatch, `/test` promising execution coverage that the structural-only `bpmn_simulate` cannot deliver).
 
 **The core proposal:** introduce a typed, complete **ProcessPlan** intermediate representation plus a deterministic **plan compiler**, expose connector application and AI-agent construction as deterministic SDK/CLI operations, upgrade the linter to a deploy-grade gate, and rebuild the skills as thin orchestrators where Claude does *only* the semantic work (intent → plan, FEEL authoring, connector selection) and the SDK does *everything mechanical* (XML, DI, IDs, properties, validation, testing, deployment). Section 7 gives the full deterministic/non-deterministic split; the spec details the work packages.
 
@@ -28,7 +28,7 @@ The monorepo already contains **~90 % of the deterministic machinery** needed fo
 ```
 Claude Code skill (/implement, /bpmnkit:generate)
   → MCP tool bpmn_create            (apps/proxy/src/aikit-mcp.ts)
-    → POST /chat on local proxy      (SSE, requires `casen proxy start`)
+    → POST /chat on local proxy      (SSE, requires `bpmnkit proxy start`)
       → claude adapter SPAWNS A NESTED `claude` CLI
         (apps/proxy/src/adapters/claude.ts — at the time with permission checks
          bypassed; since 2026-09-27 no built-in tools, bpmn MCP tools only,
@@ -53,7 +53,7 @@ What is wrong:
 
 | Surface | Skills | Backend | State |
 |---|---|---|---|
-| `plugins-claude/bpmnkit-claude/` | generate, review, deploy, worker, test, instances, incidents, ascii + 2 agents | `casen proxy mcp` → same `aikit-mcp.js` | `casen lint lint` bug (×2), `bpmn_deploy(xml,…)` vs actual `(path,…)` schema drift, worker fallback template uses a stale client API, `/test` over-promises |
+| `plugins-claude/bpmnkit-claude/` | generate, review, deploy, worker, test, instances, incidents, ascii + 2 agents | `bpmnkit proxy mcp` → same `aikit-mcp.js` | `bpmnkit lint lint` bug (×2), `bpmn_deploy(xml,…)` vs actual `(path,…)` schema drift, worker fallback template uses a stale client API, `/test` over-promises |
 | root `.claude/` + `apps/cli/skills/` | implement, review, test, deploy | `node apps/proxy/dist/aikit-mcp.js` | flagship `/implement` orchestrates 4 subagents; `bpmn_simulate` it relies on is structural-only ("Phase 1") |
 
 Both are front-ends over the same MCP server, yet their tool schemas and instructions have drifted. The consolidation is overdue and is part of the spec.
@@ -68,13 +68,13 @@ Both are front-ends over the same MCP server, yet their tool schemas and instruc
 | `packages/feel` | Full FEEL tokenizer/parser/evaluator, 87 builtins, unary tests, `ParseError[]` with positions | **Underused.** Parse errors are available but the BPMN linter never surfaces them; unknown variables silently evaluate to `null` (semantic checking exists only via core's variable-flow analysis) |
 | `packages/core/src/bpmn/optimize/` | The linter: flow, feel (heuristic), naming, patterns (15 Camunda best-practice rules), task-reuse, variable-flow (real FEEL parsing, produces/consumes graph, typo suggestions) | **Good but not deploy-grade.** Missing: FEEL parse-error rule, `serviceTask` without `taskDefinition`, message catch without `correlationKey`, connector-template required-prop checks, agentic-structure rules |
 | `packages/engine` | Zero-dep TS simulation engine + scenario harness (`runScenario`: worker mocks, path & variable assertions, FEEL eval trace) | **Solid for simple flows;** `callActivity`, `eventSubProcess`, `adHocSubProcess` are auto-completed, not executed (instance.ts:382) — cannot verify agentic processes |
-| `apps/reebe` / `reebe-wasm` (+ `@bpmnkit/engine/wasm-runner`) | Rust Camunda-8-REST drop-in engine; WASM build powers `casen test` (`runScenarioWasm`) | **The real verification asset.** Deploy-parity validator (`reebe-bpmn/src/validator.rs`) enforces what Zeebe rejects — incl. the "service task needs taskDefinition" rule the TS linter lacks. Local deploy-and-run is the honest "does it execute" check |
+| `apps/reebe` / `reebe-wasm` (+ `@bpmnkit/engine/wasm-runner`) | Rust Camunda-8-REST drop-in engine; WASM build powers `bpmnkit test` (`runScenarioWasm`) | **The real verification asset.** Deploy-parity validator (`reebe-bpmn/src/validator.rs`) enforces what Zeebe rejects — incl. the "service task needs taskDefinition" rule the TS linter lacks. Local deploy-and-run is the honest "does it execute" check |
 | `packages/api`, `profiles`, `worker-client`, `user-tasks`, `operate` | 180-op typed Camunda 8 REST client, OAuth profiles, thin worker runtime, task UI, ops UI | **Complete for deploy/run.** No gaps relevant to generation |
 | `packages/patterns` | 7 domain patterns (keywords, readme, worker specs, compact template) + `findPattern` | Good retrieval seeds; templates inherit compact-format lossiness (no connectors/agents in patterns yet) |
 | `packages/connector-gen` | OpenAPI/Swagger → generic `io.camunda:http-json:1` element templates; 100-API catalog (18,145 endpoints) | Useful long-tail fallback ("any REST API becomes a connector"); everything maps to http-json; disconnected from the OOTB catalog |
 | `packages/plugins/src/config-panel-bpmn` | **116 bundled Camunda OOTB element templates** (Slack `io.camunda:slack:1`, SendGrid, HTTP, Kafka, AWS, and the full `io.camunda.agenticai:*` family) + `templateToServiceTaskOptions()` | **The key unexposed asset.** Apply API drops `zeebe:property` bindings (823 across the catalog), is outbound-only, does no required-field validation, and lives in a UI package no skill can reach. `scripts/update-connectors.mjs` writes to a stale path (`canvas-plugins/…`) — regeneration is broken |
 | `apps/proxy` | AI brain: aikit MCP (15 tools incl. undocumented `camunda_search`/`camunda_execute` code-mode), editor MCP, multi-backend adapters, system prompts, 10 built-in runtime workers | Right for Studio; wrong as the skill backend (nested LLM). `prompt.ts` best-practice content should be extracted into skill references |
-| `apps/cli` (`casen`) | `lint` (+ `--fix`), `test` (WASM scenarios from `.bpmn.tests.json`), `reebe start`, `worker start`, ~180 generated C8 REST commands, `skills install` | Good deterministic surface for skills (Claude Code is Bash-native). Missing: `connector` search/apply, `synth`/plan compile, an `agent` scaffold, and a first-class `deploy` alias |
+| `apps/cli` (`bpmnkit`) | `lint` (+ `--fix`), `test` (WASM scenarios from `.bpmn.tests.json`), `reebe start`, `worker start`, ~180 generated C8 REST commands, `skills install` | Good deterministic surface for skills (Claude Code is Bash-native). Missing: `connector` search/apply, `synth`/plan compile, an `agent` scaffold, and a first-class `deploy` alias |
 | `plugins-cli/casen-worker-ai` | Runtime AI job workers (`com.bpmnkit.ai.classify/summarize/extract/decide`) with BPMN error codes | Ready-made palette for "AI inside the process" — should be first-class citizens in generation knowledge |
 
 ---
@@ -108,7 +108,7 @@ Each gap cites evidence; G-numbers are referenced by the spec's work packages.
 - **G6 — Builder blind spots for executable processes.** No `zeebe:assignmentDefinition` / `taskSchedule` / `priorityDefinition` (user tasks), **no message `subscription`/`correlationKey`** (required for every message catch in Camunda 8 — an executable-process blocker), no transaction/conditional/link events, no pool/lane/message-flow creation.
 - **G7 — Verification can't cover agentic constructs.** TS engine auto-completes `adHocSubProcess`/`callActivity`; the WASM path executes more but there is no scripted "mock agent" (deterministic tool-call sequence) to dry-run an agentic process; `bpmn_simulate` (the tool skills call) is structural-only while `/test` claims path coverage.
 - **G8 — Nested-LLM generation architecture** (§2.1): second model, proxy daemon dependency, permission bypass, context loss, latency.
-- **G9 — Skill drift & bugs:** `casen lint lint` (generate, ascii skills), `bpmn_deploy` argument mismatch, stale worker fallback template, duplicated skill sets with divergent instructions.
+- **G9 — Skill drift & bugs:** `bpmnkit lint lint` (generate, ascii skills), `bpmn_deploy` argument mismatch, stale worker fallback template, duplicated skill sets with divergent instructions.
 - **G10 — No connector/agentic knowledge for the model.** Nothing tells Claude which of the 116 templates exist, their type strings, required fields, or secret conventions (`{{secrets.SLACK_OAUTH_TOKEN}}`); nothing documents the agentic pattern. The model is expected to know Camunda connector schemas from training data — the exact "wrong connector props" failure mode.
 - **G11 — Editing path loses data.** `bpmn_update` round-trips through the compact format, so editing an existing process that contains connector properties or agentic extensions would *strip them* (G1 applied to edits). `applyOperations` (surgical patch ops) exists but has no connector/agent-aware operations and no skill uses it as the primary edit path.
 - **G12 — No outcome measurement.** There is no eval harness — no fixture prompts with expected outcomes, no "deploys-green on Reebe" metric — so skill quality changes are unmeasurable.
@@ -124,7 +124,7 @@ User intent (NL, possibly + existing .bpmn)
    ┌────────────────────────────────────────────┐
    │ /bpmnkit:implement | :extend | :agent      │
    │  1. clarify intent, decompose the process  │
-   │  2. search connector catalog (casen        │
+   │  2. search connector catalog (bpmnkit        │
    │     connector search "slack")              │
    │  3. author ProcessPlan JSON (typed IR)     │
    │     incl. FEEL expressions, agent tools    │
@@ -132,7 +132,7 @@ User intent (NL, possibly + existing .bpmn)
         │ plan.json
         ▼  Deterministic (SDK/CLI — same result every time)
    ┌────────────────────────────────────────────┐
-   │ casen synth plan.json -o process.bpmn      │
+   │ bpmnkit synth plan.json -o process.bpmn      │
    │  • schema-validate plan (JSON Schema)      │
    │  • parse-validate every FEEL expression    │
    │  • apply connector templates (all binding  │
@@ -143,23 +143,23 @@ User intent (NL, possibly + existing .bpmn)
    └────────────────────────────────────────────┘
         │ process.bpmn (+ scaffolded workers, forms, DMN)
         ▼  Verify loop (deterministic)
-   casen test  (WASM scenario execution, mocked workers/agent)
-   casen reebe start + deploy  (real engine, real validator)
+   bpmnkit test  (WASM scenario execution, mocked workers/agent)
+   bpmnkit reebe start + deploy  (real engine, real validator)
         │ findings ─→ Claude patches the PLAN (not the XML), re-synth
         ▼
    deploy to Camunda 8 (profile) — /bpmnkit:deploy
 ```
 
-The feedback loop is *plan-level*, not XML-level: when lint/test/deploy reports a finding, Claude edits the ProcessPlan (or the FEEL expression) and re-synthesizes. XML and DI are never touched by the model, so they can never be the thing that's broken. For **extending existing processes**, the same IR is used in reverse: a *lossless* `casen plan extract process.bpmn` lifts the full model (preserving unknown extensions verbatim) into plan form; Claude edits; `synth --merge` applies the delta via `applyOperations` so untouched elements are byte-stable.
+The feedback loop is *plan-level*, not XML-level: when lint/test/deploy reports a finding, Claude edits the ProcessPlan (or the FEEL expression) and re-synthesizes. XML and DI are never touched by the model, so they can never be the thing that's broken. For **extending existing processes**, the same IR is used in reverse: a *lossless* `bpmnkit plan extract process.bpmn` lifts the full model (preserving unknown extensions verbatim) into plan form; Claude edits; `synth --merge` applies the delta via `applyOperations` so untouched elements are byte-stable.
 
 ### The Slack example, end to end
 
 > "When an order fails validation, notify #ops on Slack."
 
-1. Skill: `casen connector search slack` → `io.camunda.connectors.Slack.v1` (`io.camunda:slack:1`), required: `token` (secret), `method`, `data.channel`, `data.text`.
+1. Skill: `bpmnkit connector search slack` → `io.camunda.connectors.Slack.v1` (`io.camunda:slack:1`), required: `token` (secret), `method`, `data.channel`, `data.text`.
 2. Claude writes into the plan: `{ kind: "connector", template: "io.camunda.connectors.Slack.v1", name: "Notify #ops of failed validation", values: { method: "chat.postMessage", "data.channel": "#ops", "data.text": "=\"Order \" + orderId + \" failed validation: \" + validationError", token: "{{secrets.SLACK_OAUTH_TOKEN}}" }, resultVariable: "slackResult" }`.
-3. `casen synth` applies the template deterministically (task definition type, io-mappings, properties, error/retry groups), parse-validates the FEEL, lints (Slack task gets its error-boundary check), lays out DI.
-4. `casen test` runs the scenario with the Slack job mocked; deploy to Reebe proves engine acceptance. One iteration.
+3. `bpmnkit synth` applies the template deterministically (task definition type, io-mappings, properties, error/retry groups), parse-validates the FEEL, lints (Slack task gets its error-boundary check), lays out DI.
+4. `bpmnkit test` runs the scenario with the Slack job mocked; deploy to Reebe proves engine acceptance. One iteration.
 
 ---
 
@@ -171,7 +171,7 @@ The feedback loop is *plan-level*, not XML-level: when lint/test/deploy reports 
 |---|---|---|
 | Intent extraction, clarifying questions, process decomposition | **Claude** | skill instructions |
 | Pattern retrieval & adaptation | Claude, seeded deterministically | `findPattern`, pattern library |
-| Connector *selection* (which template fits "send a Slack message") | **Claude** | `casen connector search` over the catalog + generated reference doc |
+| Connector *selection* (which template fits "send a Slack message") | **Claude** | `bpmnkit connector search` over the catalog + generated reference doc |
 | Connector *application* (type string, bindings, io-mappings, properties, defaults) | **Deterministic** | `applyConnectorTemplate` (new, complete) |
 | FEEL *authoring* (conditions, mappings, prompts) | **Claude** | plan fields |
 | FEEL *validation* (syntax, undefined variables, typo suggestions) | **Deterministic** | `parseExpression` + variable-flow, as blocking lint rules |
@@ -182,8 +182,8 @@ The feedback loop is *plan-level*, not XML-level: when lint/test/deploy reports 
 | Structural correctness (gateways, joins, boundaries, defaults) | **Deterministic** | builder fix-ups + optimize `applyFix` |
 | Worker scaffolding | **Deterministic** | `worker_scaffold` (exists) |
 | Test *scenario derivation* (which paths/mocks matter) | **Claude** | plan/tests authoring |
-| Test *execution* & assertion | **Deterministic** | `casen test` (WASM Reebe) |
-| Deploy-readiness gate | **Deterministic** | `casen lint --profile deploy` (Zeebe-parity rules) |
+| Test *execution* & assertion | **Deterministic** | `bpmnkit test` (WASM Reebe) |
+| Deploy-readiness gate | **Deterministic** | `bpmnkit lint --profile deploy` (Zeebe-parity rules) |
 | Deployment & verification | **Deterministic** | Reebe / `@bpmnkit/api` |
 | Incident diagnosis narrative | **Claude** | incidents skill (existing) |
 
@@ -201,8 +201,8 @@ One plugin (`plugins-claude/bpmnkit-claude`), CLI-first (Bash + files — no pro
 | `/bpmnkit:extend` | Modify an existing `.bpmn`: `plan extract` → targeted plan delta → `synth --merge` (lossless for untouched elements) |
 | `/bpmnkit:agent` | Add/modify an AI Agent sub-process: provider, prompts, memory, limits + tools (connectors, workers, user tasks) with `fromAi()` params — on top of the same plan/synth path |
 | `/bpmnkit:connect` | Map a step to a connector: search catalog, gather required values (secrets by convention), apply |
-| `/bpmnkit:review` | `casen lint --profile deploy` + variable-flow; findings grouped, auto-fixes offered |
-| `/bpmnkit:test` | Derive scenarios from plan/structure → `.bpmn.tests.json` → `casen test` (real WASM execution — honest coverage) |
+| `/bpmnkit:review` | `bpmnkit lint --profile deploy` + variable-flow; findings grouped, auto-fixes offered |
+| `/bpmnkit:test` | Derive scenarios from plan/structure → `.bpmn.tests.json` → `bpmnkit test` (real WASM execution — honest coverage) |
 | `/bpmnkit:deploy` | Lint-gate → Reebe or Camunda 8 profile → verify instance startable |
 | `/bpmnkit:instances`, `/bpmnkit:incidents` | Keep as-is (operate on live clusters; already CLI-based) |
 
@@ -227,7 +227,7 @@ Detailed work packages, file-level changes, APIs, and acceptance criteria are in
 - **WP0** — Bug fixes & hygiene (broken regen path, `lint lint`, deploy schema drift, template freshness metadata)
 - **WP1** — `@bpmnkit/connectors`: catalog + complete deterministic template application + search + generated reference docs
 - **WP2** — Core builder: AI Agent sub-process constructor, `fromAi` helpers, completion condition, user-task assignment, message correlation
-- **WP3** — ProcessPlan IR + compiler (`casen synth`, `casen plan extract`, lossless merge)
+- **WP3** — ProcessPlan IR + compiler (`bpmnkit synth`, `bpmnkit plan extract`, lossless merge)
 - **WP4** — Deploy-grade validation (FEEL parse errors, Zeebe-parity rules, connector & agentic rules)
 - **WP5** — Verification: WASM scenario coverage for containers, scripted agent mocks, honest `bpmn_simulate`
 - **WP6** — Skills v2 (consolidated plugin, CLI-first, generated references)

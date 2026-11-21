@@ -368,7 +368,7 @@ describe("POST /operate/incident-assist", () => {
 	})
 })
 
-describe("askText (casen ask)", () => {
+describe("askText (bpmnkit ask)", () => {
 	it("runs the same locked-down argv and returns the text", async () => {
 		const { askText } = await import("../src/index.js")
 		reply = () => '{ "resource": "incidents", "filter": {} }'

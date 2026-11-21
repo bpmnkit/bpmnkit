@@ -1,0 +1,33 @@
+{
+  "id": "swagger2_oauth",
+  "name": "Oauth Svc",
+  "auth": {
+    "type": "oauth-client-credentials-flow"
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/items/{id}",
+      "id": "getItem"
+    },
+    {
+      "method": "PATCH",
+      "path": "/items/{id}",
+      "summary": "Patch an item",
+      "body": [
+        "title",
+        "done"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/items",
+      "id": "createItem",
+      "body": [
+        "title*",
+        "count"
+      ],
+      "form": true
+    }
+  ]
+}

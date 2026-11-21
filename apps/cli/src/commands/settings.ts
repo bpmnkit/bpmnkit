@@ -14,7 +14,7 @@ export const settingsGroup: CommandGroup = {
 		{
 			name: "show",
 			description: "Show current settings",
-			examples: [{ description: "Show settings", command: "casen settings show" }],
+			examples: [{ description: "Show settings", command: "bpmnkit settings show" }],
 			async run(ctx) {
 				const settings = getSettings()
 				ctx.output.info(`audit-log-size:  ${settings.auditLogSize}`)
@@ -33,8 +33,8 @@ export const settingsGroup: CommandGroup = {
 				{ name: "value", description: "New value", required: true },
 			],
 			examples: [
-				{ description: "Keep last 25 actions", command: "casen settings set audit-log-size 25" },
-				{ description: "Disable audit log", command: "casen settings set audit-log-size 0" },
+				{ description: "Keep last 25 actions", command: "bpmnkit settings set audit-log-size 25" },
+				{ description: "Disable audit log", command: "bpmnkit settings set audit-log-size 0" },
 			],
 			async run(ctx) {
 				const key = ctx.positional[0]
@@ -67,10 +67,10 @@ export const settingsGroup: CommandGroup = {
 				{ key: "status", header: "STATUS", maxWidth: 8 },
 			],
 			examples: [
-				{ description: "Show audit log for active profile", command: "casen settings audit-log" },
+				{ description: "Show audit log for active profile", command: "bpmnkit settings audit-log" },
 				{
 					description: "Show audit log for a specific profile",
-					command: "casen settings audit-log --profile prod",
+					command: "bpmnkit settings audit-log --profile prod",
 				},
 			],
 			async run(ctx) {
@@ -125,11 +125,11 @@ export const settingsGroup: CommandGroup = {
 			examples: [
 				{
 					description: "Clear audit log for active profile",
-					command: "casen settings audit-log-clear",
+					command: "bpmnkit settings audit-log-clear",
 				},
 				{
 					description: "Clear all audit logs",
-					command: "casen settings audit-log-clear --all",
+					command: "bpmnkit settings audit-log-clear --all",
 				},
 			],
 			async run(ctx) {

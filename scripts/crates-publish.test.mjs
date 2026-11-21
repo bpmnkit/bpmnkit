@@ -40,6 +40,15 @@ test("facadeProblems wants the facade to depend on every other published crate",
 	assert.deepEqual(facadeProblems([xml, bpmn]), ["bpmnkit: the facade crate is missing"])
 })
 
+test("facadeProblems skips crates that ship an executable", () => {
+	const xml = crate("bpmnkit-xml")
+	const cli = {
+		...crate("bpmnkit-cli", ["bpmnkit-xml"]),
+		targets: [{ kind: ["lib"] }, { kind: ["bin"] }],
+	}
+	assert.deepEqual(facadeProblems([xml, cli, crate("bpmnkit", ["bpmnkit-xml"])]), [])
+})
+
 test("indexPath follows the sparse index layout", () => {
 	assert.equal(indexPath("ab"), "2/ab")
 	assert.equal(indexPath("abc"), "3/a/abc")

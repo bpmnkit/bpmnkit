@@ -1,5 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest"
 import type {
+	BpmnkitPlugin,
 	CasenPlugin,
 	Command,
 	CommandGroup,
@@ -12,11 +13,11 @@ import type {
 import { createWorkerCommand } from "../src/index.js"
 
 /**
- * The shape `casen` loads: the default export of a plugin's entry point, with a
+ * The shape `bpmnkit` loads: the default export of a plugin's entry point, with a
  * `groups` array (apps/cli/src/plugin-loader.ts). These tests pin the SDK side
  * of that contract; the type assertions are checked by `pnpm typecheck`.
  */
-const plugin: CasenPlugin = {
+const plugin: BpmnkitPlugin = {
 	id: "com.example.test",
 	name: "Test",
 	version: "0.1.0",
@@ -31,7 +32,7 @@ const plugin: CasenPlugin = {
 					description: "Says hello",
 					args: [{ name: "who", description: "Who", required: true }],
 					flags: [{ name: "loud", description: "Shout", type: "boolean", default: false }],
-					examples: [{ description: "Greet", command: "casen test hello world" }],
+					examples: [{ description: "Greet", command: "bpmnkit test hello world" }],
 					async run(ctx) {
 						ctx.output.ok(`hello ${ctx.positional[0]}${ctx.flags.loud ? "!" : ""}`)
 					},
@@ -76,6 +77,8 @@ describe("CasenPlugin", () => {
 			version: string
 			groups: CommandGroup[]
 		}>()
+		// The old name stays an alias so existing casen-* plugins keep compiling.
+		expectTypeOf<CasenPlugin>().toEqualTypeOf<BpmnkitPlugin>()
 		expectTypeOf<OutputFormat>().toEqualTypeOf<"table" | "json" | "yaml">()
 		expectTypeOf<FlagSpec["type"]>().toEqualTypeOf<"string" | "boolean" | "number">()
 		expectTypeOf<RunContext["flags"]>().toEqualTypeOf<Record<string, string | boolean | number>>()

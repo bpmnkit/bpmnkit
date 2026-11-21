@@ -227,7 +227,7 @@ describe("compileTextSpec", () => {
 	it("says in one line what the spec cannot use and where to go instead", () => {
 		const problems = (text: string) => compileTextSpec(text).problems
 		expect(problems("s[start S] > x[subprocess X] > e[end E]")).toEqual([
-			'line 1: "x": kind "subprocess" is not in the text spec (kinds: casen build --help); write a builder module (.mjs) instead, see the card\'s "Not in the text spec"',
+			'line 1: "x": kind "subprocess" is not in the text spec (kinds: bpmnkit build --help); write a builder module (.mjs) instead, see the card\'s "Not in the text spec"',
 		])
 		expect(problems("s[start S] > x[sub X] > e[end E]")).toEqual([
 			'"x": a sub-process needs its body: "x {" on its own line, its paths, then "}"',
@@ -423,7 +423,7 @@ describe("clusterFromEnv", () => {
 	})
 })
 
-describe("casen build", () => {
+describe("bpmnkit build", () => {
 	let dir: string
 	const lines: string[] = []
 	const ctx = (positional: string[], flags: RunContext["flags"] = {}): RunContext => ({

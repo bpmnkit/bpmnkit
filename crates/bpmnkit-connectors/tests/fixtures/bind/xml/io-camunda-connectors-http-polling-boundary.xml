@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:message id="Message_1" name="orders">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_2" name="solo"/>
+  <bpmn:message id="Message_abb314e5-4f82-8e79-a10c-7628fb33a831" name="abb314e5-4f82-8e79-a10c-7628fb33a831"/>
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start_1" name="Start">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_1" name="Do it">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="Service_1" name="Call it">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="old-worker" retries="5"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=old" target="oldInput"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="User_1" name="Review">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:receiveTask id="Receive_1" name="Wait" messageRef="Message_2">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:intermediateCatchEvent id="Catch_1" name="Catch one">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_1" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Catch_2" name="Catch two">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_2" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="Throw_1" name="Throw">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:subProcess id="Sub_1" name="Sub">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:startEvent id="Inner_Start">
+        <bpmn:outgoing>Inner_Flow_1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="Inner_1" name="Inner">
+        <bpmn:incoming>Inner_Flow_1</bpmn:incoming>
+        <bpmn:outgoing>Inner_Flow_2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="Inner_End">
+        <bpmn:incoming>Inner_Flow_2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Inner_Flow_1" sourceRef="Inner_Start" targetRef="Inner_1"/>
+      <bpmn:sequenceFlow id="Inner_Flow_2" sourceRef="Inner_1" targetRef="Inner_End"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="End_1" name="End">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Boundary_1" zeebe:modelerTemplate="io.camunda.connectors.http.Polling.Boundary" zeebe:modelerTemplateVersion="10" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0nMS4wJz8+Cjxzdmcgd2lkdGg9JzE4JyBoZWlnaHQ9JzE4JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPgogICAgPGcgY2xhc3M9J2xheWVyJz4KICAgICAgICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgICAgICAgPHBhdGggZD0nbTE3LjAzLDljMCw0LjQ1IC0zLjYsOC4wNSAtOC4wNSw4LjA1Yy00LjQ1LDAgLTguMDUsLTMuNiAtOC4wNSwtOC4wNWMwLC00LjQ1IDMuNiwtOC4wNSA4LjA1LC04LjA1YzQuNDUsMCA4LjA1LDMuNiA4LjA1LDguMDV6JwogICAgICAgICAgICAgIGZpbGw9JyM1MDU1NjInIGlkPSdzdmdfMScvPgogICAgICAgIDxwYXRoIGQ9J200LjkzLDE0LjE2bDEuODUsLTEwLjQ1bDMuMzYsMGMxLjA1LDAgMS44NCwwLjI3IDIuMzcsMC44MWMwLjU0LDAuNTMgMC44LDEuMjEgMC44LDIuMDZjMCwwLjg2IC0wLjI0LDEuNTggLTAuNzMsMi4xM2MtMC40NywwLjU1IC0xLjEyLDAuOTMgLTEuOTUsMS4xNGwtMC40OCwwLjA5bC0wLjUzLDAuMDNsLTAuNiwwLjA1bC0xLjc5LDBsLTAuNzMsNC4xNGwtMS41OCwwem0yLjU3LC01LjU3bDEuNzQsMGMwLjc2LDAgMS4zNSwtMC4xNyAxLjc4LC0wLjVjMC40NCwtMC4zNSAwLjY1LC0wLjgyIDAuNjUsLTEuNDJjMCwtMC40OCAtMC4xNSwtMC44NSAtMC40NCwtMS4xMmMtMC4zLC0wLjI4IC0wLjc3LC0wLjQyIC0xLjQyLC0wLjQybC0xLjcsMGwtMC42MSwzLjQ2eicKICAgICAgICAgICAgICBmaWxsPSd3aGl0ZScgaWQ9J3N2Z18yJy8+CiAgICA8L2c+Cjwvc3ZnPg==" attachedToRef="Service_1">
+      <bpmn:extensionElements>
+        <zeebe:properties>
+          <zeebe:property name="inbound.type" value="io.camunda:http-polling:1"/>
+          <zeebe:property name="authentication.type" value="noAuth"/>
+          <zeebe:property name="method" value="GET"/>
+          <zeebe:property name="followRedirects" value="false"/>
+          <zeebe:property name="httpRequestInterval" value="PT50S"/>
+          <zeebe:property name="processPollingInterval" value="PT5S"/>
+          <zeebe:property name="connectionTimeoutInSeconds" value="20"/>
+          <zeebe:property name="readTimeoutInSeconds" value="20"/>
+          <zeebe:property name="resultExpression" value="{&#10;  myResponseBody: response.body&#10;  // Use FEEL to extract values, e.g.,:&#10;  // myUserId: response.body.post.userId&#10;}"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:messageEventDefinition messageRef="Message_abb314e5-4f82-8e79-a10c-7628fb33a831"/>
+    </bpmn:boundaryEvent>
+    <bpmn:task id="Task_2" name="Loose"/>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_1"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_1" targetRef="Service_1"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Service_1" targetRef="User_1"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="User_1" targetRef="Receive_1"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Receive_1" targetRef="Catch_1"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Catch_1" targetRef="Catch_2"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Catch_2" targetRef="Throw_1"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Throw_1" targetRef="Sub_1"/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Sub_1" targetRef="End_1"/>
+  </bpmn:process>
+</bpmn:definitions>
+

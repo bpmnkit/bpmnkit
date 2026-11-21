@@ -15,7 +15,7 @@ const extractCmd: Command = {
 			type: "string",
 		},
 	],
-	examples: [{ description: "Extract a plan", command: "casen plan extract order-process.bpmn" }],
+	examples: [{ description: "Extract a plan", command: "bpmnkit plan extract order-process.bpmn" }],
 	async run(ctx) {
 		const filePath = ctx.positional[0]
 		if (!filePath) throw new Error("Missing required argument: <file>")
@@ -59,7 +59,7 @@ FEEL convention: a leading "=" makes a string a FEEL expression; without it, the
 
 steps[0] must be kind "start". "gateway" steps carry { gatewayType, branches: [{ condition?, default?, steps }] }.
 "connector"/"aiAgent" tool steps reference a bundled Camunda template via { template, values } —
-see \`casen connector search <query>\` / \`casen connector show <templateId>\` for available templates
+see \`bpmnkit connector search <query>\` / \`bpmnkit connector show <templateId>\` for available templates
 and their required/optional input keys.
 
 Full type definitions: packages/core/src/plan/types.ts in the bpmnkit monorepo.`

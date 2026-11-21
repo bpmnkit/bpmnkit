@@ -1,7 +1,7 @@
 /**
- * What `casen dev` runs after every save: the file's lint, and the scenarios in
- * its `.bpmn.tests.json` sidecar — the same checks as `casen lint` and
- * `casen test`, reduced to plain data the terminal and the browser both show.
+ * What `bpmnkit dev` runs after every save: the file's lint, and the scenarios in
+ * its `.bpmn.tests.json` sidecar — the same checks as `bpmnkit lint` and
+ * `bpmnkit test`, reduced to plain data the terminal and the browser both show.
  */
 
 import { readFile, readdir } from "node:fs/promises"
@@ -15,7 +15,7 @@ import type { CheckResult, LintSummary, ScenarioEngine, ScenarioOutcome } from "
 
 export type { CheckResult, LintSummary, ScenarioEngine, ScenarioOutcome }
 
-/** A result is "red" when anything in it would make `casen lint` or `casen test` exit non-zero. */
+/** A result is "red" when anything in it would make `bpmnkit lint` or `bpmnkit test` exit non-zero. */
 export function isFailing(result: CheckResult): boolean {
 	return (
 		result.parseError !== undefined ||
@@ -29,7 +29,7 @@ function reason(error: unknown): string {
 	return error instanceof Error ? error.message : String(error)
 }
 
-/** Every `<decision id>` in the `.dmn` files beside a BPMN, the way `casen test` finds them. */
+/** Every `<decision id>` in the `.dmn` files beside a BPMN, the way `bpmnkit test` finds them. */
 async function decisionsBeside(bpmnFile: string): Promise<Map<string, string>> {
 	const dir = dirname(bpmnFile)
 	const map = new Map<string, string>()

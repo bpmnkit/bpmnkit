@@ -45,7 +45,7 @@ Agentic facts (verified against docs.camunda.io + camunda/connectors, 2026-07):
 Small, independent, do first.
 
 1. **`scripts/update-connectors.mjs`**: fix `OUT_FILE` to `packages/plugins/src/config-panel-bpmn/templates/generated.ts`. Add a generated header with fetch timestamp + per-template `version` capture, and emit a sibling `catalog-meta.json` (`{ fetchedAt, count, source }`). Run it once and commit the refreshed catalog.
-2. **Plugin skills**: fix `casen lint lint` → `casen lint` in `plugins-claude/bpmnkit-claude/skills/generate/SKILL.md` and `skills/ascii/SKILL.md` (superseded by WP6, but fix now so the current plugin works).
+2. **Plugin skills**: fix `bpmnkit lint lint` → `bpmnkit lint` in `plugins-claude/bpmnkit-claude/skills/generate/SKILL.md` and `skills/ascii/SKILL.md` (superseded by WP6, but fix now so the current plugin works).
 3. **`bpmn_deploy` schema drift**: align `plugins-claude/bpmnkit-claude/skills/deploy/SKILL.md` to the actual tool signature (`path`, `target: "local"|"camunda8"`) in `apps/proxy/src/aikit-mcp.ts`.
 4. **Stale worker template** in `skills/worker/SKILL.md`: replace the inline fallback with the real `createWorkerClient(...).poll()` API from `@bpmnkit/worker-client`.
 5. **`/test` over-promise**: until WP5 lands, reword plugin `test` skill to state structural analysis + worker coverage (what `bpmn_simulate` actually does).
@@ -174,7 +174,7 @@ export interface AiAgentOptions {
 - one **root-node activity per tool** (no incoming/outgoing flows), with `documentation` = description, input mappings `target: params[i].target`, `source: "=fromAi(toolCall.<name>, \"<description>\", \"<type>\"...)"` (string-escape correctly; support the merge form), output mapping producing `toolCallResult`,
 - optional `completionCondition`.
 
-Note on layering: `aiAgent` takes pre-resolved `ServiceTaskOptions` for connector tools (callers use `@bpmnkit/connectors.applyConnectorTemplate` first). The `casen`/plan layer (WP3) wires the two; core stays dependency-clean.
+Note on layering: `aiAgent` takes pre-resolved `ServiceTaskOptions` for connector tools (callers use `@bpmnkit/connectors.applyConnectorTemplate` first). The `bpmnkit`/plan layer (WP3) wires the two; core stays dependency-clean.
 
 Also add `aiAgentTask()` (service-task variant, `io.camunda.agenticai:aiagent:1`, `data.tools.containerElementId` pointing at a separately-built toolbox ad-hoc sub-process) — lower priority, but the type should exist.
 
@@ -184,7 +184,7 @@ Also add `aiAgentTask()` (service-task variant, `io.camunda.agenticai:aiagent:1`
 - **Message correlation**: `messageName` options on receive tasks / message catch (intermediate, boundary, start-in-event-subprocess) gain `correlationKey?: string` → emit `<bpmn:message>` with `zeebe:subscription correlationKey="..."`. This is required for deployable message catches — add a WP4 lint rule to match.
 - Parser round-trip for everything added.
 
-**AC:** builder unit tests produce XML that (a) loads in `Bpmn.parse` round-trip clean, (b) passes `casen lint --profile deploy` (WP4), and (c) **deploys successfully to a local Reebe** (integration test, `apps/reebe` embedded mode) for: a process with an `aiAgent` containing 2 tools (one Slack connector tool, one jobWorker tool with 2 typed params), and a process with a correlated message boundary + assigned user task. Snapshot-test the agent XML against a hand-verified fixture mirroring Camunda's documented shape.
+**AC:** builder unit tests produce XML that (a) loads in `Bpmn.parse` round-trip clean, (b) passes `bpmnkit lint --profile deploy` (WP4), and (c) **deploys successfully to a local Reebe** (integration test, `apps/reebe` embedded mode) for: a process with an `aiAgent` containing 2 tools (one Slack connector tool, one jobWorker tool with 2 typed params), and a process with a correlated message boundary + assigned user task. Snapshot-test the agent XML against a hand-verified fixture mirroring Camunda's documented shape.
 
 ---
 
@@ -243,10 +243,10 @@ Pipeline: schema-validate → resolve connectors (`@bpmnkit/connectors.applyConn
 
 ### 3.4 CLI
 
-- `casen synth <plan.json> [-o out.bpmn] [--merge existing.bpmn] [--json]` — exits non-zero on problems, printing them with JSON paths into the plan (so the model can self-correct in one step).
-- `casen plan extract <file.bpmn> [-o plan.json]`
-- `casen plan schema` — prints the JSON Schema (skills reference it).
-- `casen connector search <query> [--json]`, `casen connector show <templateId>` (from WP1).
+- `bpmnkit synth <plan.json> [-o out.bpmn] [--merge existing.bpmn] [--json]` — exits non-zero on problems, printing them with JSON paths into the plan (so the model can self-correct in one step).
+- `bpmnkit plan extract <file.bpmn> [-o plan.json]`
+- `bpmnkit plan schema` — prints the JSON Schema (skills reference it).
+- `bpmnkit connector search <query> [--json]`, `bpmnkit connector show <templateId>` (from WP1).
 
 **AC:**
 - Golden fixtures under `packages/core/tests/plan/`: ≥6 plans (Slack notification flow; order process with XOR + error boundary + user task w/ assignment; agentic triage with 3 tools; message-correlated wait; multi-instance subprocess; extend-merge case) each snapshot-tested (plan → XML) and **deployed to embedded Reebe in an integration test**.
@@ -269,9 +269,9 @@ Extend `packages/core/src/bpmn/optimize/`:
    - `agentic/fromai-bad-ref` (error): `fromAi` first arg not referencing `toolCall.*`.
    - `agentic/no-output-collection` (warning), `agentic/limits-missing` (info: no `maxModelCalls`).
 4. **Connector rule** `connector/missing-required` (error): element with `modelerTemplate` where a required template input has no binding value (uses `@bpmnkit/connectors`; wire via an injected resolver to keep core decoupled — `optimize(defs, { templates })`).
-5. **Lint profiles**: `casen lint --profile deploy` = errors from `deploy/*`, `feel-syntax/*`, `connector/*`, `agentic/*` + existing error-severity rules; this is the gate skills and `synth` use. Default profile unchanged (back-compat).
+5. **Lint profiles**: `bpmnkit lint --profile deploy` = errors from `deploy/*`, `feel-syntax/*`, `connector/*`, `agentic/*` + existing error-severity rules; this is the gate skills and `synth` use. Default profile unchanged (back-compat).
 
-**AC:** fixture BPMN files exercising each new rule (positive + negative); `casen lint --profile deploy` exits 1 on each violation with the element ID; a file that passes the profile deploys to embedded Reebe without validation errors (integration test proving parity); no false positives across `bpmn-samples/` and all pattern templates.
+**AC:** fixture BPMN files exercising each new rule (positive + negative); `bpmnkit lint --profile deploy` exits 1 on each violation with the element ID; a file that passes the profile deploys to embedded Reebe without validation errors (integration test proving parity); no false positives across `bpmn-samples/` and all pattern templates.
 
 ---
 
@@ -280,15 +280,15 @@ Extend `packages/core/src/bpmn/optimize/`:
 1. **WASM scenario coverage**: ensure `runScenarioWasm` executes `callActivity` (deploy child fixtures alongside), event sub-processes, and BPMN-native ad-hoc sub-processes. Document (and test) current Reebe behavior for an ad-hoc sub-process with a `taskDefinition` (job-worker implementation): it should surface as an activatable job.
 2. **Scripted agent mock**: extend `ProcessScenario` with `agentMocks?: Record<string /*agent element id*/, { toolCalls: Array<{ tool: string; params: Record<string, unknown>; result: unknown }>; finalResponse?: unknown }>`. The scenario runner registers a job worker for `io.camunda.agenticai:aiagent-job-worker:1` (and `:hybrid1`) that replays the scripted sequence — activating the specified tool elements with `toolCall` variables and asserting each tool's `toolCallResult` — then completes the agent job with `finalResponse`. This dry-runs agentic processes deterministically without any LLM. If engine-level ad-hoc activation proves infeasible in WASM, fall back to *structural* tool verification (schema derivation from `fromAi` + tool reachability) and say so in the report — no silent downgrade.
 3. **Make `bpmn_simulate` honest**: rename semantics — the MCP tool runs real scenarios via the WASM runner when scenarios are provided, structural analysis otherwise, and its response includes `mode: "execution" | "structural"`.
-4. `casen test` accepts plan-embedded tests (`ProcessPlan.tests` compiled to `.bpmn.tests.json` by `synth`).
+4. `bpmnkit test` accepts plan-embedded tests (`ProcessPlan.tests` compiled to `.bpmn.tests.json` by `synth`).
 
-**AC:** an agentic golden fixture (WP3) runs under `casen test` with an agent mock: asserts the Slack tool received `toolCall.channel === "#ops"` and the process completes with the mocked final response; a broken tool io-mapping makes the scenario fail with a pointed diff.
+**AC:** an agentic golden fixture (WP3) runs under `bpmnkit test` with an agent mock: asserts the Slack tool received `toolCall.channel === "#ops"` and the process completes with the mocked final response; a broken tool io-mapping makes the scenario fail with a pointed diff.
 
 ---
 
 ## WP6 — Skills v2 (G8, G9, G10)
 
-Rebuild `plugins-claude/bpmnkit-claude` as the single skill surface. Retire root `.claude/commands/*` duplicates (keep `casen skills install` installing the new set). **CLI-first**: skills use Bash (`casen …`) + Read/Write; no proxy daemon, no nested LLM, no MCP requirement in Claude Code. Keep the aikit MCP server for Studio/other hosts; its `bpmn_create` may later delegate to plan+synth, out of scope here.
+Rebuild `plugins-claude/bpmnkit-claude` as the single skill surface. Retire root `.claude/commands/*` duplicates (keep `bpmnkit skills install` installing the new set). **CLI-first**: skills use Bash (`bpmnkit …`) + Read/Write; no proxy daemon, no nested LLM, no MCP requirement in Claude Code. Keep the aikit MCP server for Studio/other hosts; its `bpmn_create` may later delegate to plan+synth, out of scope here.
 
 Plugin layout:
 
@@ -316,13 +316,13 @@ plugins-claude/bpmnkit-claude/
 
 Skill flows (each SKILL.md must instruct: read the relevant `references/*` file(s) first; never hand-write XML; on failure, fix the *plan*, re-synth):
 
-- **`/bpmnkit:implement <description>`** — 1) clarify only genuinely ambiguous requirements (batch questions); 2) `casen connector search` for each external interaction; check `@bpmnkit/patterns` via `casen` pattern commands if a domain matches; 3) write `plan.json` (per `references/plan-format.md`, naming per `references/modeling-style.md`); 4) `casen synth plan.json -o <name>.bpmn` — if problems, fix plan, retry (bounded: 2 attempts, then surface); 5) `casen test <name>.bpmn` with plan-derived scenarios; 6) scaffold missing workers for bare `jobType` steps (`casen worker` scaffold path); 7) render summary (elements, connectors used + secrets needed, worker coverage, test results); 8) ask: deploy to local Reebe / Camunda 8 / skip.
-- **`/bpmnkit:extend <file> <change request>`** — `casen plan extract` → targeted delta plan → `synth --merge` → lint/test → summary of the diff (element-level, not XML).
+- **`/bpmnkit:implement <description>`** — 1) clarify only genuinely ambiguous requirements (batch questions); 2) `bpmnkit connector search` for each external interaction; check `@bpmnkit/patterns` via `bpmnkit` pattern commands if a domain matches; 3) write `plan.json` (per `references/plan-format.md`, naming per `references/modeling-style.md`); 4) `bpmnkit synth plan.json -o <name>.bpmn` — if problems, fix plan, retry (bounded: 2 attempts, then surface); 5) `bpmnkit test <name>.bpmn` with plan-derived scenarios; 6) scaffold missing workers for bare `jobType` steps (`bpmnkit worker` scaffold path); 7) render summary (elements, connectors used + secrets needed, worker coverage, test results); 8) ask: deploy to local Reebe / Camunda 8 / skip.
+- **`/bpmnkit:extend <file> <change request>`** — `bpmnkit plan extract` → targeted delta plan → `synth --merge` → lint/test → summary of the diff (element-level, not XML).
 - **`/bpmnkit:agent <file?> <description>`** — design the agent: provider/model (default per user config), system prompt, tools (each mapped via connector search or existing worker job types, params with descriptions/types), limits; emit an `aiAgent` plan step; synth/merge; run agent-mock scenario; summarize the tool schema the LLM will see (from element docs + `fromAi`).
 - **`/bpmnkit:connect <file> <step> <service>`** — search catalog → show required inputs incl. secrets → gather values → apply via delta plan → synth --merge.
-- **`/bpmnkit:review [file]`** — `casen lint --profile deploy --json` + default profile; group errors/warnings/info; offer `--fix` for auto-fixable; explicit "deploy-ready: yes/no".
-- **`/bpmnkit:test [file]`** — derive scenarios covering every gateway branch + error boundary (write `.bpmn.tests.json`), run `casen test`, report real pass/fail + which paths remain uncovered.
-- **`/bpmnkit:deploy [file] [--local|--camunda]`** — `casen lint --profile deploy` gate → deploy (Reebe via local profile; C8 via active profile) → verify by starting a throwaway instance where safe → report version/key; remind about `casen worker start` and required secrets.
+- **`/bpmnkit:review [file]`** — `bpmnkit lint --profile deploy --json` + default profile; group errors/warnings/info; offer `--fix` for auto-fixable; explicit "deploy-ready: yes/no".
+- **`/bpmnkit:test [file]`** — derive scenarios covering every gateway branch + error boundary (write `.bpmn.tests.json`), run `bpmnkit test`, report real pass/fail + which paths remain uncovered.
+- **`/bpmnkit:deploy [file] [--local|--camunda]`** — `bpmnkit lint --profile deploy` gate → deploy (Reebe via local profile; C8 via active profile) → verify by starting a throwaway instance where safe → report version/key; remind about `bpmnkit worker start` and required secrets.
 
 **AC:** fresh Claude Code session with only the plugin installed: (1) "implement: when an order fails validation, notify #ops on slack" produces a `.bpmn` that passes `lint --profile deploy`, contains `io.camunda:slack:1` with channel/text/token bindings, and deploys to local Reebe — with **zero user corrections**; (2) "/bpmnkit:agent add a support-triage agent with tools: search KB (http), escalate to human (user task), post summary to slack" produces a valid agent sub-process passing the agentic lint rules; (3) `/bpmnkit:extend` on `bpmn-samples/order-process.bpmn` adding a timer boundary changes only the expected elements (XML diff limited to them).
 
@@ -333,7 +333,7 @@ Skill flows (each SKILL.md must instruct: read the relevant `references/*` file(
 `scripts/eval-generation/` (dev-only, not published):
 
 - `prompts/*.md` — ≥15 golden prompts with expected-outcome assertions (JSON sidecar): the Slack case; multi-branch approval; agentic triage; extend-existing; message-correlated integration; multi-instance; error-compensation; long process (25+ elements); ambiguous prompt (expects a clarifying question, not a guess).
-- `run-eval.mjs` — for each prompt: invoke `claude -p` headless with the plugin loaded (skip gracefully when `claude` unavailable; CI can run plan-level subset: hand-authored plans → synth → gates), then measure: **synth problems = 0**, `lint --profile deploy` = 0 errors, `casen test` pass rate, **deploys-green on embedded Reebe**, iteration count (number of synth attempts), wall time, token cost if available.
+- `run-eval.mjs` — for each prompt: invoke `claude -p` headless with the plugin loaded (skip gracefully when `claude` unavailable; CI can run plan-level subset: hand-authored plans → synth → gates), then measure: **synth problems = 0**, `lint --profile deploy` = 0 errors, `bpmnkit test` pass rate, **deploys-green on embedded Reebe**, iteration count (number of synth attempts), wall time, token cost if available.
 - Report `eval-report.json` + markdown summary. Baseline before WP6 merge, track after.
 
 **AC:** harness runs the plan-level subset in CI (`pnpm turbo test` unaffected; separate script); full LLM run documented in the script header. Deploys-green rate on the plan-level subset = 100 %.
@@ -344,7 +344,7 @@ Skill flows (each SKILL.md must instruct: read the relevant `references/*` file(
 
 - `doc/roadmap.md`: add "AIKit v2 — Deterministic Generation Pipeline" section with WP0–WP7 as checkable items; check off as completed.
 - `doc/features.md`, `doc/progress.md` entries per WP.
-- `apps/docs`: update `guides/ai-implement.md` for the plan/synth flow; new `guides/ai-agents.md` (agentic generation); update `cli/skills.md`; document `casen synth|plan|connector`.
+- `apps/docs`: update `guides/ai-implement.md` for the plan/synth flow; new `guides/ai-agents.md` (agentic generation); update `cli/skills.md`; document `bpmnkit synth|plan|connector`.
 - `packages/connectors` README via `scripts/generate-readmes.mjs` (per CLAUDE.md).
 
 ---
@@ -356,6 +356,6 @@ Skill flows (each SKILL.md must instruct: read the relevant `references/*` file(
 ## Definition of done (whole spec)
 
 1. `pnpm turbo build typecheck check test` green; Biome zero warnings.
-2. WP6 AC scenarios pass end-to-end on a machine with only `casen` + the plugin (no proxy running).
+2. WP6 AC scenarios pass end-to-end on a machine with only `bpmnkit` + the plugin (no proxy running).
 3. Eval harness plan-level subset: 100 % deploys-green, 0 lint errors, ≤1 synth retry per prompt.
 4. No skill instructs the model to write BPMN XML, BPMN DI, element IDs, or connector property keys by hand — grep the plugin for `bpmndi`/`<bpmn:` to verify.

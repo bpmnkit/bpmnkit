@@ -1,0 +1,34 @@
+{
+  "description": "the method is case-insensitive",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/x"
+      },
+      "response": {
+        "body": {},
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "s": 200
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={s: response.status}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "get",
+      "url": "http://mock.local/x"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/"
+}

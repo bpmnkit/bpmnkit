@@ -756,58 +756,58 @@ const generateBpmnCmd: Command = {
 	examples: [
 		{
 			description: "Minimal service-task process",
-			command: "casen generate bpmn --process-id order --name 'Order Processing'",
+			command: "bpmnkit generate bpmn --process-id order --name 'Order Processing'",
 		},
 		{
 			description: "Approval workflow template",
-			command: "casen generate bpmn --template approval --process-id approve",
+			command: "bpmnkit generate bpmn --template approval --process-id approve",
 		},
 		{
 			description: "Timer-triggered scheduled job",
-			command: "casen generate bpmn --template timer-start --process-id nightly-sync",
+			command: "bpmnkit generate bpmn --template timer-start --process-id nightly-sync",
 		},
 		{
 			description: "Parallel branch pattern",
-			command: "casen generate bpmn --template parallel --process-id enrich --name Enrichment",
+			command: "bpmnkit generate bpmn --template parallel --process-id enrich --name Enrichment",
 		},
 		{
 			description: "Error boundary with error end event",
-			command: "casen generate bpmn --template error-boundary --process-id resilient",
+			command: "bpmnkit generate bpmn --template error-boundary --process-id resilient",
 		},
 		{
 			description: "Full custom definition (AI/scripting path)",
 			command:
-				'casen generate bpmn --definition \'{"id":"Defs","processes":[{"id":"p","elements":[...],"flows":[...]}]}\'',
+				'bpmnkit generate bpmn --definition \'{"id":"Defs","processes":[{"id":"p","elements":[...],"flows":[...]}]}\'',
 		},
 		{
 			description: "Pipe CompactDiagram JSON from AI output",
-			command: "echo '{...}' | casen generate bpmn --output my-process.bpmn",
+			command: "echo '{...}' | bpmnkit generate bpmn --output my-process.bpmn",
 		},
 		{
 			description: "Write a sketch with placeholder job types to replace before deploying",
-			command: "casen generate bpmn --definition '{...}' --placeholders",
+			command: "bpmnkit generate bpmn --definition '{...}' --placeholders",
 		},
 		{
 			description: "Print full JSON schema reference",
-			command: "casen generate bpmn --help-schema",
+			command: "bpmnkit generate bpmn --help-schema",
 		},
 		{
 			description: "Inspect an existing file as compact JSON (AI planning step)",
-			command: "casen generate bpmn --input existing.bpmn --dump-compact",
+			command: "bpmnkit generate bpmn --input existing.bpmn --dump-compact",
 		},
 		{
 			description: "Add a new gateway path to an existing file",
 			command:
-				'casen generate bpmn --input order.bpmn --output order.patched.bpmn --patch \'{"elements":[{"id":"notify","type":"serviceTask","name":"Notify","jobType":"notify-worker"},{"id":"end2","type":"endEvent","name":"Notified"}],"flows":[{"id":"fn1","from":"gw","to":"notify","condition":"= urgent"},{"id":"fn2","from":"notify","to":"end2"}]}\'',
+				'bpmnkit generate bpmn --input order.bpmn --output order.patched.bpmn --patch \'{"elements":[{"id":"notify","type":"serviceTask","name":"Notify","jobType":"notify-worker"},{"id":"end2","type":"endEvent","name":"Notified"}],"flows":[{"id":"fn1","from":"gw","to":"notify","condition":"= urgent"},{"id":"fn2","from":"notify","to":"end2"}]}\'',
 		},
 		{
 			description: "Pipe a patch from AI output",
 			command:
-				'echo \'{"elements":[...],"flows":[...]}\' | casen generate bpmn --input order.bpmn --output order.patched.bpmn',
+				'echo \'{"elements":[...],"flows":[...]}\' | bpmnkit generate bpmn --input order.bpmn --output order.patched.bpmn',
 		},
 		{
 			description: "Re-apply auto-layout to an existing file (a patch keeps the layout instead)",
-			command: "casen generate bpmn --input messy.bpmn --output clean.bpmn",
+			command: "bpmnkit generate bpmn --input messy.bpmn --output clean.bpmn",
 		},
 	],
 	async run(ctx) {
