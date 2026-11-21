@@ -3,6 +3,7 @@
 ## 2026-11-21 — Release job: consumability check skips other platforms' binaries
 
 - `scripts/check-package-consumable.mjs` skips a package whose `os`/`cpu` excludes the runner (the `@bpmnkit/cli-<platform>` packages): npm refuses to install them there (EBADPLATFORM), which failed the Changesets release job on main after the CLI merge. PR CI only runs `--pack-only`, so it did not catch it.
+- Empty changeset `release-consumable-platforms.md`: `release.yml` runs only on `.changeset/**` changes, so the fix alone did not restart the release.
 
 ## 2026-11-21 — One-time release setup for the native CLI
 
