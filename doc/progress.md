@@ -3,6 +3,7 @@
 ## 2026-11-21 — One-time release setup for the native CLI
 
 - `doc/release-setup.md`: what to do on npmjs.com (placeholder `0.0.0` for the 7 new names, trusted publishers; `@bpmnkit/cli` moves from `release.yml` to `release-cli.yml`), crates.io (bootstrap token for the 7 new crates), Homebrew (`bpmnkit/homebrew-tap`, `HOMEBREW_TAP_TOKEN`) and the release order (Changesets first, then the `bpmnkit-cli-v*` tag, then `latest`). Linked from `doc/rust-crates-release.md`.
+- `scripts/npm-trust.mjs` (+ test): step 2 from the CLI via `npm trust`; dry run by default, `--apply` revokes a config for another workflow of this repo and adds the wanted one.
 
 ## 2026-11-21 — CI fixes for the C8 workers / Rust CLI branch
 

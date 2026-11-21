@@ -34,6 +34,18 @@ platform packages at an exact version (2.0.0).
 
 ## 2. npm: register the trusted publishers
 
+From the CLI (needs a recent npm with `npm trust`; `npm i -g npm@latest`), logged in as an owner:
+
+```bash
+node scripts/npm-trust.mjs
+node scripts/npm-trust.mjs --apply
+```
+
+The first command reads each package's current trust config and prints what it would change. The
+second makes the changes; npm asks for a 2FA code (or a browser confirmation) on each one. It skips
+packages that already trust the right workflow and, on `@bpmnkit/cli`, revokes the old `release.yml`
+entry first. Safe to run again. By hand instead, on npmjs.com:
+
 For each package, on npmjs.com: package page → **Settings** → **Trusted publisher** → **GitHub
 Actions**. Organization `bpmnkit`, repository `bpmnkit`, environment empty, and this workflow:
 
