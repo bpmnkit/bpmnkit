@@ -1,0 +1,1 @@
+OpenAPI 2.x (Swagger) is not supported. Found version "2.0". Please convert to OpenAPI 3.x first (e.g. using https://editor.swagger.io).

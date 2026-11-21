@@ -1,0 +1,14 @@
+{
+  "id": "test.InboundStart",
+  "name": "Inbound start",
+  "version": 4,
+  "appliesTo": ["bpmn:StartEvent"],
+  "elementType": { "value": "bpmn:StartEvent", "eventDefinition": "bpmn:MessageEventDefinition" },
+  "properties": [
+    { "type": "Hidden", "value": "io.camunda:test-inbound:1", "binding": { "type": "zeebe:property", "name": "inbound.type" } },
+    { "id": "messageName", "type": "Hidden", "generatedValue": { "type": "uuid" }, "binding": { "type": "bpmn:Message#property", "name": "name" } },
+    { "id": "mid", "type": "Hidden", "value": "custom-id", "binding": { "type": "bpmn:Message#property", "name": "documentation" } },
+    { "id": "correlation", "label": "Correlation key", "type": "String", "value": "=orderId", "feel": "required", "binding": { "type": "bpmn:Message#zeebe:subscription#property", "name": "correlationKey" } },
+    { "id": "resultVariable", "label": "Result variable", "type": "String", "optional": true, "binding": { "type": "zeebe:property", "name": "resultVariable" } }
+  ]
+}

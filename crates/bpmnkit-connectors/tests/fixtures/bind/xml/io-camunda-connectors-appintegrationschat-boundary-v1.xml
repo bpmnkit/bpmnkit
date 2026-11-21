@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:message id="Message_1" name="orders">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_2" name="solo"/>
+  <bpmn:message id="Message_io.camunda.appIntegrations.chatMessage" name="io.camunda.appIntegrations.chatMessage">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=chatMessage.conversationKey"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start_1" name="Start">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_1" name="Do it">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="Service_1" name="Call it">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="old-worker" retries="5"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=old" target="oldInput"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="User_1" name="Review">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:receiveTask id="Receive_1" name="Wait" messageRef="Message_2">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:intermediateCatchEvent id="Catch_1" name="Catch one">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_1" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Catch_2" name="Catch two">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_2" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="Throw_1" name="Throw">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:subProcess id="Sub_1" name="Sub">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:startEvent id="Inner_Start">
+        <bpmn:outgoing>Inner_Flow_1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="Inner_1" name="Inner">
+        <bpmn:incoming>Inner_Flow_1</bpmn:incoming>
+        <bpmn:outgoing>Inner_Flow_2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="Inner_End">
+        <bpmn:incoming>Inner_Flow_2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Inner_Flow_1" sourceRef="Inner_Start" targetRef="Inner_1"/>
+      <bpmn:sequenceFlow id="Inner_Flow_2" sourceRef="Inner_1" targetRef="Inner_End"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="End_1" name="End">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Boundary_1" zeebe:modelerTemplate="io.camunda.connectors.AppIntegrationsChat.Boundary.v1" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDguNUMyMSA3LjEzMzE3IDIxIDUgMjEgNUMyMSA0LjQ2OTU3IDIwLjc4OTMgMy45NjA4NiAyMC40MTQyIDMuNTg1NzlDMjAuMDM5MSAzLjIxMDcxIDE5LjUzMDQgMyAxOSAzSDRDMy40Njk1NyAzIDIuOTYwODYgMy4yMTA3MSAyLjU4NTc5IDMuNTg1NzlDMi4yMTA3MSAzLjk2MDg2IDIgNC40Njk1NyAyIDVWMjEuMjg2QzIuMDAwMDIgMjEuNDI2NCAyLjA0MTY3IDIxLjU2MzcgMi4xMTk2OSAyMS42ODA0QzIuMTk3NyAyMS43OTcxIDIuMzA4NTggMjEuODg4MSAyLjQzODMxIDIxLjk0MTlDMi41NjgwMyAyMS45OTU2IDIuNzEwNzcgMjIuMDA5NyAyLjg0ODQ5IDIxLjk4MjNDMi45ODYyIDIxLjk1NDkgMy4xMTI3IDIxLjg4NzMgMy4yMTIgMjEuNzg4TDUuNDE0IDE5LjU4NkM1Ljc4ODk5IDE5LjIxMDkgNi4yOTc2MSAxOS4wMDAxIDYuODI4IDE5SDEwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMC45MzU5IDE3LjcxNzFDMjEuMTI2OCAxNy41MjY4IDIxLjI3ODMgMTcuMzAwOCAyMS4zODE3IDE3LjA1MThDMjEuNDg1IDE2LjgwMjkgMjEuNTM4MiAxNi41MzYgMjEuNTM4MiAxNi4yNjY0QzIxLjUzODIgMTUuOTk2OSAyMS40ODUgMTUuNzMgMjEuMzgxNyAxNS40ODExQzIxLjI3ODMgMTUuMjMyMSAyMS4xMjY4IDE1LjAwNjEgMjAuOTM1OSAxNC44MTU4TDE4Ljk3MzIgMTIuODUzMkwxMy44NTMzIDE3Ljk3MzFMMTUuODE1OSAxOS45MzU3QzE2LjAwNjIgMjAuMTI2NyAxNi4yMzIzIDIwLjI3ODEgMTYuNDgxMiAyMC4zODE1QzE2LjczMDIgMjAuNDg0OSAxNi45OTcgMjAuNTM4MSAxNy4yNjY2IDIwLjUzODFDMTcuNTM2MSAyMC41MzgxIDE3LjgwMyAyMC40ODQ5IDE4LjA1MiAyMC4zODE1QzE4LjMwMDkgMjAuMjc4MSAxOC41MjcgMjAuMTI2NyAxOC43MTcyIDE5LjkzNTdMMjAuOTM1OSAxNy43MTcxWiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMi4zODY1IDIxLjM4NjdMMTkuODI2NiAxOC44MjY4IiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE1LjEzMzMgMTYuNjkzNEwxMyAxNC41NjAxIiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE3LjY5MzMgMTQuMTMzM0wxNS41NiAxMiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik02IDhIMTUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTYgMTJIMTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==" attachedToRef="Service_1">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=chatMessage" target="chatMessage"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:messageEventDefinition messageRef="Message_io.camunda.appIntegrations.chatMessage"/>
+    </bpmn:boundaryEvent>
+    <bpmn:task id="Task_2" name="Loose"/>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_1"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_1" targetRef="Service_1"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Service_1" targetRef="User_1"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="User_1" targetRef="Receive_1"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Receive_1" targetRef="Catch_1"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Catch_1" targetRef="Catch_2"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Catch_2" targetRef="Throw_1"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Throw_1" targetRef="Sub_1"/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Sub_1" targetRef="End_1"/>
+  </bpmn:process>
+</bpmn:definitions>
+

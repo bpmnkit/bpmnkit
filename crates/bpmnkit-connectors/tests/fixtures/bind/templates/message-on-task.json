@@ -1,0 +1,9 @@
+{
+  "id": "test.MessageOnTask",
+  "name": "Message on a service task",
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:ServiceTask" },
+  "properties": [
+    { "id": "n", "type": "String", "value": "m", "binding": { "type": "bpmn:Message#property", "name": "name" } }
+  ]
+}

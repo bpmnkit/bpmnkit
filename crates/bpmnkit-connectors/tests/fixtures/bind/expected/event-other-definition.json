@@ -1,0 +1,7 @@
+[
+	[
+		{
+			"message": "Event definition \"bpmn:TimerEventDefinition\" is not applied by this toolkit; the event's definitions were left as they were"
+		}
+	]
+]

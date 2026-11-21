@@ -1,0 +1,1 @@
+External $ref not supported: "other.yaml#/p". Only local #/ refs are resolved.

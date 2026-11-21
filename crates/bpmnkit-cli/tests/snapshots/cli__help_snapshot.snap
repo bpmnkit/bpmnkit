@@ -8,6 +8,12 @@ Usage: bpmnkit <COMMAND>
 
 Commands:
   profile     Show profiles (read-only; other profile commands run in the legacy CLI)
+  lint        Lint a BPMN file
+  layout      Lay out a BPMN file (prints the XML, or writes -o / --in-place)
+  diff        Compare two BPMN files
+  render      Render a BPMN file as SVG (or PNG with -o x.png)
+  convert     Convert Camunda 7 models to Camunda 8 and report what needs manual work
+  connector   Connector templates: generate from OpenAPI, bind to a BPMN element
   completion  Print a shell completion script
   plugin      Inspect plugins
   worker      Classify job types and (later) generate job workers

@@ -1,0 +1,5 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "External ref", "version": "1" },
+  "paths": { "/x": { "get": { "operationId": "x", "parameters": [{ "$ref": "other.yaml#/p" }] } } }
+}

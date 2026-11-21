@@ -1,0 +1,7 @@
+[
+	[
+		{
+			"message": "<zeebe:calledDecision> is not allowed on <bpmn:serviceTask>; it was not written"
+		}
+	]
+]

@@ -1,0 +1,3238 @@
+[
+	{
+		"id": "io.camunda.connectors.ServiceNowIncident.v1",
+		"element": "Task_1",
+		"sha256": "34e9ebc91ea687ffe5629c161f3895cc85b1f1dec67253e3aa61cea19940cc8f",
+		"bytes": 8653,
+		"problems": [
+			{
+				"key": "snInstance",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Instance name\" (snInstance)"
+			},
+			{
+				"key": "authentication.username",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.username)"
+			},
+			{
+				"key": "authentication.password",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Password\" (authentication.password)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.Twilio.v1",
+		"element": "Task_1",
+		"sha256": "04d09c2a75bd6567b1849235688a42547969a45fc65b59ac0ed801021f98b2f4",
+		"bytes": 6124,
+		"problems": []
+	},
+	{
+		"id": "io.camunda.mcp.start-message",
+		"element": "Start_1",
+		"sha256": "45eabf5e66318a92fa5b92d91fcdde4795e53d928918b81f567319a7d161f504",
+		"bytes": 5416,
+		"problems": [
+			{
+				"key": "io.camunda.tool:name",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Name\" (io.camunda.tool:name)"
+			},
+			{
+				"key": "io.camunda.tool:purpose",
+				"kind": "missing-required",
+				"message": "Missing required value for \"What it does\" (io.camunda.tool:purpose)"
+			},
+			{
+				"key": "io.camunda.tool:inputs",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Which inputs it needs\" (io.camunda.tool:inputs)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.databricks.rest.v1",
+		"element": "Task_1",
+		"sha256": "f00d179743d7d3bd7e5021f0f1566d146b3fb59bd904836bede0b7920be6a7c5",
+		"bytes": 11119,
+		"problems": [
+			{
+				"key": "databricksHost",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Workspace URL\" (databricksHost)"
+			},
+			{
+				"key": "authentication.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.clientId)"
+			},
+			{
+				"key": "sqlWarehouseId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Warehouse ID\" (sqlWarehouseId)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSEventBridge.startEvent.v1",
+		"element": "Start_1",
+		"sha256": "98c343e76953c30b14165ebe5606d4079e138c0ad903b1bf842ddbd0b28fca76",
+		"bytes": 7279,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.WebhookConnector.v1",
+		"element": "Start_1",
+		"sha256": "127b01ef768bdcc3b7555e7f91dbe573631ec4a95bc1b447aa442c844feec178",
+		"bytes": 6323,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.message.end.v1",
+		"element": "End_1",
+		"sha256": "125d7d793c87aab5a0b7ec07c2511df164f5cb45fe58d95abacd8d4cf46bac1a",
+		"bytes": 5306,
+		"problems": [
+			{
+				"key": "messageName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Message name\" (messageName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AutomationAnywhere",
+		"element": "Task_1",
+		"sha256": "ec0547e3be0811b8e150f9018db3a75e6869a0b75771fe7c8de9c38e1b7a9109",
+		"bytes": 13346,
+		"problems": [
+			{
+				"key": "configuration.controlRoomUrl",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Control room URL\" (configuration.controlRoomUrl)"
+			},
+			{
+				"key": "authentication.passwordBassesUsername",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.passwordBassesUsername)"
+			},
+			{
+				"key": "authentication.password",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Password\" (authentication.password)"
+			},
+			{
+				"key": "authentication.multipleLogin",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Multiple login\" (authentication.multipleLogin)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AppIntegrationsChat.Boundary.v1",
+		"element": "Boundary_1",
+		"sha256": "1f64bdcf8e57a1754def259b4739b522d77c3bd83060eca20d35167c3228d07f",
+		"bytes": 7090,
+		"problems": []
+	},
+	{
+		"id": "io.camunda.connectors.inbound.Slack.StartEvent.v1",
+		"element": "Start_1",
+		"sha256": "0c86f4b33d936ff4d4b89870382cfbdcf10f8e5e4d6c26c332395a1efde22f8c",
+		"bytes": 6330,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.slackSigningSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Slack signing secret\" (inbound.slackSigningSecret)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.AWSSNS.Receive.v1",
+		"element": "Receive_1",
+		"sha256": "e582e3e02cc5b732b785e159f14a8b67c4c3beb3fcc34921f70109337d0ea81c",
+		"bytes": 9192,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Subscription ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.topicsAllowList",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic ARN(s)\" (inbound.topicsAllowList)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.MSFT.O365.Mail.v1",
+		"element": "Task_1",
+		"sha256": "1b9049922cff91aed304348485fe81dc3818bb6e7bb2e5246f195e31ecd694eb",
+		"bytes": 11138,
+		"problems": [
+			{
+				"key": "authentication.oauthTokenEndpoint",
+				"kind": "missing-required",
+				"message": "Missing required value for \"OAuth token endpoint\" (authentication.oauthTokenEndpoint)"
+			},
+			{
+				"key": "authentication.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.clientId)"
+			},
+			{
+				"key": "authentication.clientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.clientSecret)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.a2a.client.polling.receive.v0",
+		"element": "Receive_1",
+		"sha256": "8ed0136f37bdb2708b5fdb7f2e70393c70529a9ec67d9936c9061254bc6aa29c",
+		"bytes": 11914,
+		"problems": [
+			{
+				"key": "data.connection.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"A2A server URL\" (data.connection.url)"
+			},
+			{
+				"key": "internal_clientResponse",
+				"kind": "missing-required",
+				"message": "Missing required value for \"A2A Client Response\" (internal_clientResponse)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.KAFKA.v1",
+		"element": "Task_1",
+		"sha256": "8e649d7134f9740773f0458cca98316e619e825176b33b37dce29033ad52870c",
+		"bytes": 7363,
+		"problems": [
+			{
+				"key": "topic.bootstrapServers",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Bootstrap servers\" (topic.bootstrapServers)"
+			},
+			{
+				"key": "topic.topicName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic\" (topic.topicName)"
+			},
+			{
+				"key": "message.value",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Value\" (message.value)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.Twilio.Webhook.Boundary.v1",
+		"element": "Boundary_1",
+		"sha256": "0371f7a1786e12a6dfb5b4504a5d4bb69ea151931faeef149a93055be5345784",
+		"bytes": 6021,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_99658a9d-408e-8296-8421-abecd77eb696: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSDynamoDB.v1",
+		"element": "Task_1",
+		"sha256": "e2428889323ab49f15f1681924a896e3463c7e341d990a5fbfbcd6efd9f36cc0",
+		"bytes": 6885,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.HttpJson.v2",
+		"element": "Task_1",
+		"sha256": "998a220dd0697d4a075364e6a05b50c85e45a8dd8211d066c1358a67b118c32a",
+		"bytes": 6608,
+		"problems": [
+			{
+				"key": "url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URL\" (url)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSEventBridge.v1",
+		"element": "Task_1",
+		"sha256": "8aea66f6fac16d3b381ffdf24e2191588ae4d23b4d25205e82b88791c0cda514",
+		"bytes": 8200,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "input.source",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Source\" (input.source)"
+			},
+			{
+				"key": "input.detailType",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Detail type\" (input.detailType)"
+			},
+			{
+				"key": "input.eventBusName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Event bus name\" (input.eventBusName)"
+			},
+			{
+				"key": "input.detail",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Event payload\" (input.detail)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.Asana.v1",
+		"element": "Task_1",
+		"sha256": "07adc5fddd03b5700ea34fd370fbafe29dbf3fe5f907d6b261214edab8d39511",
+		"bytes": 6003,
+		"problems": [
+			{
+				"key": "authentication.token",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Personal access token\" (authentication.token)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.aiagent.v1",
+		"element": "Task_1",
+		"sha256": "92a298db3bec6b8eaf37b69c0f1eac25676958786406aff028ad103c54cf5f65",
+		"bytes": 10073,
+		"problems": [
+			{
+				"key": "provider.anthropic.authentication.apiKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Anthropic API key\" (provider.anthropic.authentication.apiKey)"
+			},
+			{
+				"key": "provider.anthropic.model.model",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Model\" (provider.anthropic.model.model)"
+			},
+			{
+				"key": "data.userPrompt.prompt",
+				"kind": "missing-required",
+				"message": "Missing required value for \"User prompt\" (data.userPrompt.prompt)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.EmailBoundary.v1",
+		"element": "Boundary_1",
+		"sha256": "cda85cf14b00a55a76533849ec87cc27a5faf89411f312af98b7024435398e9a",
+		"bytes": 6975,
+		"problems": [
+			{
+				"key": "authentication.simpleAuthenticationUsername",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.simpleAuthenticationUsername)"
+			},
+			{
+				"key": "authentication.simpleAuthenticationPassword",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Email password\" (authentication.simpleAuthenticationPassword)"
+			},
+			{
+				"key": "data.imapHost",
+				"kind": "missing-required",
+				"message": "Missing required value for \"IMAP Host\" (data.imapHost)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_34ebaa83-8182-8c5d-8f62-ea822cc7ef49: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSSNS.v1",
+		"element": "Task_1",
+		"sha256": "602094a7625091cb18db77a37e7e625e6c381d72b55f44488763925a6b12a1b6",
+		"bytes": 9281,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "topic.topicArn",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic ARN\" (topic.topicArn)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "topic.message",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Message\" (topic.message)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.Salesforce.v1",
+		"element": "Task_1",
+		"sha256": "f90b7a94e53ba3b09f39061ed4dc2c09960b963332a6df1273359fe16b9187bb",
+		"bytes": 12465,
+		"problems": [
+			{
+				"key": "baseUrl",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Salesforce base URL\" (baseUrl)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.aiagent.jobworker.v1",
+		"element": "Sub_1",
+		"sha256": "fcdb3d9a87131dcca94398d5b0cf321533f2c625d7eaa3992d05be3a767ea9e1",
+		"bytes": 10461,
+		"problems": [
+			{
+				"key": "provider.anthropic.authentication.apiKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Anthropic API key\" (provider.anthropic.authentication.apiKey)"
+			},
+			{
+				"key": "provider.anthropic.model.model",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Model\" (provider.anthropic.model.model)"
+			},
+			{
+				"key": "data.userPrompt.prompt",
+				"kind": "missing-required",
+				"message": "Missing required value for \"User prompt\" (data.userPrompt.prompt)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Sub_1: Must not contain a start event. (zeebe/ad-hoc-start-event)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Sub_1: Must not contain an end event. (zeebe/ad-hoc-end-event)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.aiagent.v0",
+		"element": "Task_1",
+		"sha256": "28a6e641075e0086e63a046a128e4d8d2c9731eac93219c881962081c8c11ebe",
+		"bytes": 8630,
+		"problems": [
+			{
+				"key": "data.agentContext",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Agent Context\" (data.agentContext)"
+			},
+			{
+				"key": "data.systemPrompt.prompt",
+				"kind": "missing-required",
+				"message": "Missing required value for \"System Prompt\" (data.systemPrompt.prompt)"
+			},
+			{
+				"key": "data.userPrompt.prompt",
+				"kind": "missing-required",
+				"message": "Missing required value for \"User Prompt\" (data.userPrompt.prompt)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSSQS.startmessage.v1",
+		"element": "Start_1",
+		"sha256": "792738a8ff339d638b19c1a979acafd0c76dcd46554334242277d8a3ee91c3f4",
+		"bytes": 13308,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "queue.queue.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue URL\" (queue.queue.url)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.a2a.client.v0",
+		"element": "Task_1",
+		"sha256": "fff7807a6caf9d7f656c176d0ced1bbdbc98406a115226bdb188c46613e2691f",
+		"bytes": 11940,
+		"problems": [
+			{
+				"key": "data.connection.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"A2A server URL\" (data.connection.url)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.message.intermediate.v1",
+		"element": "Throw_1",
+		"sha256": "7ee2797340fc5c0c7fe08bec456d8951483bdde597a5b337c493fbdfed5e4338",
+		"bytes": 5315,
+		"problems": [
+			{
+				"key": "messageName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Message name\" (messageName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.mcp.client.v0",
+		"element": "Task_1",
+		"sha256": "11205c805e183889bfaf46a78c8128fa3833573c56b2bcd01b1cc741d483dc4b",
+		"bytes": 6444,
+		"problems": [
+			{
+				"key": "data.client.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (data.client.clientId)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.RabbitMQ.Boundary.v1",
+		"element": "Boundary_1",
+		"sha256": "dd5dc76f9abc402e856356c33dd308cfa8558e79972ea1e86b673e2aaca64a21",
+		"bytes": 5984,
+		"problems": [
+			{
+				"key": "authentication.uri",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URI\" (authentication.uri)"
+			},
+			{
+				"key": "queueName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue name\" (queueName)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_263bb9f8-280c-82fe-a1af-cf08ecb1e31d: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.Slack.MessageStartEvent.v1",
+		"element": "Start_1",
+		"sha256": "99b0c3059e7a8239f884d331fa12afb1047701beb3f1d056d9d28722075f6856",
+		"bytes": 6808,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.slackSigningSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Slack signing secret\" (inbound.slackSigningSecret)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.Slack.IntermediateCatchEvent.v1",
+		"element": "Catch_1",
+		"sha256": "9c7c6e094c1e042ffc3d69a5f042b0adc3e9a66a7b8cf2e412d3a54b0efea2fb",
+		"bytes": 6401,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.slackSigningSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Slack signing secret\" (inbound.slackSigningSecret)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.RabbitMQ.Receive.v1",
+		"element": "Receive_1",
+		"sha256": "00093d52d135cffd3cbc9c385080292f6ecbbb5253210831fb7c847f65fd9176",
+		"bytes": 5908,
+		"problems": [
+			{
+				"key": "authentication.uri",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URI\" (authentication.uri)"
+			},
+			{
+				"key": "queueName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue name\" (queueName)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.HubSpot.v1",
+		"element": "Task_1",
+		"sha256": "dc383570ef834c365fd7f1c88a61137854ac8ece8d165f46142f3e69c2b76d3d",
+		"bytes": 6974,
+		"problems": [
+			{
+				"key": "authentication.token",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Bearer token\" (authentication.token)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.GitHub.v1",
+		"element": "Task_1",
+		"sha256": "acce156217a5ae75b5e12fbbe9e5bfa5b1d2472acff6c8deb7938ac0c55a78fa",
+		"bytes": 7299,
+		"problems": [
+			{
+				"key": "owner",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Owner\" (owner)"
+			},
+			{
+				"key": "repo",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Repository\" (repo)"
+			},
+			{
+				"key": "issueTitle",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Title\" (issueTitle)"
+			}
+		]
+	},
+	{
+		"id": "camunda.connectors.rpa",
+		"element": "Task_1",
+		"sha256": "5318053056fb91cde5a320fc0cb6ea3b9b14873dbafce93355854ed44592aa04",
+		"bytes": 6201,
+		"problems": [
+			{
+				"key": "linkedResource.RPAScript.resourceId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Script ID\" (linkedResource.RPAScript.resourceId)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Task_1: Attribute 'resourceId' must be present and not empty (zeebe/linked-resource-attributes)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.KafkaIntermediate.v1",
+		"element": "Catch_1",
+		"sha256": "375434a80c2ebf5de2437de7849c8d1dd517bb49120a20eb058d44e2bcf17102",
+		"bytes": 7338,
+		"problems": [
+			{
+				"key": "topic.bootstrapServers",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Bootstrap servers\" (topic.bootstrapServers)"
+			},
+			{
+				"key": "topic.topicName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic\" (topic.topicName)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSSQS.intermediate.v1",
+		"element": "Catch_1",
+		"sha256": "a4eca1770a83b6c621b5ae1f209a8e9bc885ef98235302b01eabecd9479a9a22",
+		"bytes": 12896,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "queue.queue.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue URL\" (queue.queue.url)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSTEXTRACT.v1",
+		"element": "Task_1",
+		"sha256": "ed8dbf41d10fb12aec09111b6bd5a77cf883e3ef7006789f42b0d7d49607fe05",
+		"bytes": 10684,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "input.documentS3Bucket",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Document bucket\" (input.documentS3Bucket)"
+			},
+			{
+				"key": "input.documentName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Document name\" (input.documentName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.KafkaBoundary.v1",
+		"element": "Boundary_1",
+		"sha256": "b74f7ad2606240c96c7b10a5a51f5ab8400813cec0881fe99b2a91f29af9593c",
+		"bytes": 7539,
+		"problems": [
+			{
+				"key": "topic.bootstrapServers",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Bootstrap servers\" (topic.bootstrapServers)"
+			},
+			{
+				"key": "topic.topicName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic\" (topic.topicName)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_527cee9e-2d43-84ce-a733-548f70f63fdc: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.adhoctoolsschema.v1",
+		"element": "Task_1",
+		"sha256": "1c9ee6b473c39e3fabb4025f07fbb6547c47b943ab9a85b1e3ac7cb5766e924d",
+		"bytes": 8515,
+		"problems": [
+			{
+				"key": "data.containerElementId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Ad-hoc sub-process ID\" (data.containerElementId)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.GithubWebhookConnectorBoundary.v1",
+		"element": "Boundary_1",
+		"sha256": "32c16533416009c3df0cf6fb31cad86bb5c446533d9aaec33151b5a16cedb2e0",
+		"bytes": 5892,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_0db58cb4-ff03-80d7-8876-23fe19c1ab80: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.aws.s3.v1",
+		"element": "Task_1",
+		"sha256": "6e0262ee951ddb27e1e853825799e8bfae57d333ea85d75ef71661bab4c57631",
+		"bytes": 8266,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "uploadActionBucket",
+				"kind": "missing-required",
+				"message": "Missing required value for \"AWS bucket\" (uploadActionBucket)"
+			},
+			{
+				"key": "action_document_camundaReference",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Camunda document\" (action_document_camundaReference)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AzureOpenAI.outbound.v1",
+		"element": "Task_1",
+		"sha256": "0ba80c92350102eeeaa6be5908db44ab07f69e043d55d19346fa1ed45bc47545",
+		"bytes": 8518,
+		"problems": [
+			{
+				"key": "authentication.value",
+				"kind": "missing-required",
+				"message": "Missing required value for \"API key\" (authentication.value)"
+			},
+			{
+				"key": "completion_resourceName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Resource name\" (completion_resourceName)"
+			},
+			{
+				"key": "completion_deploymentId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Deployment ID\" (completion_deploymentId)"
+			},
+			{
+				"key": "completion_prompt",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Prompt\" (completion_prompt)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.adhoctoolsschema.v0",
+		"element": "Task_1",
+		"sha256": "271e4174efc7483761fcadc172cfbf4ac7f4593d57c14ff21c3ab7263ea4ac0b",
+		"bytes": 8514,
+		"problems": []
+	},
+	{
+		"id": "io.camunda.connectors.AWSSQS.StartEvent.v1",
+		"element": "Start_1",
+		"sha256": "637b0d133168aea7192338fc2f473e6d9f04e7d74093d83cfeeaca8f9caf0b83",
+		"bytes": 13024,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "queue.queue.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue URL\" (queue.queue.url)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AppIntegrations.v1",
+		"element": "Task_1",
+		"sha256": "ed67047c3fbb0231abad7b806775f675c75fa2b982aa384d213938ae029e4624",
+		"bytes": 7353,
+		"problems": [
+			{
+				"key": "createChannel:platform.teamsChannelName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Channel name\" (createChannel:platform.teamsChannelName)"
+			},
+			{
+				"key": "createChannel:platform.teamId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Team ID\" (createChannel:platform.teamId)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSEventBridge.boundary.v1",
+		"element": "Boundary_1",
+		"sha256": "69f6b4847b117c1061d06ea9d32f728a84711c1cda072d36827d3115a86efff8",
+		"bytes": 7352,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_8afb3d73-552a-8dd3-9e22-6b02e5a98de3: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.RabbitMQ.StartEvent.v1",
+		"element": "Start_1",
+		"sha256": "b62abf3558467fb59a6083dc10455f9d9006697f90b9f35925621560551da93d",
+		"bytes": 5911,
+		"problems": [
+			{
+				"key": "authentication.uri",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URI\" (authentication.uri)"
+			},
+			{
+				"key": "queueName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue name\" (queueName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AppIntegrationsChat.Intermediate.v1",
+		"element": "Catch_1",
+		"sha256": "ccac10ed85840c1be0dd6bf4167fb170ff728a173b4dae5c87023b3887faa917",
+		"bytes": 7166,
+		"problems": []
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.a2a.client.webhook.intermediate.v0",
+		"element": "Catch_1",
+		"sha256": "c7d3290ad269f8a06db26ddf1044138f02577a1e8553aadc239af31774c94dec",
+		"bytes": 11980,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "internal_clientResponse",
+				"kind": "missing-required",
+				"message": "Missing required value for \"A2A Client Response\" (internal_clientResponse)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.Slack.BoundaryEvent.v1",
+		"element": "Boundary_1",
+		"sha256": "6eca323dd92c8274aaf6051e2c8459b6915c651f3b42bab4753881556b295043",
+		"bytes": 6597,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.slackSigningSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Slack signing secret\" (inbound.slackSigningSecret)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_48c849ca-4a52-8f63-a4e3-3960e66d59a3: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.mcp.remoteclient.v0",
+		"element": "Task_1",
+		"sha256": "95ff3c82edf1804d13557b6ca93484e8e77ac1d674f645aadf13f0748c1f026f",
+		"bytes": 6620,
+		"problems": [
+			{
+				"key": "data.transport.http.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URL\" (data.transport.http.url)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.box",
+		"element": "Task_1",
+		"sha256": "239ab9d8699d436b5ae7650da0a3c04d97b0f942ac5c93d356e1f31659eab798",
+		"bytes": 7096,
+		"problems": [
+			{
+				"key": "operation.createFolderName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Folder name\" (operation.createFolderName)"
+			},
+			{
+				"key": "authentication.accessToken",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessToken)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.MSFT.O365.EmailBoundary.v1",
+		"element": "Boundary_1",
+		"sha256": "3cf2d0ad6d122103e8c822e9cbcaa18440470468ee7a164314333fe19c0ee54f",
+		"bytes": 12821,
+		"problems": [
+			{
+				"key": "authentication.credentials.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.credentials.clientId)"
+			},
+			{
+				"key": "authentication.credentials.tenantId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Tenant ID\" (authentication.credentials.tenantId)"
+			},
+			{
+				"key": "authentication.credentials.clientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.credentials.clientSecret)"
+			},
+			{
+				"key": "pollingConfig.userId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Mailbox Owner\" (pollingConfig.userId)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_bf1b9809-e2ce-8124-8756-4c9bb8faa888: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.GitLab.v1",
+		"element": "Task_1",
+		"sha256": "43dd521df074ad709b861e48cca9578e3ed4041fa2e32a249393174bd39f8291",
+		"bytes": 6868,
+		"problems": [
+			{
+				"key": "gitlabAccessToken",
+				"kind": "missing-required",
+				"message": "Missing required value for \"GitLab access token\" (gitlabAccessToken)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.GraphQL.v1",
+		"element": "Task_1",
+		"sha256": "b1ba74b189f81ebdf5fdf63bfc34a0940f0f950b75547aeeab073019d5c18a5b",
+		"bytes": 8279,
+		"problems": [
+			{
+				"key": "graphql.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URL\" (graphql.url)"
+			},
+			{
+				"key": "graphql.query",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Query/Mutation\" (graphql.query)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.RabbitMQ.Intermediate.v1",
+		"element": "Catch_1",
+		"sha256": "415946d75510eee6fc836a026ae33b712a179f50d14aa05ebbca0838fa3f2fbb",
+		"bytes": 5783,
+		"problems": [
+			{
+				"key": "authentication.uri",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URI\" (authentication.uri)"
+			},
+			{
+				"key": "queueName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue name\" (queueName)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.GithubWebhookConnectorIntermediate.v1",
+		"element": "Catch_1",
+		"sha256": "b7ab0a22a34fe40deefe92c9dc9ad110bcd2b80431b1df4cc8b7347ea92a6040",
+		"bytes": 5691,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.Slack.v1",
+		"element": "Task_1",
+		"sha256": "aad9ad5ea16c862a61afc25d83e9033c83b81ed346d3946270a46a36b82767fc",
+		"bytes": 7549,
+		"problems": [
+			{
+				"key": "token",
+				"kind": "missing-required",
+				"message": "Missing required value for \"OAuth token\" (token)"
+			},
+			{
+				"key": "data.text",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Message\" (data.text)"
+			},
+			{
+				"key": "data.channel",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Channel/user name/email\" (data.channel)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.BluePrism.v1",
+		"element": "Task_1",
+		"sha256": "c08603554991a6a1d743b4c118fa6d4d3e6b34d8305f9af84378f827ee0e49c6",
+		"bytes": 25190,
+		"problems": [
+			{
+				"key": "bluePrismQueueId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Work queue ID\" (bluePrismQueueId)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.SendGrid.v2",
+		"element": "Task_1",
+		"sha256": "525e1aa10a328272d5ca9ed44b4bbce459e1713b51c2bbe61c8a1780d7358687",
+		"bytes": 6990,
+		"problems": [
+			{
+				"key": "apiKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"SendGrid API key\" (apiKey)"
+			},
+			{
+				"key": "from.name",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Name\" (from.name)"
+			},
+			{
+				"key": "from.email",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Email address\" (from.email)"
+			},
+			{
+				"key": "to.name",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Name\" (to.name)"
+			},
+			{
+				"key": "to.email",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Email address\" (to.email)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.KafkaReceive.v1",
+		"element": "Receive_1",
+		"sha256": "3a94a41d6b690c1085b83f62025b33e342df2c09be9f59d2e5ac130fb8e1a02f",
+		"bytes": 7463,
+		"problems": [
+			{
+				"key": "topic.bootstrapServers",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Bootstrap servers\" (topic.bootstrapServers)"
+			},
+			{
+				"key": "topic.topicName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic\" (topic.topicName)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.http.Polling",
+		"element": "Catch_1",
+		"sha256": "c23074105da716aefcda2af83dbd2ea64ac9b320e3074f2b14e13bb598eaa88e",
+		"bytes": 6080,
+		"problems": [
+			{
+				"key": "url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URL\" (url)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.Jdbc.v1",
+		"element": "Task_1",
+		"sha256": "3f814f4e062d7be06d419d1cf53dd0a4fa5aaadf75c1ff15a6d2369a63ae4542",
+		"bytes": 7670,
+		"problems": [
+			{
+				"key": "connection.uri",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URI\" (connection.uri)"
+			},
+			{
+				"key": "data.query",
+				"kind": "missing-required",
+				"message": "Missing required value for \"SQL Query to execute\" (data.query)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.GithubWebhookConnectorReceive.v1",
+		"element": "Receive_1",
+		"sha256": "0fd4a562ab153ddc5b85246aefb0a0738fc05ff60b05ab46a6e902b1704a8db2",
+		"bytes": 5816,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.GoogleGemini.v1",
+		"element": "Task_1",
+		"sha256": "5fa325ee3cd93919f8d692052553c72f815ffd21423b337eb11797be00f9780a",
+		"bytes": 5817,
+		"problems": [
+			{
+				"key": "authentication.oauthClientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.oauthClientId)"
+			},
+			{
+				"key": "authentication.oauthClientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.oauthClientSecret)"
+			},
+			{
+				"key": "authentication.oauthRefreshToken",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Refresh token\" (authentication.oauthRefreshToken)"
+			},
+			{
+				"key": "input.projectId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Project ID\" (input.projectId)"
+			},
+			{
+				"key": "input.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (input.region)"
+			},
+			{
+				"key": "input.model",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Model\" (input.model)"
+			},
+			{
+				"key": "input.prompts",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Prompts\" (input.prompts)"
+			},
+			{
+				"key": "input.maxOutputTokens",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Output token limit from 1 to 8192\" (input.maxOutputTokens)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AppIntegrationsChat.Start.v1",
+		"element": "Start_1",
+		"sha256": "566b76dd4f54f22d64c8935d93087709a11704d255d337a00dcd383e6f34d013",
+		"bytes": 7117,
+		"problems": []
+	},
+	{
+		"id": "io.camunda.connectors.GoogleDrive.v1",
+		"element": "Task_1",
+		"sha256": "01cdedba692baa94c14f647789d2372965cc5c7be2a8b69724e0b16b19c19886",
+		"bytes": 5953,
+		"problems": [
+			{
+				"key": "authentication.oauthClientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.oauthClientId)"
+			},
+			{
+				"key": "authentication.oauthClientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.oauthClientSecret)"
+			},
+			{
+				"key": "authentication.oauthRefreshToken",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Refresh token\" (authentication.oauthRefreshToken)"
+			},
+			{
+				"key": "resource.folderName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"New resource name\" (resource.folderName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.Twilio.Webhook.Intermediate.v1",
+		"element": "Catch_1",
+		"sha256": "861787280b88bb96b8832834780e0a63c6c7ef0597aff1a1f6266da75d93e39d",
+		"bytes": 5820,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.ServiceNowFlow.v1",
+		"element": "Task_1",
+		"sha256": "7b4779a474e8b3f09b4ac2343ae5fe2e13f52acce70fb73819e48fa9be88b385",
+		"bytes": 7553,
+		"problems": [
+			{
+				"key": "snInstance",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Instance name\" (snInstance)"
+			},
+			{
+				"key": "restApiTriggerPath",
+				"kind": "missing-required",
+				"message": "Missing required value for \"REST API trigger path\" (restApiTriggerPath)"
+			},
+			{
+				"key": "authentication.username",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.username)"
+			},
+			{
+				"key": "authentication.password",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Password\" (authentication.password)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.AWSSNS.Boundary.v1",
+		"element": "Boundary_1",
+		"sha256": "b0db95782ed8b31b09a9a78d6caefe3296f94a648ec9720b163fe97e6dcfb77a",
+		"bytes": 9268,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Subscription ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.topicsAllowList",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic ARN(s)\" (inbound.topicsAllowList)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_a4962c12-d82f-814e-9b2f-931d735c1307: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.EmailReceive.v1",
+		"element": "Receive_1",
+		"sha256": "9e8ffa8503e52072feeb20134d2006eb2a1450766ba3518bcd86bacece944fad",
+		"bytes": 6899,
+		"problems": [
+			{
+				"key": "authentication.simpleAuthenticationUsername",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.simpleAuthenticationUsername)"
+			},
+			{
+				"key": "authentication.simpleAuthenticationPassword",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Email password\" (authentication.simpleAuthenticationPassword)"
+			},
+			{
+				"key": "data.imapHost",
+				"kind": "missing-required",
+				"message": "Missing required value for \"IMAP Host\" (data.imapHost)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.OpenAI.v1",
+		"element": "Task_1",
+		"sha256": "a65e5393fced1bfbffd9dc9b808e31be79bf14497e1810050be4c0fd34f517fc",
+		"bytes": 11373,
+		"problems": [
+			{
+				"key": "authentication.token",
+				"kind": "missing-required",
+				"message": "Missing required value for \"OpenAI API key\" (authentication.token)"
+			},
+			{
+				"key": "internal_prompt",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Prompt\" (internal_prompt)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.agentcore.runtime.v1",
+		"element": "Task_1",
+		"sha256": "74f1e4c0b1be8df4803b48f6b0fa9b6c986c61ed49c1842e48cc6353b2e0baeb",
+		"bytes": 10768,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "input.agentRuntimeArn",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Agent Runtime ARN\" (input.agentRuntimeArn)"
+			},
+			{
+				"key": "input.payload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Payload\" (input.payload)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.CamundaOrchestrationCluster.v1",
+		"element": "Task_1",
+		"sha256": "dac448d28a2c9adddef500cb38d725f17cf599f45f192cad169d31fa2c75f51f",
+		"bytes": 10980,
+		"problems": [
+			{
+				"key": "authentication.internal_region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (authentication.internal_region)"
+			},
+			{
+				"key": "authentication.internal_cluster",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Cluster ID\" (authentication.internal_cluster)"
+			},
+			{
+				"key": "authentication.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.clientId)"
+			},
+			{
+				"key": "authentication.clientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.clientSecret)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.GithubWebhookConnectorMessageStart.v1",
+		"element": "Start_1",
+		"sha256": "dbd6c6e95f885c3ae206922d56aac536b6b424012fafc95070ff2f5020b7dbcb",
+		"bytes": 6103,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.TwilioWebhook.v1",
+		"element": "Start_1",
+		"sha256": "8833a4993275c5f05e07d3be766531cf72f191ccb248dd48e173e9644dcf5ca7",
+		"bytes": 5936,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.AWSSNS.MessageStartEvent.v1",
+		"element": "Start_1",
+		"sha256": "dfe412148edd8f7ee0268561c017cae66b8f3a3c9a204181fdefc384e49fc81e",
+		"bytes": 9484,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Subscription ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.topicsAllowList",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic ARN(s)\" (inbound.topicsAllowList)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.GoogleSheets.v1",
+		"element": "Task_1",
+		"sha256": "9f3d30d85cb446bb595059f1fa0b39b1ad8f47fada27f3d31b2d09a910d22098",
+		"bytes": 17202,
+		"problems": [
+			{
+				"key": "authentication.oauthClientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.oauthClientId)"
+			},
+			{
+				"key": "authentication.oauthClientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.oauthClientSecret)"
+			},
+			{
+				"key": "authentication.oauthRefreshToken",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Refresh token\" (authentication.oauthRefreshToken)"
+			},
+			{
+				"key": "createSpreadsheet.spreadsheetName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Spreadsheet name\" (createSpreadsheet.spreadsheetName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.ServiceNow.v1",
+		"element": "Task_1",
+		"sha256": "e0271694707721c710594681ec033a6fe9e2bbd84f60e3b26fa8501774cc1dc4",
+		"bytes": 7922,
+		"problems": [
+			{
+				"key": "snInstance",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Instance name\" (snInstance)"
+			},
+			{
+				"key": "authentication.username",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.username)"
+			},
+			{
+				"key": "authentication.password",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Password\" (authentication.password)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.http.Polling.Boundary",
+		"element": "Boundary_1",
+		"sha256": "6cc07b93fd7fdbbebed77baa069b4276e2ab4631a9229b619efaf508284b8760",
+		"bytes": 6294,
+		"problems": [
+			{
+				"key": "url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URL\" (url)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_abb314e5-4f82-8e79-a10c-7628fb33a831: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSSQS.v1",
+		"element": "Task_1",
+		"sha256": "2f3f793c8cc55e79c77e561547460f2aa8f46a31ec7692f93310350a72fa6f70",
+		"bytes": 13065,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "queue.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URL\" (queue.url)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "queue.messageBody",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Message body\" (queue.messageBody)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.GithubWebhookConnector.v1",
+		"element": "Start_1",
+		"sha256": "652348bb553b7adc104db36842841a76b01fbd222ffb876e129647d6d5b1c9f7",
+		"bytes": 5809,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.knowledgebase.v1",
+		"element": "Task_1",
+		"sha256": "23ae95b7c612f7a23791828952dba6d9752f2fb1ca59602de0ab4b3d42f6587a",
+		"bytes": 10912,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "knowledgeBaseId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Knowledge Base ID\" (knowledgeBaseId)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "operation.query",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Query\" (operation.query)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSSQS.boundary.v1",
+		"element": "Boundary_1",
+		"sha256": "cffd451d32e7d9f690bf3e528cc4cd60c8fa9d227d6ff65d47be6fbd79fb78b9",
+		"bytes": 13097,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "queue.queue.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue URL\" (queue.queue.url)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_a58218d3-ef68-8159-a143-1aa3386e2c68: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.csv",
+		"element": "Task_1",
+		"sha256": "db5daa4eaa2ad123c583cada6af03a47d2201f683bd306089fac7e3544a8977f",
+		"bytes": 11775,
+		"problems": [
+			{
+				"key": "readCsv:document_camundaReference",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Camunda document\" (readCsv:document_camundaReference)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.GoogleMapsPlatform.v1",
+		"element": "Task_1",
+		"sha256": "131ac044914844d66e75dc46f7b61f3f11d7c4ae0f793a0297ff44d23135f36b",
+		"bytes": 7922,
+		"problems": [
+			{
+				"key": "apiKeyValue",
+				"kind": "missing-required",
+				"message": "Missing required value for \"API key\" (apiKeyValue)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.Twilio.Webhook.Receive.v1",
+		"element": "Receive_1",
+		"sha256": "28dd800b569a371c78472f940fbf6b893caef1a5cc38a7cf127b548e2abf79c0",
+		"bytes": 5945,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.EmailIntermediate.v1",
+		"element": "Catch_1",
+		"sha256": "a29a28bdc8c6fa782e072c5f440100a8110b23b3e1340fc32f59cb9e11e4481e",
+		"bytes": 6774,
+		"problems": [
+			{
+				"key": "authentication.simpleAuthenticationUsername",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.simpleAuthenticationUsername)"
+			},
+			{
+				"key": "authentication.simpleAuthenticationPassword",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Email password\" (authentication.simpleAuthenticationPassword)"
+			},
+			{
+				"key": "data.imapHost",
+				"kind": "missing-required",
+				"message": "Missing required value for \"IMAP Host\" (data.imapHost)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.UIPath.v1",
+		"element": "Task_1",
+		"sha256": "975f14e0005a17542349150ed5cf31fa5a1bd1008e2ca2844bd4f03a669c5328",
+		"bytes": 6953,
+		"problems": [
+			{
+				"key": "cloudOrg",
+				"kind": "missing-required",
+				"message": "Missing required value for \"UiPath organization\" (cloudOrg)"
+			},
+			{
+				"key": "cloudTenant",
+				"kind": "missing-required",
+				"message": "Missing required value for \"UiPath tenant\" (cloudTenant)"
+			},
+			{
+				"key": "organizationUnitId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Organization unit ID\" (organizationUnitId)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSEventBridge.intermediate.v1",
+		"element": "Catch_1",
+		"sha256": "25115ef1aaee45fa160618e5494651f89b7a87041269cbdd6b0c9c8d0e012f09",
+		"bytes": 7151,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSSAGEMAKER.v1",
+		"element": "Task_1",
+		"sha256": "86c83a3a4e4e124fcfef5b824e49b3293df6291e2d083ad9f8ccf79a0ec6fe21",
+		"bytes": 12498,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "input.endpointName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Endpoint name\" (input.endpointName)"
+			},
+			{
+				"key": "input.body",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Payload\" (input.body)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.WebhookConnectorStartMessage.v1",
+		"element": "Start_1",
+		"sha256": "b996ec8c003eecbe024066333bcb27fd92b1d54e4a565f0d89c45443ae5655e2",
+		"bytes": 6617,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.codeinterpreter.v1",
+		"element": "Task_1",
+		"sha256": "d7cfa8372a319e58ffe22c4f184606175d32d2df09a69d9863b142dca729d94b",
+		"bytes": 11065,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "input.code",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Code\" (input.code)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSSQS.receive.v1",
+		"element": "Receive_1",
+		"sha256": "7bd05b1521ff8e6b1fdd3adfa2afac166968e0943a8dda6aa5162152234cb1ca",
+		"bytes": 13021,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "queue.queue.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue URL\" (queue.queue.url)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.PowerAutomate.v1",
+		"element": "Task_1",
+		"sha256": "13ad498085f254a6a262f017cf25febc6a81259b4b542338524ffd8c9ae4a056",
+		"bytes": 7690,
+		"problems": [
+			{
+				"key": "organizationUri",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Organization URI\" (organizationUri)"
+			},
+			{
+				"key": "flowSessionId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Flow session ID\" (flowSessionId)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AppIntegrationsChat.Receive.v1",
+		"element": "Receive_1",
+		"sha256": "d78822eeab4e7b537c6fc00d9d417363ae6b4fa986f6f425ec7e875dc010a9bc",
+		"bytes": 7042,
+		"problems": []
+	},
+	{
+		"id": "io.camunda.connectors.ManagedScript.v1",
+		"element": "Task_1",
+		"sha256": "ff484dd07f8c220c714b12a9bd82c79ea5b2c8e6e3cd5b778259948541ccbfac",
+		"bytes": 4869,
+		"problems": [
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Task_1: Attribute 'resourceId' must be present and not empty (zeebe/linked-resource-attributes)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.WebhookConnectorBoundary.v1",
+		"element": "Boundary_1",
+		"sha256": "701e7cb1a43b4bd03c642d494f75efe3558eddd0b419c05d05222da878399d0e",
+		"bytes": 6406,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_d5e1af4d-111a-8391-9a60-9a7232f48d69: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.azure.blobstorage.v1",
+		"element": "Task_1",
+		"sha256": "12b8bd3f08823d9b9f3e144ff4d62d0a5cd2ce6e52158c47db08f5b9cd6b9c4c",
+		"bytes": 16675,
+		"problems": [
+			{
+				"key": "container",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Blob Storage container\" (container)"
+			},
+			{
+				"key": "operation_document_camundaReference",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Camunda document\" (operation_document_camundaReference)"
+			},
+			{
+				"key": "authentication.SASToken",
+				"kind": "missing-required",
+				"message": "Missing required value for \"SAS token\" (authentication.SASToken)"
+			},
+			{
+				"key": "authentication.SASUrl",
+				"kind": "missing-required",
+				"message": "Missing required value for \"SAS URL\" (authentication.SASUrl)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.Slack.ReceiveTask.v1",
+		"element": "Receive_1",
+		"sha256": "b148382893f51c73be3211093427cc70c0859517e1f8d318492b4483bb58ea4e",
+		"bytes": 6520,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.slackSigningSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Slack signing secret\" (inbound.slackSigningSecret)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda:soap",
+		"element": "Task_1",
+		"sha256": "3a0f6e9073b73c0903bfc5b92b4f949164af06d1cadc82c3bd50a355731c3c0a",
+		"bytes": 14162,
+		"problems": [
+			{
+				"key": "serviceUrl",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Service URL\" (serviceUrl)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.RabbitMQ.MessageStart.v1",
+		"element": "Start_1",
+		"sha256": "1259efbec1b6398933b5bd6887d9f0a93c8c78742cd4413db317dfb3036b834c",
+		"bytes": 6195,
+		"problems": [
+			{
+				"key": "authentication.uri",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URI\" (authentication.uri)"
+			},
+			{
+				"key": "queueName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Queue name\" (queueName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.RabbitMQ.v1",
+		"element": "Task_1",
+		"sha256": "d037b44183c717713e34aa4ee57204c12d650046887d51ea70b039b3c58d0bad",
+		"bytes": 5957,
+		"problems": [
+			{
+				"key": "authentication.uri",
+				"kind": "missing-required",
+				"message": "Missing required value for \"URI\" (authentication.uri)"
+			},
+			{
+				"key": "routing.exchange",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Exchange\" (routing.exchange)"
+			},
+			{
+				"key": "routing.routingKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Routing key\" (routing.routingKey)"
+			},
+			{
+				"key": "message.body",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Message\" (message.body)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1",
+		"element": "Catch_1",
+		"sha256": "b15766fd6f8d2296ff8147509b131a1c89105d2dff615c94f43144481f9d53b7",
+		"bytes": 6205,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.email.v1",
+		"element": "Task_1",
+		"sha256": "a873fd168b32ce1733f2751b8056e54d828d588cff71498df554c8a57a77a1c2",
+		"bytes": 8212,
+		"problems": [
+			{
+				"key": "authentication.simpleAuthenticationUsername",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.simpleAuthenticationUsername)"
+			},
+			{
+				"key": "authentication.simpleAuthenticationPassword",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Email password\" (authentication.simpleAuthenticationPassword)"
+			},
+			{
+				"key": "smtpFrom",
+				"kind": "missing-required",
+				"message": "Missing required value for \"From\" (smtpFrom)"
+			},
+			{
+				"key": "smtpTo",
+				"kind": "missing-required",
+				"message": "Missing required value for \"To\" (smtpTo)"
+			},
+			{
+				"key": "smtpSubject",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Subject\" (smtpSubject)"
+			},
+			{
+				"key": "data.smtpHost",
+				"kind": "missing-required",
+				"message": "Missing required value for \"SMTP Host\" (data.smtpHost)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.AWSSNS.StartEvent.v1",
+		"element": "Start_1",
+		"sha256": "2c9184296505ffd400a90d852a48e667ce70dfb06748d3e75eccfadc7bb40f41",
+		"bytes": 8981,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Subscription ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.topicsAllowList",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic ARN(s)\" (inbound.topicsAllowList)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
+		"element": "Sub_1",
+		"sha256": "73f4bbbd42955b492add3d178e051449b33f84a4b8a9f3fe81bf5d9176c9fbf8",
+		"bytes": 10537,
+		"problems": [
+			{
+				"key": "provider.anthropic.backend.anthropic.apiKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Anthropic API key\" (provider.anthropic.backend.anthropic.apiKey)"
+			},
+			{
+				"key": "provider.anthropic.model.model",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Model\" (provider.anthropic.model.model)"
+			},
+			{
+				"key": "data.userPrompt.prompt",
+				"kind": "missing-required",
+				"message": "Missing required value for \"User prompt\" (data.userPrompt.prompt)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Sub_1: Must not contain a start event. (zeebe/ad-hoc-start-event)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Sub_1: Must not contain an end event. (zeebe/ad-hoc-end-event)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.KafkaMessageStart.v1",
+		"element": "Start_1",
+		"sha256": "b0c98f3c7df29da7a9492dd8ca910c593c8167bc2f0421301bd37676d3b6d68f",
+		"bytes": 7750,
+		"problems": [
+			{
+				"key": "topic.bootstrapServers",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Bootstrap servers\" (topic.bootstrapServers)"
+			},
+			{
+				"key": "topic.topicName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic\" (topic.topicName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.EmailMessageStart.v1",
+		"element": "Start_1",
+		"sha256": "bb7d22ceb9cbbc57232a7c41ac2fc5b0d5f076048125e00c538feb563d97fdb5",
+		"bytes": 7186,
+		"problems": [
+			{
+				"key": "authentication.simpleAuthenticationUsername",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.simpleAuthenticationUsername)"
+			},
+			{
+				"key": "authentication.simpleAuthenticationPassword",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Email password\" (authentication.simpleAuthenticationPassword)"
+			},
+			{
+				"key": "data.imapHost",
+				"kind": "missing-required",
+				"message": "Missing required value for \"IMAP Host\" (data.imapHost)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSCOMPREHEND.v1",
+		"element": "Task_1",
+		"sha256": "8bb287737b7f32f46207a45ff0d10ebbd9669546e5e038e5b1d075b708f6d67c",
+		"bytes": 9869,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.CamundaOperate.v1",
+		"element": "Task_1",
+		"sha256": "6f32159a3f716359efd84f0ff8ef605aaa3ffc33fe9f7f6af6bde6c0b399bed2",
+		"bytes": 9694,
+		"problems": [
+			{
+				"key": "authentication.internal_region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (authentication.internal_region)"
+			},
+			{
+				"key": "authentication.internal_cluster",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Cluster ID\" (authentication.internal_cluster)"
+			},
+			{
+				"key": "authentication.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.clientId)"
+			},
+			{
+				"key": "authentication.clientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.clientSecret)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.MSTeams.v1",
+		"element": "Task_1",
+		"sha256": "ab022ac8b21c8d3622d4f6152e75fe987538cd61338943f3646c34fdf04210a6",
+		"bytes": 9377,
+		"problems": [
+			{
+				"key": "authentication.credentials.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.credentials.clientId)"
+			},
+			{
+				"key": "authentication.credentials.tenantId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Tenant ID\" (authentication.credentials.tenantId)"
+			},
+			{
+				"key": "authentication.credentials.clientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.credentials.clientSecret)"
+			},
+			{
+				"key": "data.sendMessageInChat.chatId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Chat ID\" (data.sendMessageInChat.chatId)"
+			},
+			{
+				"key": "data.sendMessageInChat.content",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Content\" (data.sendMessageInChat.content)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.MSFT.O365.EmailIntermediate.v1",
+		"element": "Catch_1",
+		"sha256": "dc02446e5458dabe7426a6d1bf54fb7af26a4deeeb65dbf1b8cc993e699c9d0d",
+		"bytes": 12620,
+		"problems": [
+			{
+				"key": "authentication.credentials.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.credentials.clientId)"
+			},
+			{
+				"key": "authentication.credentials.tenantId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Tenant ID\" (authentication.credentials.tenantId)"
+			},
+			{
+				"key": "authentication.credentials.clientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.credentials.clientSecret)"
+			},
+			{
+				"key": "pollingConfig.userId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Mailbox Owner\" (pollingConfig.userId)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.google.gcp.v1",
+		"element": "Task_1",
+		"sha256": "98e9fb4995023acc76dc09f6c61a495863559ea030af2fd354ecbd8fc4f082de",
+		"bytes": 6993,
+		"problems": [
+			{
+				"key": "uploadOperationProject",
+				"kind": "missing-required",
+				"message": "Missing required value for \"GCP project\" (uploadOperationProject)"
+			},
+			{
+				"key": "uploadOperationBucket",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Object Storage bucket\" (uploadOperationBucket)"
+			},
+			{
+				"key": "operation_document_camundaReference",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Camunda document\" (operation_document_camundaReference)"
+			},
+			{
+				"key": "authentication.jsonKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"JSON key of the service account\" (authentication.jsonKey)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AutomationAnywhere.v1",
+		"element": "Task_1",
+		"sha256": "a9d08740ff3cd87be7437a8a5cba8c08b3af9690583662a33be46ad41ba36fe4",
+		"bytes": 10622,
+		"problems": [
+			{
+				"key": "controlRoomURL",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Control room URL\" (controlRoomURL)"
+			},
+			{
+				"key": "authentication.request.body.username",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (authentication.request.body.username)"
+			},
+			{
+				"key": "authentication.request.body.password",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Password\" (authentication.request.body.password)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSLAMBDA.v2",
+		"element": "Task_1",
+		"sha256": "3624817c8011c07e8892d278a12e84c85738f09d38755bbb129ad9262462d877",
+		"bytes": 7335,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "awsFunction.functionName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Function name\" (awsFunction.functionName)"
+			},
+			{
+				"key": "awsFunction.payload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Payload\" (awsFunction.payload)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.message.sendtask.v1",
+		"element": "Task_1",
+		"sha256": "9aea72b8769a8f4a46ba4b55d70b3ac9526cbd6254f8723f949c811b181bb307",
+		"bytes": 5282,
+		"problems": [
+			{
+				"key": "messageName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Message name\" (messageName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSEventBridge.receive.v1",
+		"element": "Receive_1",
+		"sha256": "06964cc1df53e110699329df0025396bb381c99424675273b4031f5062e95909",
+		"bytes": 7276,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "message.correlationKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (message.correlationKey)"
+			},
+			{
+				"key": "correlationKeyExpression",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyExpression)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.agentcore.memory.longterm.v1",
+		"element": "Task_1",
+		"sha256": "3a91f7a15c65edb4c4b26943deca86fec6430a6114cc96bdeaa007357dd8904c",
+		"bytes": 10938,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "memoryId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Memory ID\" (memoryId)"
+			},
+			{
+				"key": "namespace",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Namespace\" (namespace)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "operation.query",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Search query\" (operation.query)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.aws.bedrock.v1",
+		"element": "Task_1",
+		"sha256": "de07e30769f4eebce4d0837ab0c9fae6862f2498f23013eb8d4b7b53236edacd",
+		"bytes": 10628,
+		"problems": [
+			{
+				"key": "authentication.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (authentication.accessKey)"
+			},
+			{
+				"key": "authentication.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (authentication.secretKey)"
+			},
+			{
+				"key": "configuration.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (configuration.region)"
+			},
+			{
+				"key": "data.modelId0",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Model ID\" (data.modelId0)"
+			},
+			{
+				"key": "data.payload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Payload\" (data.payload)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.a2a.client.webhook.receive.v0",
+		"element": "Receive_1",
+		"sha256": "a29f23d859ead75ce9d509aad00f095c1ebfe9ea86235202e7c87c2961c1d13b",
+		"bytes": 12105,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "internal_clientResponse",
+				"kind": "missing-required",
+				"message": "Missing required value for \"A2A Client Response\" (internal_clientResponse)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.ai-agent-task.v2",
+		"element": "Task_1",
+		"sha256": "70f3369e4aac4ad345c0b7f3d3cc94fca540c05fb971f25f23f465db5f9f7dde",
+		"bytes": 10162,
+		"problems": [
+			{
+				"key": "provider.anthropic.backend.anthropic.apiKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Anthropic API key\" (provider.anthropic.backend.anthropic.apiKey)"
+			},
+			{
+				"key": "provider.anthropic.model.model",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Model\" (provider.anthropic.model.model)"
+			},
+			{
+				"key": "data.userPrompt.prompt",
+				"kind": "missing-required",
+				"message": "Missing required value for \"User prompt\" (data.userPrompt.prompt)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.EmbeddingsVectorDB.v1",
+		"element": "Task_1",
+		"sha256": "59880ef38b00e5df627b476af47c7d3ffe56014ef59b665449e393fafc07915c",
+		"bytes": 8186,
+		"problems": [
+			{
+				"key": "vectorDatabaseConnectorOperation.query.query",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Search query\" (vectorDatabaseConnectorOperation.query.query)"
+			},
+			{
+				"key": "embeddingModelProvider.bedrock.accessKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access key\" (embeddingModelProvider.bedrock.accessKey)"
+			},
+			{
+				"key": "embeddingModelProvider.bedrock.secretKey",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Secret key\" (embeddingModelProvider.bedrock.secretKey)"
+			},
+			{
+				"key": "embeddingModelProvider.bedrock.region",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Region\" (embeddingModelProvider.bedrock.region)"
+			},
+			{
+				"key": "vectorStore.elasticsearch.baseUrl",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Base URL\" (vectorStore.elasticsearch.baseUrl)"
+			},
+			{
+				"key": "vectorStore.elasticsearch.userName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Username\" (vectorStore.elasticsearch.userName)"
+			},
+			{
+				"key": "vectorStore.elasticsearch.password",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Password\" (vectorStore.elasticsearch.password)"
+			},
+			{
+				"key": "vectorStore.elasticsearch.indexName",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Index name\" (vectorStore.elasticsearch.indexName)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.webhook.WebhookConnectorReceive.v1",
+		"element": "Receive_1",
+		"sha256": "318936be87f61c6a71b6f9b590c9432816beb6546587b4e0c49a38316c76bbd4",
+		"bytes": 6330,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.MSFT.O365.EmailMessageStart.v1",
+		"element": "Start_1",
+		"sha256": "da954d1648eae93ebb262ad6a3ee79f07000aa36b1f91c3c4c9da0649c14f8f1",
+		"bytes": 13032,
+		"problems": [
+			{
+				"key": "authentication.credentials.clientId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client ID\" (authentication.credentials.clientId)"
+			},
+			{
+				"key": "authentication.credentials.tenantId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Tenant ID\" (authentication.credentials.tenantId)"
+			},
+			{
+				"key": "authentication.credentials.clientSecret",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Client secret\" (authentication.credentials.clientSecret)"
+			},
+			{
+				"key": "pollingConfig.userId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Mailbox Owner\" (pollingConfig.userId)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.agenticai.a2a.client.polling.intermediate.v0",
+		"element": "Catch_1",
+		"sha256": "d85e230008350025a4efb39d264f34bd257762bb3b1436044dcc8ad6a69ef158",
+		"bytes": 11789,
+		"problems": [
+			{
+				"key": "data.connection.url",
+				"kind": "missing-required",
+				"message": "Missing required value for \"A2A server URL\" (data.connection.url)"
+			},
+			{
+				"key": "internal_clientResponse",
+				"kind": "missing-required",
+				"message": "Missing required value for \"A2A Client Response\" (internal_clientResponse)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.HuggingFace.v1",
+		"element": "Task_1",
+		"sha256": "6ede53bc92b21c6e63e454d7087c52f58e6dd00c4c2b8e1320ce7cc433cf9722",
+		"bytes": 28520,
+		"problems": [
+			{
+				"key": "authentication.token",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Hugging Face API key\" (authentication.token)"
+			},
+			{
+				"key": "modelId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Model ID\" (modelId)"
+			},
+			{
+				"key": "messages",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Messages\" (messages)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.AWSEventBridge.MessageStart.v1",
+		"element": "Start_1",
+		"sha256": "652f5fe2dae6d071c445594a0a1c1885ceec6dd402a054f4f1a249e14a9cbc71",
+		"bytes": 7563,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.TwilioWebhookMessageStart.v1",
+		"element": "Start_1",
+		"sha256": "e62a8fc9497bab106b5939e491d073dc289b7225def90e7ec61bb6ff499ca74c",
+		"bytes": 6230,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.inbound.AWSSNS.IntermediateCatchEvent.v1",
+		"element": "Catch_1",
+		"sha256": "564b39f1130e160adfb608792cc20fb70d16e78f7ce755a9f461da4942188169",
+		"bytes": 9077,
+		"problems": [
+			{
+				"key": "inbound.context",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Subscription ID\" (inbound.context)"
+			},
+			{
+				"key": "inbound.topicsAllowList",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Topic ARN(s)\" (inbound.topicsAllowList)"
+			},
+			{
+				"key": "correlationKeyProcess",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+			},
+			{
+				"key": "correlationKeyPayload",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+			},
+			{
+				"kind": "not-deployable",
+				"message": "Not deployable on Camunda 8.8: Message_1: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.EasyPost.v1",
+		"element": "Task_1",
+		"sha256": "458efc4f69d110102290209e8ce94bb9895fbdf510473029c047e42b7e321683",
+		"bytes": 6859,
+		"problems": [
+			{
+				"key": "authentication.username",
+				"kind": "missing-required",
+				"message": "Missing required value for \"API key\" (authentication.username)"
+			}
+		]
+	},
+	{
+		"id": "io.camunda.connectors.WhatsApp.v1",
+		"element": "Task_1",
+		"sha256": "658ae9d7df37ba42b8baa50cd8920a87a4983c9b5e755340b1147b45068ae190",
+		"bytes": 8014,
+		"problems": [
+			{
+				"key": "authentication.token",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Access token\" (authentication.token)"
+			},
+			{
+				"key": "senderPhoneId",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Sender phone number ID\" (senderPhoneId)"
+			},
+			{
+				"key": "recipientPhoneNumber",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Recipient phone number\" (recipientPhoneNumber)"
+			},
+			{
+				"key": "messageBody",
+				"kind": "missing-required",
+				"message": "Missing required value for \"Message text\" (messageBody)"
+			}
+		]
+	}
+]

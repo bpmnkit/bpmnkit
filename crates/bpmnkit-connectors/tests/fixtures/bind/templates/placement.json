@@ -1,0 +1,11 @@
+{
+  "id": "test.Placement",
+  "name": "Placement refusal",
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:ServiceTask" },
+  "properties": [
+    { "type": "Hidden", "value": "w", "binding": { "type": "zeebe:taskDefinition", "property": "type" } },
+    { "id": "did", "type": "String", "value": "dec", "binding": { "type": "zeebe:calledDecision", "property": "decisionId" } },
+    { "id": "rv", "type": "String", "value": "r", "binding": { "type": "zeebe:calledDecision", "property": "resultVariable" } }
+  ]
+}

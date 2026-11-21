@@ -1,0 +1,17 @@
+[
+	[],
+	[
+		{
+			"key": "pid",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Process\" (pid)"
+		},
+		{
+			"message": "<zeebe:calledElement> needs processId; it was not written"
+		},
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Task_1: Must have exactly one 'zeebe:calledElement' extension element (zeebe/call-activity-called-element)"
+		}
+	]
+]

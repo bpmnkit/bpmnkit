@@ -4,6 +4,14 @@
 
 `Runtime::from_env()?.register(WorkerConfig::new("charge"), handler).run().await` runs job workers against the Camunda 8.8+ REST API (`/v2/jobs`), with camunda-client-java's defaults. Handlers are async functions `ActivatedJob → Result<Complete, JobError>`: `JobError::bpmn` throws a catchable BPMN error, `JobError::fail` (or any `?` error, or a panic) fails with retries − 1 and the `retryBackoff` header. Concurrency is bounded, activation long-polls and backs off with jitter, shutdown drains running handlers. Auth: none, Basic, Bearer, OAuth2 client credentials (cached, refreshed). Metrics trait with Prometheus text; `testing` feature for unit tests (`MockJob`, `run_handler`, `FakeClient`). Facade feature `worker`.
 
+## `bpmnkit worker gen --lang java` (2026-11-21)
+
+`bpmnkit worker gen <bpmn…> --lang java [--spring] [--package p] [--out dir] [--check] [--explain] [--all]` writes a Maven project (Java 21, Camunda client 8.8, or the Spring Boot starter with `--spring`) with one job worker per job type the rules classified as worker: records for the declared inputs/outputs, an adapter that fetches exactly the declared variables and maps handler exceptions to BPMN errors or failed jobs (retries − 1, `retryBackoff` header), a once-only handler stub, a Camunda Process Test stub and the Maven Wrapper (no Maven install needed). `gen/` is overwritten on every run (`DO NOT EDIT`, sha256 header); everything else is yours. `--check` exits 1 on drift (CI), `--explain` shows decision, rule and files without writing.
+
+## Native `bpmnkit` commands and Rust connector tooling (2026-11-21)
+
+`bpmnkit lint|layout|diff|render|convert` run natively on the Rust crates, and `bpmnkit connector gen <openapi>` / `connector bind <file> <elementId> -t <template>` generate element templates from OpenAPI/Swagger and apply catalog or custom templates to a BPMN element. The new `bpmnkit-connectors` crate is byte-equal to the TS generator and `applyTemplateToElement` on the recorded fixtures. Flags only the legacy CLI knows fall back to it.
+
 ## `bpmnkit worker classify` (2026-11-21)
 
 `bpmnkit worker classify <bpmn…> [--openapi index.json] [--config bpmnkit.worker.toml] [--format text|json]` reads every job type in the BPMN (the same list as `casen gen types`) and decides per type: keep a catalog connector, bind one (by exact type/template id, or by a connector name in the task name), bind the REST connector to an OpenAPI operation (`bpmnkit:operation` property) or URL, or generate a worker (no binding, unsupported auth or media type, pagination, several operations, invalid FEEL mapping, declared load, idempotency key). Each decision carries a stable rule id and a reason; the JSON output adds the IR and its sha256 hash.

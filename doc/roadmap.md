@@ -1070,10 +1070,10 @@ not code.
 - [x] P1: `bpmnkit-jobspec` (BPMN + connector-gen API index → IR, catalog lookup, rules R1–R13), `bpmnkit worker classify`
 - [x] P2: `bpmnkit-worker` REST runtime (client, auth, loop, backoff, drain, metrics, `testing`)
 - [ ] P3: Rust + template emitters, `worker gen --check`
-- [ ] P4: Java emitter (Maven, `--spring`)
+- [x] P4: `bpmnkit-codegen` Java emitter (Maven wrapper, plain + `--spring`, CPT stub), `bpmnkit worker gen --lang java`, CI `java-golden`
 - [ ] P5: `bpmnkit-connector-runtime` (`io.camunda:http-json:1`)
 - [ ] P6: `grpc` feature (job streaming)
-- [ ] P7: Rust connector-gen + native commands
+- [x] P7: Rust connector-gen + `connector bind`; native `lint/layout/diff/render/convert/profile`
 - [ ] P8: distribution + rename
 - [ ] P9: remaining commands, fallback removal
 - [ ] P10: Gradle emitter

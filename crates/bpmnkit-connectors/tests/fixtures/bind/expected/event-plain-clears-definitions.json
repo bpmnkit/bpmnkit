@@ -1,0 +1,13 @@
+[
+	[
+		{
+			"message": "Template \"test.EventPlain\" applies to bpmn:EndEvent, bpmn:IntermediateThrowEvent, not bpmn:boundaryEvent \"Boundary_1\""
+		}
+	],
+	[
+		{
+			"message": "Template \"test.EventPlain\" applies to bpmn:EndEvent, bpmn:IntermediateThrowEvent, not bpmn:intermediateCatchEvent \"Catch_2\""
+		}
+	],
+	[]
+]

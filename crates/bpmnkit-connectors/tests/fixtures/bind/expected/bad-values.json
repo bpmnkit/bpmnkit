@@ -1,0 +1,47 @@
+[
+	[
+		{
+			"key": "bt",
+			"message": "Invalid bindingType \"bogus\" for \"bt\": expected one of latest, deployment, versionTag; it was not written"
+		},
+		{
+			"key": "pp",
+			"message": "Invalid value \"maybe\" for \"pp\": expected true or false; it was not written"
+		},
+		{
+			"key": "feel",
+			"kind": "invalid-feel",
+			"message": "Invalid FEEL expression for \"feel\": Expected expression after '+'"
+		},
+		{
+			"key": "req",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Required one\" (req)"
+		},
+		{
+			"key": "reqNoLabel",
+			"kind": "missing-required",
+			"message": "Missing required value for \"reqNoLabel\" (reqNoLabel)"
+		},
+		{
+			"message": "<zeebe:calledDecision> needs resultVariable; it was not written"
+		},
+		{
+			"message": "<zeebe:script> needs expression; it was not written"
+		},
+		{
+			"message": "<zeebe:formDefinition> has both formId and externalReference; only externalReference was written"
+		},
+		{
+			"message": "<zeebe:formDefinition> is not allowed on <bpmn:callActivity>; it was not written"
+		},
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Task_1: failed to parse expression '1 +' (zeebe/input-mapping)"
+		},
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Task_1: Must have exactly one 'zeebe:calledElement' extension element (zeebe/call-activity-called-element)"
+		}
+	]
+]

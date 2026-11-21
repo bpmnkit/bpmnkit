@@ -11,3 +11,5 @@ packages/core/src/connectors/templates/generated.ts linguist-generated
 apps/proxy/src/camunda-spec.ts linguist-generated
 packages/connector-gen/src/stats.ts linguist-generated
 apps/landing/src/data/feel-functions.ts linguist-generated
+# Embedded Maven Wrapper scripts keep upstream bytes (mvnw.cmd is CRLF), and so do their goldens.
+crates/bpmnkit-codegen/assets/** -text

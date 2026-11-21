@@ -1,0 +1,5 @@
+---
+source: crates/bpmnkit-cli/tests/native.rs
+expression: "run(&[\"diff\", &a, &a, \"--exit-code\"], 0)"
+---
+✓ No differences.

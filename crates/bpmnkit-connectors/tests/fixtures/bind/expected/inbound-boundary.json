@@ -1,0 +1,23 @@
+[
+	[
+		{
+			"key": "inbound.context",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Webhook ID\" (inbound.context)"
+		},
+		{
+			"key": "correlationKeyProcess",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Correlation key (process)\" (correlationKeyProcess)"
+		},
+		{
+			"key": "correlationKeyPayload",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Correlation key (payload)\" (correlationKeyPayload)"
+		},
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Message_d5e1af4d-111a-8391-9a60-9a7232f48d69: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+		}
+	]
+]

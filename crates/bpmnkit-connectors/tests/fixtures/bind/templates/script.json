@@ -1,0 +1,10 @@
+{
+  "id": "test.Script",
+  "name": "Script",
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:ScriptTask" },
+  "properties": [
+    { "id": "expr", "label": "Expression", "type": "Text", "value": "=1 + 1", "feel": "required", "binding": { "type": "zeebe:script", "property": "expression" } },
+    { "id": "res", "label": "Result", "type": "String", "value": "x", "binding": { "type": "zeebe:script", "property": "resultVariable" } }
+  ]
+}
