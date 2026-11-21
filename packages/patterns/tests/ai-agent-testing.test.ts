@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from "vitest"
 import { AI_AGENT_TASK_TYPE } from "../src/templates/ai-task.js"
 import { getTemplate, templateFiles } from "../src/templates/index.js"
 
-/** The BPMN `casen template use` writes for a template — what a team would put under test. */
+/** The BPMN `bpmnkit template use` writes for a template — what a team would put under test. */
 function templateXml(id: string): string {
 	const template = getTemplate(id)
 	if (template === undefined) throw new Error(`no template ${id}`)

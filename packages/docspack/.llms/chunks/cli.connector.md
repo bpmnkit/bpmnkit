@@ -1,6 +1,6 @@
-# casen connector
+# bpmnkit connector
 
-`casen connector` has two independent jobs: **browse** the bundled connector templates — Camunda 8's 133
+`bpmnkit connector` has two independent jobs: **browse** the bundled connector templates — Camunda 8's 133
 out-of-the-box ones plus the few BPMN Kit maintains (`search`/`show` — used by the AI generation pipeline to wire a plan step to
 a real service), and **generate** brand-new connector element templates from OpenAPI 3.x/Swagger
 2.x specs (`generate`/`catalog` — for APIs Camunda doesn't ship a template for).
@@ -9,7 +9,7 @@ a real service), and **generate** brand-new connector element templates from Ope
 ## Commands
 
 ```
-casen connector
+bpmnkit connector
 ├── search      — find a bundled OOTB connector template by name/keyword
 ├── show        — show a bundled template's required/optional inputs
 ├── apply       — apply a template to an element of a .bpmn file, in place

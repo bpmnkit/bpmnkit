@@ -56,11 +56,14 @@ const devCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Develop the processes in the current folder", command: "casen dev" },
-		{ description: "A different folder, fixed port", command: "casen dev ./processes --port 5000" },
+		{ description: "Develop the processes in the current folder", command: "bpmnkit dev" },
+		{
+			description: "A different folder, fixed port",
+			command: "bpmnkit dev ./processes --port 5000",
+		},
 		{
 			description: "Run scenarios with Zeebe semantics (reebe-wasm)",
-			command: "casen dev --engine wasm",
+			command: "bpmnkit dev --engine wasm",
 		},
 	],
 	async run(ctx) {
@@ -106,7 +109,7 @@ const devCmd: Command = {
 		const files = server.files()
 		const count = (kind: string) => files.filter((f) => f.kind === kind).length
 		out("")
-		out(`  casen dev  ${p.dim(root)}`)
+		out(`  bpmnkit dev  ${p.dim(root)}`)
 		out(`  UI        ${server.url}`)
 		out(
 			`  files     ${files.length} (${count("bpmn")} bpmn, ${count("dmn")} dmn, ${count("form")} form)`,
@@ -114,7 +117,7 @@ const devCmd: Command = {
 		out(`  scenarios ${engine === "wasm" ? "reebe-wasm (Zeebe semantics)" : "@bpmnkit/engine"}`)
 		out(
 			p.dim(
-				"  Deploy or AI from the editor needs the proxy: run `casen proxy start` in another terminal.",
+				"  Deploy or AI from the editor needs the proxy: run `bpmnkit proxy start` in another terminal.",
 			),
 		)
 		out("")

@@ -18,7 +18,7 @@ export function gateDeployment(fileName: string, content: string): void {
 	} catch (err) {
 		if (!(err instanceof DeployabilityError)) throw err
 		throw new Error(
-			`${err.message}\nNot deployed. Fix the model (casen check ${fileName} --deploy), or pass --no-validate to send it anyway.`,
+			`${err.message}\nNot deployed. Fix the model (bpmnkit check ${fileName} --deploy), or pass --no-validate to send it anyway.`,
 		)
 	}
 }
@@ -76,7 +76,7 @@ export async function deployResources(
 	const config = env ?? (target === "local" ? undefined : getActiveProfile()?.config)
 	if (target === "camunda8" && !config?.baseUrl) {
 		throw new Error(
-			"No Camunda 8 cluster: set ZEEBE_REST_ADDRESS (+ CAMUNDA_CLIENT_ID/SECRET/OAUTH_URL) or run: casen profile create",
+			"No Camunda 8 cluster: set ZEEBE_REST_ADDRESS (+ CAMUNDA_CLIENT_ID/SECRET/OAUTH_URL) or run: bpmnkit profile create",
 		)
 	}
 	if (config?.baseUrl) {
@@ -95,7 +95,7 @@ export async function deployResources(
 		res = await fetch(`${ZEEBE_ADDRESS}/v2/deployments`, { method: "POST", body: formData })
 	} catch (err) {
 		throw new Error(
-			`Cannot reach Reebe at ${ZEEBE_ADDRESS}. Start it with: casen reebe start, or set ZEEBE_REST_ADDRESS for a cluster\n${String(err)}`,
+			`Cannot reach Reebe at ${ZEEBE_ADDRESS}. Start it with: bpmnkit reebe start, or set ZEEBE_REST_ADDRESS for a cluster\n${String(err)}`,
 		)
 	}
 	if (!res.ok) throw new Error(`Local deploy failed: ${res.status} ${await res.text()}`)
@@ -124,10 +124,10 @@ const deployCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Deploy to local Reebe", command: "casen deploy deploy order-process.bpmn" },
+		{ description: "Deploy to local Reebe", command: "bpmnkit deploy deploy order-process.bpmn" },
 		{
 			description: "Deploy to Camunda 8",
-			command: "casen deploy deploy order-process.bpmn --target camunda8",
+			command: "bpmnkit deploy deploy order-process.bpmn --target camunda8",
 		},
 	],
 	async run(ctx) {

@@ -910,7 +910,7 @@
 				"typed",
 				"code",
 				"generation",
-				"casen",
+				"bpmnkit",
 				"types"
 			],
 			"entities": [
@@ -1750,7 +1750,7 @@
 		{
 			"id": "getting-started.stability.what-is-a-breaking-change",
 			"file": "chunks/getting-started.stability.what-is-a-breaking-change.md",
-			"tokens": 776,
+			"tokens": 800,
 			"tags": [
 				"getting-started",
 				"stability",
@@ -2124,15 +2124,15 @@
 			"entities": []
 		},
 		{
-			"id": "guides.ai-implement.lightweight-alternative-casen-skills-install",
-			"file": "chunks/guides.ai-implement.lightweight-alternative-casen-skills-install.md",
+			"id": "guides.ai-implement.lightweight-alternative-bpmnkit-skills-install",
+			"file": "chunks/guides.ai-implement.lightweight-alternative-bpmnkit-skills-install.md",
 			"tokens": 172,
 			"tags": [
 				"guides",
 				"ai-implement",
 				"lightweight",
 				"alternative",
-				"casen",
+				"bpmnkit",
 				"skills",
 				"install",
 				"gets",
@@ -2604,13 +2604,13 @@
 			]
 		},
 		{
-			"id": "guides.bpmnlint.casen-lint",
-			"file": "chunks/guides.bpmnlint.casen-lint.md",
+			"id": "guides.bpmnlint.bpmnkit-lint",
+			"file": "chunks/guides.bpmnlint.bpmnkit-lint.md",
 			"tokens": 433,
 			"tags": [
 				"guides",
 				"bpmnlint",
-				"casen",
+				"bpmnkit",
 				"lint"
 			],
 			"entities": [
@@ -3438,15 +3438,15 @@
 			]
 		},
 		{
-			"id": "guides.executable-camunda-process.does-it-run-test-it-with-casen-test",
-			"file": "chunks/guides.executable-camunda-process.does-it-run-test-it-with-casen-test.md",
+			"id": "guides.executable-camunda-process.does-it-run-test-it-with-bpmnkit-test",
+			"file": "chunks/guides.executable-camunda-process.does-it-run-test-it-with-bpmnkit-test.md",
 			"tokens": 371,
 			"tags": [
 				"guides",
 				"executable-camunda-process",
 				"run",
 				"test",
-				"casen"
+				"bpmnkit"
 			],
 			"entities": [
 				"process.bpmn.tests.json",
@@ -5318,6 +5318,19 @@
 				"@bpmnkit/canvas-plugin-process-runner",
 				"@bpmnkit/canvas-plugin-token-highlight",
 				"@bpmnkit/canvas-plugin-ai-bridge"
+			]
+		},
+		{
+			"id": "packages.cli-legacy",
+			"file": "chunks/packages.cli-legacy.md",
+			"tokens": 167,
+			"tags": [
+				"packages",
+				"cli-legacy"
+			],
+			"entities": [
+				"@bpmnkit/cli-legacy",
+				"@bpmnkit/cli"
 			]
 		},
 		{

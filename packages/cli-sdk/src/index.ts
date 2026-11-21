@@ -1,16 +1,16 @@
 /**
- * @bpmnkit/cli-sdk — Plugin authoring SDK for the casen CLI.
+ * @bpmnkit/cli-sdk — Plugin authoring SDK for the bpmnkit CLI.
  *
  * Install as a devDependency in your plugin:
  * ```
  * pnpm add -D @bpmnkit/cli-sdk
  * ```
  *
- * Then export a default {@link CasenPlugin} object from your entry point:
+ * Then export a default {@link BpmnkitPlugin} object from your entry point:
  * ```typescript
- * import type { CasenPlugin } from "@bpmnkit/cli-sdk"
+ * import type { BpmnkitPlugin } from "@bpmnkit/cli-sdk"
  *
- * const plugin: CasenPlugin = {
+ * const plugin: BpmnkitPlugin = {
  *   id: "com.example.my-plugin",
  *   name: "My Plugin",
  *   version: "0.1.0",
@@ -182,7 +182,7 @@ export interface Command {
 }
 
 /**
- * A group of related commands — maps to one top-level `casen <group>` token.
+ * A group of related commands — maps to one top-level `bpmnkit <group>` token.
  * The `name` must be unique across all installed plugins and the core CLI.
  */
 export interface CommandGroup {
@@ -196,16 +196,16 @@ export interface CommandGroup {
 // ── Plugin contract ───────────────────────────────────────────────────────────
 
 /**
- * The contract every casen plugin must fulfill.
+ * The contract every bpmnkit plugin must fulfill.
  *
  * Export an object conforming to this interface as the **default export**
  * from your plugin's compiled entry point (`dist/index.js`).
  *
  * @example
  * ```typescript
- * import type { CasenPlugin } from "@bpmnkit/cli-sdk"
+ * import type { BpmnkitPlugin } from "@bpmnkit/cli-sdk"
  *
- * const plugin: CasenPlugin = {
+ * const plugin: BpmnkitPlugin = {
  *   id: "com.acme.casen-deploy",
  *   name: "Deploy",
  *   version: "1.0.0",
@@ -214,10 +214,10 @@ export interface CommandGroup {
  * export default plugin
  * ```
  */
-export interface CasenPlugin {
+export interface BpmnkitPlugin {
 	/** Unique reverse-domain identifier, e.g. `"com.acme.casen-deploy"` */
 	id: string
-	/** Human-readable name shown in `casen plugin list` */
+	/** Human-readable name shown in `bpmnkit plugin list` */
 	name: string
 	version: string
 	/** One or more top-level command groups added to the CLI */
@@ -238,7 +238,7 @@ function workerDelay(ms: number): Promise<void> {
  *
  * - **TUI**: the live worker view is used automatically (the `_worker` marker
  *   tells the TUI to route through `launchWorkerView`).
- * - **CLI** (`casen <group> <type>`): the polling loop runs in the foreground
+ * - **CLI** (`bpmnkit <group> <type>`): the polling loop runs in the foreground
  *   until Ctrl+C, calling `config.processJob` for each activated job.
  *
  * @example
@@ -431,3 +431,6 @@ export function createWorkerCommand(config: WorkerConfig): Command {
 		},
 	}
 }
+
+/** @deprecated Old name of {@link BpmnkitPlugin}; kept so existing `casen-*` plugins compile. */
+export type CasenPlugin = BpmnkitPlugin

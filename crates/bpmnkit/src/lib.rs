@@ -33,6 +33,17 @@ pub use bpmnkit_worker as worker;
 #[cfg(feature = "xml")]
 pub use bpmnkit_xml as xml;
 
+#[cfg(feature = "codegen")]
+pub use bpmnkit_codegen as codegen;
+#[cfg(feature = "connector-runtime")]
+pub use bpmnkit_connector_runtime as connector_runtime;
+#[cfg(feature = "connectors")]
+pub use bpmnkit_connectors as connectors;
+#[cfg(feature = "jobspec")]
+pub use bpmnkit_jobspec as jobspec;
+#[cfg(feature = "profiles")]
+pub use bpmnkit_profiles as profiles;
+
 mod detect;
 mod error;
 #[cfg(all(feature = "text", feature = "render"))]

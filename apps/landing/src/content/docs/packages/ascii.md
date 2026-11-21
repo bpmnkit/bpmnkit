@@ -13,7 +13,7 @@ terminal, a CI log, a pull-request comment, or a prompt.
 
 That last one is the reason it exists. A model reading a diagram as a grid of labelled boxes
 gets the topology in a few hundred tokens, which is a great deal cheaper than the XML and a
-great deal more legible than a screenshot. `casen view` is this package with a file path in
+great deal more legible than a screenshot. `bpmnkit view` is this package with a file path in
 front of it.
 
 Three renderers, one per artifact kind, and no dependencies beyond `@bpmnkit/core`.
@@ -114,14 +114,14 @@ interface RenderOptions {
 
 ## From the command line
 
-`casen view` wraps all three, picking the renderer from the file extension:
+`bpmnkit view` wraps all three, picking the renderer from the file extension:
 
 ```sh
-casen view order.bpmn
-casen view risk-score.dmn
+bpmnkit view order.bpmn
+bpmnkit view risk-score.dmn
 ```
 
-See [`casen view`](/docs/cli/view) for the flags it adds on top.
+See [`bpmnkit view`](/docs/cli/view) for the flags it adds on top.
 
 ## Stability
 

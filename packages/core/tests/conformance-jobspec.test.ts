@@ -6,7 +6,7 @@ import { parseBpmn } from "../src/bpmn/bpmn-parser.js"
 import { extractProcessContract } from "../src/bpmn/process-types.js"
 
 /**
- * conformance/jobspec/jobs.json: the job list `casen gen types` reads (`extractProcessContract`) for
+ * conformance/jobspec/jobs.json: the job list `bpmnkit gen types` reads (`extractProcessContract`) for
  * every `conformance/bpmn/<case>/input.bpmn`. `crates/bpmnkit-jobspec` must extract the same job
  * types, elements, headers and catchable error codes. See conformance/README.md, "Jobspec".
  */

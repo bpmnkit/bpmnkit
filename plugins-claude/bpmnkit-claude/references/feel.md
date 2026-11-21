@@ -2,7 +2,7 @@
 
 # FEEL syntax reference
 
-BPMNKit's FEEL implementation (`@bpmnkit/feel`) backs every expression `casen synth`/`casen lint` parse-validates. This is a crib sheet, not the full DMN FEEL spec.
+BPMNKit's FEEL implementation (`@bpmnkit/feel`) backs every expression `bpmnkit synth`/`bpmnkit lint` parse-validates. This is a crib sheet, not the full DMN FEEL spec.
 
 ## The "=" convention
 
@@ -33,6 +33,6 @@ Call signature reference for any of these: consult the [DMN 1.3 FEEL spec](https
 
 ## Common gotchas
 
-- Writing a literal where FEEL was intended (or vice versa) is the single most common plan mistake — when in doubt, run `casen lint lint --categories feel-syntax <file>.bpmn` (or let `casen synth` surface it — it parse-validates every FEEL-looking value and reports `steps[N]...`-scoped problems before compiling).
+- Writing a literal where FEEL was intended (or vice versa) is the single most common plan mistake — when in doubt, run `bpmnkit lint lint --categories feel-syntax <file>.bpmn` (or let `bpmnkit synth` surface it — it parse-validates every FEEL-looking value and reports `steps[N]...`-scoped problems before compiling).
 - FEEL string literals need escaped double quotes inside JSON: `"=\"Order \" + orderId"`.
 - `fromAi(...)` (used inside `aiAgent` tool parameter mappings) is its own thing layered on FEEL — see `references/agentic.md`.

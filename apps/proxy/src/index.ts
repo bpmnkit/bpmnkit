@@ -1745,7 +1745,7 @@ const handleRequest: http.RequestListener = async (req, res) => {
 			res.writeHead(401, { "Content-Type": "application/json" })
 			res.end(
 				JSON.stringify({
-					error: "No active profile. Create one with: casen profile create",
+					error: "No active profile. Create one with: bpmnkit profile create",
 				}),
 			)
 			return

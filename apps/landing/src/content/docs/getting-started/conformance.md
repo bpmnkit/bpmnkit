@@ -221,13 +221,13 @@ and applies `zeebe:linkedResource` bindings.
 
 Camunda 7 (`camunda:` extensions) is not modelled: those attributes and elements are kept on
 round trip, including those on multi-instance loops and event definitions.
-`convertCamunda7()` / `casen migrate c7` convert
+`convertCamunda7()` / `bpmnkit migrate c7` convert
 Camunda 7 models to Camunda 8 and report what needs manual work. See
 [Migrate from Camunda 7](/docs/guides/migrate-from-camunda-7).
 
 ## Linting — bpmnlint compatibility
 
-`casen lint` and the VS Code extension read a project's `.bpmnlintrc`. All 28 of bpmnlint's
+`bpmnkit lint` and the VS Code extension read a project's `.bpmnlintrc`. All 28 of bpmnlint's
 built-in rules map onto BPMN Kit findings exactly, in the top-level process and inside every
 kind of sub-process. When the project has bpmnlint installed, that bpmnlint runs the
 configuration itself, so `bpmnlint-plugin-*` rules work too.
@@ -255,7 +255,7 @@ image, document preview, iframe, HTML, expression, file picker, button, separato
 ## Known gaps, in one list
 
 - Choreography and conversation diagrams
-- Camunda 7 extensions (preserved, not modelled; `casen migrate c7` converts them to Camunda 8)
+- Camunda 7 extensions (preserved, not modelled; `bpmnkit migrate c7` converts them to Camunda 8)
 - DMN boxed expressions and literal-expression decisions
 - TS simulator: conditional events, message start events of a top-level process, transaction
   cancel events, compensation event sub-processes, inclusive and complex joins (they do not

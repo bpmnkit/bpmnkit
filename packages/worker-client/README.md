@@ -26,7 +26,7 @@ The key principle: workers built with this package have **zero BPMNKit runtime d
 
 - **Async generator polling** — `client.poll(jobType)` yields one `ActivatedJob` at a time; idles cleanly between polls
 - **Job lifecycle** — `complete(variables)`, `fail(message, retries)`, `throwError(code, message, variables)`
-- **Typed jobs** — `createWorkerClient<JobTypes>()` with the map `casen gen types` generates types each job's variables, output, headers and error codes by job type
+- **Typed jobs** — `createWorkerClient<JobTypes>()` with the map `bpmnkit gen types` generates types each job's variables, output, headers and error codes by job type
 - **OAuth2 for Camunda SaaS** — token fetching and caching built in; no manual auth management
 - **Env-var driven** — reads `ZEEBE_ADDRESS`, `ZEEBE_CLIENT_ID`, `ZEEBE_CLIENT_SECRET` automatically
 - **Zero dependencies** — pure Node.js `fetch`, no external packages
@@ -85,7 +85,7 @@ for await (const job of client.poll("my-job-type", { maxJobs: 10, timeout: 60_00
 
 ### Typed jobs from BPMN
 
-Generate a `JobTypes` map from your BPMN with `casen gen types processes/ --out src/generated/bpmn-types.ts`,
+Generate a `JobTypes` map from your BPMN with `bpmnkit gen types processes/ --out src/generated/bpmn-types.ts`,
 then pass it as the type argument. Job types, variable names, output keys and error codes are checked at compile time:
 
 ```typescript
@@ -154,14 +154,15 @@ See the [Standalone Workers guide](https://bpmnkit.com/docs/guides/workers-stand
 | [`@bpmnkit/operate`](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
 | [`@bpmnkit/connector-gen`](https://www.npmjs.com/package/@bpmnkit/connector-gen) | Generate connector templates from OpenAPI specs |
 | [`@bpmnkit/connectors`](https://www.npmjs.com/package/@bpmnkit/connectors) | Camunda 8 OOTB connector catalog and deterministic template application |
-| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (casen) |
+| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (bpmnkit, alias casen) |
+| [`@bpmnkit/cli-legacy`](https://www.npmjs.com/package/@bpmnkit/cli-legacy) | Node fallback behind the native bpmnkit binary |
 | [`@bpmnkit/proxy`](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
 | [`@bpmnkit/patterns`](https://www.npmjs.com/package/@bpmnkit/patterns) | Domain process patterns for BPMNKit AIKit |
 | [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm) | WebAssembly BPMN engine for browser simulation |
 | [`@bpmnkit/flow`](https://www.npmjs.com/package/@bpmnkit/flow) | Code-first durable flows that derive BPMN, job types and workers |
 | [`@bpmnkit/user-tasks`](https://www.npmjs.com/package/@bpmnkit/user-tasks) | Embeddable user task widget for Camunda 8 |
-| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the casen CLI |
-| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new casen CLI plugin in seconds |
+| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the bpmnkit CLI |
+| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new bpmnkit CLI plugin in seconds |
 | [`@bpmnkit/casen-report`](https://www.npmjs.com/package/@bpmnkit/casen-report) | HTML reports from Camunda 8 incident and SLA data |
 | [`@bpmnkit/casen-worker-http`](https://www.npmjs.com/package/@bpmnkit/casen-worker-http) | Example HTTP worker plugin — completes jobs with live JSONPlaceholder API data |
 | [`@bpmnkit/casen-worker-ai`](https://www.npmjs.com/package/@bpmnkit/casen-worker-ai) | AI task worker — classify, summarize, extract, and decide using Claude |

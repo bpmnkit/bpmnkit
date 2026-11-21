@@ -85,7 +85,7 @@ function render(state: State): void {
 	const out: string[] = []
 
 	out.push("")
-	out.push(`  ${bold("casen — Settings")}`)
+	out.push(`  ${bold("bpmnkit — Settings")}`)
 	out.push("")
 	out.push(`  ${dim(padEnd("SETTING", labelW))}  ${dim("VALUE")}`)
 	out.push(dim(`  ${"─".repeat(termCols - 4)}`))

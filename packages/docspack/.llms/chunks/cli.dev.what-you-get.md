@@ -1,4 +1,4 @@
-# casen dev — What you get
+# bpmnkit dev — What you get
 
 - **A file list.** Every `.bpmn`, `.dmn` and `.form` file under the folder, with a green or red
   mark for its last check. Hidden directories, `node_modules`, `dist`, `build`, `target`,
@@ -17,14 +17,14 @@
   generator — and the open diagram reloads. If you have unsaved edits in the browser at the same
   time, nothing is thrown away: you choose between reloading and overwriting.
 - **Checks on every change.** Each changed BPMN file is linted exactly as
-  `casen lint` would lint it (including a project `.bpmnlintrc`, and connector inputs checked
+  `bpmnkit lint` would lint it (including a project `.bpmnlintrc`, and connector inputs checked
   against the element templates from the file's folder up to the served folder — see
   [workspace templates](/docs/packages/connectors#workspace-templates)), and the
-  scenarios in its `<file>.bpmn.tests.json` sidecar are run as `casen test` runs them. Changing a
+  scenarios in its `<file>.bpmn.tests.json` sidecar are run as `bpmnkit test` runs them. Changing a
   `.dmn` file re-runs the scenarios of the processes beside it. Results appear in the browser's
   Checks panel and in the terminal.
 - **Tests you can edit.** The Tests tab of Play mode reads and writes the same
-  `.bpmn.tests.json` sidecar, so scenarios written in the browser are the ones `casen test` runs
+  `.bpmn.tests.json` sidecar, so scenarios written in the browser are the ones `bpmnkit test` runs
   in CI.
 
 ---

@@ -15,7 +15,7 @@ npm run start:prod
 ## Listing available workers
 
 ```sh
-casen worker start --help
+bpmnkit worker start --help
 ```
 
 Or from Claude Code, call `worker_list` to see all built-in and scaffolded workers:

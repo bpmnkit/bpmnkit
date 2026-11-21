@@ -74,7 +74,7 @@ const ROUTE_LABEL: Record<string, string> = {
 	"compact-json": "LLM → compact JSON",
 	"compact-dsl": "LLM → compact notation",
 	"builder-script": "LLM → builder script",
-	plan: "LLM → plan (casen synth)",
+	plan: "LLM → plan (bpmnkit synth)",
 }
 const ORDER = ["raw-xml", "compact-json", "compact-dsl", "builder-script", "plan"]
 
@@ -186,7 +186,7 @@ const stale = ageDays > 90
         <p>
           Each scenario below is one prompt. It was given through up to five routes — raw BPMN
           XML, compact JSON, a compact line notation, a <code>@bpmnkit/core</code> builder script
-          and a plan compiled by <code>casen synth</code> — and recorded between
+          and a plan compiled by <code>bpmnkit synth</code> — and recorded between
           {firstDate} and {lastDate}. Only the July recordings have the line notation, and
           only recordings made since November 2026 have compact JSON and plan rows. The first row,
           labelled <strong>no AI</strong>, is a builder script written by hand from the prompt alone.
@@ -236,7 +236,7 @@ const stale = ageDays > 90
         <p class="si-note">
           <strong>Tests</strong> run the scenario's Camunda process-test file
           (<code>scripts/compare/references/&lt;scenario&gt;.test.json</code>, the main happy path
-          from the prompt) on reebe-wasm, as <code>casen test</code> does. The test addresses the
+          from the prompt) on reebe-wasm, as <code>bpmnkit test</code> does. The test addresses the
           hand-written reference's process id, element ids and job types, and the prompts do not
           fix those, so a model's output fails at its first instruction for naming alone, whatever
           its logic. Read "fail" as "does not match this reference's names", not as "wrong process".

@@ -2,7 +2,7 @@ import { delimiter } from "node:path"
 import { describe, expect, it } from "vitest"
 import { proxyGroup, proxyOptionsFromFlags } from "./proxy.js"
 
-describe("casen proxy start flags", () => {
+describe("bpmnkit proxy start flags", () => {
 	it("declares the access flags", () => {
 		const start = proxyGroup.commands.find((c) => c.name === "start")
 		const names = start?.flags?.map((f) => f.name)

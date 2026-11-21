@@ -42,8 +42,8 @@ function tierLine(pkgPath) {
 const AGENT_BLOCKS = {
 	"packages/core":
 		"> **Agents:** read `node_modules/@bpmnkit/core/AGENTS.md`, then `node_modules/@bpmnkit/core/agent-cards/<bpmn|dmn|form>.md` (~1k tokens) instead of this README.\n\n",
-	"apps/cli":
-		"> **Agents:** run `casen agent-card <bpmn|dmn|form>` (~1k tokens) instead of reading this README.\n\n",
+	"packages/cli":
+		"> **Agents:** run `bpmnkit agent-card <bpmn|dmn|form>` (~1k tokens) instead of reading this README.\n\n",
 }
 
 function header({ name, description, extra = "", dir = "packages", pkgPath = "" }) {
@@ -105,7 +105,8 @@ function footer(currentPkg) {
 			name: "@bpmnkit/connectors",
 			desc: "Camunda 8 OOTB connector catalog and deterministic template application",
 		},
-		{ name: "@bpmnkit/cli", desc: "Camunda 8 command-line interface (casen)" },
+		{ name: "@bpmnkit/cli", desc: "Camunda 8 command-line interface (bpmnkit, alias casen)" },
+		{ name: "@bpmnkit/cli-legacy", desc: "Node fallback behind the native bpmnkit binary" },
 		{ name: "@bpmnkit/proxy", desc: "Local AI bridge and Camunda API proxy server" },
 		{ name: "@bpmnkit/patterns", desc: "Domain process patterns for BPMNKit AIKit" },
 		{ name: "@bpmnkit/reebe-wasm", desc: "WebAssembly BPMN engine for browser simulation" },
@@ -115,8 +116,8 @@ function footer(currentPkg) {
 			desc: "Code-first durable flows that derive BPMN, job types and workers",
 		},
 		{ name: "@bpmnkit/user-tasks", desc: "Embeddable user task widget for Camunda 8" },
-		{ name: "@bpmnkit/cli-sdk", desc: "Plugin authoring SDK for the casen CLI" },
-		{ name: "@bpmnkit/create-casen-plugin", desc: "Scaffold a new casen CLI plugin in seconds" },
+		{ name: "@bpmnkit/cli-sdk", desc: "Plugin authoring SDK for the bpmnkit CLI" },
+		{ name: "@bpmnkit/create-casen-plugin", desc: "Scaffold a new bpmnkit CLI plugin in seconds" },
 		{ name: "@bpmnkit/casen-report", desc: "HTML reports from Camunda 8 incident and SLA data" },
 		{
 			name: "@bpmnkit/casen-worker-http",
@@ -427,7 +428,7 @@ Event definitions are options on the element: \`timerDuration\`, \`timerDate\`,
 | Export | Description |
 |--------|-------------|
 | \`generateProcessTypes(defs \\| defs[], options?)\` | TypeScript source typing job types (variables, output, headers, errors), process ids, messages, signals, error and escalation codes. Deterministic |
-| \`extractProcessContract(defs \\| defs[])\` | The same contract as data — what \`casen gen types\` renders and \`--check-workers\` compares |
+| \`extractProcessContract(defs \\| defs[])\` | The same contract as data — what \`bpmnkit gen types\` renders and \`--check-workers\` compares |
 
 ### Editing
 
@@ -1477,7 +1478,7 @@ import { toHtml } from "@bpmnkit/viewer-lite/html"
 writeFileSync("order.html", toHtml(readFileSync("order.bpmn", "utf8"), { title: "Order process" }))
 \`\`\`
 
-\`toHtml\` inlines the script and the XML into \`dist/template.html\` and escapes any \`</script\` in the XML (text and comments are safe; CDATA is split and rejoined). Or from the shell: \`casen export html order.bpmn -o order.html\`. From another language, replace \`{{BPMN}}\` in \`@bpmnkit/viewer-lite/template.html\` with the XML, escaping \`</script\` the same way.
+\`toHtml\` inlines the script and the XML into \`dist/template.html\` and escapes any \`</script\` in the XML (text and comments are safe; CDATA is split and rejoined). Or from the shell: \`bpmnkit export html order.bpmn -o order.html\`. From another language, replace \`{{BPMN}}\` in \`@bpmnkit/viewer-lite/template.html\` with the XML, escaping \`</script\` the same way.
 
 Choose the theme and brand colours (the colours become \`--bpmnkit-viewer-*\` variables; a value that could break out of the CSS throws):
 
@@ -1486,7 +1487,7 @@ toHtml(xml, { theme: "dark" }) // or "auto"
 toHtml(xml, { colors: { bg: "#101820", shapeStroke: "#0b5fff" } })
 \`\`\`
 
-\`casen export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820\`. Keys: \`bg\`, \`fill\`, \`stroke\`, \`flow\`, \`text\`, \`pool-header\`, \`halo\`.
+\`bpmnkit export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820\`. Keys: \`bg\`, \`fill\`, \`stroke\`, \`flow\`, \`text\`, \`pool-header\`, \`halo\`.
 
 Or in your own page (\`data-theme="light|dark|auto"\` on the script picks the theme):
 
@@ -1812,7 +1813,7 @@ Options: \`--limit <n>\`, \`--max-tokens <n>\`, \`--pack <name>\`, \`--cwd <dir>
 			"Shared auth, profile storage, and client factories for the BPMN Kit CLI and proxy server",
 		content: `## Overview
 
-\`@bpmnkit/profiles\` is the shared layer that connects the \`casen\` CLI with the local proxy server. It handles profile CRUD (read/write to \`~/.config/casen/config.json\`), creates typed \`CamundaClient\` instances from stored profiles, and resolves Authorization headers for any supported auth type.
+\`@bpmnkit/profiles\` is the shared layer that connects the \`bpmnkit\` CLI with the local proxy server. It handles profile CRUD (read/write to \`~/.config/casen/config.json\`), creates typed \`CamundaClient\` instances from stored profiles, and resolves Authorization headers for any supported auth type.
 
 You do not need this package if you are connecting directly to Camunda using \`@bpmnkit/api\`. It is intended for tooling that needs to share authentication state with the CLI.
 
@@ -1927,7 +1928,7 @@ deleteProfile("old-profile")
 
 \`@bpmnkit/operate\` is a small, Operate-like web UI for a Camunda 8 cluster. Mount it into any element to get a dashboard and lists of process definitions, decisions, instances, incidents, jobs and user tasks, with detail pages that draw the BPMN diagram. It is built for development clusters, Camunda 8 Run and SaaS trial clusters — not as a replacement for Camunda Operate in production.
 
-The UI does not call the cluster directly. It polls the BPMN Kit proxy (\`@bpmnkit/proxy\`, started with \`casen proxy start\`), which holds your connection profiles and credentials and adds the auth header to each Camunda request. The browser never sees a credential.
+The UI does not call the cluster directly. It polls the BPMN Kit proxy (\`@bpmnkit/proxy\`, started with \`bpmnkit proxy start\`), which holds your connection profiles and credentials and adds the auth header to each Camunda request. The browser never sees a credential.
 
 A **mock mode** (\`mock: true\`) ships fixture data and makes no network calls — useful for demos and UI work.
 
@@ -1950,7 +1951,7 @@ A **mock mode** (\`mock: true\`) ships fixture data and makes no network calls �
 
 \`\`\`sh
 npm install @bpmnkit/operate
-npm install -g @bpmnkit/cli   # casen proxy start, casen profile
+npm install -g @bpmnkit/cli   # bpmnkit proxy start, bpmnkit profile
 \`\`\`
 
 ## Quick Start
@@ -1969,9 +1970,9 @@ createOperate({
 ### Camunda 8 Run
 
 \`\`\`sh
-casen profile create c8run --base-url http://localhost:8080/v2 --auth-type none
-casen profile use c8run
-casen proxy start   # http://localhost:3033
+bpmnkit profile create c8run --base-url http://localhost:8080/v2 --auth-type none
+bpmnkit profile use c8run
+bpmnkit proxy start   # http://localhost:3033
 \`\`\`
 
 ### Camunda SaaS
@@ -1979,9 +1980,9 @@ casen proxy start   # http://localhost:3033
 Create client credentials in the Camunda Console, download the credentials file, then:
 
 \`\`\`sh
-casen profile import saas ./camunda-credentials.sh
-casen profile use saas
-casen proxy start
+bpmnkit profile import saas ./camunda-credentials.sh
+bpmnkit profile use saas
+bpmnkit proxy start
 \`\`\`
 
 ### Mount against the proxy
@@ -1997,7 +1998,7 @@ createOperate({
 })
 \`\`\`
 
-The proxy acts with the stored credentials, so it only answers browser origins it trusts: bpmnkit.com, Studio, the desktop app and any \`localhost\` origin. To mount Operate on another origin, start the proxy with \`casen proxy start --allow-origin https://your.app\`.
+The proxy acts with the stored credentials, so it only answers browser origins it trusts: bpmnkit.com, Studio, the desktop app and any \`localhost\` origin. To mount Operate on another origin, start the proxy with \`bpmnkit proxy start --allow-origin https://your.app\`.
 
 ## API Reference
 
@@ -2159,8 +2160,8 @@ Built offline from the catalog's OpenAPI specs by \`scripts/build-api-index.mjs\
 ## CLI usage (via \`@bpmnkit/cli\`)
 
 \`\`\`sh
-casen connector generate openapi.yaml --out ./templates/
-casen connector api "create a stripe customer"
+bpmnkit connector generate openapi.yaml --out ./templates/
+bpmnkit connector api "create a stripe customer"
 \`\`\`
 
 ## API Reference
@@ -2269,7 +2270,7 @@ registerElementTemplates(templates)
 The filesystem half lives behind \`@bpmnkit/connectors/node\`, so the main entry stays
 importable in a browser: a studio or a viewer takes templates from its host instead.
 
-Validate them in CI with \`casen connector validate\`.
+Validate them in CI with \`bpmnkit connector validate\`.
 
 ## API Reference
 
@@ -2309,14 +2310,14 @@ interface ApplyResult {
 	},
 
 	// ── cli ───────────────────────────────────────────────────────────────────
-	"apps/cli": {
+	"packages/cli": {
 		name: "@bpmnkit/cli",
-		dir: "apps",
+		dir: "packages",
 		description:
-			"Command-line interface for Camunda 8 — deploy, manage, and monitor processes from the terminal",
+			"BPMN Kit command line for Camunda 8 (bpmnkit, alias casen): a native binary with a Node fallback for commands not ported yet",
 		content: `## Overview
 
-\`@bpmnkit/cli\` provides the \`casen\` command-line tool for interacting with Camunda 8 clusters. Manage profiles, deploy processes, run queries, and generate connector templates — all from your terminal.
+\`@bpmnkit/cli\` provides the \`bpmnkit\` command-line tool (alias \`bpmnkit\`) for interacting with Camunda 8 clusters. Manage profiles, deploy processes, run queries, and generate connector templates — all from your terminal.
 
 ## Installation
 
@@ -2326,37 +2327,44 @@ npm install -g @bpmnkit/cli
 pnpm add -g @bpmnkit/cli
 \`\`\`
 
+Version 2 installs the native binary through an optional platform package
+(\`@bpmnkit/cli-linux-x64\`, \`-linux-arm64\`, \`-darwin-x64\`, \`-darwin-arm64\`, \`-win32-x64\`); when
+that package is missing the launcher downloads the release archive and checks its sha256. Commands
+the binary does not run yet fall back to \`@bpmnkit/cli-legacy\` (\`BPMNKIT_NO_LEGACY=1\` disables it).
+Standalone installers (shell, PowerShell, Homebrew, MSI) are on the GitHub releases page; those
+update themselves with \`bpmnkit self update\`.
+
 ## Quick Start
 
 ### Develop locally — no cluster needed
 
 \`\`\`sh
-casen dev
+bpmnkit dev
 \`\`\`
 
 Opens every \`.bpmn\`, \`.dmn\` and \`.form\` file in the folder in the BPMN Kit editor in your
 browser, with simulation. Saves go back to disk with the file's formatting kept, changes made
 elsewhere reload live, and each change re-runs lint and the file's \`.bpmn.tests.json\`
-scenarios. See [casen dev](https://bpmnkit.com/docs/cli/dev).
+scenarios. See [bpmnkit dev](https://bpmnkit.com/docs/cli/dev).
 
 ### Configure a profile
 
 \`\`\`sh
 # Camunda SaaS: the credentials file Hub offers for a cluster's API client
-casen profile import my-cluster ./camunda-credentials.sh
-casen profile use my-cluster
+bpmnkit profile import my-cluster ./camunda-credentials.sh
+bpmnkit profile use my-cluster
 \`\`\`
 
 ### Deploy a process
 
 \`\`\`sh
-casen deploy deploy order-process.bpmn --target camunda8
+bpmnkit deploy deploy order-process.bpmn --target camunda8
 \`\`\`
 
 ### List process instances
 
 \`\`\`sh
-casen pi list --filter '{"state":"ACTIVE"}'
+bpmnkit pi list --filter '{"state":"ACTIVE"}'
 \`\`\`
 
 ## Commands
@@ -2365,59 +2373,59 @@ casen pi list --filter '{"state":"ACTIVE"}'
 
 | Command | Description |
 |---------|-------------|
-| \`casen profile list\` | List all configured profiles |
-| \`casen profile create <name>\` | Add a profile from flags (\`--base-url\`, \`--auth-type\`, …) |
-| \`casen profile import <name> <file>\` | Add a profile from a Camunda credentials file |
-| \`casen profile use <name>\` | Switch the active profile |
-| \`casen profile delete <name>\` | Delete a profile |
+| \`bpmnkit profile list\` | List all configured profiles |
+| \`bpmnkit profile create <name>\` | Add a profile from flags (\`--base-url\`, \`--auth-type\`, …) |
+| \`bpmnkit profile import <name> <file>\` | Add a profile from a Camunda credentials file |
+| \`bpmnkit profile use <name>\` | Switch the active profile |
+| \`bpmnkit profile delete <name>\` | Delete a profile |
 
 ### Process & deployment
 
 | Command | Description |
 |---------|-------------|
-| \`casen deploy deploy <file> [--target camunda8]\` | Deploy a BPMN, DMN, or form file to local Reebe or the active profile |
-| \`casen resource create-deployment <file...>\` | Deploy several files as one deployment to the active profile |
-| \`casen pd list\` | List deployed process definitions |
-| \`casen pi list [--filter <json>]\` | List process instances |
-| \`casen pi cancel <key>\` | Cancel a running instance |
+| \`bpmnkit deploy deploy <file> [--target camunda8]\` | Deploy a BPMN, DMN, or form file to local Reebe or the active profile |
+| \`bpmnkit resource create-deployment <file...>\` | Deploy several files as one deployment to the active profile |
+| \`bpmnkit pd list\` | List deployed process definitions |
+| \`bpmnkit pi list [--filter <json>]\` | List process instances |
+| \`bpmnkit pi cancel <key>\` | Cancel a running instance |
 
 ### Templates
 
 | Command | Description |
 |---------|-------------|
-| \`casen template list [--category <c>]\` | List the runnable process templates from the [gallery](https://bpmnkit.com/templates) |
-| \`casen template use <id> [dir]\` | Write a template's \`.bpmn\`, \`.bpmn.tests.json\` scenarios and any \`.dmn\`/\`.form\` files (\`--force\` overwrites) |
+| \`bpmnkit template list [--category <c>]\` | List the runnable process templates from the [gallery](https://bpmnkit.com/templates) |
+| \`bpmnkit template use <id> [dir]\` | Write a template's \`.bpmn\`, \`.bpmn.tests.json\` scenarios and any \`.dmn\`/\`.form\` files (\`--force\` overwrites) |
 
 ### Incidents & jobs
 
 | Command | Description |
 |---------|-------------|
-| \`casen incident list\` | List incidents |
-| \`casen incident resolve <key>\` | Resolve an incident |
-| \`casen job list\` | List jobs |
+| \`bpmnkit incident list\` | List incidents |
+| \`bpmnkit incident resolve <key>\` | Resolve an incident |
+| \`bpmnkit job list\` | List jobs |
 
 ### Connector generation
 
 | Command | Description |
 |---------|-------------|
-| \`casen connector generate <spec>\` | Generate element templates from OpenAPI/Swagger |
-| \`casen connector show <template> [--filter <text>] [--condensed]\` | List a template's property keys, types and defaults |
-| \`casen connector apply <file.bpmn> <elementId> <template>\` | Apply a template from \`--values file.json\` and \`--set key=value\` |
+| \`bpmnkit connector generate <spec>\` | Generate element templates from OpenAPI/Swagger |
+| \`bpmnkit connector show <template> [--filter <text>] [--condensed]\` | List a template's property keys, types and defaults |
+| \`bpmnkit connector apply <file.bpmn> <elementId> <template>\` | Apply a template from \`--values file.json\` and \`--set key=value\` |
 
 ### Typed code generation
 
 | Command | Description |
 |---------|-------------|
-| \`casen gen types <files...> --out <file>\` | TypeScript types for job workers (job types, variables, headers, messages, error codes) |
-| \`casen gen types <files...> --out <file> --check\` | Exit 1 when the generated file is out of date (CI) |
-| \`casen gen types <files...> --check-workers <glob> --strict\` | Report job types without a worker and workers without a job type |
+| \`bpmnkit gen types <files...> --out <file>\` | TypeScript types for job workers (job types, variables, headers, messages, error codes) |
+| \`bpmnkit gen types <files...> --out <file> --check\` | Exit 1 when the generated file is out of date (CI) |
+| \`bpmnkit gen types <files...> --check-workers <glob> --strict\` | Report job types without a worker and workers without a job type |
 
 ### Camunda 7 migration
 
 | Command | Description |
 |---------|-------------|
-| \`casen migrate c7 <files...>\` | Convert Camunda 7 models to Camunda 8 (\`<name>.c8.bpmn\`, or \`--out <dir>\`) and report each construct as convertible, manual or unsupported |
-| \`casen migrate c7 <files...> --check\` | Report only; exit 1 while manual or unsupported findings remain (\`--format json\` for CI) |
+| \`bpmnkit migrate c7 <files...>\` | Convert Camunda 7 models to Camunda 8 (\`<name>.c8.bpmn\`, or \`--out <dir>\`) and report each construct as convertible, manual or unsupported |
+| \`bpmnkit migrate c7 <files...> --check\` | Report only; exit 1 while manual or unsupported findings remain (\`--format json\` for CI) |
 
 See [Migrate from Camunda 7](https://bpmnkit.com/docs/guides/migrate-from-camunda-7) for what is converted and why.
 
@@ -2430,14 +2438,173 @@ See [Migrate from Camunda 7](https://bpmnkit.com/docs/guides/migrate-from-camund
 | \`--help\` | Show help |
 `,
 	},
+	"apps/cli": {
+		name: "@bpmnkit/cli-legacy",
+		dir: "apps",
+		description:
+			"Legacy Node CLI for Camunda 8, the fallback behind the native bpmnkit binary for commands not ported yet",
+		content: `## Overview
+
+\`@bpmnkit/cli-legacy\` is the TypeScript CLI that shipped as \`@bpmnkit/cli\` 1.x. From 2.0 the \`bpmnkit\` command is a native binary; this package is what it runs with \`node\` for commands it does not implement yet.
+
+## Installation
+
+You normally get it through \`@bpmnkit/cli\`, which depends on it.
+
+\`\`\`sh
+npm install -g @bpmnkit/cli-legacy   # exposes \`bpmnkit-legacy\`
+\`\`\`
+
+## Quick Start
+
+\`\`\`sh
+bpmnkit-legacy dev      # same commands as 1.x
+BPMNKIT_NO_LEGACY=1 bpmnkit lint a.bpmn   # turn the fallback off in the native CLI
+\`\`\`
+
+## API Reference
+
+No programmatic API. Commands are documented at [bpmnkit.com/docs/cli](https://bpmnkit.com/docs/cli/casen).
+`,
+	},
+	"packages/cli-linux-x64": {
+		name: "@bpmnkit/cli-linux-x64",
+		dir: "packages",
+		description:
+			"The bpmnkit native binary for x86_64 Linux (glibc). Installed by @bpmnkit/cli, not used directly",
+		content: `## Overview
+
+\`@bpmnkit/cli-linux-x64\` carries the \`bpmnkit\` binary for x86_64 Linux (glibc). \`@bpmnkit/cli\` lists it as an optional dependency, and npm installs only the one matching your \`os\` and \`cpu\`.
+
+## Installation
+
+\`\`\`sh
+npm install -g @bpmnkit/cli
+\`\`\`
+
+## Quick Start
+
+\`\`\`sh
+bpmnkit --version
+\`\`\`
+
+## API Reference
+
+No API. The package contains \`bin/bpmnkit\`. See [@bpmnkit/cli](https://bpmnkit.com/docs/cli/casen).
+`,
+	},
+	"packages/cli-linux-arm64": {
+		name: "@bpmnkit/cli-linux-arm64",
+		dir: "packages",
+		description:
+			"The bpmnkit native binary for arm64 Linux (glibc). Installed by @bpmnkit/cli, not used directly",
+		content: `## Overview
+
+\`@bpmnkit/cli-linux-arm64\` carries the \`bpmnkit\` binary for arm64 Linux (glibc). \`@bpmnkit/cli\` lists it as an optional dependency, and npm installs only the one matching your \`os\` and \`cpu\`.
+
+## Installation
+
+\`\`\`sh
+npm install -g @bpmnkit/cli
+\`\`\`
+
+## Quick Start
+
+\`\`\`sh
+bpmnkit --version
+\`\`\`
+
+## API Reference
+
+No API. The package contains \`bin/bpmnkit\`. See [@bpmnkit/cli](https://bpmnkit.com/docs/cli/casen).
+`,
+	},
+	"packages/cli-darwin-x64": {
+		name: "@bpmnkit/cli-darwin-x64",
+		dir: "packages",
+		description:
+			"The bpmnkit native binary for Intel macOS. Installed by @bpmnkit/cli, not used directly",
+		content: `## Overview
+
+\`@bpmnkit/cli-darwin-x64\` carries the \`bpmnkit\` binary for Intel macOS. \`@bpmnkit/cli\` lists it as an optional dependency, and npm installs only the one matching your \`os\` and \`cpu\`.
+
+## Installation
+
+\`\`\`sh
+npm install -g @bpmnkit/cli
+\`\`\`
+
+## Quick Start
+
+\`\`\`sh
+bpmnkit --version
+\`\`\`
+
+## API Reference
+
+No API. The package contains \`bin/bpmnkit\`. See [@bpmnkit/cli](https://bpmnkit.com/docs/cli/casen).
+`,
+	},
+	"packages/cli-darwin-arm64": {
+		name: "@bpmnkit/cli-darwin-arm64",
+		dir: "packages",
+		description:
+			"The bpmnkit native binary for Apple Silicon macOS. Installed by @bpmnkit/cli, not used directly",
+		content: `## Overview
+
+\`@bpmnkit/cli-darwin-arm64\` carries the \`bpmnkit\` binary for Apple Silicon macOS. \`@bpmnkit/cli\` lists it as an optional dependency, and npm installs only the one matching your \`os\` and \`cpu\`.
+
+## Installation
+
+\`\`\`sh
+npm install -g @bpmnkit/cli
+\`\`\`
+
+## Quick Start
+
+\`\`\`sh
+bpmnkit --version
+\`\`\`
+
+## API Reference
+
+No API. The package contains \`bin/bpmnkit\`. See [@bpmnkit/cli](https://bpmnkit.com/docs/cli/casen).
+`,
+	},
+	"packages/cli-win32-x64": {
+		name: "@bpmnkit/cli-win32-x64",
+		dir: "packages",
+		description:
+			"The bpmnkit native binary for x86_64 Windows. Installed by @bpmnkit/cli, not used directly",
+		content: `## Overview
+
+\`@bpmnkit/cli-win32-x64\` carries the \`bpmnkit\` binary for x86_64 Windows. \`@bpmnkit/cli\` lists it as an optional dependency, and npm installs only the one matching your \`os\` and \`cpu\`.
+
+## Installation
+
+\`\`\`sh
+npm install -g @bpmnkit/cli
+\`\`\`
+
+## Quick Start
+
+\`\`\`sh
+bpmnkit --version
+\`\`\`
+
+## API Reference
+
+No API. The package contains \`bin/bpmnkit\`. See [@bpmnkit/cli](https://bpmnkit.com/docs/cli/casen).
+`,
+	},
 
 	// ── cli-sdk ───────────────────────────────────────────────────────────────
 	"packages/cli-sdk": {
 		name: "@bpmnkit/cli-sdk",
-		description: "Plugin authoring SDK for the casen CLI — types, contracts, and helpers",
+		description: "Plugin authoring SDK for the bpmnkit CLI — types, contracts, and helpers",
 		content: `## Overview
 
-\`@bpmnkit/cli-sdk\` is the official SDK for building \`casen\` CLI plugins. It exports the \`CasenPlugin\` contract and all supporting types (\`CommandGroup\`, \`Command\`, \`RunContext\`, \`OutputWriter\`) so you can build typed, TUI-integrated plugins without depending on casen internals.
+\`@bpmnkit/cli-sdk\` is the official SDK for building \`bpmnkit\` CLI plugins. It exports the \`CasenPlugin\` contract and all supporting types (\`CommandGroup\`, \`Command\`, \`RunContext\`, \`OutputWriter\`) so you can build typed, TUI-integrated plugins without depending on bpmnkit internals.
 
 ## Installation
 
@@ -2487,7 +2654,7 @@ The top-level contract every plugin must export as its default export.
 interface CasenPlugin {
   /** Unique reverse-domain identifier, e.g. "com.acme.casen-deploy" */
   id: string
-  /** Human-readable name shown in \`casen plugin list\` */
+  /** Human-readable name shown in \`bpmnkit plugin list\` */
   name: string
   version: string
   /** Command groups this plugin contributes to the CLI */
@@ -2497,7 +2664,7 @@ interface CasenPlugin {
 
 ### \`CommandGroup\`
 
-Maps to a single top-level token: \`casen <group>\`.
+Maps to a single top-level token: \`bpmnkit <group>\`.
 
 \`\`\`typescript
 interface CommandGroup {
@@ -2554,12 +2721,39 @@ interface OutputWriter {
 	},
 
 	// ── create-casen-plugin ───────────────────────────────────────────────────
-	"packages/create-casen-plugin": {
-		name: "@bpmnkit/create-casen-plugin",
-		description: "Scaffold a new casen CLI plugin in seconds",
+	"packages/create-bpmnkit-plugin": {
+		name: "@bpmnkit/create-bpmnkit-plugin",
+		dir: "packages",
+		description: "Scaffold a new bpmnkit CLI plugin in seconds (new name of create-casen-plugin)",
 		content: `## Overview
 
-\`create-casen-plugin\` is the official scaffolding tool for \`casen\` CLI plugins. Run it with any package manager's \`create\` shorthand — no prior install required.
+\`@bpmnkit/create-bpmnkit-plugin\` scaffolds a \`bpmnkit\` CLI plugin. It is the new name of \`@bpmnkit/create-casen-plugin\`, which stays published and does the work. The CLI runs a plugin named \`bpmnkit-<name>\` first and falls back to \`casen-<name>\`.
+
+## Installation
+
+\`\`\`sh
+npx @bpmnkit/create-bpmnkit-plugin
+# or
+pnpm create @bpmnkit/bpmnkit-plugin
+\`\`\`
+
+## Quick Start
+
+\`\`\`sh
+npx @bpmnkit/create-bpmnkit-plugin --name bpmnkit-deploy --description "Git-tag-aware deploys"
+\`\`\`
+
+## API Reference
+
+No programmatic API. It accepts the same flags as \`@bpmnkit/create-casen-plugin\`.
+`,
+	},
+	"packages/create-casen-plugin": {
+		name: "@bpmnkit/create-casen-plugin",
+		description: "Scaffold a new bpmnkit CLI plugin in seconds",
+		content: `## Overview
+
+\`create-casen-plugin\` is the official scaffolding tool for \`bpmnkit\` CLI plugins. Run it with any package manager's \`create\` shorthand — no prior install required.
 
 \`\`\`sh
 pnpm create @bpmnkit/casen-plugin
@@ -2570,11 +2764,11 @@ pnpm create @bpmnkit/casen-plugin
 ## Interactive Flow
 
 \`\`\`
-  create-casen-plugin — casen plugin scaffolding
+  create-casen-plugin — bpmnkit plugin scaffolding
 
   Plugin name (npm package name): casen-deploy
   Display name             (Deploy):
-  Description              (): Git-tag-aware deploys for casen
+  Description              (): Git-tag-aware deploys for bpmnkit
   Author                   (): acme
 
   Initialize git repo? (Y/n): Y
@@ -2589,7 +2783,7 @@ pnpm create @bpmnkit/casen-plugin
     cd casen-deploy
     pnpm install
     pnpm build
-    casen plugin install ./casen-deploy
+    bpmnkit plugin install ./casen-deploy
 \`\`\`
 
 ## Non-Interactive Mode
@@ -2598,7 +2792,7 @@ pnpm create @bpmnkit/casen-plugin
 pnpm create @bpmnkit/casen-plugin \\
   --name casen-deploy \\
   --display-name Deploy \\
-  --description "Git-tag-aware deploys for casen" \\
+  --description "Git-tag-aware deploys for bpmnkit" \\
   --author acme \\
   --no-git
 \`\`\`
@@ -2653,7 +2847,7 @@ export default plugin
 
 ## Plugin Discovery
 
-All plugins with \`"casen-plugin"\` in their \`keywords\` appear in \`casen plugin search\`. The scaffold injects this keyword automatically.
+All plugins with \`"casen-plugin"\` in their \`keywords\` appear in \`bpmnkit plugin search\`. The scaffold injects this keyword automatically.
 `,
 	},
 
@@ -2669,7 +2863,7 @@ All plugins with \`"casen-plugin"\` in their \`keywords\` appear in \`casen plug
 
 - **AI chat bridge** — SSE streaming endpoint for AI-assisted diagram editing; connects to any OpenAI-compatible LLM API
 - **MCP server** — Model Context Protocol server for AI agent integrations (\`stdio\` transport)
-- **Camunda API proxy** — transparent HTTP proxy that injects auth from your \`casen\` CLI profiles
+- **Camunda API proxy** — transparent HTTP proxy that injects auth from your \`bpmnkit\` CLI profiles
 
 While the AI is working, \`/chat\` emits \`preview\` events carrying the diagram as it
 stands, so a client can render the process being drawn instead of waiting for the model
@@ -2721,13 +2915,13 @@ bpmn-mcp
 |--------|------|-------------|
 | \`GET\` | \`/status\` | Health check; returns server version and active profile |
 | \`POST\` | \`/chat\` | AI chat — SSE stream; sends \`token\`, \`preview\`, \`xml\`, \`error\` and \`done\` events |
-| \`GET\` | \`/profiles\` | List all configured \`casen\` profiles |
+| \`GET\` | \`/profiles\` | List all configured \`bpmnkit\` profiles |
 | \`ALL\` | \`/api/*\` | Transparent proxy to your Camunda cluster (adds auth header) |
 | \`GET\` | \`/operate/stream\` | SSE stream for the \`@bpmnkit/operate\` monitoring frontend |
 
 ## Configuration
 
-The proxy reads from the active \`casen\` CLI profile. Set an \`AI_API_KEY\` environment variable for the AI bridge:
+The proxy reads from the active \`bpmnkit\` CLI profile. Set an \`AI_API_KEY\` environment variable for the AI bridge:
 
 \`\`\`sh
 AI_API_KEY=sk-... bpmn-ai-server
@@ -2765,13 +2959,13 @@ CLIs, so it is locked down by default:
   without your own MCP servers, settings or extensions. A \`/chat\` diagram edit may call only
   the proxy's diagram MCP tools, and \`compose_diagram\` runs the model's code in an
   \`isolated-vm\` isolate. Request data reaches the model fenced as untrusted input.
-  \`askText\` gives other callers, such as \`casen ask\`, the same lockdown.
+  \`askText\` gives other callers, such as \`bpmnkit ask\`, the same lockdown.
 
 Programs that send no \`Origin\` header — the CLI, the MCP server, \`curl\` — are served as
 before.
 
 \`\`\`sh
-casen proxy start --allow-origin https://modeler.example.com --root ~/work/processes
+bpmnkit proxy start --allow-origin https://modeler.example.com --root ~/work/processes
 \`\`\`
 `,
 	},
@@ -2781,15 +2975,15 @@ casen proxy start --allow-origin https://modeler.example.com --root ~/work/proce
 		name: "@bpmnkit/casen-worker-http",
 		dir: "plugins-cli",
 		description:
-			"Example casen worker plugin — processes HTTP connector jobs using the JSONPlaceholder API",
+			"Example bpmnkit worker plugin — processes HTTP connector jobs using the JSONPlaceholder API",
 		content: `## Overview
 
-\`casen-worker-http\` is an official \`casen\` CLI plugin that demonstrates the worker plugin pattern. It subscribes to \`io.camunda.connector.HttpJson:1\` jobs and completes each one with live data fetched from the [JSONPlaceholder](https://jsonplaceholder.typicode.com/) API — useful for quickly testing a Camunda worker setup without writing any integration code.
+\`casen-worker-http\` is an official \`bpmnkit\` CLI plugin that demonstrates the worker plugin pattern. It subscribes to \`io.camunda.connector.HttpJson:1\` jobs and completes each one with live data fetched from the [JSONPlaceholder](https://jsonplaceholder.typicode.com/) API — useful for quickly testing a Camunda worker setup without writing any integration code.
 
 ## Installation
 
 \`\`\`sh
-casen plugin install casen-worker-http
+bpmnkit plugin install casen-worker-http
 \`\`\`
 
 ## Usage
@@ -2798,10 +2992,10 @@ Start the worker from the TUI or directly from the command line:
 
 \`\`\`sh
 # Interactive TUI
-casen http-worker
+bpmnkit http-worker
 
 # CLI foreground mode (Ctrl+C to stop)
-casen http-worker start
+bpmnkit http-worker start
 \`\`\`
 
 ## What it does
@@ -2853,10 +3047,10 @@ export default plugin
 		name: "@bpmnkit/casen-worker-ai",
 		dir: "plugins-cli",
 		description:
-			"AI task worker plugin for casen — classify, summarize, extract, and decide using Claude",
+			"AI task worker plugin for bpmnkit — classify, summarize, extract, and decide using Claude",
 		content: `## Overview
 
-\`casen-worker-ai\` is an official \`casen\` CLI plugin that brings AI-powered task processing into Camunda 8 workflows. It subscribes to four job types and uses the [Anthropic Claude API](https://anthropic.com) to complete each job with structured output.
+\`casen-worker-ai\` is an official \`bpmnkit\` CLI plugin that brings AI-powered task processing into Camunda 8 workflows. It subscribes to four job types and uses the [Anthropic Claude API](https://anthropic.com) to complete each job with structured output.
 
 This is the right tool when you need AI logic in a process but don't want to build a full microservice — start the worker once and any process in your cluster can delegate AI tasks to it.
 
@@ -2872,14 +3066,14 @@ The worker handles all three via \`failJob\` and \`throwJobError\`, giving your 
 ## Installation
 
 \`\`\`sh
-casen plugin install casen-worker-ai
+bpmnkit plugin install casen-worker-ai
 \`\`\`
 
 Set your Anthropic API key before starting:
 
 \`\`\`sh
 export ANTHROPIC_API_KEY=sk-ant-...
-casen ai-worker
+bpmnkit ai-worker
 \`\`\`
 
 ## Configuration
@@ -2994,32 +3188,32 @@ Add boundary events to your service tasks to handle AI failures gracefully:
 		description: "Render HTML reports from Camunda 8 incident and SLA data",
 		content: `## Overview
 
-\`casen-report\` is an official \`casen\` CLI plugin that generates HTML reports from live Camunda 8 data. Install it once and run \`casen report incidents\` or \`casen report sla\` from any terminal.
+\`casen-report\` is an official \`bpmnkit\` CLI plugin that generates HTML reports from live Camunda 8 data. Install it once and run \`bpmnkit report incidents\` or \`bpmnkit report sla\` from any terminal.
 
 ## Installation
 
 \`\`\`sh
-casen plugin install casen-report
+bpmnkit plugin install casen-report
 \`\`\`
 
 ## Commands
 
-### \`casen report incidents\`
+### \`bpmnkit report incidents\`
 
 Fetch active incidents and render an HTML report grouped by process.
 
 \`\`\`sh
 # Print table to stdout
-casen report incidents
+bpmnkit report incidents
 
 # Filter by process definition ID
-casen report incidents --process-id order-process
+bpmnkit report incidents --process-id order-process
 
 # Write self-contained HTML file
-casen report incidents --out incidents.html
+bpmnkit report incidents --out incidents.html
 
 # Limit fetch size
-casen report incidents --limit 500 --out incidents.html
+bpmnkit report incidents --limit 500 --out incidents.html
 \`\`\`
 
 **Flags**
@@ -3030,16 +3224,16 @@ casen report incidents --limit 500 --out incidents.html
 | \`--limit\` | \`-l\` | Max incidents to fetch | 200 |
 | \`--out\` | \`-o\` | Write HTML to this file path | — |
 
-### \`casen report sla\`
+### \`bpmnkit report sla\`
 
 Fetch process instances and generate an SLA compliance report. Instances whose duration exceeds the threshold are marked as **BREACHED**.
 
 \`\`\`sh
 # Print table (30-minute SLA threshold)
-casen report sla --threshold 30
+bpmnkit report sla --threshold 30
 
 # SLA report for a specific process, save to file
-casen report sla --threshold 60 --process-id order-process --out sla.html
+bpmnkit report sla --threshold 60 --process-id order-process --out sla.html
 \`\`\`
 
 **Flags**
@@ -3120,7 +3314,7 @@ console.log(invoice?.readme)    // domain context for the LLM
 
 ## Runnable Templates
 
-\`@bpmnkit/patterns/templates\` is the source of the [template gallery](https://bpmnkit.com/templates) and of \`casen template use\`. Each template builds a laid-out process with the \`@bpmnkit/core\` builder and carries a \`.bpmn.tests.json\` scenario set — a happy path and at least one alternative.
+\`@bpmnkit/patterns/templates\` is the source of the [template gallery](https://bpmnkit.com/templates) and of \`bpmnkit template use\`. Each template builds a laid-out process with the \`@bpmnkit/core\` builder and carries a \`.bpmn.tests.json\` scenario set — a happy path and at least one alternative.
 
 \`\`\`typescript
 import { getTemplate, listJobTypes, templateFiles } from "@bpmnkit/patterns/templates"
@@ -3194,7 +3388,7 @@ The key principle: workers built with this package have **zero BPMNKit runtime d
 
 - **Async generator polling** — \`client.poll(jobType)\` yields one \`ActivatedJob\` at a time; idles cleanly between polls
 - **Job lifecycle** — \`complete(variables)\`, \`fail(message, retries)\`, \`throwError(code, message, variables)\`
-- **Typed jobs** — \`createWorkerClient<JobTypes>()\` with the map \`casen gen types\` generates types each job's variables, output, headers and error codes by job type
+- **Typed jobs** — \`createWorkerClient<JobTypes>()\` with the map \`bpmnkit gen types\` generates types each job's variables, output, headers and error codes by job type
 - **OAuth2 for Camunda SaaS** — token fetching and caching built in; no manual auth management
 - **Env-var driven** — reads \`ZEEBE_ADDRESS\`, \`ZEEBE_CLIENT_ID\`, \`ZEEBE_CLIENT_SECRET\` automatically
 - **Zero dependencies** — pure Node.js \`fetch\`, no external packages
@@ -3253,7 +3447,7 @@ for await (const job of client.poll("my-job-type", { maxJobs: 10, timeout: 60_00
 
 ### Typed jobs from BPMN
 
-Generate a \`JobTypes\` map from your BPMN with \`casen gen types processes/ --out src/generated/bpmn-types.ts\`,
+Generate a \`JobTypes\` map from your BPMN with \`bpmnkit gen types processes/ --out src/generated/bpmn-types.ts\`,
 then pass it as the type argument. Job types, variable names, output keys and error codes are checked at compile time:
 
 \`\`\`typescript
@@ -3314,7 +3508,7 @@ The engine holds the run state, not your process: an instance survives a crash o
 
 ## Features
 
-- **Five step kinds** — \`.run()\` (a handler in your worker), \`.agent()\` (a coding agent from the \`casen agent\` workforce), \`.waitFor()\` (a durable message wait), \`.approve()\` (a Camunda user task), \`.loop()\` (repeat until a FEEL condition holds, at most \`max\` rounds, then ask a person)
+- **Five step kinds** — \`.run()\` (a handler in your worker), \`.agent()\` (a coding agent from the \`bpmnkit agent\` workforce), \`.waitFor()\` (a durable message wait), \`.approve()\` (a Camunda user task), \`.loop()\` (repeat until a FEEL condition holds, at most \`max\` rounds, then ask a person)
 - **Typed data flow** — each step's output joins the variables later steps see; reading a variable no earlier step provides, naming it as a correlation key, or using it in an agent prompt is a compile error
 - **One source of truth** — \`toXml()\` for deployment, \`jobTypes\` / \`agentJobTypes\` for wiring, \`worker()\` to serve the handlers
 - **At-least-once delivery** — handlers get the job key for idempotency; a throw fails the job and the engine retries it
@@ -3341,11 +3535,11 @@ const review = defineFlow("pr-review", { name: "PR review" })
   .run("merge", async ({ prKey, verdict }) => ({ merged: await gh.merge(prKey, verdict) }))
   .build()
 
-writeFileSync("pr-review.bpmn", review.toXml())  // deploy with \`casen deploy\`
+writeFileSync("pr-review.bpmn", review.toXml())  // deploy with \`bpmnkit deploy\`
 const worker = review.worker()                    // serves fetch-diff and merge
 \`\`\`
 
-The \`review\` step is served by the agent workforce: \`casen agent hire claude --roles pr-review -- claude -p\`, then \`casen agent work\`.
+The \`review\` step is served by the agent workforce: \`bpmnkit agent hire claude --roles pr-review -- claude -p\`, then \`bpmnkit agent work\`.
 
 ## API Reference
 
@@ -3375,7 +3569,7 @@ Starts a flow. Chain steps, then call \`build()\`. Every method returns a new bu
 
 ### Agent contract
 
-\`agentJobType(role, rank?)\`, \`agentJobTypes(roles, rank?)\`, \`renderPrompt(template, variables)\` and the header names \`AGENT_PROMPT_HEADER\` / \`AGENT_RESULT_HEADER\` are what \`casen agent work\` uses to serve \`.agent()\` steps — use them to write your own agent worker.
+\`agentJobType(role, rank?)\`, \`agentJobTypes(roles, rank?)\`, \`renderPrompt(template, variables)\` and the header names \`AGENT_PROMPT_HEADER\` / \`AGENT_RESULT_HEADER\` are what \`bpmnkit agent work\` uses to serve \`.agent()\` steps — use them to write your own agent worker.
 `,
 	},
 
@@ -3514,7 +3708,7 @@ interface UserTask {
 
 > **Dev/test only — not for production.** Reebe is a clean-room implementation of the Zeebe API, written from Camunda's public documentation. It is not affiliated with or endorsed by Camunda, and its behaviour is checked by its own tests, not against Zeebe. "Zeebe" and "Camunda" are trademarks of Camunda Services GmbH.
 
-Used internally by \`@bpmnkit/engine\` for the \`./wasm-runner\` entry point, which powers the BPMN Kit Studio simulator and the \`casen test\` CLI command.
+Used internally by \`@bpmnkit/engine\` for the \`./wasm-runner\` entry point, which powers the BPMN Kit Studio simulator and the \`bpmnkit test\` CLI command.
 
 ## Features
 
@@ -3634,7 +3828,7 @@ One line in your \`AGENTS.md\` or \`CLAUDE.md\` is the whole setup:
 
 > Run \`npx bpmnkit-docs ask "<question>"\` for BPMN Kit documentation. It answers from the version this project installed. Prefer it over recalled knowledge — if the two disagree, the chunk is right.
 
-Writing a BPMN, DMN or form file? Start from its agent card, a ~1–1.5k-token cheat sheet with a runnable script and the known traps: \`casen agent-card bpmn|dmn|form\` (from \`@bpmnkit/cli\`), or [the docs](${DOCS}/agent-cards/bpmn).
+Writing a BPMN, DMN or form file? Start from its agent card, a ~1–1.5k-token cheat sheet with a runnable script and the known traps: \`bpmnkit agent-card bpmn|dmn|form\` (from \`@bpmnkit/cli\`), or [the docs](${DOCS}/agent-cards/bpmn).
 
 It follows the [docspack](https://docspack.dev) package format, so the upstream \`docspack\` CLI indexes it too. See [\`packages/docspack\`](packages/docspack) or the [documentation](${DOCS}/packages/docspack).
 
@@ -3645,7 +3839,7 @@ It follows the [docspack](https://docspack.dev) package format, so the upstream 
 - **Interactive browser editor** — drag-and-drop BPMN editor with 40+ element types, undo/redo, multi-file tabs, AI chat, and in-browser process simulation
 - **34 composable plugins** — minimap, command palette, AI bridge, token highlight, storage, history, connector catalog, optimizer, and more
 - **100+ OpenAPI connectors** — generate Camunda REST connector templates from 100 built-in API specs (18,000+ endpoints: GitHub, Stripe, Slack, Jira, and more)
-- **\`casen\` CLI** — deploy, monitor, and manage Camunda 8 processes from the terminal; extend via a typed plugin SDK
+- **\`bpmnkit\` CLI** — deploy, monitor, and manage Camunda 8 processes from the terminal; extend via a typed plugin SDK
 - **AI-assisted design** — local proxy connects Claude, Copilot, and Gemini to edit diagrams via natural language or MCP tool calls
 - **Native desktop app** *(experimental)* — Tauri build of the editor for Windows, macOS and Linux, attached to [GitHub Releases](${GITHUB}/releases?q=desktop)
 - **Share a diagram as a link** — [Drop](https://bpmnkit.com/drop) renders a BPMN/DMN/Form file for anyone with the link, live, and lets one of them edit it at a time
@@ -3694,11 +3888,11 @@ Camunda. "Zeebe" and "Camunda" are trademarks of Camunda Services GmbH.
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| [\`@bpmnkit/cli\`](apps/cli) | [![npm](https://img.shields.io/npm/v/@bpmnkit/cli?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli) | \`casen\` — Camunda 8 command-line interface |
+| [\`@bpmnkit/cli\`](packages/cli) | [![npm](https://img.shields.io/npm/v/@bpmnkit/cli?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli) | \`bpmnkit\` — Camunda 8 command-line interface |
 | [\`@bpmnkit/proxy\`](apps/proxy) | [![npm](https://img.shields.io/npm/v/@bpmnkit/proxy?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
 | [\`@bpmnkit/operate\`](packages/operate) | [![npm](https://img.shields.io/npm/v/@bpmnkit/operate?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
-| [\`@bpmnkit/cli-sdk\`](packages/cli-sdk) | [![npm](https://img.shields.io/npm/v/@bpmnkit/cli-sdk?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for \`casen\` |
-| [\`@bpmnkit/create-casen-plugin\`](packages/create-casen-plugin) | [![npm](https://img.shields.io/npm/v/@bpmnkit/create-casen-plugin?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new \`casen\` CLI plugin in seconds |
+| [\`@bpmnkit/cli-sdk\`](packages/cli-sdk) | [![npm](https://img.shields.io/npm/v/@bpmnkit/cli-sdk?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for \`bpmnkit\` |
+| [\`@bpmnkit/create-casen-plugin\`](packages/create-casen-plugin) | [![npm](https://img.shields.io/npm/v/@bpmnkit/create-casen-plugin?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new \`bpmnkit\` CLI plugin in seconds |
 
 ### CLI Plugins
 
@@ -3776,27 +3970,29 @@ See the [\`@bpmnkit/editor\`](packages/editor/README.md) and [\`@bpmnkit/plugins
 
 ### CLI — manage Camunda 8 from the terminal
 
+\`bpmnkit\` is a native binary since 2.0 (alias \`casen\` stays); commands it does not run yet fall back to \`@bpmnkit/cli-legacy\`. Also on GitHub Releases as shell/PowerShell/MSI installers and a Homebrew tap (\`bpmnkit self update\` updates those).
+
 \`\`\`sh
 npm install -g @bpmnkit/cli
 
 # Connect to your Camunda cluster
-casen profile import production ./camunda-credentials.sh
-casen profile use production
+bpmnkit profile import production ./camunda-credentials.sh
+bpmnkit profile use production
 
 # Deploy a process
-casen deploy deploy order-process.bpmn --target camunda8
+bpmnkit deploy deploy order-process.bpmn --target camunda8
 
 # Monitor running instances
-casen pi list --filter '{"state":"ACTIVE"}'
+bpmnkit pi list --filter '{"state":"ACTIVE"}'
 
 # Generate connector templates from any OpenAPI spec
-casen connector generate https://api.example.com/openapi.json --out ./templates/
+bpmnkit connector generate https://api.example.com/openapi.json --out ./templates/
 
 # Start the local AI bridge and API proxy
-casen proxy start
+bpmnkit proxy start
 \`\`\`
 
-See the full [\`@bpmnkit/cli\` README](apps/cli/README.md) for all commands.
+See the full [\`@bpmnkit/cli\` README](packages/cli/README.md) for all commands.
 
 ### Monitoring — embed the operations frontend (experimental)
 
@@ -3834,13 +4030,13 @@ bpmnkit/bpmnkit
 │   ├── ui/             # @bpmnkit/ui      — Design tokens
 │   └── astro-shared/   # Shared Astro CSS/metadata
 ├── apps/               # Applications (cli, proxy and reebe-wasm are published)
-│   ├── cli/            # casen CLI tool
+│   ├── cli/            # bpmnkit CLI tool
 │   ├── proxy/          # Local AI + API proxy server
 │   ├── desktop/        # Tauri native desktop app
 │   ├── landing/        # bpmnkit.com — site + docs at /docs (Astro)
 │   ├── learn/          # Interactive learning center (Astro)
 │   └── examples/       # Runnable BPMN workflow examples
-├── plugins-cli/        # Official casen CLI plugins
+├── plugins-cli/        # Official bpmnkit CLI plugins
 │   ├── casen-report/        # HTML incident & SLA reports
 │   ├── casen-worker-http/   # Example HTTP worker plugin
 │   └── casen-worker-ai/      # AI task worker (Claude)

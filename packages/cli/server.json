@@ -7,15 +7,15 @@
 	"repository": {
 		"url": "https://github.com/bpmnkit/bpmnkit",
 		"source": "github",
-		"subfolder": "apps/cli"
+		"subfolder": "packages/cli"
 	},
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"packages": [
 		{
 			"registryType": "npm",
 			"registryBaseUrl": "https://registry.npmjs.org",
 			"identifier": "@bpmnkit/cli",
-			"version": "1.0.0",
+			"version": "2.0.0",
 			"transport": {
 				"type": "stdio"
 			},
@@ -32,7 +32,7 @@
 			"environmentVariables": [
 				{
 					"name": "ZEEBE_ADDRESS",
-					"description": "Camunda 8 / Reebe REST address when no casen profile is active (default http://localhost:26500)",
+					"description": "Camunda 8 / Reebe REST address when no bpmnkit profile is active (default http://localhost:26500)",
 					"isRequired": false
 				},
 				{

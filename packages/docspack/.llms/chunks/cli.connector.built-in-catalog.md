@@ -1,7 +1,7 @@
-# casen connector — Built-in catalog
+# bpmnkit connector — Built-in catalog
 
 ```sh
-casen connector catalog
+bpmnkit connector catalog
 ```
 
 | ID | Name | Default auth |

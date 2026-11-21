@@ -1,5 +1,5 @@
 /**
- * The terminal half of `casen dev`: one line per check, with the problems of a
+ * The terminal half of `bpmnkit dev`: one line per check, with the problems of a
  * failing one underneath, and a running tally of what is red.
  */
 

@@ -4,7 +4,7 @@
  *
  * These are opt-in: nothing here runs unless a `.bpmnlintrc` enables the
  * bpmnlint rule it stands in for (see `../bpmnlint.ts`). The default
- * `casen lint` report is unchanged by their existence — several of them
+ * `bpmnkit lint` report is unchanged by their existence — several of them
  * (`no-inclusive-gateway`, `standard-size`, …) are house style rather than
  * correctness, and a team that never asked for them should not see them.
  *

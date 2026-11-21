@@ -14,7 +14,7 @@ Approved? >(No: default) [user Rework expense] > Review expense
 - Decision: `gw >(Label: FEEL condition) x` per branch, exactly one `gw >(Label: default) y`. Branches that meet are joined for you; parallel work: `and` split, `and` join.
 - Forms: a user task without `fields=` gets a field per variable the next decisions read (`approved = true` → checkbox, `amount > 1000` → number, `risk = "low"` → select). `fields=key[:number|checkbox|textarea|date|select(a|b)],…` sets them; `form=<id>` links your own.
 - Defaults: `job=` (service, send, message end) is the id kebab-cased (`pay-expense`); `msg=` is the name kebab-cased. Other attributes: `key=<FEEL>` (every message caught after the start) · `after=PT1H`, `every=R/PT1H`, `at=2026-01-31T09:00:00Z` (a timer start takes only a literal date; `catch:timer at==<FEEL>` a variable) · `cond=<FEEL>` (last) · `error=`, `signal=`, `escalation=` · `on=<task id>`, `nonint` (boundary) · `result=<var>` · `called=<process id>` · `each=<list var>` · `in.x=`, `out.x=` · `feel=<FEEL>` (script, last) · `retries=3`, `header.k=v` · `assignee=` `groups=a;b` `users=` `due=P2D` `priority=0-100`.
-- A rule task calls `decision=<id>`, default its name kebab-cased (`[rule Assess risk]` calls `assess-risk`). Pass the `.dmn` too: `casen build order.txt risk.dmn --deploy`.
+- A rule task calls `decision=<id>`, default its name kebab-cased (`[rule Assess risk]` calls `assess-risk`). Pass the `.dmn` too: `bpmnkit build order.txt risk.dmn --deploy`.
 
 ---
 Source: https://bpmnkit.com/docs/agent-cards/bpmn

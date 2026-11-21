@@ -7,7 +7,7 @@ It is built for development clusters, [Camunda 8 Run](https://docs.camunda.io/do
 and SaaS trial clusters. It is not a replacement for Camunda Operate in production.
 
 The UI does not call the cluster itself. It talks to the BPMN Kit proxy
-(`@bpmnkit/proxy`, started with `casen proxy start`). The proxy holds your connection
+(`@bpmnkit/proxy`, started with `bpmnkit proxy start`). The proxy holds your connection
 profiles and credentials, and adds the auth header to each Camunda request.
 
 ```

@@ -623,7 +623,7 @@ function renderMain(state: TuiState, screen: Extract<Screen, { kind: "main" }>):
 	const groups = filterGroups(state.groups, screen.search)
 	const nameW = state.groups.reduce((m, g) => Math.max(m, g.name.length), 0)
 
-	const lines = [renderHeader(["casen"], cols, state.profile), ""]
+	const lines = [renderHeader(["bpmnkit"], cols, state.profile), ""]
 
 	if (searching) {
 		lines.push(`  ${dim("/")} ${screen.search}█\n`)
@@ -666,7 +666,7 @@ let askSpinnerFrame = 0
 function renderAsk(state: TuiState, screen: Extract<Screen, { kind: "ask" }>): string[] {
 	const { cols } = termSize()
 	const lines = [
-		renderHeader(["casen", "ask"], cols, state.profile),
+		renderHeader(["bpmnkit", "ask"], cols, state.profile),
 		`\n  ${dim("Natural language search using a local AI (claude/copilot/gemini)")}\n`,
 	]
 
@@ -3627,7 +3627,7 @@ async function handlePluginsKey(
 						})
 					})
 					screen.subview = "done"
-					screen.message = green("✓ Update complete. Restart casen to activate changes.")
+					screen.message = green("✓ Update complete. Restart bpmnkit to activate changes.")
 					screen.error = ""
 				} else if (item?.id === "remove") {
 					screen.subview = "prompt"

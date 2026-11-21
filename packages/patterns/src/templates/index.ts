@@ -120,7 +120,7 @@ export function templatesInCategory(category: TemplateCategory): ProcessTemplate
 
 /**
  * The files a template consists of: `<id>.bpmn`, the `<id>.bpmn.tests.json`
- * scenarios `casen test` runs, and one `.dmn` / `.form` per decision and form.
+ * scenarios `bpmnkit test` runs, and one `.dmn` / `.form` per decision and form.
  */
 export function templateFiles(template: ProcessTemplate): TemplateFile[] {
 	const files: TemplateFile[] = [

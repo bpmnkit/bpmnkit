@@ -31,7 +31,7 @@ connectors mocked by job type.
 |---|---|---|---|
 | Describe-to-diagram, refine, image | `apps/drop` Worker → Workers AI (`glm-4.7-flash`, hedged by `gemma-4`), single shot, 600-token cap | Line DSL, `PROCESS_TEXT_GUIDE` (`packages/core/src/bpmn/process-text.ts:36`) | **None.** Only `job=<type>`; default job type is the element id (`process-text.ts:1193`) |
 | Feedback edits / suggestions | `apps/drop` (`lib/feedback.ts`, `routes/ai-edit.ts`) | Change script, `PROCESS_DELTA_GUIDE` (`process-delta.ts:46`) | None; same three attributes `on`, `job`, `nonint` |
-| ProcessPlan | CLI `casen synth`, Claude plugin skills (`plugins-claude/bpmnkit-claude`) | JSON `ProcessPlan` (`packages/core/src/plan/types.ts`) | **Yes**: `kind: "connector"` + `PlanConnectorRef { template, values }`, resolved by an injected `applyConnectorTemplate` |
+| ProcessPlan | CLI `bpmnkit synth`, Claude plugin skills (`plugins-claude/bpmnkit-claude`) | JSON `ProcessPlan` (`packages/core/src/plan/types.ts`) | **Yes**: `kind: "connector"` + `PlanConnectorRef { template, values }`, resolved by an injected `applyConnectorTemplate` |
 | Proxy AI chat | `apps/proxy` (`prompt.ts`, `mcp-server.ts`), `apps/proxy-rs` | CompactDiagram JSON or MCP tool calls | REST only: `add_http_call` → `Bpmn.restConnector()` |
 
 `doc/drop-ai-generate-analysis.md:84,140` left connectors out of Drop v1 **on purpose**: the
@@ -63,7 +63,7 @@ stream and is not used by Drop.
   `taskHeaders`, `zeebeProperties` and `modelerTemplate*`. Core **cannot import**
   `@bpmnkit/connectors`, because that package depends on core.
 - `plugins-claude/bpmnkit-claude/references/connectors.md` is a generated index table (id, name,
-  task type). Per-property detail is only available at runtime (`casen connector show`).
+  task type). Per-property detail is only available at runtime (`bpmnkit connector show`).
 - `@bpmnkit/camunda-docspack` does **not** include `docs/components/connectors`.
 
 ### 2.3 Measured sizes (built `@bpmnkit/connectors`, this branch)
@@ -307,7 +307,7 @@ scheme and path.
   ones, because a create call often requires nothing. So are required headers with their
   default and a form-body flag: without them Notion and Stripe calls fail.
 - **Docspack.** The docspack alternative is not taken. Ranking runs in code on the loaded
-  service, and the same data serves the CLI (`casen connector api`).
+  service, and the same data serves the CLI (`bpmnkit connector api`).
 - **Precedence.** As planned, with one refinement: a dedicated connector loses only when an
   indexed endpoint covers more of the task's name than any of its operations ("List GitHub
   workflow runs").
@@ -391,7 +391,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
     output cap is set per diagram as about 40 tokens × candidate tasks.
 - **Refine and feedback edits** keep the `with` lines the writer emits. When an edit adds a new
   integration task, pass 2 runs for the new tasks only.
-- **CLI / Claude plugin:** `casen connector cards "<query>"` prints cards. The `connect` and
+- **CLI / Claude plugin:** `bpmnkit connector cards "<query>"` prints cards. The `connect` and
   `implement` skills tell Claude to call it before writing a plan. This needs no model-side
   retrieval tooling.
 - **Proxy MCP:** add a generic `add_connector { id, alias, operation, values }` tool beside
@@ -407,7 +407,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
   `lintDiagram` on the result.
 - **Dry run:** `ProcessTest` with `mockConnector(jobType, response)` for every connector task
   and the default branch taken. It must reach an end event. Drop can run it in the browser
-  through `@bpmnkit/engine`; the CLI runs it in a new `casen synth --check` flag.
+  through `@bpmnkit/engine`; the CLI runs it in a new `bpmnkit synth --check` flag.
 - **Live run (optional, user-triggered):** Studio's WASM engine already executes
   `io.camunda:http-json:1` through the local proxy (`apps/studio/src/api/wasm-adapter.ts:133`). A
   "Try it" action runs GET-only REST tasks for real. Other connectors stay mocked, because they
@@ -421,7 +421,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
   over a plain variable with one item.
 - **Drop.** The dry run runs in the browser, from a lazily fetched bundle. It does not run in
   the Worker, because the engine's virtual clock is global per isolate.
-- **CLI.** `casen synth --check`, as planned.
+- **CLI.** `bpmnkit synth --check`, as planned.
 - **Bench.** The bench reports the dry run and the secrets. `connectorApplyClean` is the
   existing problems count; `secretsOnly` is the existing literal-secrets count.
 - **Static gate.** It stays as built in P3/P4: problems and missing inputs become questions.
@@ -440,7 +440,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 | OpenAPI → API index data and build script | `@bpmnkit/connector-gen/api-index` | Too big for core |
 | `with` lines in parser, writer, delta, guide | `@bpmnkit/core` (`process-text*.ts`, `process-delta.ts`) | |
 | Prompt assembly, token caps, questions UI | `apps/drop` | |
-| `casen connector cards`, `synth --check` | `apps/cli` | |
+| `bpmnkit connector cards`, `synth --check` | `apps/cli` | |
 | `add_connector`, `find_connectors` | `apps/proxy`, `apps/proxy-rs` | |
 | Skill references | `plugins-claude/bpmnkit-claude` | Generated |
 
@@ -450,7 +450,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 |---|---|---|---|
 | P0 ✅ | WS1 defect fixes plus their tests; bench scores `mustContainTaskTypes` (done 2026-10-02) | — | S |
 | P1 ✅ | WS2: move the catalog into core, slim data, shim, sync workflow (done 2026-10-02, see WS2 notes) | P0 | M |
-| P2 ✅ | WS3 cards with per-operation conditions; regenerate skill reference; `casen connector cards` (done 2026-10-02) | P1 | M |
+| P2 ✅ | WS3 cards with per-operation conditions; regenerate skill reference; `bpmnkit connector cards` (done 2026-10-02) | P1 | M |
 | P3 ✅ | WS5 `with` lines: parser, delta, writer, resolver (`applyConnectorLines`, not inside `expand`), `CONNECT_GUIDE`; unit tests (done 2026-10-02; `- with x` and plan aliases deferred) | P1, P2 | L |
 | P4 ✅ | WS6 per-task retrieval; Drop pass 2 (`/drop/api/connect`, auto after generate, "Add connectors" action); one rule line added to the pass 1 prompt; bench with 10 new connector golden prompts (done 2026-10-02; the server applies the lines; Add connectors applies as an undoable edit, not via the proposal dialog; first real bench run pending credentials) | P3 | M |
 | P5 ✅ | WS4 API index and API cards; GitHub/Stripe/Notion golden prompts (done 2026-10-02, see WS4 notes; first real bench run pending credentials) | P2 (cards), P4 | L |

@@ -271,7 +271,7 @@ reported as changed, since a semantic change is what a reviewer needs first.
 An element with nothing to draw on either side is left out, so a changed `targetNamespace`
 cannot inflate a count against nothing on screen.
 
-The same comparison is [`casen diff bpmn`](/docs/cli/diff) on the command line,
+The same comparison is [`bpmnkit diff bpmn`](/docs/cli/diff) on the command line,
 `createBpmnDiff()` in `@bpmnkit/plugins` on a pair of canvases, and *Compare Diagram with
 HEAD* in the [VS Code extension](/docs/guides/vscode).
 

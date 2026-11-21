@@ -20,7 +20,7 @@ for (const entry of readdirSync(PLUGINS_DIR, { withFileTypes: true })) {
 	try {
 		const pkgPath = join(PLUGINS_DIR, entry.name, "package.json")
 		const pkg = JSON.parse(readFileSync(pkgPath, "utf8"))
-		// Only include packages that declare themselves as casen plugins
+		// Only include packages that declare themselves as bpmnkit plugins
 		if (!pkg.keywords?.includes("casen-plugin")) continue
 		plugins.push({
 			name: pkg.name,
@@ -39,10 +39,10 @@ plugins.sort((a, b) => a.name.localeCompare(b.name))
 // ── Build markdown ────────────────────────────────────────────────────────────
 
 function pluginSection(p) {
-	const installCmd = `casen plugin install ${p.name}`
+	const installCmd = `bpmnkit plugin install ${p.name}`
 	const commandRows =
 		p.commands.length > 0
-			? `\n| Command | Description |\n|---------|-------------|\n${p.commands.map((c) => `| \`casen ${p.group} ${c.name}\` | ${c.description} |`).join("\n")}\n`
+			? `\n| Command | Description |\n|---------|-------------|\n${p.commands.map((c) => `| \`bpmnkit ${p.group} ${c.name}\` | ${c.description} |`).join("\n")}\n`
 			: ""
 
 	return `## \`${p.name}\`
@@ -64,8 +64,8 @@ const summaryRows = plugins
 const sections = plugins.map(pluginSection).join("\n---\n\n")
 
 const output = `---
-title: casen Plugins
-description: Official casen CLI plugins shipped with the BPMN Kit monorepo.
+title: bpmnkit Plugins
+description: Official bpmnkit CLI plugins shipped with the BPMN Kit monorepo.
 sidebar:
   order: 7
 ---
@@ -73,10 +73,10 @@ sidebar:
 > **Auto-generated** — this page is built from \`plugins-cli/*/package.json\` during the site
 > build. Do not edit it by hand.
 
-Official plugins extend \`casen\` with domain-specific command groups. Install them with:
+Official plugins extend \`bpmnkit\` with domain-specific command groups. Install them with:
 
 \`\`\`sh
-casen plugin install <name>
+bpmnkit plugin install <name>
 \`\`\`
 
 ## Available Plugins
@@ -92,7 +92,7 @@ ${sections}
 
 ## Authoring Plugins
 
-See the [Plugin Authoring](/docs/cli/plugin-authoring) guide to build and publish your own \`casen\` plugin.
+See the [Plugin Authoring](/docs/cli/plugin-authoring) guide to build and publish your own \`bpmnkit\` plugin.
 `
 
 writeFileSync(OUT, output, "utf8")

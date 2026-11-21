@@ -10,7 +10,7 @@ Parse $ARGUMENTS into a `.bpmn` file, the target step's element id, and the serv
 ## 1. Find the connector
 
 ```sh
-casen connector search "<service>"
+bpmnkit connector search "<service>"
 ```
 
 Present the top match(es) to the user only if there's genuine ambiguity (e.g. multiple plausible directions — outbound vs. an inbound trigger); otherwise proceed with the best match.
@@ -18,8 +18,8 @@ Present the top match(es) to the user only if there's genuine ambiguity (e.g. mu
 ## 2. Show required inputs
 
 ```sh
-casen connector show <template-id>
-casen connector show <template-id> --filter <text> --condensed   # one line per property (key, type, default, required, when)
+bpmnkit connector show <template-id>
+bpmnkit connector show <template-id> --filter <text> --condensed   # one line per property (key, type, default, required, when)
 ```
 
 `--filter` narrows a large template (e.g. `--filter auth`); use it before guessing a key.
@@ -31,8 +31,8 @@ For every **required** input: derive a value from context (process variables via
 **Directly on the file** (preferred; the only route for AI Agent v2 on 8.10, and it works for any template, HttpJson.v2 included):
 
 ```sh
-casen connector apply <file>.bpmn <step-id> <template[@version]> --values values.json --dry-run
-casen connector apply <file>.bpmn <step-id> <template[@version]> --values values.json
+bpmnkit connector apply <file>.bpmn <step-id> <template[@version]> --values values.json --dry-run
+bpmnkit connector apply <file>.bpmn <step-id> <template[@version]> --values values.json
 ```
 
 `--set key=value` (repeatable) overrides `--values`. Any problem exits 1 and leaves the file unchanged; `--dry-run` previews. Then skip to step 4's lint (no synth needed).
@@ -40,7 +40,7 @@ casen connector apply <file>.bpmn <step-id> <template[@version]> --values values
 **Or via a delta plan:**
 
 ```sh
-casen plan extract <file>.bpmn
+bpmnkit plan extract <file>.bpmn
 ```
 
 Write a delta plan replacing the target step (same element id) with a `connector` step:
@@ -52,8 +52,8 @@ Write a delta plan replacing the target step (same element id) with a `connector
 ## 4. Compile, merge, verify
 
 ```sh
-casen synth <delta>.plan.json --merge <file>.bpmn --output <file>.bpmn
-casen lint lint <file>.bpmn --profile deploy
+bpmnkit synth <delta>.plan.json --merge <file>.bpmn --output <file>.bpmn
+bpmnkit lint lint <file>.bpmn --profile deploy
 ```
 
 Fix any `connector/missing-required` findings by filling in the missing value, then re-apply (or re-synth). `--profile deploy` must report 0 errors; the `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` are warnings (style advice).

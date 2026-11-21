@@ -1,4 +1,4 @@
-# casen generate — Modify-existing mode (`--input`)
+# bpmnkit generate — Modify-existing mode (`--input`)
 
 Load an existing `.bpmn` file and patch it — add elements and flows, then re-apply auto-layout.
 The default output overwrites the input file.
@@ -9,7 +9,7 @@ Use `--dump-compact` to print the file's CompactDiagram JSON. Use this to discov
 element IDs before writing a patch.
 
 ```sh
-casen generate bpmn --input order.bpmn --dump-compact
+bpmnkit generate bpmn --input order.bpmn --dump-compact
 ```
 
 Output is a `CompactDiagram` JSON object — the same format accepted by `--definition`.
@@ -18,7 +18,7 @@ Output is a `CompactDiagram` JSON object — the same format accepted by `--defi
 
 ```sh
 # Add a rejection path to an existing gateway with id "gw"
-casen generate bpmn --input order.bpmn \
+bpmnkit generate bpmn --input order.bpmn \
   --patch '{"elements":[
     {"id":"notify",     "type":"serviceTask","name":"Notify Customer","jobType":"notify-worker"},
     {"id":"end-reject", "type":"endEvent",   "name":"Rejected"}
@@ -35,7 +35,7 @@ element IDs — they are not required to be new.
 
 ```sh
 # AI generates the patch JSON, pipe it in
-echo '{"elements":[...],"flows":[...]}' | casen generate bpmn --input order.bpmn
+echo '{"elements":[...],"flows":[...]}' | bpmnkit generate bpmn --input order.bpmn
 ```
 
 ### Normalize layout
@@ -43,7 +43,7 @@ echo '{"elements":[...],"flows":[...]}' | casen generate bpmn --input order.bpmn
 Run `--input` without `--patch` to re-apply auto-layout without changing the process model:
 
 ```sh
-casen generate bpmn --input messy.bpmn --output clean.bpmn
+bpmnkit generate bpmn --input messy.bpmn --output clean.bpmn
 ```
 
 ### Flags for `--input` mode

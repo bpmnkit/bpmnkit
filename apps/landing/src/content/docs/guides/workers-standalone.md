@@ -7,7 +7,7 @@ sidebar:
 
 Workers are TypeScript programs that poll Zeebe for jobs and execute business logic.
 They depend only on `@bpmnkit/worker-client` — no BPMNKit SDK required at runtime.
-Run them anywhere: terminal, Docker, serverless, or via `casen worker start`.
+Run them anywhere: terminal, Docker, serverless, or via `bpmnkit worker start`.
 
 ## Scaffold a worker
 
@@ -109,13 +109,13 @@ npm run start:prod # runs: node dist/index.js
 ### All workers at once
 
 ```sh
-casen worker start
+bpmnkit worker start
 ```
 
 To start a specific worker:
 
 ```sh
-casen worker start send-invoice
+bpmnkit worker start send-invoice
 ```
 
 ## Docker
@@ -161,7 +161,7 @@ npm run start:prod
 ## Listing available workers
 
 ```sh
-casen worker start --help
+bpmnkit worker start --help
 ```
 
 Or from Claude Code, call `worker_list` to see all built-in and scaffolded workers:

@@ -57,7 +57,7 @@ function toView(template: ProcessTemplate): TemplateView {
 		bpmnHref: fileHref(`${template.id}.bpmn`),
 		svgHref: fileHref("diagram.svg"),
 		editorHref: `/editor?template=${encodeURIComponent(template.id)}`,
-		command: `casen template use ${template.id}`,
+		command: `bpmnkit template use ${template.id}`,
 	}
 }
 

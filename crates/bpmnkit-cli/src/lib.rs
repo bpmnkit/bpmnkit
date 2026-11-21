@@ -5,6 +5,7 @@ mod connector;
 mod legacy;
 mod native;
 mod plugin;
+mod selfupdate;
 mod worker;
 
 use std::ffi::OsString;
@@ -207,10 +208,7 @@ pub fn run(args: Vec<OsString>) -> i32 {
         Cmd::Worker { action } => worker::run(action),
         Cmd::Installation {
             action: SelfAction::Update,
-        } => {
-            eprintln!("self update arrives with the cargo-dist release (plan P8); reinstall via npm or the release installer for now");
-            1
-        }
+        } => selfupdate::run(),
     }
 }
 

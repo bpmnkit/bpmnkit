@@ -1,6 +1,6 @@
-# casen Plugin Authoring
+# bpmnkit Plugin Authoring
 
-casen plugins are ordinary npm packages that export a `CasenPlugin` object. Once installed, their
+bpmnkit plugins are ordinary npm packages that export a `CasenPlugin` object. Once installed, their
 commands appear in the main TUI and in shell tab-completion alongside the built-in ones.
 
 
@@ -17,11 +17,11 @@ pnpm create @bpmnkit/casen-plugin
 The tool runs interactively:
 
 ```
-  @bpmnkit/create-casen-plugin — casen plugin scaffolding
+  @bpmnkit/create-casen-plugin — bpmnkit plugin scaffolding
 
   Plugin name (npm package name): casen-deploy
   Display name             (Deploy):
-  Description              (): Git-tag-aware deploys for casen
+  Description              (): Git-tag-aware deploys for bpmnkit
   Author                   (): acme
 
   Initialize git repo? (Y/n): Y
@@ -42,7 +42,7 @@ Pass flags to skip all prompts — useful in CI or cookiecutter scripts:
 ```sh
 pnpm create @bpmnkit/casen-plugin \
   --name casen-deploy \
-  --description "Git-tag-aware deploys for casen" \
+  --description "Git-tag-aware deploys for bpmnkit" \
   --author acme \
   --no-git
 ```
@@ -50,7 +50,7 @@ pnpm create @bpmnkit/casen-plugin \
 | Flag | Description |
 |---|---|
 | `--name` / `-n` | npm package name (first positional arg also works) |
-| `--display-name` | Human-readable name shown in `casen plugin list` |
+| `--display-name` | Human-readable name shown in `bpmnkit plugin list` |
 | `--description` / `-d` | One-line description |
 | `--author` / `-a` | Author name or npm username |
 | `--no-git` | Skip `git init` |

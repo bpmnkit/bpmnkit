@@ -1,4 +1,4 @@
-# casen connector — What gets generated
+# bpmnkit connector — What gets generated
 
 Each operation in the spec becomes one Camunda element template JSON file. The template
 pre-configures a `bpmn:ServiceTask` with job type `io.camunda:http-json:1` and wires up:

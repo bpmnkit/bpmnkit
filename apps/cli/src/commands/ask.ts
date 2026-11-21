@@ -373,7 +373,7 @@ export const askGroup: CommandGroup = {
 			args: [{ name: "query", description: "Natural language query", required: true }],
 			async run(ctx: RunContext): Promise<void> {
 				const query = ctx.positional.join(" ").trim()
-				if (!query) throw new Error("Provide a query, e.g.: casen ask active incidents")
+				if (!query) throw new Error("Provide a query, e.g.: bpmnkit ask active incidents")
 
 				const spinner = new Spinner()
 				try {

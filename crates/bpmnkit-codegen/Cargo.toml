@@ -7,10 +7,10 @@ license.workspace = true
 repository.workspace = true
 homepage.workspace = true
 rust-version.workspace = true
+readme = "README.md"
 keywords = ["bpmn", "camunda", "zeebe", "codegen", "workflow"]
 categories = ["development-tools"]
 # Release (with jobspec) is a separate decision, see doc/plans/c8-workers-and-rust-cli.md §3.
-publish = false
 # Tests read goldens and the shared corpus outside the package.
 exclude = ["tests/", "benches/"]
 

@@ -9,20 +9,20 @@ A job worker depends on names that the BPMN model defines: the job type, the var
 variables it returns, and the error codes it throws. If you type these names by hand, a typo shows
 only at runtime, as a job that no worker takes or as an incident.
 
-`casen gen types` reads the BPMN and generates the TypeScript types for these names. The compiler
+`bpmnkit gen types` reads the BPMN and generates the TypeScript types for these names. The compiler
 then checks them for you.
 
 ## Generate the types
 
 ```sh
-casen gen types processes/ --out src/generated/bpmn-types.ts
+bpmnkit gen types processes/ --out src/generated/bpmn-types.ts
 ```
 
 The command accepts files, directories and globs. Commit the generated file, and add the `--check`
 command to CI so that the file stays current:
 
 ```sh
-casen gen types processes/ --out src/generated/bpmn-types.ts --check   # exits 1 when stale
+bpmnkit gen types processes/ --out src/generated/bpmn-types.ts --check   # exits 1 when stale
 ```
 
 For a service task like this one:
@@ -124,7 +124,7 @@ camunda.createJobWorker({
 ## Check workers against the BPMN
 
 ```sh
-casen gen types processes/ --check-workers "src/**/*.ts" --strict
+bpmnkit gen types processes/ --check-workers "src/**/*.ts" --strict
 ```
 
 The check scans your sources for worker registrations. It then reports two types of mismatch:
@@ -134,7 +134,7 @@ The check scans your sources for worker registrations. It then reports two types
 
 `--strict` makes the command exit 1 when there is a mismatch. The scan is a heuristic: it finds
 only job types that are string literals in the common registration forms. The
-[`casen generate` reference](/docs/cli/generate#check-workers-against-the-bpmn) lists these forms.
+[`bpmnkit generate` reference](/docs/cli/generate#check-workers-against-the-bpmn) lists these forms.
 Job types that start with `io.camunda` are Camunda connectors. The connector runtime runs them, so
 the check never reports them as missing.
 

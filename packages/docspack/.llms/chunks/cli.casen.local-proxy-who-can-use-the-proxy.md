@@ -1,4 +1,4 @@
-# casen CLI — Local proxy — Who can use the proxy
+# bpmnkit CLI — Local proxy — Who can use the proxy
 
 The proxy acts with your Camunda credentials and reads and writes files. Any web page open in
 your browser can send requests to `localhost`, so the proxy checks every request:
@@ -21,7 +21,7 @@ your browser can send requests to `localhost`, so the proxy checks every request
   refused.
 - **AI CLIs.** The AI routes (`/chat`, `/improve`, `/operate/chat`,
   `/operate/incident-assist`, `/operate/ai-search`), the `io.bpmnkit:llm:1` worker and
-  `casen ask` start `claude`, `copilot` or `gemini` with permission checks on and no
+  `bpmnkit ask` start `claude`, `copilot` or `gemini` with permission checks on and no
   built-in tools: the model cannot run commands, read or write files, or open URLs. Each run
   starts in an empty temporary folder and loads none of your own MCP servers, settings,
   plugins or extensions. A `/chat` run that edits a diagram gets only the proxy's diagram
@@ -41,14 +41,14 @@ your browser can send requests to `localhost`, so the proxy checks every request
 To use the proxy from your own web app, allow its origin:
 
 ```sh
-casen proxy start --allow-origin https://modeler.example.com
+bpmnkit proxy start --allow-origin https://modeler.example.com
 ```
 
 To reach the proxy from another machine, which gives that network your credentials and
 files, listen on all interfaces and name the host clients use:
 
 ```sh
-casen proxy start --host 0.0.0.0 --allow-host devbox.lan
+bpmnkit proxy start --host 0.0.0.0 --allow-host devbox.lan
 ```
 
 ---

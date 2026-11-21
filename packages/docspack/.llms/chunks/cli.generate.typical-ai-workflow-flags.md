@@ -1,4 +1,4 @@
-# casen generate — Typical AI workflow — Flags
+# bpmnkit generate — Typical AI workflow — Flags
 
 | Flag | Description | Default |
 |---|---|---|

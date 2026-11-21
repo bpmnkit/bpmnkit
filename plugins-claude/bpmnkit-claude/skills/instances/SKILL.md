@@ -9,8 +9,8 @@ Steps:
 1. Parse $ARGUMENTS:
    - Extract process ID if present (non-flag argument)
    - Extract `--active` or `--failed` flag if present
-2. Build the casen command:
-   - Base: `casen process-instance list --output json`
+2. Build the bpmnkit command:
+   - Base: `bpmnkit process-instance list --output json`
    - If process ID given: append `--process-definition-key <id>`
    - If `--failed`: append `--state ERROR`
    - If `--active`: append `--state ACTIVE`

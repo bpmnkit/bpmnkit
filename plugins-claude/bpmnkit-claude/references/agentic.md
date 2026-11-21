@@ -2,7 +2,7 @@
 
 Camunda 8's **AI Agent Sub-process** lets a process delegate a step to an LLM that can call tools (other BPMN activities) in a loop until it produces a final answer.
 
-**Target Camunda 8.10 with v2** (this page, first half). v2 is authored with the TypeScript builder and `applyTemplates`. The plan `aiAgent` step and `casen synth` compile only the older **v1** job-worker agent; that is described in the second half, "Older Camunda (v1)".
+**Target Camunda 8.10 with v2** (this page, first half). v2 is authored with the TypeScript builder and `applyTemplates`. The plan `aiAgent` step and `bpmnkit synth` compile only the older **v1** job-worker agent; that is described in the second half, "Older Camunda (v1)".
 
 ## v2: AI Agent Sub-process on Camunda 8.10
 
@@ -10,8 +10,8 @@ Camunda 8's **AI Agent Sub-process** lets a process delegate a step to an LLM th
 - Build the sub-process with `adHocSubProcess(id, cb, { toolGrid: { columns, fill } })`, then call `applyTemplates(model.build(), [{ elementId, template: "io.camunda.connectors.agenticai.ai-agent-subprocess.v2@1", values }])` from `@bpmnkit/core/connectors`. It returns `{ definitions, problems }`; any problem is a failure.
 - Each **tool** is a root-node activity inside the sub-process with no incoming flow. Its element id is its name for the LLM, its `documentation` is the description the LLM reads. HTTP tools take `io.camunda.connectors.HttpJson.v2@18` through the same `applyTemplates` call.
 - Tool parameters the LLM supplies use `fromAi(toolCall.<param>, "<description>", ...)` inside the tool's template values (e.g. `queryParameters`); the first argument must reference `toolCall.<name>`.
-- Property keys are dotted template keys (`provider.type`, `data.systemPrompt.prompt`, `data.userPrompt.prompt`, `data.limits.maxModelCalls`, `resultVariable`, ...). Never guess them: `casen connector show <template> --filter <text> --condensed` lists them one per line.
-- CLI equivalent for an existing file: `casen connector apply <file> <elementId> <template[@v]> [--values file.json] [--set k=v]... [--dry-run]`.
+- Property keys are dotted template keys (`provider.type`, `data.systemPrompt.prompt`, `data.userPrompt.prompt`, `data.limits.maxModelCalls`, `resultVariable`, ...). Never guess them: `bpmnkit connector show <template> --filter <text> --condensed` lists them one per line.
+- CLI equivalent for an existing file: `bpmnkit connector apply <file> <elementId> <template[@v]> [--values file.json] [--set k=v]... [--dry-run]`.
 - Recipe chunks, via `npx bpmnkit-docs ask <id> --pack @bpmnkit/docspack` (read these first):
   - `guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2`
   - `guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid`
@@ -19,7 +19,7 @@ Camunda 8's **AI Agent Sub-process** lets a process delegate a step to an LLM th
   - `guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests`
 - Complete reference script, in the bpmnkit repo: `packages/core/tests/fixtures/bakeoff/build.ts` (a chat agent with four HttpJson tools in a 2 x 2 grid, start-event form, user-task input mapping and a labelled feedback loop).
 
-Deploy gate: `casen lint lint <file> --profile deploy` must report 0 errors. The `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` are warnings (style advice), which Camunda's own gate does not flag.
+Deploy gate: `bpmnkit lint lint <file> --profile deploy` must report 0 errors. The `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` are warnings (style advice), which Camunda's own gate does not flag.
 
 Scenario mock for v2 (the whole sub-process is one job):
 
@@ -35,7 +35,7 @@ Scenario mock for v2 (the whole sub-process is one job):
 
 ## Older Camunda (v1)
 
-Everything below describes the v1 job-worker agent produced by the plan `aiAgent` step and `casen synth` (the plan compiler emits only v1). Use it only for clusters before 8.10.
+Everything below describes the v1 job-worker agent produced by the plan `aiAgent` step and `bpmnkit synth` (the plan compiler emits only v1). Use it only for clusters before 8.10.
 
 ## How it's modeled (facts, not guesses — byte-verified against the bundled Camunda template)
 
@@ -46,7 +46,7 @@ Everything below describes the v1 job-worker agent produced by the plan `aiAgent
 - The agent's own final answer lands in a process variable via `zeebe:output source="=agent"` (default target `agent`).
 - Provider/model/prompt configuration is a flat set of dotted `zeebe:input` bindings: `provider.type`, `provider.<provider>.model.model`, `provider.<provider>.authentication.*`, `data.systemPrompt.prompt`, `data.userPrompt.prompt`, `data.memory.storage.type`, `data.limits.maxModelCalls`.
 
-You never write any of this by hand — the `aiAgent` plan step (compiled via `casen synth`) generates it deterministically. What matters is getting the **plan step** right.
+You never write any of this by hand — the `aiAgent` plan step (compiled via `bpmnkit synth`) generates it deterministically. What matters is getting the **plan step** right.
 
 ## The `aiAgent` plan step
 
@@ -93,17 +93,17 @@ You never write any of this by hand — the `aiAgent` plan step (compiled via `c
 }
 ```
 
-This is a real, tested, `casen synth`-compiled example — `casen lint --profile deploy` reports zero errors for it. Notes on the pattern:
+This is a real, tested, `bpmnkit synth`-compiled example — `bpmnkit lint --profile deploy` reports zero errors for it. Notes on the pattern:
 
 - **Every tool needs an `id` and a `description`** — the description becomes what the LLM reads to decide when to call the tool. Write it like you're briefing a new teammate, not a code comment.
-- **A tool is either connector-backed (`connector`) or a plain job-worker (`jobType`)** — never both. Use `casen connector search`/`show` to find a template first; fall back to `jobType` (with a scaffolded worker) only when no connector exists.
+- **A tool is either connector-backed (`connector`) or a plain job-worker (`jobType`)** — never both. Use `bpmnkit connector search`/`show` to find a template first; fall back to `jobType` (with a scaffolded worker) only when no connector exists.
 - **`params[].target` overriding a connector's static value is the standard way to let the LLM control one field of an otherwise-fixed connector call** — as in `notify_slack` above: the channel is fixed (a business decision), but the message text is supplied by the agent at call time. Any `values` key a `params[].target` also names is a required placeholder that gets *replaced*, not duplicated — give it a placeholder string, not a real value, when a param overrides it.
-- **Give the agent an error boundary.** An unhandled agent failure (model error, tool failure not caught by the tool itself) should have somewhere to go — `casen lint --profile deploy` flags a sub-process (agentic or not) with no error boundary as a warning under the default profile.
+- **Give the agent an error boundary.** An unhandled agent failure (model error, tool failure not caught by the tool itself) should have somewhere to go — `bpmnkit lint --profile deploy` flags a sub-process (agentic or not) with no error boundary as a warning under the default profile.
 - **Secrets**: provider auth keys and any tool credential always use `{{secrets.NAME}}` — never a literal key.
 
 ## Known noisy finding
 
-`casen lint`'s `data-flow` category can report spurious "variable referenced but never set" findings against an `aiAgent` step's own provider/model/prompt bindings (e.g. a hyphenated model id like `claude-sonnet-5` gets misread as `claude - sonnet - 5`, or a prose system prompt's first word gets flagged). This is a known limitation of the `data-flow` heuristic (it treats bare literal text as potential FEEL) — it does **not** affect `--profile deploy` (errors only) and is safe to ignore for `aiAgent` steps specifically. Don't try to "fix" it by rewording prompts.
+`bpmnkit lint`'s `data-flow` category can report spurious "variable referenced but never set" findings against an `aiAgent` step's own provider/model/prompt bindings (e.g. a hyphenated model id like `claude-sonnet-5` gets misread as `claude - sonnet - 5`, or a prose system prompt's first word gets flagged). This is a known limitation of the `data-flow` heuristic (it treats bare literal text as potential FEEL) — it does **not** affect `--profile deploy` (errors only) and is safe to ignore for `aiAgent` steps specifically. Don't try to "fix" it by rewording prompts.
 
 ## Testing an agent without calling a real LLM
 
@@ -119,4 +119,4 @@ Scenarios mock the whole agent sub-process as one job (keyed by `io.camunda.agen
 }
 ```
 
-This is enough to verify the process routes through and around the agent correctly. It does not verify the agent's actual tool-calling behavior, prompt quality, or model choice — those require a real (or sandboxed) LLM run, which is out of scope for `casen test`.
+This is enough to verify the process routes through and around the agent correctly. It does not verify the agent's actual tool-calling behavior, prompt quality, or model choice — those require a real (or sandboxed) LLM run, which is out of scope for `bpmnkit test`.

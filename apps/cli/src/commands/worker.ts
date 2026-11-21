@@ -50,11 +50,11 @@ export const workerCmd: Command = {
 	examples: [
 		{
 			description: "Subscribe to jobs of type 'payment-service'",
-			command: "casen worker payment-service",
+			command: "bpmnkit worker payment-service",
 		},
 		{
 			description: "Return custom variables on completion",
-			command: 'casen worker payment-service --variables \'{"status":"ok","amount":100}\'',
+			command: 'bpmnkit worker payment-service --variables \'{"status":"ok","amount":100}\'',
 		},
 	],
 

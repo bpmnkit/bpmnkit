@@ -79,7 +79,7 @@ beforeEach(() => {
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
-describe("casen lint — engine layer", () => {
+describe("bpmnkit lint — engine layer", () => {
 	it("reports the deploy error on a Camunda Cloud model", async () => {
 		const file = fixture("c8.bpmn", makeXml("Camunda Cloud"))
 		const result = await run(file)

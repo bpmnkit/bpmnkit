@@ -4,7 +4,7 @@ Teams coming from bpmn.io usually already have a lint configuration: a `.bpmnlin
 their diagrams, bpmnlint's built-in rules, and maybe a `bpmnlint-plugin-*` package or two.
 BPMN Kit reads that file. You do not need to translate it.
 
-`casen lint` and the [VS Code extension](/docs/guides/vscode) look for `.bpmnlintrc` in the
+`bpmnkit lint` and the [VS Code extension](/docs/guides/vscode) look for `.bpmnlintrc` in the
 diagram's folder and then in each parent folder, and use the first one they find. What happens
 next depends on whether your project has bpmnlint installed.
 
@@ -23,7 +23,7 @@ rule bpmnlint just ran, so no problem is reported twice.
 - A finding that is BPMN Kit's equivalent of a bpmnlint rule (see the table below) takes the
   level your config gives that rule. `"off"` removes it.
 - A rule your config enables, and that BPMN Kit implements natively for compatibility, runs.
-  These rules never run without a `.bpmnlintrc`, so the default `casen lint` report does not
+  These rules never run without a `.bpmnlintrc`, so the default `bpmnkit lint` report does not
   change.
 - A rule your config does not mention keeps BPMN Kit's default. The `.bpmnlintrc` overrides
   BPMN Kit where the two overlap. It does not switch off BPMN Kit's other checks (FEEL syntax,

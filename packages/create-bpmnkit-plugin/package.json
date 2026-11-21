@@ -1,0 +1,32 @@
+{
+	"name": "@bpmnkit/create-bpmnkit-plugin",
+	"version": "0.1.0",
+	"type": "module",
+	"bin": {
+		"create-bpmnkit-plugin": "./bin/create-bpmnkit-plugin.js"
+	},
+	"files": ["LICENSE", "README.md", "bin/*.js"],
+	"scripts": {
+		"test": "node --test test/bin.test.mjs"
+	},
+	"dependencies": {
+		"@bpmnkit/create-casen-plugin": "workspace:^"
+	},
+	"description": "Scaffold a new bpmnkit CLI plugin in seconds (new name of create-casen-plugin)",
+	"keywords": ["camunda", "bpmnkit", "cli", "plugin", "scaffold", "create"],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bpmnkit/bpmnkit"
+	},
+	"homepage": "https://bpmnkit.com",
+	"bugs": {
+		"url": "https://github.com/bpmnkit/bpmnkit/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"engines": {
+		"node": ">=20"
+	}
+}

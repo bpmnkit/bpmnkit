@@ -1,6 +1,6 @@
 ---
 title: Process Templates
-description: 25 runnable Camunda 8 process templates — business processes and AI agent patterns — with test scenarios, from the gallery, the editor or casen template use.
+description: 25 runnable Camunda 8 process templates — business processes and AI agent patterns — with test scenarios, from the gallery, the editor or bpmnkit template use.
 sidebar:
   order: 3
 ---
@@ -44,12 +44,12 @@ Pick one of three ways from a template's page:
   `/editor?template=<id>`, and it only accepts a template id from the gallery.
 - **Download .bpmn** saves the process model. The page also links the scenarios file and any
   DMN or form files.
-- **`casen template use`** writes all the files into your project:
+- **`bpmnkit template use`** writes all the files into your project:
 
 ```sh
-casen template list                          # all templates
-casen template list --category ai-agents     # one category
-casen template use purchase-request-approval processes/
+bpmnkit template list                          # all templates
+bpmnkit template list --category ai-agents     # one category
+bpmnkit template use purchase-request-approval processes/
 ```
 
 ```text
@@ -58,8 +58,8 @@ casen template use purchase-request-approval processes/
 ✓ Wrote processes/approval-matrix.dmn
 ```
 
-`casen template use` does not overwrite a file that already exists. Pass `--force` to
-overwrite it. Then deploy each file with `casen deploy deploy <file> --target camunda8`, or
+`bpmnkit template use` does not overwrite a file that already exists. Pass `--force` to
+overwrite it. Then deploy each file with `bpmnkit deploy deploy <file> --target camunda8`, or
 deploy them from the editor.
 
 ## Run the scenarios
@@ -104,7 +104,7 @@ What the scenarios can and cannot exercise follows from what the TypeScript engi
 - **The inclusive split** in `employee-onboarding` ends each branch at its own end event.
   The simulator does not synchronise an inclusive join.
 
-`casen test` runs the same scenarios on the Reebe WebAssembly engine, which has Zeebe's
+`bpmnkit test` runs the same scenarios on the Reebe WebAssembly engine, which has Zeebe's
 semantics. Every gallery scenario passes on both engines, and the package tests check both.
 Reebe runs the scenario in the same way as the simulator:
 
@@ -142,7 +142,7 @@ import {
 
 const template = getTemplate("ai-evaluator-optimizer")
 const defs = template?.build()                  // BpmnDefinitions, laid out
-const files = template ? templateFiles(template) : [] // [{ path, content }] — what casen writes
+const files = template ? templateFiles(template) : [] // [{ path, content }] — what bpmnkit writes
 const workers = defs ? listJobTypes(defs) : []  // job types your workers must serve
 ```
 
@@ -154,5 +154,5 @@ the builder before you export it.
 Templates are TypeScript files in `packages/patterns/src/templates/`, one file per category.
 Add a `ProcessTemplate` object to the file, then add it to `ALL_TEMPLATES` in `index.ts`. The
 gallery test checks it with no other change: it must build, lint with no errors, round-trip,
-and pass every scenario. The gallery page, the `casen template` commands and `llms.txt` all
+and pass every scenario. The gallery page, the `bpmnkit template` commands and `llms.txt` all
 read the same list.

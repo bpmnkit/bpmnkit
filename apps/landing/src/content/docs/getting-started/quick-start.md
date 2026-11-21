@@ -57,7 +57,7 @@ await new Promise<void>((resolve) => {
 });
 ```
 
-Prefer to see it? Write `xml` to `hello.bpmn` and run [`casen dev`](/docs/cli/dev) in that
+Prefer to see it? Write `xml` to `hello.bpmn` and run [`bpmnkit dev`](/docs/cli/dev) in that
 folder: the editor opens in your browser with the simulator, and every save is linted and runs
 the file's scenario tests.
 
@@ -119,6 +119,6 @@ console.log("Started instance:", instance.processInstanceKey);
 - [Building Processes](/docs/guides/building-processes) — tasks, events, sub-processes, and markers
 - [Gateways & Branching](/docs/guides/gateways) — exclusive, parallel, and event-based gateways
 
-> **AI-first workflow** — if you have Claude Code, the fastest path is `casen skills install`
+> **AI-first workflow** — if you have Claude Code, the fastest path is `bpmnkit skills install`
 > then `/implement <description>`. Claude generates the BPMN, scaffolds workers, and deploys —
 > all from a single prompt.

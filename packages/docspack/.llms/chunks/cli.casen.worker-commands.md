@@ -1,14 +1,14 @@
-# casen CLI — Worker commands
+# bpmnkit CLI — Worker commands
 
 ```sh
 # Run a simple auto-complete worker (for testing)
-casen worker payment-service
+bpmnkit worker payment-service
 
 # Start scaffolded workers from ./workers/
-casen worker start
+bpmnkit worker start
 
 # Start a specific scaffolded worker
-casen worker start send-invoice
+bpmnkit worker start send-invoice
 ```
 
 
@@ -21,12 +21,12 @@ Hire coding-agent CLIs as durable job workers. They serve the `.agent()` steps o
 
 ```sh
 # Hire: everything after -- is the command; the prompt goes on stdin unless an argument has {prompt}
-casen agent hire claude --roles plan,pr-review --rank senior -- claude -p
-casen agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
+bpmnkit agent hire claude --roles plan,pr-review --rank senior -- claude -p
+bpmnkit agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
 
-casen agent list            # hired agents and the job types they serve
-casen agent fire copilot    # remove one
-casen agent work            # run the workforce against the active profile until Ctrl+C
+bpmnkit agent list            # hired agents and the job types they serve
+bpmnkit agent fire copilot    # remove one
+bpmnkit agent work            # run the workforce against the active profile until Ctrl+C
 ```
 
 ---

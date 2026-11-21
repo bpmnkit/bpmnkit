@@ -1,4 +1,4 @@
-# casen generate — Deploy gate
+# bpmnkit generate — Deploy gate
 
 Every mode writes BPMN that deploys on Camunda 8, or nothing. When the definition leaves out a
 value Camunda 8 needs (a job type, a message name or correlation key, a timer's time, an error

@@ -1,7 +1,7 @@
 import { type ProcessPlan, compilePlan } from "@bpmnkit/core"
 
 /**
- * Compiles a `ProcessPlan` JSON text into BPMN XML, the same step `casen synth` runs. The compiler
+ * Compiles a `ProcessPlan` JSON text into BPMN XML, the same step `bpmnkit synth` runs. The compiler
  * collects problems instead of throwing, so a result with no XML (including a model Camunda 8 would
  * refuse on deploy) is rethrown with them listed.
  */

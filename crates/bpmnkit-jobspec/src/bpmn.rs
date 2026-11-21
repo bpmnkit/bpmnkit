@@ -1,5 +1,5 @@
 //! BPMN → jobs. The job list (types, elements, headers, catchable errors) follows
-//! `extractProcessContract` in `@bpmnkit/core` (`process-types.ts`), the source of `casen gen
+//! `extractProcessContract` in `@bpmnkit/core` (`process-types.ts`), the source of `bpmnkit gen
 //! types`; `conformance/jobspec/jobs.json` pins it. On top of that the IR keeps what the
 //! classifier and the emitters need: io mappings, retries, templates, properties, URLs.
 

@@ -26,7 +26,7 @@ async function run(
 	return captured
 }
 
-describe("casen connector api", () => {
+describe("bpmnkit connector api", () => {
 	it("prints the service the query names, with its best endpoint first", async () => {
 		const { info } = await run(["create a stripe customer"], { limit: "1" })
 		expect(info[1]).toBe(

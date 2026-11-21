@@ -1,12 +1,12 @@
 ---
 title: "Recipes: Element Templates and Connectors"
-description: Apply an element template or connector to a service task, find a template's property ids with the casen CLI, and set values by property id.
+description: Apply an element template or connector to a service task, find a template's property ids with the bpmnkit CLI, and set values by property id.
 sidebar:
   order: 20
 ---
 
 To apply an element template to a task, such as the REST connector, call `applyTemplateToElement`
-in a script or `casen connector apply` from the command line. An element template (connector
+in a script or `bpmnkit connector apply` from the command line. An element template (connector
 template) sets a task's job type, headers and input mappings by property id.
 
 ## How do I apply an element template to a service task?
@@ -47,19 +47,19 @@ the template's `appliesTo` does not cover the element. A template id such as
 
 ## How do I find a connector template's property ids?
 
-Use the `casen` CLI. `connector show` with `--condensed` prints one line per non-hidden property: the id you
+Use the `bpmnkit` CLI. `connector show` with `--condensed` prints one line per non-hidden property: the id you
 pass as a value, its type, default, whether it is required and the condition that switches it on.
 `--filter` keeps the properties whose key or label contains the text.
 
 ```sh
-casen connector show io.camunda.connectors.HttpJson.v2 --condensed --filter retry
-casen connector search slack
+bpmnkit connector show io.camunda.connectors.HttpJson.v2 --condensed --filter retry
+bpmnkit connector search slack
 ```
 
 The same ids apply to the file-based command, which edits a `.bpmn` in place:
 
 ```sh
-casen connector apply order.bpmn call-api http --set url=https://example.com --set retryCount=5
+bpmnkit connector apply order.bpmn call-api http --set url=https://example.com --set retryCount=5
 ```
 
 In code, `propertyKey(prop)` from `@bpmnkit/core/connectors` returns the same id for each entry

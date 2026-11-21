@@ -3,7 +3,7 @@
 Camunda 8 stays the focus, but you can export a model for Camunda 7 or Operaton, best effort:
 
 ```sh
-casen migrate c7 order.bpmn --to camunda7   # writes order.c7.bpmn
+bpmnkit migrate c7 order.bpmn --to camunda7   # writes order.c7.bpmn
 ```
 
 In code, `convertCamunda8To7(Bpmn.parse(xml))` returns `{ definitions, findings }`. It maps job types to

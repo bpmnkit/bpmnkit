@@ -14,7 +14,7 @@ For four rules, BPMN Kit's own check looks at a different set of elements, so th
 **replaces** it while your config sets the rule, at any level. For example, `flow/unreachable`
 reports everything that cannot be reached from a start event, and bpmnlint's
 `no-implicit-start` reports only elements without an incoming flow. Without a `.bpmnlintrc`,
-`casen lint` reports BPMN Kit's own checks as before.
+`bpmnkit lint` reports BPMN Kit's own checks as before.
 
 | bpmnlint rule | recommended | BPMN Kit finding | Match | Notes |
 |---|---|---|---|---|

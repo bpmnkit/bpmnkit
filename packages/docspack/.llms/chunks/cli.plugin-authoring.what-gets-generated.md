@@ -1,4 +1,4 @@
-# casen Plugin Authoring — What gets generated
+# bpmnkit Plugin Authoring — What gets generated
 
 ```
 casen-deploy/
@@ -15,7 +15,7 @@ casen-deploy/
 {
   "name": "casen-deploy",
   "version": "0.1.0",
-  "description": "Git-tag-aware deploys for casen",
+  "description": "Git-tag-aware deploys for bpmnkit",
   "type": "module",
   "main": "dist/index.js",
   "keywords": ["casen-plugin"],
@@ -31,7 +31,7 @@ casen-deploy/
 }
 ```
 
-The `"casen-plugin"` keyword is injected automatically — it is how `casen plugin search` discovers
+The `"casen-plugin"` keyword is injected automatically — it is how `bpmnkit plugin search` discovers
 your package on npm once published.
 
 ### Generated `src/index.ts`

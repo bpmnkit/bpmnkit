@@ -25,7 +25,7 @@ export interface WorkerClientOptions {
 }
 
 /**
- * What a worker for one job type can rely on — the shape `casen gen types`
+ * What a worker for one job type can rely on — the shape `bpmnkit gen types`
  * emits for each entry of its `JobTypes` map.
  */
 export interface JobContract {
@@ -43,7 +43,7 @@ export interface UntypedJobContract {
 	errors: string
 }
 
-/** A map from job type to its contract, e.g. the `JobTypes` that `casen gen types` generates. */
+/** A map from job type to its contract, e.g. the `JobTypes` that `bpmnkit gen types` generates. */
 export type JobContractMap<J> = { [K in keyof J]: JobContract }
 
 type UntypedJobs = Record<string, UntypedJobContract>

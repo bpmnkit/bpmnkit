@@ -2,7 +2,7 @@
 
 ```sh
 npm install @bpmnkit/operate
-npm install -g @bpmnkit/cli   # provides `casen proxy start` and `casen profile`
+npm install -g @bpmnkit/cli   # provides `bpmnkit proxy start` and `bpmnkit profile`
 ```
 
 
@@ -29,9 +29,9 @@ Camunda 8 Run serves the Orchestration Cluster REST API at `http://localhost:808
 with no authentication by default.
 
 ```sh
-casen profile create c8run --base-url http://localhost:8080/v2 --auth-type none
-casen profile use c8run
-casen proxy start                 # http://localhost:3033
+bpmnkit profile create c8run --base-url http://localhost:8080/v2 --auth-type none
+bpmnkit profile use c8run
+bpmnkit proxy start                 # http://localhost:3033
 ```
 
 If you turned on Basic authentication in Camunda 8 Run's `application.yaml`, create the
@@ -43,15 +43,15 @@ SaaS requires an OAuth access token. Create client credentials for the cluster i
 Camunda Console and download the credentials file. Import it as a profile:
 
 ```sh
-casen profile import saas ./camunda-credentials.sh   # reads ZEEBE_REST_ADDRESS, CAMUNDA_CLIENT_ID, …
-casen profile use saas
-casen proxy start
+bpmnkit profile import saas ./camunda-credentials.sh   # reads ZEEBE_REST_ADDRESS, CAMUNDA_CLIENT_ID, …
+bpmnkit profile use saas
+bpmnkit proxy start
 ```
 
 Or create it by hand. The base URL is the cluster's REST address plus `/v2`:
 
 ```sh
-casen profile create saas \
+bpmnkit profile create saas \
   --base-url https://<region>.zeebe.camunda.io/<cluster-id>/v2 \
   --auth-type oauth2 --client-id <id> --client-secret <secret> \
   --token-url https://login.cloud.camunda.io/oauth/token --audience zeebe.camunda.io

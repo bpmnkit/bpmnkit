@@ -1,9 +1,9 @@
 # Pattern Library — Using patterns from the CLI
 
 ```sh
-casen pattern list
-casen pattern get invoice-approval
-casen pattern get "employee onboarding workflow"   # free-text match
+bpmnkit pattern list
+bpmnkit pattern get invoice-approval
+bpmnkit pattern get "employee onboarding workflow"   # free-text match
 ```
 
 
@@ -13,7 +13,7 @@ The same package has a second export, `@bpmnkit/patterns/templates`. It holds th
 [runnable process templates](/docs/guides/templates) behind the [gallery](/templates):
 complete, deployable processes with test scenarios. A pattern gives an AI model context to
 write its own process. A template is a finished process you copy and change. Use
-`casen pattern` for patterns and `casen template` for templates.
+`bpmnkit pattern` for patterns and `bpmnkit template` for templates.
 
 
 ## Using patterns from code

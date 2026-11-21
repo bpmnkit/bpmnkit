@@ -1,11 +1,11 @@
-# casen check
+# bpmnkit check
 
-`casen check` is the gate to run before you deploy, or after every edit in an agent loop.
+`bpmnkit check` is the gate to run before you deploy, or after every edit in an agent loop.
 It takes any mix of BPMN, DMN and form files and checks each one, then the references
 between them. It exits non-zero when there is an error.
 
 ```sh
-casen check order.bpmn review.form discount.dmn
+bpmnkit check order.bpmn review.form discount.dmn
 ```
 
 ```

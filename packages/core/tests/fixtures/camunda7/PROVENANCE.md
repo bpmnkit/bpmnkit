@@ -1,7 +1,7 @@
 # Camunda 7 fixtures — provenance
 
 Consumed by `tests/camunda7-migrate.test.ts` (end-to-end conversions) and by the
-`casen migrate c7` tests in `apps/cli`.
+`bpmnkit migrate c7` tests in `apps/cli`.
 
 | File | Source | Terms | Added |
 |---|---|---|---|

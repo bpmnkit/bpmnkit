@@ -24,10 +24,10 @@ const skillsInstallCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Install AIKit skills", command: "casen skills install" },
+		{ description: "Install AIKit skills", command: "bpmnkit skills install" },
 		{
 			description: "Reinstall and overwrite existing skills",
-			command: "casen skills install --force",
+			command: "bpmnkit skills install --force",
 		},
 	],
 
@@ -99,7 +99,7 @@ const skillsInstallCmd: Command = {
 		}
 		ctx.output.info("")
 		ctx.output.info(
-			"These commands drive `casen` directly — no MCP server or proxy needed. " +
+			"These commands drive `bpmnkit` directly — no MCP server or proxy needed. " +
 				"For the full skill set (implement/extend/agent/connect/review/test/deploy + generated " +
 				"reference docs), install the Claude Code plugin instead: " +
 				"/plugin marketplace add bpmnkit/bpmnkit && /plugin install bpmnkit@bpmnkit",

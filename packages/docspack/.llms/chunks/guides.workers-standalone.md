@@ -2,7 +2,7 @@
 
 Workers are TypeScript programs that poll Zeebe for jobs and execute business logic.
 They depend only on `@bpmnkit/worker-client` — no BPMNKit SDK required at runtime.
-Run them anywhere: terminal, Docker, serverless, or via `casen worker start`.
+Run them anywhere: terminal, Docker, serverless, or via `bpmnkit worker start`.
 
 
 ## Scaffold a worker

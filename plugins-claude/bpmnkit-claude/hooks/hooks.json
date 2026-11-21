@@ -3,7 +3,7 @@
 		"SessionStart": [
 			{
 				"type": "command",
-				"command": "which casen > /dev/null 2>&1 || echo 'BPMNKit plugin: casen CLI not found. Install with: npm install -g @bpmnkit/cli'"
+				"command": "which bpmnkit > /dev/null 2>&1 || echo 'BPMNKit plugin: bpmnkit CLI not found. Install with: npm install -g @bpmnkit/cli'"
 			}
 		],
 		"PostToolUse": [
@@ -12,7 +12,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "FILE=$(node -e \"try{const i=JSON.parse(process.env.CLAUDE_TOOL_INPUT||'{}');process.stdout.write(i.file_path||i.path||'')}catch{}\"); [[ \"$FILE\" == *.bpmn ]] || exit 0; command -v casen > /dev/null 2>&1 || exit 0; OUT=$(casen check \"$FILE\" --deploy 2>&1) && exit 0; echo \"$FILE would not deploy on Camunda 8 (casen check --deploy):\" >&2; echo \"$OUT\" >&2; exit 2"
+						"command": "FILE=$(node -e \"try{const i=JSON.parse(process.env.CLAUDE_TOOL_INPUT||'{}');process.stdout.write(i.file_path||i.path||'')}catch{}\"); [[ \"$FILE\" == *.bpmn ]] || exit 0; command -v bpmnkit > /dev/null 2>&1 || exit 0; OUT=$(bpmnkit check \"$FILE\" --deploy 2>&1) && exit 0; echo \"$FILE would not deploy on Camunda 8 (bpmnkit check --deploy):\" >&2; echo \"$OUT\" >&2; exit 2"
 					}
 				]
 			}

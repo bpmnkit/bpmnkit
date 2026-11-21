@@ -1,7 +1,7 @@
-# bpmnlint Compatibility — `casen lint`
+# bpmnlint Compatibility — `bpmnkit lint`
 
 ```sh
-casen lint lint diagrams/order.bpmn
+bpmnkit lint lint diagrams/order.bpmn
 ```
 
 ```text
@@ -28,7 +28,7 @@ error to `warn`. A `.bpmnlintrc` that is not valid JSON, or has a rule level tha
 message.
 
 Unlike the `bpmnlint` command, which reads `.bpmnlintrc` from the current directory only,
-BPMN Kit starts at the diagram's folder. Running `casen lint` from anywhere therefore gives
+BPMN Kit starts at the diagram's folder. Running `bpmnkit lint` from anywhere therefore gives
 the same result. Plugins and `moddleExtensions` resolve from the `.bpmnlintrc`'s folder.
 
 ---

@@ -1,4 +1,4 @@
-# casen migrate — Where the output goes
+# bpmnkit migrate — Where the output goes
 
 - By default, each `name.bpmn` is written to `name.c8.bpmn` beside it. The Camunda 7 file is
   never changed.

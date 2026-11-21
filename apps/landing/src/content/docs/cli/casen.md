@@ -1,11 +1,11 @@
 ---
-title: casen CLI
+title: bpmnkit CLI
 description: Interactive TUI for managing Camunda 8 clusters from the terminal.
 sidebar:
   order: 1
 ---
 
-`casen` is an interactive terminal UI (TUI) for managing Camunda 8. Navigate with arrow keys,
+`bpmnkit` is an interactive terminal UI (TUI) for managing Camunda 8. Navigate with arrow keys,
 no flags to memorize.
 
 ## Installation
@@ -17,7 +17,7 @@ pnpm add -g @bpmnkit/cli
 ## Quick Start
 
 ```sh
-casen
+bpmnkit
 ```
 
 The main menu appears. Use ↑ ↓ to navigate, Enter to select, Escape to go back.
@@ -25,7 +25,7 @@ The main menu appears. Use ↑ ↓ to navigate, Enter to select, Escape to go ba
 ## Navigation Structure
 
 ```
-casen
+bpmnkit
 ├── generate        — generate or modify BPMN files without the TUI (alias: gen)
 │   ├── bpmn        — templates, CompactDiagram JSON, or patch existing files
 │   └── types       — TypeScript types for job workers, generated from BPMN
@@ -34,8 +34,8 @@ casen
 │   ├── bpmn        — BPMN diagrams rendered as SVG
 │   ├── dmn         — DMN decision tables
 │   └── form        — Camunda form layouts
-├── build           — spec → .bpmn + forms → lint → deploy in one call (casen build <spec>)
-├── check           — check .bpmn, .dmn and .form files in one call (casen check <file...>)
+├── build           — spec → .bpmn + forms → lint → deploy in one call (bpmnkit build <spec>)
+├── check           — check .bpmn, .dmn and .form files in one call (bpmnkit check <file...>)
 ├── lint            — static analysis and auto-fix for BPMN files
 │   ├── lint        — run all checks, report findings
 │   └── improve     — AI-assisted improvement suggestions
@@ -85,37 +85,37 @@ casen
 
 ## Generate BPMN files
 
-`casen generate bpmn` creates BPMN files from the command line — no interactive menu required.
+`bpmnkit generate bpmn` creates BPMN files from the command line — no interactive menu required.
 Choose a built-in template, supply a full CompactDiagram JSON definition, or patch an existing file.
 
 ```sh
-casen generate bpmn --template approval --process-id leave-request
-casen generate bpmn --input order.bpmn --dump-compact   # inspect as JSON for AI
-casen generate bpmn --input order.bpmn --patch '{"elements":[...],"flows":[...]}'
+bpmnkit generate bpmn --template approval --process-id leave-request
+bpmnkit generate bpmn --input order.bpmn --dump-compact   # inspect as JSON for AI
+bpmnkit generate bpmn --input order.bpmn --patch '{"elements":[...],"flows":[...]}'
 ```
 
-`casen gen types` turns BPMN files into TypeScript types for job workers — job types, their
+`bpmnkit gen types` turns BPMN files into TypeScript types for job workers — job types, their
 variables, output and headers, message names and error codes — and can check that every job type has
 a worker:
 
 ```sh
-casen gen types processes/ --out src/generated/bpmn-types.ts
-casen gen types processes/ --check-workers "src/**/*.ts" --strict
+bpmnkit gen types processes/ --out src/generated/bpmn-types.ts
+bpmnkit gen types processes/ --check-workers "src/**/*.ts" --strict
 ```
 
-See [casen generate](/docs/cli/generate) for full documentation.
+See [bpmnkit generate](/docs/cli/generate) for full documentation.
 
 ## Start from a gallery template
 
-`casen template` writes one of the runnable templates from the [gallery](/templates) into your
+`bpmnkit template` writes one of the runnable templates from the [gallery](/templates) into your
 project. You get the `.bpmn`, a `.bpmn.tests.json` file with its scenarios, and any `.dmn` or
-`.form` files the process uses. The skeletons from `casen generate bpmn --template` are empty
+`.form` files the process uses. The skeletons from `bpmnkit generate bpmn --template` are empty
 starting shapes. A gallery template is a complete process with its job types, mappings and
 tests.
 
 ```sh
-casen template list --category approvals
-casen template use expense-approval processes/   # --force overwrites existing files
+bpmnkit template list --category approvals
+bpmnkit template use expense-approval processes/   # --force overwrites existing files
 ```
 
 See [Process Templates](/docs/guides/templates) for what each template contains and how to
@@ -123,15 +123,15 @@ run its scenarios.
 
 ## View BPMN, DMN, and Form files
 
-`casen view` opens a local browser-based viewer. Accepts individual files, folders, or a mix.
+`bpmnkit view` opens a local browser-based viewer. Accepts individual files, folders, or a mix.
 
 ```sh
-casen view bpmn ./processes/     # all .bpmn files in a folder
-casen view dmn routing.dmn       # DMN decision table
-casen view open ./project/       # any mix of .bpmn/.dmn/.form
+bpmnkit view bpmn ./processes/     # all .bpmn files in a folder
+bpmnkit view dmn routing.dmn       # DMN decision table
+bpmnkit view open ./project/       # any mix of .bpmn/.dmn/.form
 ```
 
-See [casen view](/docs/cli/view) for full documentation.
+See [bpmnkit view](/docs/cli/view) for full documentation.
 
 ## Connection Profiles
 
@@ -139,15 +139,15 @@ A profile stores the connection details for a Camunda cluster. For Camunda SaaS,
 credentials file Hub offers when you create an API client for a cluster:
 
 ```sh
-casen profile import my-saas-cluster ./camunda-credentials.sh
-casen profile use my-saas-cluster
+bpmnkit profile import my-saas-cluster ./camunda-credentials.sh
+bpmnkit profile use my-saas-cluster
 ```
 
 Or give every value yourself. The base URL is the cluster's REST address ending in `/v2`:
 
 ```sh
-casen profile create local --base-url http://localhost:8080/v2 --auth-type none
-casen profile create my-saas-cluster \
+bpmnkit profile create local --base-url http://localhost:8080/v2 --auth-type none
+bpmnkit profile create my-saas-cluster \
   --base-url https://bru-2.zeebe.camunda.io/<cluster-id>/v2 \
   --auth-type oauth2 --client-id <id> --client-secret <secret> \
   --token-url https://login.cloud.camunda.io/oauth/token
@@ -201,18 +201,18 @@ Variables (JSON): {"method": "card"}
 
 ## Plugins
 
-casen's plugin system lets you extend the CLI with new command groups — your own organisation's
+bpmnkit's plugin system lets you extend the CLI with new command groups — your own organisation's
 workflows, third-party integrations, or community-built tools.
 
 ### Discover plugins
 
 ```sh
-# Browse all published casen plugins
-casen plugin search
+# Browse all published bpmnkit plugins
+bpmnkit plugin search
 
 # Search by keyword
-casen plugin search deploy
-casen plugin search slack
+bpmnkit plugin search deploy
+bpmnkit plugin search slack
 ```
 
 Results are fetched live from the npm registry. Any package tagged with the `casen-plugin` keyword
@@ -222,31 +222,31 @@ appears here.
 
 ```sh
 # Install from npm
-casen plugin install casen-deploy
+bpmnkit plugin install casen-deploy
 
 # Install a local plugin during development
-casen plugin install ./my-plugin
+bpmnkit plugin install ./my-plugin
 ```
 
-Plugins are installed into `~/.casen/plugins/` and loaded automatically the next time casen starts.
+Plugins are installed into `~/.casen/plugins/` and loaded automatically the next time bpmnkit starts.
 
 ### Manage installed plugins
 
 ```sh
 # List installed plugins
-casen plugin list
+bpmnkit plugin list
 
 # Show full details for one plugin
-casen plugin info casen-deploy
+bpmnkit plugin info casen-deploy
 
 # Update a single plugin to the latest version
-casen plugin update casen-deploy
+bpmnkit plugin update casen-deploy
 
 # Update all installed plugins
-casen plugin update
+bpmnkit plugin update
 
 # Remove a plugin
-casen plugin remove casen-deploy
+bpmnkit plugin remove casen-deploy
 ```
 
 Once installed, plugin commands appear in the main TUI and in tab-completion alongside built-in commands.
@@ -260,41 +260,41 @@ compiled deterministically:
 
 ```sh
 # Print the ProcessPlan JSON format reference (schema + field notes)
-casen plan schema
+bpmnkit plan schema
 
 # Compile a plan to laid-out, deployable BPMN
-casen synth synth order-process.plan.json --output order-process.bpmn
+bpmnkit synth synth order-process.plan.json --output order-process.bpmn
 
 # Extend an existing process: lift it back to plan form, then merge a delta plan into it
-casen plan extract order-process.bpmn
-casen synth synth delta.plan.json --merge order-process.bpmn --output order-process.bpmn
+bpmnkit plan extract order-process.bpmn
+bpmnkit synth synth delta.plan.json --merge order-process.bpmn --output order-process.bpmn
 
 # Find and inspect a Camunda connector template
-casen connector search slack
-casen connector show io.camunda.connectors.Slack.v1
-casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
-casen connector apply order-process.bpmn Call http --values call.json   # --set k=v overrides the file
+bpmnkit connector search slack
+bpmnkit connector show io.camunda.connectors.Slack.v1
+bpmnkit connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
+bpmnkit connector apply order-process.bpmn Call http --values call.json   # --set k=v overrides the file
 
 # Deploy-readiness gate, then deploy
 # (a .bpmnlintrc in the diagram's folder or above is honoured; --no-bpmnlintrc ignores it)
-casen lint lint order-process.bpmn --profile deploy
-casen check order-process.bpmn review.form discount.dmn --deploy   # BPMN, DMN and forms together
-casen deploy deploy order-process.bpmn                   # local Reebe
-casen deploy deploy order-process.bpmn --target camunda8 # active Camunda 8 profile
-# `casen deploy` runs the deploy gate before it sends a .bpmn file and exits 1 with its
+bpmnkit lint lint order-process.bpmn --profile deploy
+bpmnkit check order-process.bpmn review.form discount.dmn --deploy   # BPMN, DMN and forms together
+bpmnkit deploy deploy order-process.bpmn                   # local Reebe
+bpmnkit deploy deploy order-process.bpmn --target camunda8 # active Camunda 8 profile
+# `bpmnkit deploy` runs the deploy gate before it sends a .bpmn file and exits 1 with its
 # lines when Camunda 8 would refuse it; --no-validate sends the file anyway.
 ```
 
-`casen synth` reports any problems keyed by JSON path in the plan (e.g. `steps[2].connector.values.token`) — fix the plan, never the XML, and re-run. A model Camunda 8 would refuse on deploy is not written: each reason is a problem keyed `element:<id>`, worded `Not deployable on Camunda <version>: <message> (zeebe/<rule>)`. `--placeholders` fills the values the plan leaves out (a job type, a correlation key) with documented placeholders and lists each one to replace. From code, `compilePlan` and `mergePlan` take `validate` (default `true`), `placeholders` and `camundaVersion`; a refused model returns no `xml`, and the fills are in `result.placeholders`. If the plan has a `tests` array, `casen synth` also writes a `<file>.bpmn.tests.json` sidecar, runnable with `casen test test <file>.bpmn`.
+`bpmnkit synth` reports any problems keyed by JSON path in the plan (e.g. `steps[2].connector.values.token`) — fix the plan, never the XML, and re-run. A model Camunda 8 would refuse on deploy is not written: each reason is a problem keyed `element:<id>`, worded `Not deployable on Camunda <version>: <message> (zeebe/<rule>)`. `--placeholders` fills the values the plan leaves out (a job type, a correlation key) with documented placeholders and lists each one to replace. From code, `compilePlan` and `mergePlan` take `validate` (default `true`), `placeholders` and `camundaVersion`; a refused model returns no `xml`, and the fills are in `result.placeholders`. If the plan has a `tests` array, `bpmnkit synth` also writes a `<file>.bpmn.tests.json` sidecar, runnable with `bpmnkit test test <file>.bpmn`.
 
 ### Run process tests
 
 ```sh
-casen test test order-process.bpmn
-casen test test order-process.bpmn --scenarios cases.json --case "approves the order"
+bpmnkit test test order-process.bpmn
+bpmnkit test test order-process.bpmn --scenarios cases.json --case "approves the order"
 ```
 
-`casen test test` runs a test file on Reebe compiled to WebAssembly. It needs no Java or Docker.
+`bpmnkit test test` runs a test file on Reebe compiled to WebAssembly. It needs no Java or Docker.
 
 | Option | Description |
 |--------|-------------|
@@ -302,10 +302,10 @@ casen test test order-process.bpmn --scenarios cases.json --case "approves the o
 | `--case <name>` | Run only this test case. Repeat it to run several |
 
 It accepts two file formats. A file whose `$schema` contains `cpt-test-cases` is Camunda process
-test (CPT) JSON. Any other file is the older scenario array that `casen synth` writes. Both run on
+test (CPT) JSON. Any other file is the older scenario array that `bpmnkit synth` writes. Both run on
 the same engine. The command exits 0 when every case passes. A CPT failure prints
 `instruction <index> (<type>): <message>`. See
-[Does it run? Test it with casen test](/docs/guides/executable-camunda-process#does-it-run-test-it-with-casen-test)
+[Does it run? Test it with bpmnkit test](/docs/guides/executable-camunda-process#does-it-run-test-it-with-casen-test)
 for the supported instructions and the known gaps.
 
 `--check` also proves the result runs:
@@ -316,7 +316,7 @@ for the supported instructions and the known gaps.
 A run that cannot reach its end fails the command:
 
 ```
-$ casen synth synth order-process.plan.json --check
+$ bpmnkit synth synth order-process.plan.json --check
 ✓ Wrote order-process.plan.bpmn
 ✓ Dry run of order-validation-failed reaches "Ops notified" · 1 connector(s) mocked
 Secrets to create in the cluster before deploying:
@@ -327,21 +327,21 @@ With `--json`, the findings are in the output's `check` field.
 
 See [Building Processes with AI](/docs/guides/ai-implement) and [AI Agents](/docs/guides/ai-agents) for full walkthroughs.
 
-`casen lint lint --profile sketch` skips every Camunda 8 deployability rule, for a process
+`bpmnkit lint lint --profile sketch` skips every Camunda 8 deployability rule, for a process
 that does not target an engine yet. A user task without a form is reported only under
 `--profile deploy` or with `--user-task-forms require`. To check DMN and form files too, use
-[`casen check`](/docs/cli/check).
+[`bpmnkit check`](/docs/cli/check).
 
-`casen lint` reads a `.bpmnlintrc` if your project has one. See
+`bpmnkit lint` reads a `.bpmnlintrc` if your project has one. See
 [bpmnlint Compatibility](/docs/guides/bpmnlint) for how the rules map and how to run your
 own `bpmnlint-plugin-*` rules.
 
 ## AIKit Skills
 
-`casen` ships six lightweight, CLI-only Claude Code slash commands (no MCP server, no proxy):
+`bpmnkit` ships six lightweight, CLI-only Claude Code slash commands (no MCP server, no proxy):
 
 ```sh
-casen skills install
+bpmnkit skills install
 ```
 
 | Command | Description |
@@ -350,10 +350,10 @@ casen skills install
 | `/review <path>` | Run the full lint report and report a deploy-ready verdict |
 | `/test <path>` | Run scenario tests and report path/branch coverage |
 | `/deploy <path>` | Deploy-readiness gate, then deploy to local Reebe or Camunda 8 |
-| `/dmn <description>` | Write a DMN decision table from `casen agent-card dmn` |
-| `/form <description>` | Write a Camunda form from `casen agent-card form` |
+| `/dmn <description>` | Write a DMN decision table from `bpmnkit agent-card dmn` |
+| `/form <description>` | Write a Camunda form from `bpmnkit agent-card form` |
 
-`casen agent-card bpmn|dmn|form` prints the [agent card](/docs/agent-cards/bpmn) for a file type: a ~1–1.5k-token cheat sheet with a runnable create/export/edit/validate script, the top options and the traps. `--text` on `bpmn` adds the line-format guide `parseProcessText` reads.
+`bpmnkit agent-card bpmn|dmn|form` prints the [agent card](/docs/agent-cards/bpmn) for a file type: a ~1–1.5k-token cheat sheet with a runnable create/export/edit/validate script, the top options and the traps. `--text` on `bpmn` adds the line-format guide `parseProcessText` reads.
 
 For the richer skill set (`/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, plus generated reference docs), install the Claude Code plugin instead: `/plugin marketplace add bpmnkit/bpmnkit` then `/plugin install bpmnkit@bpmnkit` ([Claude Code plugin](/docs/guides/claude-code-plugin#via-marketplace)). See [AIKit Skills](/docs/cli/skills) for full documentation.
 
@@ -361,13 +361,13 @@ For the richer skill set (`/bpmnkit:implement`, `:extend`, `:agent`, `:connect`,
 
 ```sh
 # Run a simple auto-complete worker (for testing)
-casen worker payment-service
+bpmnkit worker payment-service
 
 # Start scaffolded workers from ./workers/
-casen worker start
+bpmnkit worker start
 
 # Start a specific scaffolded worker
-casen worker start send-invoice
+bpmnkit worker start send-invoice
 ```
 
 ## Agent workforce
@@ -379,12 +379,12 @@ Hire coding-agent CLIs as durable job workers. They serve the `.agent()` steps o
 
 ```sh
 # Hire: everything after -- is the command; the prompt goes on stdin unless an argument has {prompt}
-casen agent hire claude --roles plan,pr-review --rank senior -- claude -p
-casen agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
+bpmnkit agent hire claude --roles plan,pr-review --rank senior -- claude -p
+bpmnkit agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
 
-casen agent list            # hired agents and the job types they serve
-casen agent fire copilot    # remove one
-casen agent work            # run the workforce against the active profile until Ctrl+C
+bpmnkit agent list            # hired agents and the job types they serve
+bpmnkit agent fire copilot    # remove one
+bpmnkit agent work            # run the workforce against the active profile until Ctrl+C
 ```
 
 ## Local engine (Reebe)
@@ -398,14 +398,14 @@ trademarks of Camunda Services GmbH.
 
 ```sh
 # Embedded SQLite, no external database
-casen reebe start
+bpmnkit reebe start
 
 # REST on 26500, where ZEEBE_ADDRESS points by default. The gRPC gateway uses 26500
 # unless told otherwise, so move it out of the way.
-casen reebe start --port 26500 --grpc-port 26501
+bpmnkit reebe start --port 26500 --grpc-port 26501
 
 # PostgreSQL instead of the embedded database
-casen reebe start --database-url postgres://user:pass@localhost/reebe
+bpmnkit reebe start --database-url postgres://user:pass@localhost/reebe
 ```
 
 | Flag | Default | Description |
@@ -415,19 +415,19 @@ casen reebe start --database-url postgres://user:pass@localhost/reebe
 | `--database-url` | embedded SQLite | PostgreSQL connection URL |
 | `--config` | `config.toml` | Path to the engine config file |
 
-`casen reebe` on its own is shorthand for `casen reebe start`. The command runs the
+`bpmnkit reebe` on its own is shorthand for `bpmnkit reebe start`. The command runs the
 `reebe-server` binary. If it is not on your `PATH`, build the embedded (SQLite) server with
 `cargo install --path apps/reebe/crates/reebe-server --no-default-features --features embedded`,
 or the PostgreSQL one — which needs `--database-url` — without the two feature flags.
 
 ## Local proxy
 
-`casen proxy start` (or `casen proxy`) starts the local proxy on port 3033. Studio, the
+`bpmnkit proxy start` (or `bpmnkit proxy`) starts the local proxy on port 3033. Studio, the
 bpmnkit.com editor and Operate page, and the desktop app use it for AI, deploys, Camunda API
 calls with your stored profiles, and Studio's project folders.
 
 ```sh
-casen proxy start
+bpmnkit proxy start
 ```
 
 | Flag | Default | Description |
@@ -465,7 +465,7 @@ your browser can send requests to `localhost`, so the proxy checks every request
   refused.
 - **AI CLIs.** The AI routes (`/chat`, `/improve`, `/operate/chat`,
   `/operate/incident-assist`, `/operate/ai-search`), the `io.bpmnkit:llm:1` worker and
-  `casen ask` start `claude`, `copilot` or `gemini` with permission checks on and no
+  `bpmnkit ask` start `claude`, `copilot` or `gemini` with permission checks on and no
   built-in tools: the model cannot run commands, read or write files, or open URLs. Each run
   starts in an empty temporary folder and loads none of your own MCP servers, settings,
   plugins or extensions. A `/chat` run that edits a diagram gets only the proxy's diagram
@@ -485,25 +485,25 @@ your browser can send requests to `localhost`, so the proxy checks every request
 To use the proxy from your own web app, allow its origin:
 
 ```sh
-casen proxy start --allow-origin https://modeler.example.com
+bpmnkit proxy start --allow-origin https://modeler.example.com
 ```
 
 To reach the proxy from another machine, which gives that network your credentials and
 files, listen on all interfaces and name the host clients use:
 
 ```sh
-casen proxy start --host 0.0.0.0 --allow-host devbox.lan
+bpmnkit proxy start --host 0.0.0.0 --allow-host devbox.lan
 ```
 
 ## MCP Server Mode
 
-`casen proxy mcp` starts BPMN Kit's MCP (Model Context Protocol) server on stdio, so Claude
+`bpmnkit proxy mcp` starts BPMN Kit's MCP (Model Context Protocol) server on stdio, so Claude
 Code, Claude Desktop, Cursor or any MCP client can create, validate, simulate and deploy
 processes, and call any Camunda 8 REST operation through `camunda_search` and
 `camunda_execute`:
 
 ```sh
-casen proxy mcp
+bpmnkit proxy mcp
 ```
 
 Configure it in Claude Desktop (`claude_desktop_config.json`):
@@ -512,14 +512,14 @@ Configure it in Claude Desktop (`claude_desktop_config.json`):
 {
   "mcpServers": {
     "bpmnkit": {
-      "command": "casen",
+      "command": "bpmnkit",
       "args": ["proxy", "mcp"]
     }
   }
 }
 ```
 
-The server uses the active `casen` profile for cluster calls; set one with `casen profile`
+The server uses the active `bpmnkit` profile for cluster calls; set one with `bpmnkit profile`
 first, or pass `ZEEBE_ADDRESS`, `ZEEBE_CLIENT_ID` and `ZEEBE_CLIENT_SECRET` in `env`. The
 full tool list is in the [AI guide](/docs/guides/ai#mcp-server).
 

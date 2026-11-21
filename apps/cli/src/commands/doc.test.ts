@@ -27,7 +27,7 @@ const DMN = Dmn.export(
 		.build(),
 )
 
-describe("casen doc export", () => {
+describe("bpmnkit doc export", () => {
 	let dir: string
 	const lines: string[] = []
 

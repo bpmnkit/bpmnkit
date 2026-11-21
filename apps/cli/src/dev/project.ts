@@ -1,5 +1,5 @@
 /**
- * The project `casen dev` serves: which files are in it, and which paths a
+ * The project `bpmnkit dev` serves: which files are in it, and which paths a
  * browser request may name.
  *
  * Every path a request carries goes through {@link resolveProjectPath} before

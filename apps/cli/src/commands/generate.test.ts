@@ -8,7 +8,7 @@ import { generateFromCompact, generateGroup, resolveModifyOutputPath } from "./g
 
 describe("resolveModifyOutputPath", () => {
 	it("refuses to replace the input when no --output is given", () => {
-		// Regression: `casen generate bpmn --input x.bpmn` used to write the lossy
+		// Regression: `bpmnkit generate bpmn --input x.bpmn` used to write the lossy
 		// compactify/expand round trip straight back over x.bpmn and report success,
 		// destroying pools, lanes, message correlation keys and ioMapping detail.
 		expect(() =>

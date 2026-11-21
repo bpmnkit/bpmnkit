@@ -172,7 +172,7 @@ export function createDeployPlugin(options: DeployPluginOptions): DeployPlugin {
 			"dp-offline-hint",
 			"Start the proxy server to deploy processes and manage instances:",
 		)
-		const code = el("pre", "dp-offline-code", "casen proxy start")
+		const code = el("pre", "dp-offline-code", "bpmnkit proxy start")
 		wrap.appendChild(icon)
 		wrap.appendChild(title)
 		wrap.appendChild(hint)

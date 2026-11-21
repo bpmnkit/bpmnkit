@@ -673,7 +673,15 @@ importers:
 
   crates/bpmnkit-builder: {}
 
+  crates/bpmnkit-cli: {}
+
+  crates/bpmnkit-codegen: {}
+
   crates/bpmnkit-compat: {}
+
+  crates/bpmnkit-connector-runtime: {}
+
+  crates/bpmnkit-connectors: {}
 
   crates/bpmnkit-diff: {}
 
@@ -683,15 +691,23 @@ importers:
 
   crates/bpmnkit-form: {}
 
+  crates/bpmnkit-jobspec: {}
+
   crates/bpmnkit-layout: {}
 
   crates/bpmnkit-lint: {}
+
+  crates/bpmnkit-profiles: {}
 
   crates/bpmnkit-render: {}
 
   crates/bpmnkit-spec: {}
 
   crates/bpmnkit-text: {}
+
+  crates/bpmnkit-viewer: {}
+
+  crates/bpmnkit-worker: {}
 
   crates/bpmnkit-xml: {}
 
@@ -727,7 +743,39 @@ importers:
         specifier: workspace:^
         version: link:../core
 
+  packages/cli:
+    dependencies:
+      '@bpmnkit/cli-legacy':
+        specifier: workspace:^
+        version: link:../../apps/cli
+    optionalDependencies:
+      '@bpmnkit/cli-darwin-arm64':
+        specifier: workspace:^
+        version: link:../cli-darwin-arm64
+      '@bpmnkit/cli-darwin-x64':
+        specifier: workspace:^
+        version: link:../cli-darwin-x64
+      '@bpmnkit/cli-linux-arm64':
+        specifier: workspace:^
+        version: link:../cli-linux-arm64
+      '@bpmnkit/cli-linux-x64':
+        specifier: workspace:^
+        version: link:../cli-linux-x64
+      '@bpmnkit/cli-win32-x64':
+        specifier: workspace:^
+        version: link:../cli-win32-x64
+
+  packages/cli-darwin-arm64: {}
+
+  packages/cli-darwin-x64: {}
+
+  packages/cli-linux-arm64: {}
+
+  packages/cli-linux-x64: {}
+
   packages/cli-sdk: {}
+
+  packages/cli-win32-x64: {}
 
   packages/connector-gen:
     dependencies:
@@ -746,6 +794,12 @@ importers:
       '@bpmnkit/feel':
         specifier: workspace:^
         version: link:../feel
+
+  packages/create-bpmnkit-plugin:
+    dependencies:
+      '@bpmnkit/create-casen-plugin':
+        specifier: workspace:^
+        version: link:../create-casen-plugin
 
   packages/create-casen-plugin: {}
 

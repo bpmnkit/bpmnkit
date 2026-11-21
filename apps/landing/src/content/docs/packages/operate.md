@@ -12,7 +12,7 @@ It is built for development clusters, [Camunda 8 Run](https://docs.camunda.io/do
 and SaaS trial clusters. It is not a replacement for Camunda Operate in production.
 
 The UI does not call the cluster itself. It talks to the BPMN Kit proxy
-(`@bpmnkit/proxy`, started with `casen proxy start`). The proxy holds your connection
+(`@bpmnkit/proxy`, started with `bpmnkit proxy start`). The proxy holds your connection
 profiles and credentials, and adds the auth header to each Camunda request.
 
 ```
@@ -54,7 +54,7 @@ when you need history, bulk operations or access control.
 
 ```sh
 npm install @bpmnkit/operate
-npm install -g @bpmnkit/cli   # provides `casen proxy start` and `casen profile`
+npm install -g @bpmnkit/cli   # provides `bpmnkit proxy start` and `bpmnkit profile`
 ```
 
 ## Quick start
@@ -80,9 +80,9 @@ Camunda 8 Run serves the Orchestration Cluster REST API at `http://localhost:808
 with no authentication by default.
 
 ```sh
-casen profile create c8run --base-url http://localhost:8080/v2 --auth-type none
-casen profile use c8run
-casen proxy start                 # http://localhost:3033
+bpmnkit profile create c8run --base-url http://localhost:8080/v2 --auth-type none
+bpmnkit profile use c8run
+bpmnkit proxy start                 # http://localhost:3033
 ```
 
 If you turned on Basic authentication in Camunda 8 Run's `application.yaml`, create the
@@ -94,15 +94,15 @@ SaaS requires an OAuth access token. Create client credentials for the cluster i
 Camunda Console and download the credentials file. Import it as a profile:
 
 ```sh
-casen profile import saas ./camunda-credentials.sh   # reads ZEEBE_REST_ADDRESS, CAMUNDA_CLIENT_ID, …
-casen profile use saas
-casen proxy start
+bpmnkit profile import saas ./camunda-credentials.sh   # reads ZEEBE_REST_ADDRESS, CAMUNDA_CLIENT_ID, …
+bpmnkit profile use saas
+bpmnkit proxy start
 ```
 
 Or create it by hand. The base URL is the cluster's REST address plus `/v2`:
 
 ```sh
-casen profile create saas \
+bpmnkit profile create saas \
   --base-url https://<region>.zeebe.camunda.io/<cluster-id>/v2 \
   --auth-type oauth2 --client-id <id> --client-secret <secret> \
   --token-url https://login.cloud.camunda.io/oauth/token --audience zeebe.camunda.io
@@ -136,7 +136,7 @@ the current view against the new profile.
   and any `localhost`, `127.0.0.1` or `[::1]` origin on any port (for example a Vite dev
   server on `:5173`). It sends that origin back in `Access-Control-Allow-Origin`, never
   `*`. A page on any other origin gets `403`. To embed Operate in an app on another
-  origin, start the proxy with `casen proxy start --allow-origin https://your.app`. You do
+  origin, start the proxy with `bpmnkit proxy start --allow-origin https://your.app`. You do
   not need to configure CORS on the cluster, because the browser does not call it.
 - **Same-origin reverse proxy.** `proxyUrl` can be relative. If your dev server forwards
   `/bpmnkit-proxy/*` to `http://localhost:3033/*`, use `proxyUrl: "/bpmnkit-proxy"`. Keep

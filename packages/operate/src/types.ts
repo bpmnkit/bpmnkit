@@ -16,7 +16,7 @@ export interface OperateOptions {
 	/** Element Operate mounts into. It fills the element, so give it a height. */
 	container: HTMLElement
 	/**
-	 * Base URL of the `@bpmnkit/proxy` server (`casen proxy start`). A relative
+	 * Base URL of the `@bpmnkit/proxy` server (`bpmnkit proxy start`). A relative
 	 * URL such as "/bpmnkit-proxy" works when a same-origin reverse proxy
 	 * forwards to it. Default: http://localhost:3033
 	 */

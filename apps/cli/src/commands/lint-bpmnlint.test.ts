@@ -84,7 +84,7 @@ afterEach(() => {
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
-describe("casen lint — .bpmnlintrc", () => {
+describe("bpmnkit lint — .bpmnlintrc", () => {
 	it("without one, reports and fails as before", async () => {
 		const result = await run()
 		expect(text(result)).toContain("has 2 incoming flows")
@@ -161,7 +161,7 @@ describe("casen lint — .bpmnlintrc", () => {
 	})
 })
 
-describe("casen lint — the project's own bpmnlint", () => {
+describe("bpmnkit lint — the project's own bpmnlint", () => {
 	beforeEach(() => {
 		// Install bpmnlint into the "project" the way npm would, from the root's devDependencies.
 		const here = createRequire(import.meta.url)

@@ -1,13 +1,13 @@
-# casen generate
+# bpmnkit generate
 
-`casen generate bpmn` produces BPMN 2.0 files without the interactive TUI. It has three operating
+`bpmnkit generate bpmn` produces BPMN 2.0 files without the interactive TUI. It has three operating
 modes: template, definition (full JSON), and modify-existing (patch). Auto-layout is applied in all modes.
 
 
 ## Commands
 
 ```
-casen generate          (alias: casen gen)
+bpmnkit generate          (alias: bpmnkit gen)
 ├── bpmn    — generate or modify a BPMN file
 └── types   — generate TypeScript types from BPMN; check workers against it
 ```
@@ -18,10 +18,10 @@ casen generate          (alias: casen gen)
 Pick a built-in template by name. Use `--process-id` and `--name` to customise the identifiers.
 
 ```sh
-casen generate bpmn --template minimal --process-id order --name "Order Processing"
-casen generate bpmn --template approval --process-id leave-request
-casen generate bpmn --template parallel --process-id enrichment --name Enrichment
-casen generate bpmn --template timer-start --process-id nightly-sync
+bpmnkit generate bpmn --template minimal --process-id order --name "Order Processing"
+bpmnkit generate bpmn --template approval --process-id leave-request
+bpmnkit generate bpmn --template parallel --process-id enrichment --name Enrichment
+bpmnkit generate bpmn --template timer-start --process-id nightly-sync
 ```
 
 | Template | Pattern |

@@ -1,22 +1,22 @@
 ---
-title: casen dev
+title: bpmnkit dev
 description: One command for the local development loop — edit every process in a folder in the browser, simulate it, and re-run lint and scenario tests on every save. No Docker, no cluster, no licence key.
 sidebar:
   order: 9
 ---
 
-`casen dev` turns a folder of `.bpmn`, `.dmn` and `.form` files into a local development
+`bpmnkit dev` turns a folder of `.bpmn`, `.dmn` and `.form` files into a local development
 environment. It starts a small web server, opens the BPMN Kit editor in your browser, and
 re-checks each file every time it changes — whether you saved it in the browser or in another
 editor.
 
 ```sh
-casen dev              # the current folder
-casen dev ./processes  # another folder
+bpmnkit dev              # the current folder
+bpmnkit dev ./processes  # another folder
 ```
 
 ```
-  casen dev  /home/me/shop
+  bpmnkit dev  /home/me/shop
   UI        http://127.0.0.1:4747/
   files     3 (2 bpmn, 1 dmn, 0 form)
   scenarios @bpmnkit/engine
@@ -49,14 +49,14 @@ casen dev ./processes  # another folder
   generator — and the open diagram reloads. If you have unsaved edits in the browser at the same
   time, nothing is thrown away: you choose between reloading and overwriting.
 - **Checks on every change.** Each changed BPMN file is linted exactly as
-  `casen lint` would lint it (including a project `.bpmnlintrc`, and connector inputs checked
+  `bpmnkit lint` would lint it (including a project `.bpmnlintrc`, and connector inputs checked
   against the element templates from the file's folder up to the served folder — see
   [workspace templates](/docs/packages/connectors#workspace-templates)), and the
-  scenarios in its `<file>.bpmn.tests.json` sidecar are run as `casen test` runs them. Changing a
+  scenarios in its `<file>.bpmn.tests.json` sidecar are run as `bpmnkit test` runs them. Changing a
   `.dmn` file re-runs the scenarios of the processes beside it. Results appear in the browser's
   Checks panel and in the terminal.
 - **Tests you can edit.** The Tests tab of Play mode reads and writes the same
-  `.bpmn.tests.json` sidecar, so scenarios written in the browser are the ones `casen test` runs
+  `.bpmn.tests.json` sidecar, so scenarios written in the browser are the ones `bpmnkit test` runs
   in CI.
 
 ## Flags
@@ -65,16 +65,16 @@ casen dev ./processes  # another folder
 | --- | --- | --- |
 | `--port <n>` | `4747`, or the next free port | Port to listen on. An explicit port that is taken is an error. |
 | `--no-open` | opens the browser | Print the URL without opening a browser. |
-| `--engine ts\|wasm` | `ts` | Engine for the scenario runs after each save. `wasm` runs them on Reebe compiled to WebAssembly, for Zeebe semantics — the engine `casen test` uses. Simulation in the browser always uses `@bpmnkit/engine`. |
+| `--engine ts\|wasm` | `ts` | Engine for the scenario runs after each save. `wasm` runs them on Reebe compiled to WebAssembly, for Zeebe semantics — the engine `bpmnkit test` uses. Simulation in the browser always uses `@bpmnkit/engine`. |
 
 ## Deploying and AI
 
-`casen dev` does not start the AI bridge or connect to a cluster. For those, run the proxy
+`bpmnkit dev` does not start the AI bridge or connect to a cluster. For those, run the proxy
 alongside it:
 
 ```sh
-casen proxy start   # port 3033: AI bridge, Camunda API proxy, run history
-casen deploy ...    # deploy what you built
+bpmnkit proxy start   # port 3033: AI bridge, Camunda API proxy, run history
+bpmnkit deploy ...    # deploy what you built
 ```
 
 ## Security

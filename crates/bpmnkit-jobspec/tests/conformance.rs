@@ -1,4 +1,4 @@
-//! The job list equals `casen gen types` (`extractProcessContract`, recorded by
+//! The job list equals `bpmnkit gen types` (`extractProcessContract`, recorded by
 //! `packages/core/tests/conformance-jobspec.test.ts`) on every `conformance/bpmn` case.
 
 use std::path::Path;

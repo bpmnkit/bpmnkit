@@ -1,24 +1,37 @@
 //! Fallback to the legacy Node CLI (`@bpmnkit/cli-legacy`) for commands not ported yet.
 
 use std::ffi::OsString;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
-/// Where the legacy entry script lives: `BPMNKIT_LEGACY_CLI`, else next to the installed binary
-/// (npm platform package layout, wired up in plan P8).
+const ENTRY: &str = "dist/index.js";
+
+/// Finds `@bpmnkit/cli-legacy`'s entry by walking up from `start` the way Node resolves a bare
+/// package name: a `node_modules/@bpmnkit/cli-legacy` in any ancestor. A binary inside the
+/// scope directory itself (`…/@bpmnkit/cli-<platform>/bin`) finds its sibling the same way.
+fn find_from(start: &Path) -> Option<PathBuf> {
+    start.ancestors().find_map(|dir| {
+        let nested = dir.join("node_modules/@bpmnkit/cli-legacy").join(ENTRY);
+        let sibling = dir.join("cli-legacy").join(ENTRY);
+        let in_scope = dir.file_name().is_some_and(|n| n == "@bpmnkit");
+        if nested.is_file() {
+            Some(nested)
+        } else if in_scope && sibling.is_file() {
+            Some(sibling)
+        } else {
+            None
+        }
+    })
+}
+
+/// `BPMNKIT_LEGACY_CLI` (set by the npm launcher, which resolves the package properly), else a
+/// `node_modules` lookup from the binary's real location.
 fn script() -> Option<PathBuf> {
     if let Some(p) = std::env::var_os("BPMNKIT_LEGACY_CLI") {
         return Some(PathBuf::from(p));
     }
     let exe = std::env::current_exe().ok()?;
-    let dir = exe.parent()?;
-    [
-        dir.join("legacy/index.js"),
-        dir.join("../node_modules/@bpmnkit/cli-legacy/dist/index.js"),
-        dir.join("../../cli-legacy/dist/index.js"),
-    ]
-    .into_iter()
-    .find(|p| p.is_file())
+    find_from(exe.parent()?)
 }
 
 pub fn run(args: &[OsString]) -> i32 {
@@ -44,5 +57,46 @@ pub fn run(args: &[OsString]) -> i32 {
             eprintln!("bpmnkit: cannot start {}: {e}", node.to_string_lossy());
             127
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+
+    fn touch(p: &Path) {
+        fs::create_dir_all(p.parent().unwrap()).unwrap();
+        fs::write(p, "").unwrap();
+    }
+
+    #[test]
+    fn finds_package_in_an_ancestor_node_modules() {
+        let t = tempfile::tempdir().unwrap();
+        let entry = t
+            .path()
+            .join("node_modules/@bpmnkit/cli-legacy")
+            .join(ENTRY);
+        touch(&entry);
+        let bin = t.path().join("node_modules/@bpmnkit/cli-linux-x64/bin");
+        fs::create_dir_all(&bin).unwrap();
+        assert_eq!(find_from(&bin), Some(entry));
+    }
+
+    #[test]
+    fn finds_sibling_when_the_scope_dir_is_not_under_node_modules() {
+        let t = tempfile::tempdir().unwrap();
+        let entry = t.path().join("@bpmnkit/cli-legacy").join(ENTRY);
+        touch(&entry);
+        let bin = t.path().join("@bpmnkit/cli-darwin-arm64/bin");
+        fs::create_dir_all(&bin).unwrap();
+        assert_eq!(find_from(&bin), Some(entry));
+    }
+
+    #[test]
+    fn a_missing_package_is_not_guessed() {
+        let t = tempfile::tempdir().unwrap();
+        touch(&t.path().join("legacy/index.js"));
+        assert_eq!(find_from(t.path()), None);
     }
 }

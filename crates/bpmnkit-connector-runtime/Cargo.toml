@@ -7,10 +7,9 @@ license.workspace = true
 repository.workspace = true
 homepage.workspace = true
 rust-version.workspace = true
+readme = "README.md"
 keywords = ["camunda", "connectors", "rest", "bpmn", "zeebe"]
 categories = ["network-programming", "asynchronous"]
-# `publish = false` until P8 (doc/plans/c8-workers-and-rust-cli.md §3).
-publish = false
 exclude = ["tests/"]
 
 [dependencies]

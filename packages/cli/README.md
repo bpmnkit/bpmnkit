@@ -1,0 +1,185 @@
+> **Agents:** run `bpmnkit agent-card <bpmn|dmn|form>` (~1k tokens) instead of reading this README.
+
+<div align="center">
+  <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
+  <h1>@bpmnkit/cli</h1>
+  <p>BPMN Kit command line for Camunda 8 (bpmnkit, alias casen): a native binary with a Node fallback for commands not ported yet</p>
+
+  [![npm](https://img.shields.io/npm/v/@bpmnkit/cli?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli)
+  [![license](https://img.shields.io/npm/l/@bpmnkit/cli?style=flat-square)](https://github.com/bpmnkit/bpmnkit/blob/main/LICENSE)
+  [![typescript](https://img.shields.io/badge/TypeScript-strict-6244d7?style=flat-square&logo=typescript&logoColor=white)](https://github.com/bpmnkit/bpmnkit)
+  [![ai-assisted](https://img.shields.io/badge/AI--assisted-claude-8b5cf6?style=flat-square)](https://github.com/bpmnkit/bpmnkit)
+  [![tier: core](https://img.shields.io/badge/tier-core-16a34a?style=flat-square)](https://bpmnkit.com/docs/getting-started/stability#product-tiers)
+
+  [Website](https://bpmnkit.com) · [Documentation](https://bpmnkit.com/docs) · [GitHub](https://github.com/bpmnkit/bpmnkit) · [Changelog](https://github.com/bpmnkit/bpmnkit/blob/main/packages/cli/CHANGELOG.md)
+</div>
+
+> **Core tier.** Semver at 1.0: nothing breaks without a major release. See [product tiers](https://bpmnkit.com/docs/getting-started/stability#product-tiers).
+
+---
+
+## Overview
+
+`@bpmnkit/cli` provides the `bpmnkit` command-line tool (alias `bpmnkit`) for interacting with Camunda 8 clusters. Manage profiles, deploy processes, run queries, and generate connector templates — all from your terminal.
+
+## Installation
+
+```sh
+npm install -g @bpmnkit/cli
+# or
+pnpm add -g @bpmnkit/cli
+```
+
+Version 2 installs the native binary through an optional platform package
+(`@bpmnkit/cli-linux-x64`, `-linux-arm64`, `-darwin-x64`, `-darwin-arm64`, `-win32-x64`); when
+that package is missing the launcher downloads the release archive and checks its sha256. Commands
+the binary does not run yet fall back to `@bpmnkit/cli-legacy` (`BPMNKIT_NO_LEGACY=1` disables it).
+Standalone installers (shell, PowerShell, Homebrew, MSI) are on the GitHub releases page; those
+update themselves with `bpmnkit self update`.
+
+## Quick Start
+
+### Develop locally — no cluster needed
+
+```sh
+bpmnkit dev
+```
+
+Opens every `.bpmn`, `.dmn` and `.form` file in the folder in the BPMN Kit editor in your
+browser, with simulation. Saves go back to disk with the file's formatting kept, changes made
+elsewhere reload live, and each change re-runs lint and the file's `.bpmn.tests.json`
+scenarios. See [bpmnkit dev](https://bpmnkit.com/docs/cli/dev).
+
+### Configure a profile
+
+```sh
+# Camunda SaaS: the credentials file Hub offers for a cluster's API client
+bpmnkit profile import my-cluster ./camunda-credentials.sh
+bpmnkit profile use my-cluster
+```
+
+### Deploy a process
+
+```sh
+bpmnkit deploy deploy order-process.bpmn --target camunda8
+```
+
+### List process instances
+
+```sh
+bpmnkit pi list --filter '{"state":"ACTIVE"}'
+```
+
+## Commands
+
+### Profile management
+
+| Command | Description |
+|---------|-------------|
+| `bpmnkit profile list` | List all configured profiles |
+| `bpmnkit profile create <name>` | Add a profile from flags (`--base-url`, `--auth-type`, …) |
+| `bpmnkit profile import <name> <file>` | Add a profile from a Camunda credentials file |
+| `bpmnkit profile use <name>` | Switch the active profile |
+| `bpmnkit profile delete <name>` | Delete a profile |
+
+### Process & deployment
+
+| Command | Description |
+|---------|-------------|
+| `bpmnkit deploy deploy <file> [--target camunda8]` | Deploy a BPMN, DMN, or form file to local Reebe or the active profile |
+| `bpmnkit resource create-deployment <file...>` | Deploy several files as one deployment to the active profile |
+| `bpmnkit pd list` | List deployed process definitions |
+| `bpmnkit pi list [--filter <json>]` | List process instances |
+| `bpmnkit pi cancel <key>` | Cancel a running instance |
+
+### Templates
+
+| Command | Description |
+|---------|-------------|
+| `bpmnkit template list [--category <c>]` | List the runnable process templates from the [gallery](https://bpmnkit.com/templates) |
+| `bpmnkit template use <id> [dir]` | Write a template's `.bpmn`, `.bpmn.tests.json` scenarios and any `.dmn`/`.form` files (`--force` overwrites) |
+
+### Incidents & jobs
+
+| Command | Description |
+|---------|-------------|
+| `bpmnkit incident list` | List incidents |
+| `bpmnkit incident resolve <key>` | Resolve an incident |
+| `bpmnkit job list` | List jobs |
+
+### Connector generation
+
+| Command | Description |
+|---------|-------------|
+| `bpmnkit connector generate <spec>` | Generate element templates from OpenAPI/Swagger |
+| `bpmnkit connector show <template> [--filter <text>] [--condensed]` | List a template's property keys, types and defaults |
+| `bpmnkit connector apply <file.bpmn> <elementId> <template>` | Apply a template from `--values file.json` and `--set key=value` |
+
+### Typed code generation
+
+| Command | Description |
+|---------|-------------|
+| `bpmnkit gen types <files...> --out <file>` | TypeScript types for job workers (job types, variables, headers, messages, error codes) |
+| `bpmnkit gen types <files...> --out <file> --check` | Exit 1 when the generated file is out of date (CI) |
+| `bpmnkit gen types <files...> --check-workers <glob> --strict` | Report job types without a worker and workers without a job type |
+
+### Camunda 7 migration
+
+| Command | Description |
+|---------|-------------|
+| `bpmnkit migrate c7 <files...>` | Convert Camunda 7 models to Camunda 8 (`<name>.c8.bpmn`, or `--out <dir>`) and report each construct as convertible, manual or unsupported |
+| `bpmnkit migrate c7 <files...> --check` | Report only; exit 1 while manual or unsupported findings remain (`--format json` for CI) |
+
+See [Migrate from Camunda 7](https://bpmnkit.com/docs/guides/migrate-from-camunda-7) for what is converted and why.
+
+## Global options
+
+| Flag | Description |
+|------|-------------|
+| `--profile <name>` | Use a specific profile for this command |
+| `--json` | Output as JSON (machine-readable) |
+| `--help` | Show help |
+
+---
+
+## Related Packages
+
+| Package | Description |
+|---------|-------------|
+| [`@bpmnkit/core`](https://www.npmjs.com/package/@bpmnkit/core) | BPMN/DMN/Form parser, builder, layout engine |
+| [`@bpmnkit/canvas`](https://www.npmjs.com/package/@bpmnkit/canvas) | Zero-dependency SVG BPMN viewer |
+| [`@bpmnkit/editor`](https://www.npmjs.com/package/@bpmnkit/editor) | Full-featured interactive BPMN editor |
+| [`@bpmnkit/engine`](https://www.npmjs.com/package/@bpmnkit/engine) | Lightweight BPMN process simulator for tests and demos |
+| [`@bpmnkit/feel`](https://www.npmjs.com/package/@bpmnkit/feel) | FEEL expression language parser & evaluator |
+| [`@bpmnkit/plugins`](https://www.npmjs.com/package/@bpmnkit/plugins) | 34 composable canvas plugins |
+| [`@bpmnkit/api`](https://www.npmjs.com/package/@bpmnkit/api) | Camunda 8 REST API TypeScript client |
+| [`@bpmnkit/ascii`](https://www.npmjs.com/package/@bpmnkit/ascii) | Render BPMN diagrams as Unicode ASCII art |
+| [`@bpmnkit/markdown`](https://www.npmjs.com/package/@bpmnkit/markdown) | BPMN diagrams in Markdown — remark, markdown-it and README pre-rendering |
+| [`@bpmnkit/viewer-lite`](https://www.npmjs.com/package/@bpmnkit/viewer-lite) | 8.5 KB BPMN viewer for one self-contained HTML file |
+| [`@bpmnkit/docspack`](https://www.npmjs.com/package/@bpmnkit/docspack) | BPMN Kit docs as an offline docspack package for AI agents |
+| [`@bpmnkit/camunda-docspack`](https://www.npmjs.com/package/@bpmnkit/camunda-docspack) | Camunda 8 docs as an offline docspack package for AI agents |
+| [`@bpmnkit/ui`](https://www.npmjs.com/package/@bpmnkit/ui) | Shared design tokens and UI components |
+| [`@bpmnkit/profiles`](https://www.npmjs.com/package/@bpmnkit/profiles) | Shared auth, profile storage, and client factories for CLI & proxy |
+| [`@bpmnkit/operate`](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
+| [`@bpmnkit/connector-gen`](https://www.npmjs.com/package/@bpmnkit/connector-gen) | Generate connector templates from OpenAPI specs |
+| [`@bpmnkit/connectors`](https://www.npmjs.com/package/@bpmnkit/connectors) | Camunda 8 OOTB connector catalog and deterministic template application |
+| [`@bpmnkit/cli-legacy`](https://www.npmjs.com/package/@bpmnkit/cli-legacy) | Node fallback behind the native bpmnkit binary |
+| [`@bpmnkit/proxy`](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
+| [`@bpmnkit/patterns`](https://www.npmjs.com/package/@bpmnkit/patterns) | Domain process patterns for BPMNKit AIKit |
+| [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm) | WebAssembly BPMN engine for browser simulation |
+| [`@bpmnkit/worker-client`](https://www.npmjs.com/package/@bpmnkit/worker-client) | Thin Zeebe REST client for standalone workers |
+| [`@bpmnkit/flow`](https://www.npmjs.com/package/@bpmnkit/flow) | Code-first durable flows that derive BPMN, job types and workers |
+| [`@bpmnkit/user-tasks`](https://www.npmjs.com/package/@bpmnkit/user-tasks) | Embeddable user task widget for Camunda 8 |
+| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the bpmnkit CLI |
+| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new bpmnkit CLI plugin in seconds |
+| [`@bpmnkit/casen-report`](https://www.npmjs.com/package/@bpmnkit/casen-report) | HTML reports from Camunda 8 incident and SLA data |
+| [`@bpmnkit/casen-worker-http`](https://www.npmjs.com/package/@bpmnkit/casen-worker-http) | Example HTTP worker plugin — completes jobs with live JSONPlaceholder API data |
+| [`@bpmnkit/casen-worker-ai`](https://www.npmjs.com/package/@bpmnkit/casen-worker-ai) | AI task worker — classify, summarize, extract, and decide using Claude |
+
+## License
+
+[MIT](https://github.com/bpmnkit/bpmnkit/blob/main/LICENSE) © BPMN Kit — made by [u11g](https://u11g.com)
+
+<div align="center">
+  <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="32" height="32" alt="BPMN Kit"></a>
+</div>

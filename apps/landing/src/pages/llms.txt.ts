@@ -50,7 +50,7 @@ ${await documentationList()}
 
 ## Process templates
 
-Runnable Camunda 8 templates with test scenarios. \`casen template use <id>\` writes one into a project.
+Runnable Camunda 8 templates with test scenarios. \`bpmnkit template use <id>\` writes one into a project.
 
 ${templateList}
 

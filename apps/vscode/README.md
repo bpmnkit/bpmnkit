@@ -20,7 +20,7 @@ Added, removed, changed and moved elements are marked on synchronised canvases �
 element reads as *moved*, not as two unrelated pictures. The text diff stays exactly where
 it was; this is a second view of the same change, not a replacement for the first.
 
-**See analysis findings in the Problems panel.** The same static analysis `casen lint`
+**See analysis findings in the Problems panel.** The same static analysis `bpmnkit lint`
 runs — flow reachability, naming, FEEL syntax, data flow, Camunda 8 deployability —
 reported against the element that caused them, so clicking a problem takes you to the tag
 rather than to line 1.
@@ -41,7 +41,7 @@ reading the variables as they change. Nothing is deployed and nothing leaves you
 the playground: it comes up pre-filled, with a context you can edit and the result
 evaluated as you type. Unary tests too, for decision-table input entries.
 
-**Deploy and start against your own clusters.** The connections are the ones `casen`
+**Deploy and start against your own clusters.** The connections are the ones `bpmnkit`
 already has — the extension reads the same profile store the CLI writes, so there is no
 second place to configure a cluster and no credentials in your workspace settings. Deploy
 the open file, or deploy and start an instance with variables, and the instance key comes
@@ -110,11 +110,11 @@ not analysed — same as every other linter in VS Code.
 
 ## Camunda 8 profiles
 
-Deployment targets come from `casen`'s profile store, not from VS Code settings — the same
-file `casen profile create` writes. Create one with:
+Deployment targets come from `bpmnkit`'s profile store, not from VS Code settings — the same
+file `bpmnkit profile create` writes. Create one with:
 
 ```sh
-casen profile create staging --base-url https://<cluster>.camunda.io/<id> \
+bpmnkit profile create staging --base-url https://<cluster>.camunda.io/<id> \
   --auth-type oauth --client-id … --client-secret …
 ```
 

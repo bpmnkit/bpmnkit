@@ -2,8 +2,8 @@
 
 The bpmnkit Claude Code plugin adds BPMN-aware slash commands, autonomous agents, and
 ambient quality hooks directly into Claude Code. It's **CLI-first**: every skill drives
-`casen` via Bash — no MCP server, no proxy daemon. Every process is authored as a
-`ProcessPlan` JSON file and compiled deterministically by `casen synth`; no skill ever
+`bpmnkit` via Bash — no MCP server, no proxy daemon. Every process is authored as a
+`ProcessPlan` JSON file and compiled deterministically by `bpmnkit synth`; no skill ever
 writes BPMN XML by hand.
 
 

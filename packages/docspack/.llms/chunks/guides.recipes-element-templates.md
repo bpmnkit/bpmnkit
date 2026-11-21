@@ -1,7 +1,7 @@
 # Recipes: Element Templates and Connectors
 
 To apply an element template to a task, such as the REST connector, call `applyTemplateToElement`
-in a script or `casen connector apply` from the command line. An element template (connector
+in a script or `bpmnkit connector apply` from the command line. An element template (connector
 template) sets a task's job type, headers and input mappings by property id.
 
 

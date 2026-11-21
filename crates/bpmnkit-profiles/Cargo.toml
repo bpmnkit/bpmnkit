@@ -7,10 +7,9 @@ license.workspace = true
 repository.workspace = true
 homepage.workspace = true
 rust-version.workspace = true
+readme = "README.md"
 keywords = ["bpmn", "camunda", "profiles", "cli", "config"]
 categories = ["command-line-utilities"]
-# Not published before P8 (see doc/plans/c8-workers-and-rust-cli.md §3).
-publish = false
 
 [dependencies]
 serde_json = { workspace = true, features = ["preserve_order"] }

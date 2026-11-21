@@ -1,11 +1,11 @@
 ---
-title: casen connector
-description: Browse the bundled Camunda 8 connector catalog, or generate connector element templates from OpenAPI specs, via the casen CLI.
+title: bpmnkit connector
+description: Browse the bundled Camunda 8 connector catalog, or generate connector element templates from OpenAPI specs, via the bpmnkit CLI.
 sidebar:
   order: 5
 ---
 
-`casen connector` has two independent jobs: **browse** the bundled connector templates — Camunda 8's 133
+`bpmnkit connector` has two independent jobs: **browse** the bundled connector templates — Camunda 8's 133
 out-of-the-box ones plus the few BPMN Kit maintains (`search`/`show` — used by the AI generation pipeline to wire a plan step to
 a real service), and **generate** brand-new connector element templates from OpenAPI 3.x/Swagger
 2.x specs (`generate`/`catalog` — for APIs Camunda doesn't ship a template for).
@@ -13,7 +13,7 @@ a real service), and **generate** brand-new connector element templates from Ope
 ## Commands
 
 ```
-casen connector
+bpmnkit connector
 ├── search      — find a bundled OOTB connector template by name/keyword
 ├── show        — show a bundled template's required/optional inputs
 ├── apply       — apply a template to an element of a .bpmn file, in place
@@ -26,8 +26,8 @@ casen connector
 ## Browse the bundled OOTB catalog
 
 ```sh
-casen connector search slack
-casen connector show io.camunda.connectors.Slack.v1
+bpmnkit connector search slack
+bpmnkit connector show io.camunda.connectors.Slack.v1
 ```
 
 `search` scores the bundled templates by keyword match and prints a table (template id,
@@ -36,7 +36,7 @@ required/optional input keys — these are the keys a `ProcessPlan` `connector` 
 object uses (see [Building Processes with AI](/docs/guides/ai-implement)):
 
 ```
-$ casen connector show io.camunda.connectors.Slack.v1
+$ bpmnkit connector show io.camunda.connectors.Slack.v1
 Slack connector  (io.camunda.connectors.Slack.v1)
 Task type: io.camunda:slack:1
 Direction: outbound
@@ -54,7 +54,7 @@ the text, and `--condensed` prints one line each (`key  type  default  required 
 part naming the condition that switches the property on):
 
 ```sh
-casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
+bpmnkit connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
 ```
 
 A field marked `(secret)` should be supplied as a `{{secrets.NAME}}` placeholder, never a literal
@@ -66,7 +66,7 @@ for each of its operations. `cards` answers a request with one card per operatio
 only the inputs that operation uses, and the `values` that select it:
 
 ```
-$ casen connector cards "create a github issue" --limit 1
+$ bpmnkit connector cards "create a github issue" --limit 1
 github createIssue — GitHub Outbound Connector: Issues / Create an issue | owner* repo* issueTitle* | optional: authentication.pat(secret) githubBody issueAssignees(=FEEL) issueLabels(=FEEL) issueMilestone resultVariable resultExpressionCreateIssue(=FEEL) | authentication.authType=pat: pat | github_app
   values: {"operationGroup":"issues","issueOperationType":"createIssue"}
 ```
@@ -83,8 +83,8 @@ boolean, best for multi-line or quoted FEEL), from repeated `--set key=value`, o
 wins. A value starting with `=` is FEEL, kept as written.
 
 ```sh
-casen connector apply order.bpmn Call http --values call.json
-casen connector apply order.bpmn Call http --set method=GET --set retryCount=5 --dry-run
+bpmnkit connector apply order.bpmn Call http --values call.json
+bpmnkit connector apply order.bpmn Call http --set method=GET --set retryCount=5 --dry-run
 ```
 
 Properties you leave out keep the template default. Any problem, such as a misspelled key (with a
@@ -99,7 +99,7 @@ real base URL, authentication and endpoints from the offline
 or the one `--service` gives:
 
 ```
-$ casen connector api "refund a stripe payment" --limit 1
+$ bpmnkit connector api "refund a stripe payment" --limit 1
 api stripe — Stripe API https://api.stripe.com auth=bearer secret=STRIPE_TOKEN
 POST /v1/refunds — Create a refund | form body: amount currency charge customer expand instructions_email
 ```
@@ -115,13 +115,13 @@ and auth defaults:
 
 ```sh
 # List all available catalog entries
-casen connector catalog
+bpmnkit connector catalog
 
 # Generate templates for the Stripe API
-casen connector generate --api stripe --output ./templates/
+bpmnkit connector generate --api stripe --output ./templates/
 
 # Generate templates for GitHub with a custom ID prefix
-casen connector generate --api github --id-prefix com.myorg --output ./templates/
+bpmnkit connector generate --api github --id-prefix com.myorg --output ./templates/
 ```
 
 ## Generate from a local file
@@ -129,10 +129,10 @@ casen connector generate --api github --id-prefix com.myorg --output ./templates
 Pass any local OpenAPI 3.x or Swagger 2.x file in YAML or JSON format:
 
 ```sh
-casen connector generate --swagger ./openapi.yaml --output ./templates/
+bpmnkit connector generate --swagger ./openapi.yaml --output ./templates/
 
 # JSON format works too
-casen connector generate --swagger ./api-spec.json --output ./templates/
+bpmnkit connector generate --swagger ./api-spec.json --output ./templates/
 ```
 
 ## All flags
@@ -169,7 +169,7 @@ Auth is auto-detected from `components.securitySchemes` in the spec. Use `--auth
 Use `--dry-run` to inspect the generated JSON before committing to files:
 
 ```sh
-casen connector generate --api resend --dry-run
+bpmnkit connector generate --api resend --dry-run
 ```
 
 ### Filter to a subset of operations
@@ -178,10 +178,10 @@ Large APIs (GitHub, Stripe) produce hundreds of templates. Use `--filter` to nar
 
 ```sh
 # Only generate templates for issue-related operations
-casen connector generate --api github --filter "issues" --output ./templates/
+bpmnkit connector generate --api github --filter "issues" --output ./templates/
 
 # Only POST and PUT operations (filter on summary/operationId)
-casen connector generate --api stripe --filter "create|update" --output ./templates/
+bpmnkit connector generate --api stripe --filter "create|update" --output ./templates/
 ```
 
 ### Expand request body fields
@@ -190,13 +190,13 @@ By default the request body is a single FEEL `Text` field. Use `--expand-body` t
 top-level properties into individual typed input fields — useful for simple, well-documented APIs:
 
 ```sh
-casen connector generate --api resend --expand-body --output ./templates/
+bpmnkit connector generate --api resend --expand-body --output ./templates/
 ```
 
 ### All templates in one file
 
 ```sh
-casen connector generate --api slack --format array --output ./templates/
+bpmnkit connector generate --api slack --format array --output ./templates/
 # Writes: ./templates/slack.json  (array of all templates)
 ```
 
@@ -205,7 +205,7 @@ casen connector generate --api slack --format array --output ./templates/
 Useful when targeting a self-hosted or staging instance:
 
 ```sh
-casen connector generate --swagger ./openapi.yaml \
+bpmnkit connector generate --swagger ./openapi.yaml \
   --base-url https://staging-api.mycompany.com \
   --output ./templates/
 ```
@@ -231,7 +231,7 @@ Import the generated `.json` files into Camunda Modeler via
 ## Built-in catalog
 
 ```sh
-casen connector catalog
+bpmnkit connector catalog
 ```
 
 | ID | Name | Default auth |

@@ -1,10 +1,10 @@
-# casen generate — Typical AI workflow — Keep the file current in CI
+# bpmnkit generate — Typical AI workflow — Keep the file current in CI
 
 `--check` compares the generated source with the `--out` file and exits 1 when the file is missing or
 out of date. It writes nothing.
 
 ```sh
-casen gen types processes/ --out src/generated/bpmn-types.ts --check
+bpmnkit gen types processes/ --out src/generated/bpmn-types.ts --check
 ```
 
 ---

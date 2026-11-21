@@ -6,7 +6,7 @@ sidebar:
 ---
 
 **BPMN Kit for VS Code** puts the toolkit where the code already is. It renders `.bpmn`,
-`.dmn` and `.form` files, reports the same findings `casen lint` reports, compares a diagram
+`.dmn` and `.form` files, reports the same findings `bpmnkit lint` reports, compares a diagram
 against `HEAD`, runs the process without a cluster, and edits the file without reformatting
 it.
 
@@ -74,7 +74,7 @@ That behaviour is not extension-specific; it is
 
 ### Findings in the Problems panel
 
-The same static analysis `casen lint` runs — flow reachability, naming, FEEL syntax, data
+The same static analysis `bpmnkit lint` runs — flow reachability, naming, FEEL syntax, data
 flow, Camunda 8 deployability — reported against the element that caused it, so clicking a
 problem takes you to the tag rather than to line 1.
 
@@ -83,7 +83,7 @@ judged against Camunda 8 deployability, because "this service task has no
 `zeebe:taskDefinition`" is not a defect in a diagram that was never going to be deployed to
 Zeebe. Turn on `bpmnkit.lint.forceEngineRules` to apply those rules anyway.
 
-A `.bpmnlintrc` in the diagram's folder or above is honoured the way `casen lint` honours it.
+A `.bpmnlintrc` in the diagram's folder or above is honoured the way `bpmnkit lint` honours it.
 When the workspace has `bpmnlint` installed, bpmnlint's own findings, plugin rules included,
 appear with source `bpmnlint`. See [bpmnlint Compatibility](/docs/guides/bpmnlint).
 
@@ -101,7 +101,7 @@ in the Explorer to compare them with each other. Added, removed, changed and mov
 are marked on synchronised canvases — a moved element reads as *moved*, not as two unrelated
 pictures. The text diff stays where it was; this is a second view of the same change, not a
 replacement for the first. The same comparison is available as
-[`casen diff bpmn`](/docs/cli/diff) and on a [drop](/docs/guides/drop).
+[`bpmnkit diff bpmn`](/docs/cli/diff) and on a [drop](/docs/guides/drop).
 
 ### Run the diagram in the editor
 
@@ -118,12 +118,12 @@ decision-table input entries.
 
 ### Deploy against your own clusters
 
-Deployment targets come from `casen`'s profile store — the same file
-[`casen profile create`](/docs/cli/casen#connection-profiles) writes — so there is no second
+Deployment targets come from `bpmnkit`'s profile store — the same file
+[`bpmnkit profile create`](/docs/cli/casen#connection-profiles) writes — so there is no second
 place to configure a cluster and no credentials in your workspace settings:
 
 ```sh
-casen profile create staging --base-url https://<cluster>.camunda.io/<id> \
+bpmnkit profile create staging --base-url https://<cluster>.camunda.io/<id> \
   --auth-type oauth --client-id … --client-secret …
 ```
 

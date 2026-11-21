@@ -113,7 +113,7 @@ async function events(): Promise<{
 	}
 }
 
-describe("casen dev server — security", () => {
+describe("bpmnkit dev server — security", () => {
 	it("serves the page to a loopback host, with the session token in it", async () => {
 		const res = await fetch(server.url)
 		expect(res.status).toBe(200)
@@ -154,7 +154,7 @@ describe("casen dev server — security", () => {
 	})
 })
 
-describe("casen dev server — files", () => {
+describe("bpmnkit dev server — files", () => {
 	it("lists the project's models with their check results", async () => {
 		const res = await api("/api/files")
 		const body = (await res.json()) as FilesResponse
@@ -204,7 +204,7 @@ describe("casen dev server — files", () => {
 	})
 })
 
-describe("casen dev server — live loop", () => {
+describe("bpmnkit dev server — live loop", () => {
 	it("runs lint and the scenarios for every model at startup", () => {
 		const result = checked.find((c) => c.path === "orders/order.bpmn")
 		expect(result?.lint).toBeDefined()

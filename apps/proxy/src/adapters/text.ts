@@ -10,7 +10,7 @@ export type AiCli = "claude" | "copilot" | "gemini"
 
 /**
  * One text answer from an AI CLI, with no tools and nothing logged — for
- * callers such as `casen ask` that are not the proxy server. The argv is the
+ * callers such as `bpmnkit ask` that are not the proxy server. The argv is the
  * adapters' own, so a command-line caller gets the same lockdown the proxy's
  * routes do.
  *

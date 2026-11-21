@@ -1,14 +1,14 @@
-# casen view — Folder support
+# bpmnkit view — Folder support
 
 Pass a directory instead of individual files. The viewer scans the top level of the directory
 for files with the matching extension and gives each one its own tab.
 
 ```sh
 # All .bpmn files in ./processes/
-casen view bpmn ./processes/
+bpmnkit view bpmn ./processes/
 
 # All supported types in ./project/
-casen view open ./project/
+bpmnkit view open ./project/
 ```
 
 
@@ -24,7 +24,7 @@ All subcommands accept the same flags:
 
 ```sh
 # Dark theme on a custom port without auto-opening
-casen view bpmn process.bpmn --theme dark --port 8080 --no-open
+bpmnkit view bpmn process.bpmn --theme dark --port 8080 --no-open
 ```
 
 ---

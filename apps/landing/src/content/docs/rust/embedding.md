@@ -117,7 +117,7 @@ With `diff-html`, `diff_to_html(&before, &after, &diff, &DiffHtmlOptions)` write
 file: both diagrams with the changes highlighted, side by side or overlaid, a filterable change
 list, zoom to a change on click and `j`/`k` to step through them. It loads nothing (a CSP
 forbids it) and reads with JavaScript off. The TS `renderDiffHtml` and
-`casen diff bpmn a.bpmn b.bpmn --html diff.html` give the same bytes. `diff_to_svg(&after,
+`bpmnkit diff bpmn a.bpmn b.bpmn --html diff.html` give the same bytes. `diff_to_svg(&after,
 &diff, &RenderOptions)` is the later diagram with the changes drawn over it, for surfaces that
 cannot show HTML.
 

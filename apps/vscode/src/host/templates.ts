@@ -8,7 +8,7 @@
  * walk `payloads.ts` does for `.camunda/payloads/`.
  *
  * What consumes them here is the Problems panel: a connector's required inputs
- * are checked against the template this diagram actually sees, as `casen lint`
+ * are checked against the template this diagram actually sees, as `bpmnkit lint`
  * does, rather than against the bundled catalogue alone.
  */
 

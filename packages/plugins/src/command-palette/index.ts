@@ -230,7 +230,7 @@ const DOC_ENTRIES: DocEntry[] = [
 		keywords: ["connector", "openapi", "swagger", "template", "generate", "rest", "http", "api"],
 	},
 	{
-		title: "casen CLI",
+		title: "bpmnkit CLI",
 		path: "/cli/casen",
 		keywords: [
 			"cli",
@@ -246,7 +246,7 @@ const DOC_ENTRIES: DocEntry[] = [
 		],
 	},
 	{
-		title: "casen connector",
+		title: "bpmnkit connector",
 		path: "/cli/connector",
 		keywords: ["connector", "cli", "generate", "api", "catalog", "swagger", "openapi"],
 	},

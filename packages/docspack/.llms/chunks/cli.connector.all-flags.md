@@ -1,4 +1,4 @@
-# casen connector — All flags
+# bpmnkit connector — All flags
 
 | Flag | Description |
 |---|---|

@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process"
 import type { Command, CommandGroup } from "../types.js"
 
-/** The reebe-server command line for `casen reebe start`. */
+/** The reebe-server command line for `bpmnkit reebe start`. */
 export function serverArgs(port: number, configPath: string, grpcPort?: number): string[] {
 	const args = ["--port", String(port), "--config", configPath]
 	// Passed only when set, so an older reebe-server without the flag still starts.
@@ -42,16 +42,16 @@ const startCmd: Command = {
 	examples: [
 		{
 			description: "Start with embedded SQLite (no external database required)",
-			command: "casen reebe start",
+			command: "bpmnkit reebe start",
 		},
 		{
 			description: "Start with PostgreSQL",
-			command: "casen reebe start --database-url postgres://user:pass@localhost/reebe",
+			command: "bpmnkit reebe start --database-url postgres://user:pass@localhost/reebe",
 		},
-		{ description: "Start on a custom port", command: "casen reebe start --port 9090" },
+		{ description: "Start on a custom port", command: "bpmnkit reebe start --port 9090" },
 		{
 			description: "Serve REST on 26500, where ZEEBE_ADDRESS points by default",
-			command: "casen reebe start --port 26500 --grpc-port 26501",
+			command: "bpmnkit reebe start --port 26500 --grpc-port 26501",
 		},
 	],
 	async run(ctx) {

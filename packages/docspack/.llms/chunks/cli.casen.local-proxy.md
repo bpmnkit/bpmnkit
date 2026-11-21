@@ -1,11 +1,11 @@
-# casen CLI — Local proxy
+# bpmnkit CLI — Local proxy
 
-`casen proxy start` (or `casen proxy`) starts the local proxy on port 3033. Studio, the
+`bpmnkit proxy start` (or `bpmnkit proxy`) starts the local proxy on port 3033. Studio, the
 bpmnkit.com editor and Operate page, and the desktop app use it for AI, deploys, Camunda API
 calls with your stored profiles, and Studio's project folders.
 
 ```sh
-casen proxy start
+bpmnkit proxy start
 ```
 
 | Flag | Default | Description |

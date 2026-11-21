@@ -1,0 +1,26 @@
+{
+	"name": "@bpmnkit/cli-darwin-x64",
+	"version": "2.0.0",
+	"private": true,
+	"description": "The bpmnkit native binary for Intel macOS. Installed by @bpmnkit/cli, not used directly",
+	"os": ["darwin"],
+	"cpu": ["x64"],
+	"files": ["LICENSE", "README.md", "bin/bpmnkit", "bin/bpmnkit.exe"],
+	"scripts": {
+		"test": "node ../cli/test/platform-package.mjs"
+	},
+	"publishConfig": {
+		"access": "public",
+		"tag": "next"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bpmnkit/bpmnkit"
+	},
+	"keywords": ["bpmn", "camunda", "cli", "zeebe", "workflow", "binary"],
+	"homepage": "https://bpmnkit.com",
+	"bugs": {
+		"url": "https://github.com/bpmnkit/bpmnkit/issues"
+	}
+}

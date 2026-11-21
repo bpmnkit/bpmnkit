@@ -1,7 +1,7 @@
 <div align="center">
   <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>@bpmnkit/cli-sdk</h1>
-  <p>Plugin authoring SDK for the casen CLI — types, contracts, and helpers</p>
+  <p>Plugin authoring SDK for the bpmnkit CLI — types, contracts, and helpers</p>
 
   [![npm](https://img.shields.io/npm/v/@bpmnkit/cli-sdk?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli-sdk)
   [![license](https://img.shields.io/npm/l/@bpmnkit/cli-sdk?style=flat-square)](https://github.com/bpmnkit/bpmnkit/blob/main/LICENSE)
@@ -18,7 +18,7 @@
 
 ## Overview
 
-`@bpmnkit/cli-sdk` is the official SDK for building `casen` CLI plugins. It exports the `CasenPlugin` contract and all supporting types (`CommandGroup`, `Command`, `RunContext`, `OutputWriter`) so you can build typed, TUI-integrated plugins without depending on casen internals.
+`@bpmnkit/cli-sdk` is the official SDK for building `bpmnkit` CLI plugins. It exports the `CasenPlugin` contract and all supporting types (`CommandGroup`, `Command`, `RunContext`, `OutputWriter`) so you can build typed, TUI-integrated plugins without depending on bpmnkit internals.
 
 ## Installation
 
@@ -68,7 +68,7 @@ The top-level contract every plugin must export as its default export.
 interface CasenPlugin {
   /** Unique reverse-domain identifier, e.g. "com.acme.casen-deploy" */
   id: string
-  /** Human-readable name shown in `casen plugin list` */
+  /** Human-readable name shown in `bpmnkit plugin list` */
   name: string
   version: string
   /** Command groups this plugin contributes to the CLI */
@@ -78,7 +78,7 @@ interface CasenPlugin {
 
 ### `CommandGroup`
 
-Maps to a single top-level token: `casen <group>`.
+Maps to a single top-level token: `bpmnkit <group>`.
 
 ```typescript
 interface CommandGroup {
@@ -155,14 +155,15 @@ interface OutputWriter {
 | [`@bpmnkit/operate`](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
 | [`@bpmnkit/connector-gen`](https://www.npmjs.com/package/@bpmnkit/connector-gen) | Generate connector templates from OpenAPI specs |
 | [`@bpmnkit/connectors`](https://www.npmjs.com/package/@bpmnkit/connectors) | Camunda 8 OOTB connector catalog and deterministic template application |
-| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (casen) |
+| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (bpmnkit, alias casen) |
+| [`@bpmnkit/cli-legacy`](https://www.npmjs.com/package/@bpmnkit/cli-legacy) | Node fallback behind the native bpmnkit binary |
 | [`@bpmnkit/proxy`](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
 | [`@bpmnkit/patterns`](https://www.npmjs.com/package/@bpmnkit/patterns) | Domain process patterns for BPMNKit AIKit |
 | [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm) | WebAssembly BPMN engine for browser simulation |
 | [`@bpmnkit/worker-client`](https://www.npmjs.com/package/@bpmnkit/worker-client) | Thin Zeebe REST client for standalone workers |
 | [`@bpmnkit/flow`](https://www.npmjs.com/package/@bpmnkit/flow) | Code-first durable flows that derive BPMN, job types and workers |
 | [`@bpmnkit/user-tasks`](https://www.npmjs.com/package/@bpmnkit/user-tasks) | Embeddable user task widget for Camunda 8 |
-| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new casen CLI plugin in seconds |
+| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new bpmnkit CLI plugin in seconds |
 | [`@bpmnkit/casen-report`](https://www.npmjs.com/package/@bpmnkit/casen-report) | HTML reports from Camunda 8 incident and SLA data |
 | [`@bpmnkit/casen-worker-http`](https://www.npmjs.com/package/@bpmnkit/casen-worker-http) | Example HTTP worker plugin — completes jobs with live JSONPlaceholder API data |
 | [`@bpmnkit/casen-worker-ai`](https://www.npmjs.com/package/@bpmnkit/casen-worker-ai) | AI task worker — classify, summarize, extract, and decide using Claude |

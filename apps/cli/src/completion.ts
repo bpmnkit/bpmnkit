@@ -6,7 +6,7 @@ import type { CommandGroup } from "./types.js"
  * Return newline-separated completion suggestions for the given cursor
  * position and word list. Called when the binary runs with --complete.
  *
- * Protocol: casen --complete <cursorWordIndex> -- <words...>
+ * Protocol: bpmnkit --complete <cursorWordIndex> -- <words...>
  */
 export function getRuntimeCompletions(
 	groups: CommandGroup[],
@@ -53,51 +53,51 @@ export function getRuntimeCompletions(
 // ─── Shell scripts ────────────────────────────────────────────────────────────
 
 export function getBashScript(): string {
-	return `# bash completion for casen
+	return `# bash completion for bpmnkit
 # Add to ~/.bash_completion or source in ~/.bashrc:
-#   eval "$(casen completion bash)"
+#   eval "$(bpmnkit completion bash)"
 
 _casen_complete() {
   local cur_word
   cur_word="\${COMP_WORDS[COMP_CWORD]}"
   local completions
-  completions=$(casen --complete $COMP_CWORD -- "\${COMP_WORDS[@]}" 2>/dev/null)
+  completions=$(bpmnkit --complete $COMP_CWORD -- "\${COMP_WORDS[@]}" 2>/dev/null)
   COMPREPLY=($(compgen -W "$completions" -- "$cur_word"))
 }
-complete -F _casen_complete casen
+complete -F _casen_complete bpmnkit
 `
 }
 
 export function getZshScript(): string {
-	return `#compdef casen
-# zsh completion for casen
+	return `#compdef bpmnkit
+# zsh completion for bpmnkit
 # Add to a directory in your \$fpath, e.g.:
-#   mkdir -p ~/.zfunc && casen completion zsh > ~/.zfunc/_casen
+#   mkdir -p ~/.zfunc && bpmnkit completion zsh > ~/.zfunc/_bpmnkit
 # Then ensure the directory is in your fpath before compinit:
 #   fpath=(~/.zfunc $fpath)
 #   autoload -Uz compinit && compinit
 
-_casen() {
+_bpmnkit() {
   local -a completions
-  IFS=$'\\n' completions=( $(casen --complete $((CURRENT - 1)) -- "\${words[@]}" 2>/dev/null) )
+  IFS=$'\\n' completions=( $(bpmnkit --complete $((CURRENT - 1)) -- "\${words[@]}" 2>/dev/null) )
   compadd -a completions
 }
 
-_casen
+_bpmnkit
 `
 }
 
 export function getFishScript(): string {
-	return `# fish completion for casen
-# Copy to ~/.config/fish/completions/casen.fish or run:
-#   casen completion fish > ~/.config/fish/completions/casen.fish
+	return `# fish completion for bpmnkit
+# Copy to ~/.config/fish/completions/bpmnkit.fish or run:
+#   bpmnkit completion fish > ~/.config/fish/completions/bpmnkit.fish
 
 function __casen_complete
   set -l cmd (commandline -opc)
   set -l pos (count $cmd)
-  casen --complete $pos -- $cmd 2>/dev/null
+  bpmnkit --complete $pos -- $cmd 2>/dev/null
 end
 
-complete -c casen -f -a '(__casen_complete)'
+complete -c bpmnkit -f -a '(__casen_complete)'
 `
 }

@@ -98,7 +98,7 @@ beforeAll(() => {
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
-describe("casen diff bpmn", () => {
+describe("bpmnkit diff bpmn", () => {
 	it("is registered under the diff group", () => {
 		expect(diffGroup.name).toBe("diff")
 		expect(diffBpmn).toBeDefined()

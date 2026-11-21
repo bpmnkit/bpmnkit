@@ -29,6 +29,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # The old command name is only an alias now; docs, help and code say `bpmnkit`. Allowlist: scripts/lib/casen-rules.mjs.
+      - name: check-casen
+        run: node scripts/check-casen.mjs
+
       # spec/ is the single source for shared data; generated TS and Rust may not drift from it.
       - name: spec-gen
         run: node scripts/spec-gen.mjs --check
@@ -231,6 +235,55 @@ jobs:
         run: pnpm check:api
 
   # The Rust crates: shared conformance cases plus the spec/ data crate.
+
+  # `npx @bpmnkit/cli@next --version` without a registry: pack the launcher, the legacy CLI and
+  # this runner's platform package from the tree (with the binary just built), install the
+  # tarballs and run `bpmnkit` and its alias from node_modules/.bin. The legacy tarball is packed
+  # without a build (it needs the wasm toolchain); `--version` never reaches it.
+  cli-npm-smoke:
+    name: cli npm smoke (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: Setup Rust
+        run: rustup show active-toolchain
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Launcher tests
+        run: pnpm --filter @bpmnkit/cli test
+
+      - name: Build the binary
+        run: cargo build --release --locked -p bpmnkit-cli
+
+      - name: Install the packed tarballs and run them
+        shell: bash
+        run: |
+          BIN=target/release/bpmnkit
+          if [ "$RUNNER_OS" = "Windows" ]; then BIN=target/release/bpmnkit.exe; fi
+          node scripts/smoke-cli-npm.mjs --bin "$BIN"
+
   conformance-rs:
     name: Conformance (Rust)
     runs-on: ubuntu-latest

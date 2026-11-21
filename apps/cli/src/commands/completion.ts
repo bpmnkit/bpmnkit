@@ -9,10 +9,10 @@ export const completionGroup: CommandGroup = {
 			name: "bash",
 			description: "Generate bash completion script",
 			examples: [
-				{ description: "Install bash completion", command: 'eval "$(casen completion bash)"' },
+				{ description: "Install bash completion", command: 'eval "$(bpmnkit completion bash)"' },
 				{
 					description: "Persist bash completion",
-					command: "casen completion bash >> ~/.bash_completion",
+					command: "bpmnkit completion bash >> ~/.bash_completion",
 				},
 			],
 			async run(ctx) {
@@ -25,7 +25,7 @@ export const completionGroup: CommandGroup = {
 			examples: [
 				{
 					description: "Install zsh completion",
-					command: "mkdir -p ~/.zfunc && casen completion zsh > ~/.zfunc/_casen",
+					command: "mkdir -p ~/.zfunc && bpmnkit completion zsh > ~/.zfunc/_bpmnkit",
 				},
 				{
 					description: "Then add to ~/.zshrc",
@@ -42,7 +42,7 @@ export const completionGroup: CommandGroup = {
 			examples: [
 				{
 					description: "Install fish completion",
-					command: "casen completion fish > ~/.config/fish/completions/casen.fish",
+					command: "bpmnkit completion fish > ~/.config/fish/completions/bpmnkit.fish",
 				},
 			],
 			async run(ctx) {

@@ -1,16 +1,16 @@
 ---
-title: casen migrate
+title: bpmnkit migrate
 description: Convert Camunda 7 BPMN models to Camunda 8 and get a per-element report of what was converted, what needs a person, and what Camunda 8 cannot do — as text or JSON, with a CI gate.
 sidebar:
   order: 9
 ---
 
-`casen migrate c7` converts Camunda 7 models to Camunda 8. It rewrites what it can rewrite
+`bpmnkit migrate c7` converts Camunda 7 models to Camunda 8. It rewrites what it can rewrite
 mechanically and reports every Camunda 7 construct it finds, one line per element. The
 [migration guide](/docs/guides/migrate-from-camunda-7) explains what is converted and why.
 
 ```sh
-casen migrate c7 order.bpmn
+bpmnkit migrate c7 order.bpmn
 ```
 
 ```
@@ -81,12 +81,12 @@ Camunda 7 file shows only what the migration changed.
 | `--placeholders` | off | Fill placeholder values the conversion cannot derive, instead of refusing the model |
 | `--no-validate` | validate | Write the converted model even when Camunda 8 would not deploy it |
 
-Put the flags after the file names: `casen migrate c7 models/*.bpmn --check`.
+Put the flags after the file names: `bpmnkit migrate c7 models/*.bpmn --check`.
 
 ### As a pipeline gate
 
 ```sh
-casen migrate c7 models/*.bpmn --check --format json
+bpmnkit migrate c7 models/*.bpmn --check --format json
 ```
 
 The JSON is an array with one entry per file: `file`, `output` (`null` with `--check`),

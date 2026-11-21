@@ -235,15 +235,15 @@ export const generateTypesCmd: Command = {
 	examples: [
 		{
 			description: "Generate types for every process in a folder",
-			command: "casen gen types processes/ --out src/generated/bpmn-types.ts",
+			command: "bpmnkit gen types processes/ --out src/generated/bpmn-types.ts",
 		},
 		{
 			description: "Fail CI when the generated file is stale",
-			command: 'casen gen types "processes/**/*.bpmn" --out src/generated/bpmn-types.ts --check',
+			command: 'bpmnkit gen types "processes/**/*.bpmn" --out src/generated/bpmn-types.ts --check',
 		},
 		{
 			description: "Report job types without a worker, and workers without a job type",
-			command: 'casen gen types processes/ --check-workers "src/**/*.ts" --strict',
+			command: 'bpmnkit gen types processes/ --check-workers "src/**/*.ts" --strict',
 		},
 	],
 	async run(ctx) {
@@ -256,7 +256,7 @@ export const generateTypesCmd: Command = {
 
 		if (positional.length === 0) {
 			throw new Error(
-				"Missing BPMN files. Usage: casen gen types <files|dirs|globs...> --out <file>",
+				"Missing BPMN files. Usage: bpmnkit gen types <files|dirs|globs...> --out <file>",
 			)
 		}
 		if (check && out === undefined) throw new Error("--check needs --out <file> to compare against")
@@ -272,7 +272,7 @@ export const generateTypesCmd: Command = {
 				const current = await readFile(target, "utf-8").catch(() => null)
 				if (current !== source) {
 					throw new Error(
-						`${out} is ${current === null ? "missing" : "out of date"} — run casen gen types without --check to regenerate it.`,
+						`${out} is ${current === null ? "missing" : "out of date"} — run bpmnkit gen types without --check to regenerate it.`,
 					)
 				}
 				ctx.output.ok(`${out} is up to date (${files.length} BPMN file(s))`)

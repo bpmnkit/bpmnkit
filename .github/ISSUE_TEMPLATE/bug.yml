@@ -6,7 +6,7 @@ body:
     id: package
     attributes:
       label: Package and version
-      description: For example `@bpmnkit/core 1.2.0`, or `casen 1.4.1` (`casen --version`).
+      description: For example `@bpmnkit/core 1.2.0`, or `bpmnkit 1.4.1` (`bpmnkit --version`).
     validations:
       required: true
   - type: textarea

@@ -64,7 +64,7 @@ async function includeWorkspaceTemplates(ctx: RunContext): Promise<void> {
 		// and "3 problems" reads as three unusable templates.
 		const files = new Set(problems.map((p) => p.file)).size
 		ctx.output.info(
-			`${files} workspace template file${files === 1 ? "" : "s"} could not be loaded — run 'casen connector validate' for details`,
+			`${files} workspace template file${files === 1 ? "" : "s"} could not be loaded — run 'bpmnkit connector validate' for details`,
 		)
 	}
 }
@@ -77,13 +77,17 @@ const searchCmd: Command = {
 		{ name: "query", description: 'Search terms, e.g. "slack" or "send email"', required: true },
 	],
 	flags: [WORKSPACE_FLAG, CONFIG_FOLDER_FLAG],
-	examples: [{ description: "Find the Slack connector", command: "casen connector search slack" }],
+	examples: [
+		{ description: "Find the Slack connector", command: "bpmnkit connector search slack" },
+	],
 	async run(ctx) {
 		await includeWorkspaceTemplates(ctx)
 		const query = ctx.positional.join(" ")
 		const results = searchConnectors(query)
 		if (results.length === 0) {
-			ctx.output.info(`No connectors matched "${query}". Try 'casen connector list' to browse all.`)
+			ctx.output.info(
+				`No connectors matched "${query}". Try 'bpmnkit connector list' to browse all.`,
+			)
 			return
 		}
 		ctx.output.printList({ items: results }, [
@@ -164,12 +168,12 @@ const showCmd: Command = {
 	examples: [
 		{
 			description: "Show the Slack connector's inputs",
-			command: "casen connector show io.camunda.connectors.Slack.v1",
+			command: "bpmnkit connector show io.camunda.connectors.Slack.v1",
 		},
 		{
 			description: "Find the timeout properties, one line each",
 			command:
-				"casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed",
+				"bpmnkit connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed",
 		},
 	],
 	async run(ctx) {
@@ -182,7 +186,7 @@ const showCmd: Command = {
 			listConnectors().find((s) => s.id === templateId)
 		if (!summary || !getTemplate(templateId)) {
 			throw new Error(
-				`Unknown connector template "${templateId}". Use 'casen connector search <query>' to find one.`,
+				`Unknown connector template "${templateId}". Use 'bpmnkit connector search <query>' to find one.`,
 			)
 		}
 
@@ -302,17 +306,17 @@ const applyCmd: Command = {
 	examples: [
 		{
 			description: "Apply the REST connector with values from a file",
-			command: "casen connector apply order.bpmn Call http --values call.json",
+			command: "bpmnkit connector apply order.bpmn Call http --values call.json",
 		},
 		{
 			description: "Set single keys inline",
-			command: "casen connector apply order.bpmn Call http --set method=GET --set retryCount=5",
+			command: "bpmnkit connector apply order.bpmn Call http --set method=GET --set retryCount=5",
 		},
 	],
 	async run(ctx) {
 		const [file, elementId, template] = ctx.positional
 		if (!file || !elementId || !template) {
-			throw new Error("Usage: casen connector apply <file.bpmn> <elementId> <template>")
+			throw new Error("Usage: bpmnkit connector apply <file.bpmn> <elementId> <template>")
 		}
 		await includeWorkspaceTemplates(ctx)
 
@@ -374,11 +378,11 @@ const cardsCmd: Command = {
 	examples: [
 		{
 			description: "Find how to post to Slack",
-			command: 'casen connector cards "post a message to slack"',
+			command: 'bpmnkit connector cards "post a message to slack"',
 		},
 		{
 			description: "As JSON, for a tool",
-			command: 'casen connector cards "create github issue" -o json',
+			command: 'bpmnkit connector cards "create github issue" -o json',
 		},
 	],
 	async run(ctx) {
@@ -390,7 +394,9 @@ const cardsCmd: Command = {
 		}
 		const cards = findConnectorCards(query, { limit })
 		if (cards.length === 0) {
-			ctx.output.info(`No connector matched "${query}". Try 'casen connector list' to browse all.`)
+			ctx.output.info(
+				`No connector matched "${query}". Try 'bpmnkit connector list' to browse all.`,
+			)
 			return
 		}
 		if (ctx.output.format === "json") {
@@ -429,11 +435,11 @@ const apiCmd: Command = {
 	examples: [
 		{
 			description: "Find the endpoint that creates a Stripe customer",
-			command: 'casen connector api "create a stripe customer"',
+			command: 'bpmnkit connector api "create a stripe customer"',
 		},
 		{
 			description: "As JSON, for a tool",
-			command: 'casen connector api "create page" --service notion -o json',
+			command: 'bpmnkit connector api "create page" --service notion -o json',
 		},
 	],
 	async run(ctx) {
@@ -527,14 +533,14 @@ const validateCmd: Command = {
 		{ name: "format", description: "Output format: text (default) or json", type: "string" },
 	],
 	examples: [
-		{ description: "Validate this project's templates", command: "casen connector validate" },
+		{ description: "Validate this project's templates", command: "bpmnkit connector validate" },
 		{
 			description: "Validate one file",
-			command: "casen connector validate .camunda/element-templates/my-connector.json",
+			command: "bpmnkit connector validate .camunda/element-templates/my-connector.json",
 		},
 		{
 			description: "Gate a pipeline",
-			command: "casen connector validate --format json",
+			command: "bpmnkit connector validate --format json",
 		},
 	],
 	async run(ctx) {
@@ -696,15 +702,15 @@ export const connectorGroup: CommandGroup = {
 			examples: [
 				{
 					description: "Generate from a local file",
-					command: "casen connector generate --swagger ./petstore.yaml --output ./out",
+					command: "bpmnkit connector generate --swagger ./petstore.yaml --output ./out",
 				},
 				{
 					description: "Generate from the GitHub catalog entry",
-					command: "casen connector generate --api github --output ./out --filter issues",
+					command: "bpmnkit connector generate --api github --output ./out --filter issues",
 				},
 				{
 					description: "Dry run (print to stdout)",
-					command: "casen connector generate --swagger ./spec.yaml --dry-run",
+					command: "bpmnkit connector generate --swagger ./spec.yaml --dry-run",
 				},
 			],
 			async run(ctx) {
@@ -739,7 +745,7 @@ export const connectorGroup: CommandGroup = {
 
 				if (!swaggerPath && !apiId) {
 					throw new Error(
-						"Provide either --swagger <file> or --api <id>. Use 'casen connector catalog' to list catalog entries.",
+						"Provide either --swagger <file> or --api <id>. Use 'bpmnkit connector catalog' to list catalog entries.",
 					)
 				}
 				if (swaggerPath && apiId) {
@@ -796,7 +802,7 @@ export const connectorGroup: CommandGroup = {
 		{
 			name: "catalog",
 			description: "List available API catalog entries",
-			examples: [{ description: "Show all catalog entries", command: "casen connector catalog" }],
+			examples: [{ description: "Show all catalog entries", command: "bpmnkit connector catalog" }],
 			async run(ctx) {
 				const { CATALOG } = await import("@bpmnkit/connector-gen")
 				ctx.output.printList(

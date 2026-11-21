@@ -2,7 +2,7 @@
  * The contract between an `.agent()` step and the worker that serves it.
  *
  * A flow names the work (a role, optionally a rank) and carries a prompt; a
- * workforce worker (`casen agent work`) polls the job types a hired profile
+ * workforce worker (`bpmnkit agent work`) polls the job types a hired profile
  * covers, renders the prompt with the job's variables and runs a coding-agent
  * CLI. Neither side names the other — this module is all they share.
  */

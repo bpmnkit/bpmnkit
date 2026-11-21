@@ -26,7 +26,11 @@
 
 ## `bpmnkit worker classify` (2026-11-21)
 
-`bpmnkit worker classify <bpmn…> [--openapi index.json] [--config bpmnkit.worker.toml] [--format text|json]` reads every job type in the BPMN (the same list as `casen gen types`) and decides per type: keep a catalog connector, bind one (by exact type/template id, or by a connector name in the task name), bind the REST connector to an OpenAPI operation (`bpmnkit:operation` property) or URL, or generate a worker (no binding, unsupported auth or media type, pagination, several operations, invalid FEEL mapping, declared load, idempotency key). Each decision carries a stable rule id and a reason; the JSON output adds the IR and its sha256 hash.
+`bpmnkit worker classify <bpmn…> [--openapi index.json] [--config bpmnkit.worker.toml] [--format text|json]` reads every job type in the BPMN (the same list as `bpmnkit gen types`) and decides per type: keep a catalog connector, bind one (by exact type/template id, or by a connector name in the task name), bind the REST connector to an OpenAPI operation (`bpmnkit:operation` property) or URL, or generate a worker (no binding, unsupported auth or media type, pagination, several operations, invalid FEEL mapping, declared load, idempotency key). Each decision carries a stable rule id and a reason; the JSON output adds the IR and its sha256 hash.
+
+## `bpmnkit` distribution and rename (2026-11-21)
+
+`@bpmnkit/cli` 2.0.0 (dist-tag `next`) is a small Node launcher plus one optional platform package per target (`@bpmnkit/cli-{linux-x64,linux-arm64,darwin-x64,darwin-arm64,win32-x64}`); bins `bpmnkit` and alias `casen`. Without the platform package it downloads the release archive and checks its sha256. The old Node CLI is `@bpmnkit/cli-legacy`, resolved by the launcher (`BPMNKIT_LEGACY_CLI`) for commands the binary does not run. cargo-dist builds GitHub releases with shell/PowerShell/MSI installers and a Homebrew tap (`bpmnkit-cli-v*` tags); `bpmnkit self update` uses axoupdater and refuses on npm and Homebrew installs. The Rust crates (`bpmnkit-cli`, `-codegen`, `-jobspec`, `-connector-runtime`, `-connectors`, `-profiles`) are publishable; the facade re-exports the libraries. the old name (alias `casen`) became `bpmnkit` across docs and sources; `scripts/check-casen.mjs` keeps it that way (allowlist: `scripts/lib/casen-rules.mjs`). `@bpmnkit/create-bpmnkit-plugin` replaces `create-casen-plugin` and `BpmnkitPlugin` replaces the `CasenPlugin` type, which stays as an alias.
 
 ## `bpmnkit` Rust CLI skeleton (2026-11-21)
 
@@ -40,9 +44,9 @@ Flat lane sets are laid out with straight vertical hand-overs between adjacent l
 
 `applyAutoLayout(defs, "layered")` (and `layoutProcess(process, "layered")`, Rust `LayoutEngine::Layered`) runs a Sugiyama-style placement on every lane-free scope: declaration-order-independent cycle breaking (DFS back edges), longest-path columns with a network-simplex pull, dummy nodes for long flows, median sweeps with transpose, Brandes–Köpf centre lines (the variant whose flows route with the fewest bends wins) and orthogonal routing with one track per jog in each gutter, ordered to avoid crossings; loops run in corridors past both ends, the A* router is the fallback. P2's rules are layering constraints: a one-node detour stacks under the split's other target, a boundary handler drops straight under its host. Labels, boundary docking, artifacts, sub-processes and collaboration composition are shared with `semantic`; scopes with lanes and packed tool grids stay semantic. Collaborations keep the layered composition unless it crosses more message flows than the semantic one. `pnpm layout:score --engine layered` scores it against its own baseline (`doc/layout-aesthetics/baseline-layered.json`). The default stays `semantic`.
 
-## `casen build`: spec to deployed process in one command (2026-11-13)
+## `bpmnkit build`: spec to deployed process in one command (2026-11-13)
 
-Write a few lines of text (one pool, or `## Pool` sections with `### Lane`s, `~>` message flows and `..>` data objects) or an edit module, run `casen build spec.txt --deploy`: it writes the laid-out `.bpmn` and a Camunda form per user task (`fields=` picks the fields), lints like c8ctl with the `.bpmnlintrc` key on each finding, and deploys model and forms together (env credentials like c8ctl, the profile, or local Reebe). `--edit order.bpmn` changes an existing file with the builder while shapes stay put and the rest moves right to make room. Library: `attachUserTaskForms`, `makeRoom`. Collaborations: message ends keep their message, a same-name data store is one store, a start a message flow reaches is a message start, rule tasks call `decision=` (else the name), message-flow labels sit between the pools. A user task without `fields=` gets form fields from the conditions it feeds; spec nodes need no id (`[user Review expense]` is `reviewExpense`, referable by name), job types and message names default from them; the success line lists pools, process ids, task/gateway/message-flow/form counts and the Camunda version.
+Write a few lines of text (one pool, or `## Pool` sections with `### Lane`s, `~>` message flows and `..>` data objects) or an edit module, run `bpmnkit build spec.txt --deploy`: it writes the laid-out `.bpmn` and a Camunda form per user task (`fields=` picks the fields), lints like c8ctl with the `.bpmnlintrc` key on each finding, and deploys model and forms together (env credentials like c8ctl, the profile, or local Reebe). `--edit order.bpmn` changes an existing file with the builder while shapes stay put and the rest moves right to make room. Library: `attachUserTaskForms`, `makeRoom`. Collaborations: message ends keep their message, a same-name data store is one store, a start a message flow reaches is a message start, rule tasks call `decision=` (else the name), message-flow labels sit between the pools. A user task without `fields=` gets form fields from the conditions it feeds; spec nodes need no id (`[user Review expense]` is `reviewExpense`, referable by name), job types and message names default from them; the success line lists pools, process ids, task/gateway/message-flow/form counts and the Camunda version.
 
 The text spec also writes expanded sub-processes (`sp[sub Name]` + `sp { … }`), conditional start/catch events (`cond=<FEEL>`) and free or linked text annotations (`n[annotation Text]`), all laid out. Edits give forms only to new user tasks, move existing shapes only as far as needed, and `--camunda 8.10` retargets the file.
 
@@ -56,7 +60,7 @@ Message end/throw events take `correlationKey`; `DiagramBuilder.message()` merge
 
 ## `@bpmnkit/viewer-lite`: BPMN in one self-contained HTML file (2026-11-12)
 
-A dependency-free browser viewer under 8.5 KB gzip (7.9 KB; the gate is 8.5 KB), built to be inlined: `dist/template.html` carries the script and a `{{BPMN}}` placeholder, and every `<script type="application/bpmn+xml">` on a page is replaced by its diagram. Fits on load, drag to pan, wheel to zoom, follows `prefers-color-scheme`; a file without DI shows a short message. `BpmnLite.render(xml, el)` / ESM `render`, `boot`, `parseBpmnLite`. Draws exactly like `exportSvg` (checked on every conformance fixture, in happy-dom and Chromium); the build fails over the size budget. Enabled by the new layout-free `@bpmnkit/core/svg` entry. `toHtml(xml, { title? })` (`@bpmnkit/viewer-lite/html`) and `casen export html <file.bpmn> [-o out.html]` write the single file, escaping `</script` safely.
+A dependency-free browser viewer under 8.5 KB gzip (7.9 KB; the gate is 8.5 KB), built to be inlined: `dist/template.html` carries the script and a `{{BPMN}}` placeholder, and every `<script type="application/bpmn+xml">` on a page is replaced by its diagram. Fits on load, drag to pan, wheel to zoom, follows `prefers-color-scheme`; a file without DI shows a short message. `BpmnLite.render(xml, el)` / ESM `render`, `boot`, `parseBpmnLite`. Draws exactly like `exportSvg` (checked on every conformance fixture, in happy-dom and Chromium); the build fails over the size budget. Enabled by the new layout-free `@bpmnkit/core/svg` entry. `toHtml(xml, { title? })` (`@bpmnkit/viewer-lite/html`) and `bpmnkit export html <file.bpmn> [-o out.html]` write the single file, escaping `</script` safely.
 
 ## Rust crates released with Changesets (2026-11-10)
 
@@ -72,7 +76,7 @@ The `bpmnkit-*` crates are versioned in lockstep through `@crates/<crate>` chang
 
 ## HTML diff viewer (2026-11-09)
 
-`casen diff bpmn old.bpmn new.bpmn --html diff.html` writes one self-contained page: both diagrams with added, removed, changed and moved elements outlined, side by side or overlaid, a filterable change list with field-level `before → after`, click-to-zoom and `j`/`k` stepping; it loads nothing and reads without JavaScript. `--png diff.png` is the later diagram with the same marks, for chat. Library: `renderDiffHtml` / `diffToSvg` in `@bpmnkit/core`, `diff_to_html` / `diff_to_svg` in `bpmnkit-diff` (feature `html`), byte-identical. The Rust facade gains `render`, `diff` and `diff-html` features.
+`bpmnkit diff bpmn old.bpmn new.bpmn --html diff.html` writes one self-contained page: both diagrams with added, removed, changed and moved elements outlined, side by side or overlaid, a filterable change list with field-level `before → after`, click-to-zoom and `j`/`k` stepping; it loads nothing and reads without JavaScript. `--png diff.png` is the later diagram with the same marks, for chat. Library: `renderDiffHtml` / `diffToSvg` in `@bpmnkit/core`, `diff_to_html` / `diff_to_svg` in `bpmnkit-diff` (feature `html`), byte-identical. The Rust facade gains `render`, `diff` and `diff-html` features.
 
 ## `bpmnkit-render`: BPMN to SVG and PNG in Rust (2026-11-09)
 
@@ -96,7 +100,7 @@ The `bpmnkit-*` crates are versioned in lockstep through `@crates/<crate>` chang
 
 ## `placeNewShapes`: draw only new elements (2026-11-09)
 
-`placeNewShapes(definitions)` gives shapes and edges to elements that have none, leaves existing shapes where they are, and widens pools, lanes and sub-processes when needed. Use it before `exportPreserving` when editing a file. `casen generate bpmn --input --patch` keeps the existing layout this way.
+`placeNewShapes(definitions)` gives shapes and edges to elements that have none, leaves existing shapes where they are, and widens pools, lanes and sub-processes when needed. Use it before `exportPreserving` when editing a file. `bpmnkit generate bpmn --input --patch` keeps the existing layout this way.
 
 ## Semantic BPMN diff: `diffBpmn` and `bpmnkit-diff` (2026-11-09)
 
@@ -104,18 +108,18 @@ The `bpmnkit-*` crates are versioned in lockstep through `@crates/<crate>` chang
 
 ## Lanes and pools: write support (2026-11-09)
 
-- Core: `ProcessBuilder.lane()` / `.participant()` write lanes (nested included) and pools, validated at build time; `DiagramBuilder.withAutoLayout()`. The compact format carries `lanes`, `participants`, `messageFlows` and `executable` both ways, so `casen generate`, the proxy and `reconcileCompact` keep swimlanes. Process text reads and writes `lane id[Name]: a, b`, `pool id[Name]` and `msg a >(Label) pool` (taught by `PROCESS_TEXT_GUIDE`, not by the on-device guide). Auto-layout insets nested lanes and draws lanes in a pool that has no nodes yet.
+- Core: `ProcessBuilder.lane()` / `.participant()` write lanes (nested included) and pools, validated at build time; `DiagramBuilder.withAutoLayout()`. The compact format carries `lanes`, `participants`, `messageFlows` and `executable` both ways, so `bpmnkit generate`, the proxy and `reconcileCompact` keep swimlanes. Process text reads and writes `lane id[Name]: a, b`, `pool id[Name]` and `msg a >(Label) pool` (taught by `PROCESS_TEXT_GUIDE`, not by the on-device guide). Auto-layout insets nested lanes and draws lanes in a pool that has no nodes yet.
 - Editor: edits the executable process and its diagram even when a partner pool comes first. Pool tool, add lane above or below, divide a pool into lanes, resize and move pools and lanes, space tool across them; membership follows the drawing; connecting two pools draws a message flow; pools, lanes and message flows are renamed in place; lanes and black-box pools can be deleted (the own pool cannot). Change scripts (Drop suggestions, AI chat) apply `lane`, `pool` and `msg` lines and keep the layout.
 - Canvas: message flows show their name, placed beside the longest segment when the file gives no position.
 - Scope: one editable process with lanes; partner pools are black boxes.
 
 ## Deploy gate on every caller: CLI, AI routes, studio, Drop, demo, docs (2026-11-08)
 
-Every BPMN BPMN Kit hands over (written, downloaded, deployed or returned as a result) deploys on Camunda 8, or is refused with the gate's lines (`- <id>: <message> (zeebe/<rule>)`). `assertDeployableXml(xml)` gates XML as it is (TS + Rust). CLI: `casen generate bpmn` refuses and exits 1 (`--placeholders`, `--no-validate`), `casen deploy` gates before it sends (`--no-validate`), `casen check --deploy` reports the gate's errors. AI proxy: `/chat` and `/improve` return a diagram only when it deploys (`"placeholders": true`, or `"validate": false` for a draft with a `deployability` event); every MCP tool that changes the diagram adds a deploy check for the model to act on; aikit `bpmn_create`/`bpmn_update` (`placeholders`), `bpmn_deploy` (`validate`), `bpmn_validate` (`deployable`). Studio: the deploy pane decides with the gate and lists its lines; AI panels and on-device AI insert drafts and show the message. Drop: the readiness check shows the gate's lines with a **Fill placeholders** action, and Share is refused until the draft deploys. Demo server routes gate their output and teach the new fields. Examples are gated by a test. The definitions-level `<bpmn:documentation>` the BPMN schema forbids is written inside a `<bpmn:extension>` and read back. Docs: [the deploy gate](apps/landing/src/content/docs/guides/deploy-gate.md).
+Every BPMN BPMN Kit hands over (written, downloaded, deployed or returned as a result) deploys on Camunda 8, or is refused with the gate's lines (`- <id>: <message> (zeebe/<rule>)`). `assertDeployableXml(xml)` gates XML as it is (TS + Rust). CLI: `bpmnkit generate bpmn` refuses and exits 1 (`--placeholders`, `--no-validate`), `bpmnkit deploy` gates before it sends (`--no-validate`), `bpmnkit check --deploy` reports the gate's errors. AI proxy: `/chat` and `/improve` return a diagram only when it deploys (`"placeholders": true`, or `"validate": false` for a draft with a `deployability` event); every MCP tool that changes the diagram adds a deploy check for the model to act on; aikit `bpmn_create`/`bpmn_update` (`placeholders`), `bpmn_deploy` (`validate`), `bpmn_validate` (`deployable`). Studio: the deploy pane decides with the gate and lists its lines; AI panels and on-device AI insert drafts and show the message. Drop: the readiness check shows the gate's lines with a **Fill placeholders** action, and Share is refused until the draft deploys. Demo server routes gate their output and teach the new fields. Examples are gated by a test. The definitions-level `<bpmn:documentation>` the BPMN schema forbids is written inside a `<bpmn:extension>` and read back. Docs: [the deploy gate](apps/landing/src/content/docs/guides/deploy-gate.md).
 
 ## Deploy gate on migration, connector templates, plans and optimize fixes (2026-11-08)
 
-`convertCamunda7` refuses a Camunda 8 result Zeebe would reject (`DeployabilityError`, every reason listed); `analyzeCamunda7` still gives the report, `placeholders: true` fills what only a person knows and lists each fill as `manual` work, `validate: false` returns the conversion as it is. `casen migrate c7` writes nothing for a refused model, says why, and offers `--placeholders` and `--no-validate`. `applyTemplateToElement`, `applyTemplates` and `applyConnectorLines` report Zeebe errors on the applied elements as problems (`not-deployable`). `compilePlan` / `mergePlan` return no XML for a model Zeebe would refuse, with the reasons as problems, and take `placeholders` (`casen synth --placeholders`). Pattern compact templates expand through the gate, and optimize auto-fixes keep a deployable model deployable (the extracted reusable process now deploys). Rust: `convert_camunda7` with the same options, messages and report.
+`convertCamunda7` refuses a Camunda 8 result Zeebe would reject (`DeployabilityError`, every reason listed); `analyzeCamunda7` still gives the report, `placeholders: true` fills what only a person knows and lists each fill as `manual` work, `validate: false` returns the conversion as it is. `bpmnkit migrate c7` writes nothing for a refused model, says why, and offers `--placeholders` and `--no-validate`. `applyTemplateToElement`, `applyTemplates` and `applyConnectorLines` report Zeebe errors on the applied elements as problems (`not-deployable`). `compilePlan` / `mergePlan` return no XML for a model Zeebe would refuse, with the reasons as problems, and take `placeholders` (`bpmnkit synth --placeholders`). Pattern compact templates expand through the gate, and optimize auto-fixes keep a deployable model deployable (the extracted reusable process now deploys). Rust: `convert_camunda7` with the same options, messages and report.
 
 ## Compact and process text for Camunda 8: names, codes, timers and the `expand` gate (2026-11-08)
 
@@ -135,7 +139,7 @@ Every BPMN BPMN Kit hands over (written, downloaded, deployed or returned as a r
 
 ## Zeebe deploy validator: `validateDeployable` and `zeebe/*` lint rules (2026-11-08)
 
-`validateDeployable(definitions, { camundaVersion?, resolver?, limits? })` reports what Camunda 8 (Zeebe) rejects when the model is deployed, so a model that passes deploys. `validateDeployableXml(xml)` adds Zeebe's parse stage on the text (well-formedness, namespaces, the BPMN XSD content model, ids and references) that BPMN Kit's tolerant parser would repair. It covers every rule of `spec/zeebe-rules.json` that one BPMN can decide (163 rules, plus 9 umbrella rules they report, of 193; the other 21 are deployment-level, broker state, transformer-only or other resource types, each with a note): gateway conditions and defaults, event definition references, job types and called elements, send and throw implementations, timers, sub-process start events, subscriptions and correlation keys, ad-hoc agent combinations, end events with outgoing flows, static FEEL where Zeebe wants an expression, catch codes, listeners, multi-instance and more. It recurses into every sub-process, is version-aware (default: the newest supported) and does not look at `executionPlatform`. A `resolver` answers for the other resources of a deployment (`bindingType="deployment"` targets, duplicate process ids). Findings are `zeebe/<rule>` in the `deploy` category, the same shape as lint findings; `isDeployable(findings)` is the gate. The Rust twin is `bpmnkit_compat::zeebe::{validate_deployable, validate_deployable_xml}`. Lint (editor, `casen lint`, `casen check`) shows the `zeebe/*` findings with the other engine rules, except on elements another deploy finding already marks as an error. It agrees with real Zeebe 8.9.28 on all 1,596 BPMN files in `conformance/` (`conformance/validate/zeebe-verdicts.json`).
+`validateDeployable(definitions, { camundaVersion?, resolver?, limits? })` reports what Camunda 8 (Zeebe) rejects when the model is deployed, so a model that passes deploys. `validateDeployableXml(xml)` adds Zeebe's parse stage on the text (well-formedness, namespaces, the BPMN XSD content model, ids and references) that BPMN Kit's tolerant parser would repair. It covers every rule of `spec/zeebe-rules.json` that one BPMN can decide (163 rules, plus 9 umbrella rules they report, of 193; the other 21 are deployment-level, broker state, transformer-only or other resource types, each with a note): gateway conditions and defaults, event definition references, job types and called elements, send and throw implementations, timers, sub-process start events, subscriptions and correlation keys, ad-hoc agent combinations, end events with outgoing flows, static FEEL where Zeebe wants an expression, catch codes, listeners, multi-instance and more. It recurses into every sub-process, is version-aware (default: the newest supported) and does not look at `executionPlatform`. A `resolver` answers for the other resources of a deployment (`bindingType="deployment"` targets, duplicate process ids). Findings are `zeebe/<rule>` in the `deploy` category, the same shape as lint findings; `isDeployable(findings)` is the gate. The Rust twin is `bpmnkit_compat::zeebe::{validate_deployable, validate_deployable_xml}`. Lint (editor, `bpmnkit lint`, `bpmnkit check`) shows the `zeebe/*` findings with the other engine rules, except on elements another deploy finding already marks as an error. It agrees with real Zeebe 8.9.28 on all 1,596 BPMN files in `conformance/` (`conformance/validate/zeebe-verdicts.json`).
 
 ## `bpmnkit` facade crate and MSRV check (2026-11-08)
 
@@ -177,13 +181,13 @@ A Rust FEEL lexer, parser and evaluator with every built-in, held to `@bpmnkit/f
 
 ## Agent cards (2026-11-05)
 
-`casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.
+`bpmnkit agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.
 
 `@bpmnkit/core` ships the cards too (`AGENTS.md`, `llms.txt`, `agent-cards/`, `"agents"` field), so an agent with only that package installed finds them; its README opens with the pointer and builder errors end with `agent-cards/<type>.md#traps`.
 
-## `casen check`: BPMN, DMN and forms in one gate (2026-11-05)
+## `bpmnkit check`: BPMN, DMN and forms in one gate (2026-11-05)
 
-`casen check <file...>` checks any mix of `.bpmn`, `.dmn` and `.form` files and the references between them (a user task's `formId`, a business rule task's `decisionId`). Every finding has a rule id, element id, message and a concrete fix; `--json` for agent loops; non-zero exit on errors. DMN: duplicate ids, requirement hrefs, cycles, FEEL syntax, hit policy, aggregation, types, rule shape. Forms: form-js schema, unique ids and keys, FEEL in conditions and expressions, validation. Profiles: default, `--sketch` (no Camunda 8 rules), `--deploy` (errors only, forms required). The "user task needs a form" rule is off outside the deploy profile. Library: `lintDmn`, `lintForm` in `@bpmnkit/core`.
+`bpmnkit check <file...>` checks any mix of `.bpmn`, `.dmn` and `.form` files and the references between them (a user task's `formId`, a business rule task's `decisionId`). Every finding has a rule id, element id, message and a concrete fix; `--json` for agent loops; non-zero exit on errors. DMN: duplicate ids, requirement hrefs, cycles, FEEL syntax, hit policy, aggregation, types, rule shape. Forms: form-js schema, unique ids and keys, FEEL in conditions and expressions, validation. Profiles: default, `--sketch` (no Camunda 8 rules), `--deploy` (errors only, forms required). The "user task needs a form" rule is off outside the deploy profile. Library: `lintDmn`, `lintForm` in `@bpmnkit/core`.
 
 ## `Dmn.drd()` multi-decision DRD builder (2026-11-05)
 
@@ -200,7 +204,7 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
 
 ## Same-input comparison page (2026-10-22)
 
-`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed. Since 2026-11-05 each run also shows its model, a list-price cost (only with a recorded model and token split) and a `casen test` result on reebe-wasm; `node scripts/record-compare.mjs` records compact-JSON and plan routes (see the plan doc for the maintainer command).
+`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed. Since 2026-11-05 each run also shows its model, a list-price cost (only with a recorded model and token split) and a `bpmnkit test` result on reebe-wasm; `node scripts/record-compare.mjs` records compact-JSON and plan routes (see the plan doc for the maintainer command).
 
 ## Multi-instance and listeners in the builder (2026-10-22)
 
@@ -218,9 +222,9 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
 
 - `@bpmnkit/plugins/ai-local` (`createAiLocalPlugin`) and a Generate dock tab and HUD button in the landing editor turn a description into a new diagram with Chrome's built-in model (Gemini Nano, Prompt API): English only, generate only, nothing leaves the device, hidden where the model is unavailable. Opt-in on bpmnkit.com via `/editor?ai=on-device`, and on Drop's describe-to-diagram page via `/drop?ai=on-device` (first draft only; server-side follow-ups off). Maintainer step: register the origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN`.
 
-## casen test runs Camunda process-test JSON on reebe (2026-10-18)
+## bpmnkit test runs Camunda process-test JSON on reebe (2026-10-18)
 
-- `casen test <file.bpmn>` runs `<name>.test.json` (Camunda process-test format) on reebe-wasm, reports each case and the failing instruction, and `--case <name>` (repeatable) runs selected cases. Existing `.bpmn.tests.json` scenario files work unchanged.
+- `bpmnkit test <file.bpmn>` runs `<name>.test.json` (Camunda process-test format) on reebe-wasm, reports each case and the failing instruction, and `--case <name>` (repeatable) runs selected cases. Existing `.bpmn.tests.json` scenario files work unchanged.
 
 ## Drop connects the AI Agent and its tools (2026-10-18)
 
@@ -264,11 +268,11 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
   elements anywhere in a model, including inside ad-hoc sub-processes, and answers a wrong key
   with the property id it probably meant (`retries` -> `retryCount`).
 
-## `casen connector apply` and filtered `show` (2026-10-17)
+## `bpmnkit connector apply` and filtered `show` (2026-10-17)
 
-- `casen connector apply file.bpmn Call http --values call.json --set retryCount=5` configures an
+- `bpmnkit connector apply file.bpmn Call http --values call.json --set retryCount=5` configures an
   element from the shell without quoting multi-line FEEL; a wrong key is reported with a suggestion.
-- `casen connector show <template> --filter timeout --condensed` prints one line per matching
+- `bpmnkit connector show <template> --filter timeout --condensed` prints one line per matching
   property: key, type, default, required, condition.
 
 ## Branch flows take a label and an explicit id (2026-10-17)
@@ -342,10 +346,10 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
   the secrets it needs are listed.
   - Drop's generator shows both.
   - Drop also gives every draft a deploy verdict (ready, shape only, or N deploy errors) and a collapsible "Diagram text" panel with the process text it was drawn from.
-  - `casen synth --check` gates on the dry run.
+  - `bpmnkit synth --check` gates on the dry run.
   - Studio's **Try it** runs it on the local engine, sending only GET requests for real.
-- **CLI.** `casen connector cards "<request>"`, `casen connector api "<request>"` and
-  `casen synth --check`.
+- **CLI.** `bpmnkit connector cards "<request>"`, `bpmnkit connector api "<request>"` and
+  `bpmnkit synth --check`.
 - **MCP.** The proxy's MCP server has `find_connectors` and `add_connector`, so the AI chat and
   your own agents configure connectors through the same resolver.
 - **Guide.** [Connectors in AI Generation](/docs/guides/ai-connectors) explains the whole flow.
@@ -397,7 +401,7 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
   from the one definition.
 - `.loop()` in `@bpmnkit/flow`: bounded review/fix convergence loops that hand over to a person
   after `max` rounds.
-- `casen agent hire|list|fire|work`: hire coding-agent CLIs (Claude Code, Copilot, …) by role
+- `bpmnkit agent hire|list|fire|work`: hire coding-agent CLIs (Claude Code, Copilot, …) by role
   and rank, and run them as a workforce of durable job workers against any Camunda 8 engine.
 
 ## Camunda version compatibility and exact bpmnlint parity (2026-09-25)
@@ -446,7 +450,7 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
 
 - A print-ready HTML (→ PDF), Markdown or Word document of a process — diagram, lanes, every
   step with its settings in flow order, linked DMN tables and forms — from the editor's More
-  menu, Drop's Docs button, `casen doc export`, or `renderDocumentationHtml` in core.
+  menu, Drop's Docs button, `bpmnkit doc export`, or `renderDocumentationHtml` in core.
 
 ## Product tiers (2026-09-24)
 
@@ -454,7 +458,7 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
   `check-packages.mjs`, and shown on the homepage, every product doc page, the stability page
   and every README.
 
-## `casen test` on Reebe: error propagation, user tasks, ad-hoc jobs (2026-09-24)
+## `bpmnkit test` on Reebe: error propagation, user tasks, ad-hoc jobs (2026-09-24)
 
 - Reebe throws and catches errors and escalations across sub-processes, event sub-processes
   and call activities; `runScenarioWasm` completes native user tasks and delivers the message
@@ -468,12 +472,12 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
 
 ## Camunda 8 → 7 export (2026-11-05)
 
-- `convertCamunda8To7` / `casen migrate c7 --to camunda7`: best-effort export of a Camunda 8 model to Camunda 7/Operaton. Maps job types, I/O mappings, assignment, form keys, call activities and version tags; reports FEEL expressions, correlation keys, connectors and Zeebe-only features as findings.
+- `convertCamunda8To7` / `bpmnkit migrate c7 --to camunda7`: best-effort export of a Camunda 8 model to Camunda 7/Operaton. Maps job types, I/O mappings, assignment, form keys, call activities and version tags; reports FEEL expressions, correlation keys, connectors and Zeebe-only features as findings.
 
 ## Camunda 7 → 8 migration (2026-09-24)
 
 - `convertCamunda7` / `analyzeCamunda7` / `translateJuelToFeel` in `@bpmnkit/core` and
-  `casen migrate c7`: converts `camunda:` extensions to `zeebe:` ones, translates provable JUEL
+  `bpmnkit migrate c7`: converts `camunda:` extensions to `zeebe:` ones, translates provable JUEL
   to FEEL, and reports every construct as convertible, manual or unsupported.
 
 ## Auto-layout routing parity (2026-09-24)
@@ -496,7 +500,7 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
 ## Template gallery (2026-09-24)
 
 - 25 runnable Camunda 8 templates (18 business, 7 AI-agent patterns) in
-  `@bpmnkit/patterns/templates`, each with test scenarios; `casen template list|use`;
+  `@bpmnkit/patterns/templates`, each with test scenarios; `bpmnkit template list|use`;
   `/templates` gallery with "Open in editor" on bpmnkit.com.
 
 ## TypeScript simulator: full BPMN semantics (2026-09-24)
@@ -505,13 +509,13 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
   boundary events, signals, escalations, multi-instance, link events and compensation, with
   Zeebe variable propagation; `engine.broadcastSignal`, `deliverMessage(name, vars, key)`.
 
-## Developer loop: `casen dev`, test helpers, typed codegen (2026-09-24)
+## Developer loop: `bpmnkit dev`, test helpers, typed codegen (2026-09-24)
 
-- **`casen dev`** — local engine, editor and checks panel in one command: lint and scenarios
+- **`bpmnkit dev`** — local engine, editor and checks panel in one command: lint and scenarios
   re-run on every save, on the TS engine or Reebe WASM (`--engine wasm`).
 - **`@bpmnkit/engine/testing`** (+ `/testing/vitest`) — start instances, complete jobs, mock
   connectors, assert paths and variables, control timers with a fake clock.
-- **`casen generate types`** — TypeScript types for job types, variables and messages from
+- **`bpmnkit generate types`** — TypeScript types for job types, variables and messages from
   BPMN, with `--check` / `--check-workers` contract checks and typed `worker-client` generics.
 
 ## Reebe WASM: message correlation and job results (2026-09-24)
@@ -561,7 +565,7 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
 
 ## bpmnlint compatibility — your `.bpmnlintrc` is honoured (2026-09-24)
 
-- **`.bpmnlintrc` discovery.** `casen lint` and the VS Code Problems panel use the nearest
+- **`.bpmnlintrc` discovery.** `bpmnkit lint` and the VS Code Problems panel use the nearest
   `.bpmnlintrc`, starting in the diagram's folder. `--no-bpmnlintrc` and
   `bpmnkit.lint.bpmnlintrc` turn this off.
 - **All 28 bpmnlint built-in rules are mapped.** The config's levels and `off` apply to BPMN
@@ -590,7 +594,7 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
 - **Desktop installers** (`.github/workflows/release-desktop.yml`) — Linux, Windows, macOS
   (Apple silicon and Intel) builds into a `desktop-v<version>` release, unsigned for now.
 - **MCP Registry** (`.github/workflows/publish-mcp.yml`, `apps/cli/server.json`) —
-  `casen proxy mcp` listed as `io.github.bpmnkit/bpmnkit` after each release.
+  `bpmnkit proxy mcp` listed as `io.github.bpmnkit/bpmnkit` after each release.
 - **Opt-in analytics** — Cloudflare Web Analytics on bpmnkit.com when the build sets
   `PUBLIC_CF_WEB_ANALYTICS_TOKEN`.
 - **`/compare/bpmn-js`** — the licence difference, quoted from the bpmn-js LICENSE.
@@ -1013,7 +1017,7 @@ have a place on the homepage and a page in the docs.
   storage, a modeler).
 - **`/docs/guides/vscode`** — what the extension does, how to build and install the `.vsix`, the
   command and setting tables, and where its Camunda 8 profiles come from.
-- **`/docs/cli/diff`** — `casen diff bpmn`, its three flags, the JSON shape, and why `moved` is
+- **`/docs/cli/diff`** — `bpmnkit diff bpmn`, its three flags, the JSON shape, and why `moved` is
   the category the command exists for.
 - **`@bpmnkit/core` reference** — `diffDiagram()` and `exportPreserving()`, which had no docs
   page between them.
@@ -1532,7 +1536,7 @@ overrides one at the project root sharing its name.
 **Detail cards in the connector picker.** Selecting a template shows what it binds — the job
 type, the element type it applies to and converts to — and every property it will ask for,
 with the ones that read like credentials marked, before anything is applied. `summarizeTemplate()`
-is now exported from `@bpmnkit/connectors`, so the picker and `casen connector show` describe a
+is now exported from `@bpmnkit/connectors`, so the picker and `bpmnkit connector show` describe a
 template through the same code.
 
 **A localisation harvest, and what it measured.** `createTranslationRecorder()` is a `Translate`
@@ -1556,7 +1560,7 @@ deployed and nothing leaves the machine. Turned off with `bpmnkit.simulation.ena
 pre-filled, evaluating against an editable context as you type — expressions and unary tests
 both. One panel, re-seeded on each invocation rather than stacked.
 
-**Deploy and start against a `casen` profile.** The clusters are the ones the CLI already knows;
+**Deploy and start against a `bpmnkit` profile.** The clusters are the ones the CLI already knows;
 the extension reads the same profile store rather than adding a second place to configure a
 connection or holding credentials in workspace settings. Deploy the open resource, or deploy and
 start an instance with variables and get its key back. Starting is by process definition key, so
@@ -1636,7 +1640,7 @@ separate gap, recorded on the roadmap.
 
 ## Static analysis on the canvas (2026-09-09)
 
-`casen lint` has had five categories of rules built on `packages/core/src/bpmn/optimize/` for a
+`bpmnkit lint` has had five categories of rules built on `packages/core/src/bpmn/optimize/` for a
 while, and none of them were visible while modelling. Phase 3 of
 [`doc/miragon-bpmn-modeler-comparison.md`](miragon-bpmn-modeler-comparison.md).
 
@@ -1659,7 +1663,7 @@ analysis on every keystroke. `setEnabled(false)` turns it off for a host that wa
   other category either stays quiet or reports something structural that holds regardless, while
   `deploy` calls a plain service task an **error** for having no `zeebe:taskDefinition`.
 
-**`casen lint` follows the same rule** — it skips the engine categories on a neutral model and
+**`bpmnkit lint` follows the same rule** — it skips the engine categories on a neutral model and
 says why, and `--profile deploy` forces them back on. Both surfaces ask `lintCategories` rather
 than keeping separate lists.
 
@@ -1689,7 +1693,7 @@ is reported at once, a rejected template is named and skipped, and one bad file 
 good ones beside it. A separate warnings channel flags a binding the schema allows but
 `applyElementTemplate` does not write yet, so a template cannot fail silently at apply time.
 
-**`casen connector validate`** runs the same check in CI — a whole project or one `.json` file,
+**`bpmnkit connector validate`** runs the same check in CI — a whole project or one `.json` file,
 `--format json`, non-zero exit on a problem, warnings that do not fail. `list`, `search` and
 `show` now include the project's own templates.
 
@@ -1724,7 +1728,7 @@ that can show them, a legend counts each category, and panning or zooming either
 other. Element lookup goes through `getShapes()` / `getEdges()` rather than an attribute selector
 built from an id read out of a file.
 
-**`casen diff bpmn <before> <after>`** reports the same thing in a terminal, naming elements
+**`bpmnkit diff bpmn <before> <after>`** reports the same thing in a terminal, naming elements
 rather than printing bare ids, with `--format json`, `--ascii`, and `--exit-code` to gate a
 pipeline.
 
@@ -1824,15 +1828,15 @@ Technical SEO across `bpmnkit.com`, `docs.bpmnkit.com`, and `learn.bpmnkit.com`,
 
 ## AIKit v2 — Deterministic Generation Pipeline (2026-07-07)
 
-Replaces the LLM-in-the-loop `bpmn_create`/`bpmn_update` MCP tools with a deterministic, CLI-first pipeline: every BPMN process is authored as a `ProcessPlan` JSON file and compiled by `casen synth` — the LLM never writes BPMN XML, element IDs, or connector property keys by hand.
+Replaces the LLM-in-the-loop `bpmn_create`/`bpmn_update` MCP tools with a deterministic, CLI-first pipeline: every BPMN process is authored as a `ProcessPlan` JSON file and compiled by `bpmnkit synth` — the LLM never writes BPMN XML, element IDs, or connector property keys by hand.
 
 - **`@bpmnkit/connectors` package** — the 116-template Camunda 8 OOTB connector catalog plus a complete, deterministic template applier (`listConnectors()`, `searchConnectors()`, `getTemplate()`, `applyElementTemplate()`/`applyConnectorTemplate()`) covering every binding kind (`zeebe:input/output/taskHeader/taskDefinition/property/adHoc`), dropdown-gated conditions, and FEEL parse-validation.
 - **`buildAiAgentSubProcess()`** (`@bpmnkit/core`) — deterministic constructor for Camunda's AI Agent Sub-process pattern: tools as root-node activities, `fromAi()` tool-schema generation, verified against the real bundled `io.camunda.agenticai:aiagent-job-worker:1` template.
-- **`ProcessPlan` JSON IR + `casen synth|plan|connector` CLI** — `casen synth <plan>.json` compiles a plan deterministically to laid-out, deployable BPMN (or `--merge`s a delta plan into an existing process); `casen plan extract` lifts an existing process back into plan form; `casen plan schema` prints the format reference; `casen connector search|show` browse the catalog.
-- **Deploy-grade lint profile** — `casen lint --profile deploy` gates on Zeebe/Reebe deploy-parity rules (`deploy/*`), AI Agent sub-process structural rules (`agentic/*`), connector completeness (`connector/missing-required`), and full-tree FEEL syntax validation (`feel-syntax/*`) — errors only, the deploy-readiness gate.
+- **`ProcessPlan` JSON IR + `bpmnkit synth|plan|connector` CLI** — `bpmnkit synth <plan>.json` compiles a plan deterministically to laid-out, deployable BPMN (or `--merge`s a delta plan into an existing process); `bpmnkit plan extract` lifts an existing process back into plan form; `bpmnkit plan schema` prints the format reference; `bpmnkit connector search|show` browse the catalog.
+- **Deploy-grade lint profile** — `bpmnkit lint --profile deploy` gates on Zeebe/Reebe deploy-parity rules (`deploy/*`), AI Agent sub-process structural rules (`agentic/*`), connector completeness (`connector/missing-required`), and full-tree FEEL syntax validation (`feel-syntax/*`) — errors only, the deploy-readiness gate.
 - **Honest simulation** — `bpmn_simulate` actually executes scenarios via the TS engine (`mode: "execution"`) when given any, instead of always doing structural-only analysis; the engine's dispatcher runs job-worker-backed ad-hoc sub-processes (e.g. the AI Agent Sub-process) through the same job-mock mechanism as any other task, so scenarios can mock them.
 - **Consolidated, CLI-first Claude Code plugin** (`plugins-claude/bpmnkit-claude`) — `/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, `:review`, `:test`, `:deploy`, `:instances`, `:incidents`; no MCP server or proxy daemon required. Generated + hand-written reference docs (`references/plan-format.md`, `connectors.md`, `agentic.md`, `feel.md`, `modeling-style.md`) read by every skill before it authors a plan.
-- **New `casen deploy deploy <file> [--target camunda8]`** — file-based multipart BPMN deployment to local Reebe or Camunda 8, standalone (previously only reachable via the `bpmn_deploy` MCP tool).
+- **New `bpmnkit deploy deploy <file> [--target camunda8]`** — file-based multipart BPMN deployment to local Reebe or Camunda 8, standalone (previously only reachable via the `bpmn_deploy` MCP tool).
 - **`scripts/eval-generation/`** — a 15-golden-prompt eval harness verifying the pipeline end-to-end (synth-clean, deploy-profile-clean, test pass rate, deploys-green where Reebe is available) without requiring an LLM call.
 
 Full design rationale: [`doc/ai-bpmn-generation-analysis.md`](ai-bpmn-generation-analysis.md); implementation spec: [`doc/spec-bpmn-generation-skills.md`](spec-bpmn-generation-skills.md).
@@ -1863,33 +1867,33 @@ Nine incremental improvements to `@bpmnkit/core`'s `bpmn-builder.ts` API:
 | 10 | **Abstract `.task()` method** (2026-06-28) | `ProcessBuilder.task()` / `BranchBuilder.task()` / `SubProcessContentBuilder.task()` — emits abstract `<bpmn:task>` with no Zeebe extensions, for documentation-grade diagrams. |
 | 11 | **Branch sub-builder: boundary events and nested gateway branches** (2026-06-30) | `BranchBuilder.boundaryEvent()`, `.withBoundary()`, nested `.branch()` on sub-builder with full open-branch-ends propagation |
 
-## CLI — `casen generate` and `casen view` (2026-04-25)
+## CLI — `bpmnkit generate` and `bpmnkit view` (2026-04-25)
 
-### `casen generate bpmn` — Generate BPMN files from parameters or JSON
+### `bpmnkit generate bpmn` — Generate BPMN files from parameters or JSON
 
 Two input modes:
 
 **Template mode** — predefined patterns:
 ```sh
-casen generate bpmn --template minimal --process-id order --name "Order Processing"
-casen generate bpmn --template approval --process-id leave-request
-casen generate bpmn --template parallel --process-id enrichment
-casen generate bpmn --template error-boundary --process-id resilient-job
-casen generate bpmn --template event-subprocess --process-id with-error-handler
-casen generate bpmn --template timer-start --process-id nightly-sync
-casen generate bpmn --template message-start --process-id message-driven
+bpmnkit generate bpmn --template minimal --process-id order --name "Order Processing"
+bpmnkit generate bpmn --template approval --process-id leave-request
+bpmnkit generate bpmn --template parallel --process-id enrichment
+bpmnkit generate bpmn --template error-boundary --process-id resilient-job
+bpmnkit generate bpmn --template event-subprocess --process-id with-error-handler
+bpmnkit generate bpmn --template timer-start --process-id nightly-sync
+bpmnkit generate bpmn --template message-start --process-id message-driven
 ```
 
 **Definition mode** — full control via CompactDiagram JSON (AI path):
 ```sh
 # Pass JSON inline
-casen generate bpmn --definition '{"id":"Defs","processes":[...]}'
+bpmnkit generate bpmn --definition '{"id":"Defs","processes":[...]}'
 
 # Pipe from AI output or file
-echo '{"id":"Defs","processes":[...]}' | casen generate bpmn --output my-process.bpmn
+echo '{"id":"Defs","processes":[...]}' | bpmnkit generate bpmn --output my-process.bpmn
 
 # Print the full JSON schema reference
-casen generate bpmn --help-schema
+bpmnkit generate bpmn --help-schema
 ```
 
 **Templates** (auto-layout applied to all):
@@ -1928,17 +1932,17 @@ casen generate bpmn --help-schema
 
 ```sh
 # Step 1 — inspect existing file as compact JSON (AI reads this to learn element IDs)
-casen generate bpmn --input order.bpmn --dump-compact
+bpmnkit generate bpmn --input order.bpmn --dump-compact
 
 # Step 2 — add a new path to an existing gateway
-casen generate bpmn --input order.bpmn \
+bpmnkit generate bpmn --input order.bpmn \
   --patch '{"elements":[{"id":"notify","type":"serviceTask","name":"Notify","jobType":"notify-worker"},{"id":"end-notify","type":"endEvent","name":"Notified"}],"flows":[{"id":"fn1","from":"gw","to":"notify","condition":"= urgent"},{"id":"fn2","from":"notify","to":"end-notify"}]}'
 
 # Or pipe the patch from AI
-echo '{...}' | casen generate bpmn --input order.bpmn
+echo '{...}' | bpmnkit generate bpmn --input order.bpmn
 
 # Re-apply auto-layout without changes (normalize positions)
-casen generate bpmn --input messy.bpmn --output clean.bpmn
+bpmnkit generate bpmn --input messy.bpmn --output clean.bpmn
 ```
 
 Patch mode targets the first process in the file. The patch JSON is `{elements:[...], flows:[...]}` where flows can reference existing element IDs already in the file.
@@ -1949,7 +1953,7 @@ The `--definition` flag and stdin accept a `CompactDiagram` JSON object — the 
 
 ---
 
-### `casen view` — View BPMN, DMN, and Form files in the browser
+### `bpmnkit view` — View BPMN, DMN, and Form files in the browser
 
 Spawns a local HTTP server (default port 3044) and opens the system browser. All renderers work server-side — no dependencies required in the browser.
 
@@ -1957,40 +1961,40 @@ Spawns a local HTTP server (default port 3044) and opens the system browser. All
 
 | Command | Input | Rendering |
 |---|---|---|
-| `casen view open <paths>` | Any mix of .bpmn/.dmn/.form files or folders | Auto-detects by extension |
-| `casen view bpmn <paths>` | .bpmn files or folders | SVG (via `exportSvg`) |
-| `casen view dmn <paths>` | .dmn files or folders | ASCII table (monospace) |
-| `casen view form <paths>` | .form files or folders | ASCII layout (monospace) |
+| `bpmnkit view open <paths>` | Any mix of .bpmn/.dmn/.form files or folders | Auto-detects by extension |
+| `bpmnkit view bpmn <paths>` | .bpmn files or folders | SVG (via `exportSvg`) |
+| `bpmnkit view dmn <paths>` | .dmn files or folders | ASCII table (monospace) |
+| `bpmnkit view form <paths>` | .form files or folders | ASCII layout (monospace) |
 
 **Folder support:** Pass a directory path — all matching files are scanned and each gets its own tab.
 
 ```sh
 # View a single BPMN file
-casen view bpmn process.bpmn
+bpmnkit view bpmn process.bpmn
 
 # View all .bpmn files in a folder
-casen view bpmn ./processes/
+bpmnkit view bpmn ./processes/
 
 # View multiple specific files with tabs
-casen view bpmn order.bpmn payment.bpmn
+bpmnkit view bpmn order.bpmn payment.bpmn
 
 # View a DMN decision table
-casen view dmn eligibility.dmn
+bpmnkit view dmn eligibility.dmn
 
 # View all DMN files in a folder
-casen view dmn ./decisions/
+bpmnkit view dmn ./decisions/
 
 # View a Camunda form
-casen view form approval.form
+bpmnkit view form approval.form
 
 # View any mix of types (auto-detect)
-casen view open ./project/
+bpmnkit view open ./project/
 
 # Mixed explicit files
-casen view open order.bpmn routing.dmn review.form
+bpmnkit view open order.bpmn routing.dmn review.form
 
 # Dark theme, custom port, no auto-open
-casen view bpmn process.bpmn --theme dark --port 8080 --no-open
+bpmnkit view bpmn process.bpmn --theme dark --port 8080 --no-open
 ```
 
 **Flags (all subcommands):**
@@ -2035,12 +2039,12 @@ A Claude Code plugin that makes Claude AI-first for BPMN workflows. Install once
 
 ### Hooks
 
-- **SessionStart** — checks `casen` is installed, auto-starts proxy in background
+- **SessionStart** — checks `bpmnkit` is installed, auto-starts proxy in background
 - **PostToolUse** — silently lints any `.bpmn` file written during the session
 
 ### MCP
 
-Connects to the existing `aikit-mcp.js` server via `casen proxy mcp` (10 tools: `bpmn_create`, `bpmn_read`, `bpmn_update`, `bpmn_validate`, `bpmn_deploy`, `bpmn_simulate`, `bpmn_run_history`, `worker_list`, `worker_scaffold`, `pattern_list`, `pattern_get`).
+Connects to the existing `aikit-mcp.js` server via `bpmnkit proxy mcp` (10 tools: `bpmn_create`, `bpmn_read`, `bpmn_update`, `bpmn_validate`, `bpmn_deploy`, `bpmn_simulate`, `bpmn_run_history`, `worker_list`, `worker_scaffold`, `pattern_list`, `pattern_get`).
 
 ---
 
@@ -2056,19 +2060,19 @@ Generates a DMN decision table XML file for a business rule task in a BPMN proce
 
 Design-only workflow skill for Claude Code. Given a process description, generates the BPMN flow diagram, Camunda Form JSON for every user task, and DMN decision tables for every business rule task. Does not scaffold workers or prompt for deployment.
 
-Install with `casen skills install`.
+Install with `bpmnkit skills install`.
 
 ## CLI — Start Proxy & Reebe from the CLI (2026-04-03)
 
-The `casen` CLI is now the single entry point for starting local infrastructure:
+The `bpmnkit` CLI is now the single entry point for starting local infrastructure:
 
 | Command | What it does |
 |---|---|
-| `casen proxy` | Start the AI bridge + Camunda API proxy server (port 3033) |
-| `casen proxy start --port 4000` | Start on a custom port |
-| `casen reebe` | Start the Reebe workflow engine with embedded SQLite (port 8080) |
-| `casen reebe start --database-url postgres://…` | Start with PostgreSQL |
-| `casen reebe start --port 9090` | Start on a custom port |
+| `bpmnkit proxy` | Start the AI bridge + Camunda API proxy server (port 3033) |
+| `bpmnkit proxy start --port 4000` | Start on a custom port |
+| `bpmnkit reebe` | Start the Reebe workflow engine with embedded SQLite (port 8080) |
+| `bpmnkit reebe start --database-url postgres://…` | Start with PostgreSQL |
+| `bpmnkit reebe start --port 9090` | Start on a custom port |
 
 Both commands appear in the pinned section of the main TUI and stream server output directly to the terminal.
 
@@ -2260,8 +2264,8 @@ A unified Preact web application replacing fragmented Camunda tooling (Modeler, 
 
 ## CLI lint & story commands (2026-03-22) — `apps/cli`
 
-- **`casen lint <file.bpmn>`**: Runs all static analysis (`optimize()`) on a BPMN file, prints findings with symbols, exits 1 on errors. Supports `--categories` filter and `--format json`.
-- **`casen story <file.bpmn>`**: Renders a BPMN process as a standalone story-mode HTML file. Supports `--output` and `--theme dark|light`.
+- **`bpmnkit lint <file.bpmn>`**: Runs all static analysis (`optimize()`) on a BPMN file, prints findings with symbols, exits 1 on errors. Supports `--categories` filter and `--format json`.
+- **`bpmnkit story <file.bpmn>`**: Renders a BPMN process as a standalone story-mode HTML file. Supports `--output` and `--theme dark|light`.
 
 ## Variable Flow Analysis (2026-03-22) — `packages/core/optimize`, `packages/plugins/variable-flow`
 
@@ -2284,7 +2288,7 @@ A unified Preact web application replacing fragmented Camunda tooling (Modeler, 
 - **`runScenario(engine, defs, scenario)`** (`@bpmnkit/engine`): Runs a single test scenario against a BPMN definition with mock job workers. Supports path assertions (expected element visit order) and variable assertions (expected final state). Returns a typed `ScenarioResult` with `passed`, `failures`, `visitedElements`, `finalVariables`, `errors`, `durationMs`.
 - **`.bpmn.tests.json` sidecar format**: Scenarios as a JSON array of `ProcessScenario` objects — each has `id`, `name`, `inputs`, `mocks` (keyed by task type), and `expect.path`/`expect.variables`.
 - **Tests tab** in process runner panel: Create/delete scenarios, run all or individually, see pass/fail per scenario, and expand failure diffs showing field/expected/actual.
-- **`casen test <file.bpmn>`**: CLI command that reads a BPMN file and its `.bpmn.tests.json` sidecar, runs all scenarios, prints PASS/FAIL with diffs, and exits 1 if any scenario fails.
+- **`bpmnkit test <file.bpmn>`**: CLI command that reads a BPMN file and its `.bpmn.tests.json` sidecar, runs all scenarios, prints PASS/FAIL with diffs, and exits 1 if any scenario fails.
 
 ## Pattern Advisor Plugin (2026-03-22) — `packages/plugins/pattern-advisor`
 
@@ -2305,7 +2309,7 @@ A unified Preact web application replacing fragmented Camunda tooling (Modeler, 
 ## Deploy Plugin (2026-03-20) — `packages/plugins/deploy`
 
 - **`createDeployPlugin`**: Editor sidebar plugin (new "Deploy" tab in SideDock) for deploying processes and starting instances without leaving the editor.
-- **Proxy-first**: All Camunda API calls are routed through the proxy server (`casen proxy start`) to avoid CORS issues. Shows an offline hint with the start command when the proxy is not running.
+- **Proxy-first**: All Camunda API calls are routed through the proxy server (`bpmnkit proxy start`) to avoid CORS issues. Shows an offline hint with the start command when the proxy is not running.
 - **Profile selector**: Loads available CLI profiles from `/profiles` and passes the selected profile via `x-profile` header on all requests — same mechanism as `@bpmnkit/operate`.
 - **Cluster health check**: Calls `GET /api/v2/topology` before allowing deploy; shows broker count and gateway version, or blocks with an error if the cluster is unreachable.
 - **Optimizer guard**: Runs `optimize(defs)` before every deploy attempt. Errors block the Deploy button; warnings are shown but non-blocking.
@@ -2334,9 +2338,9 @@ A unified Preact web application replacing fragmented Camunda tooling (Modeler, 
 - **URL handling**: Hidden field for plain paths; FEEL expression (`="https://base/" + param + "/rest"`) for paths with `{param}` variables.
 - **Auth**: 5-type auth block (noAuth, API key, Basic, Bearer, OAuth2 Client Credentials) with conditions; auto-detected from `securitySchemes` or overrideable via `--auth`.
 - **Body expansion**: `--expand-body` decomposes top-level request body properties into individual typed fields (String / Number / Boolean).
-- **Catalog**: 30 built-in API entries across payments, messaging, CRM, monitoring, AI, and more — `casen connector generate --api <id>`; `casen connector catalog` lists all entries.
+- **Catalog**: 30 built-in API entries across payments, messaging, CRM, monitoring, AI, and more — `bpmnkit connector generate --api <id>`; `bpmnkit connector catalog` lists all entries.
 - **Output**: one file per operation (default) or all in one array file (`--format array`); `--dry-run` prints to stdout.
-- **CLI commands**: `casen connector generate` + `casen connector catalog`.
+- **CLI commands**: `bpmnkit connector generate` + `bpmnkit connector catalog`.
 
 ## Interactive Learning Center (2026-03-13) — `apps/learn`, `packages/astro-shared`
 
@@ -2438,7 +2442,7 @@ Full support for the Camunda Console Admin API alongside the existing C8 REST AP
 
 - **`AdminApiClient`** — generated from the SaaS Console swagger (`console.cloud.camunda.io`), same runtime as `CamundaClient` (OAuth2, retry, cache, typed events). Exported from `@bpmnkit/api`.
 - **Admin API resources**: `MetaResource`, `MembersResource`, `ClustersResource`, `ActivityResource` — typed methods for every Admin API endpoint.
-- **CLI command groups**: `casen meta`, `casen members`, `casen clusters`, `casen activity` — full list/get/create/delete/update support mirroring the C8 command structure.
+- **CLI command groups**: `bpmnkit meta`, `bpmnkit members`, `bpmnkit clusters`, `bpmnkit activity` — full list/get/create/delete/update support mirroring the C8 command structure.
 - **Per-profile `apiType`**: each saved profile is tagged as `"c8"` (default) or `"admin"`. The CLI routes `getClient()` vs `getAdminClient()` accordingly.
 - **`profile create --api-type admin`**: explicitly set the API type when creating a profile.
 - **Auto-detect on `profile import`**: credentials files containing `CAMUNDA_CONSOLE_CLIENT_ID` or `CAMUNDA_CONSOLE_BASE_URL` are automatically classified as Admin API profiles; all others remain C8.
@@ -2979,14 +2983,14 @@ New package that wires storage and tabs together so client apps don't need to ma
 - **`/review` skill** — validate any BPMN file, structured findings by severity, auto-fix offer
 - **`/test` skill** — process structure analysis, worker coverage report, scenario suggestions
 - **`/deploy` skill** — validation gate + deploy to local reebe or Camunda 8
-- **`casen skills install`** — copies bundled skill files to `.claude/commands/` in any project
+- **`bpmnkit skills install`** — copies bundled skill files to `.claude/commands/` in any project
 - **BPMNKit AIKit MCP server** (`bpmn-aikit` binary) — 11 MCP tools callable by Claude: `bpmn_create`, `bpmn_read`, `bpmn_update`, `bpmn_validate`, `bpmn_deploy`, `bpmn_simulate`, `bpmn_run_history`, `worker_list`, `worker_scaffold`, `pattern_list`, `pattern_get`
 - **`@bpmnkit/patterns` package** — domain pattern library with 7 seed patterns: invoice-approval, employee-onboarding, supplier-contract-review, incident-response, loan-origination, content-moderation, order-fulfillment
 - **Pattern schema** — each pattern includes: domain readme (regulations, conventions), compact BPMN template, worker specs with real API options, and common variations
 - **Keyword-based pattern matching** — `findPattern(query)` matches user descriptions to patterns via keyword scoring
 - **`@bpmnkit/worker-client` package** — thin Zeebe REST client for standalone workers; OAuth2 support for Camunda SaaS; `createWorkerClient()` + async `poll()` generator
 - **Worker scaffolder** — `worker_scaffold` MCP tool generates TypeScript workers (`index.ts`) using `@bpmnkit/worker-client`; `tsx` for dev (no build step), `tsc` for production; multi-stage Docker in README
-- **`casen worker start [name]`** — starts scaffolded workers from `./workers/` directory via `npm start`
+- **`bpmnkit worker start [name]`** — starts scaffolded workers from `./workers/` directory via `npm start`
 - **`.mcp.json`** — project-level MCP config registers `bpmnkit-aikit` server with Claude Code automatically
 
 ## Code Mode MCP Tools (2026-06-13)

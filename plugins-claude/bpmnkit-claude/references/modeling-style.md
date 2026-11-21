@@ -39,11 +39,11 @@ Naming and structure conventions to apply whenever a plan step doesn't already h
 
 ## Structure — Flow quality
 
-- Every element must be reachable from the start event — `casen lint` flags unreachable elements as an error
+- Every element must be reachable from the start event — `bpmnkit lint` flags unreachable elements as an error
 - Every non-end element needs at least one outgoing sequence flow
 - Use boundary events for exceptions that interrupt an activity (a payment task failing mid-flight), not a gateway split for the same concern
 - Loop-back paths must rejoin via a gateway before re-entering a shared task — never point two flows into an ordinary activity
 
 ## What you don't have to think about
 
-Layout (x/y coordinates, edge routing, waypoints) is entirely handled by `casen synth`'s auto-layout — never specify positions. Element IDs, sequence flow IDs, and BPMN DI are generated deterministically from the plan. Your only job is: pick clear names, model the right shape, and let the compiler do the rest.
+Layout (x/y coordinates, edge routing, waypoints) is entirely handled by `bpmnkit synth`'s auto-layout — never specify positions. Element IDs, sequence flow IDs, and BPMN DI are generated deterministically from the plan. Your only job is: pick clear names, model the right shape, and let the compiler do the rest.

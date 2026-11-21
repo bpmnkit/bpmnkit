@@ -11,8 +11,8 @@ If no file is given, find the single `.bpmn` in cwd or ask.
 ## Step 1 — Run both profiles
 
 ```sh
-casen lint lint <file>.bpmn --profile deploy --format json
-casen lint lint <file>.bpmn --format json
+bpmnkit lint lint <file>.bpmn --profile deploy --format json
+bpmnkit lint lint <file>.bpmn --format json
 ```
 
 ## Step 2 — Present findings grouped by severity
@@ -31,7 +31,7 @@ casen lint lint <file>.bpmn --format json
 If there are any findings, offer:
 
 ```sh
-casen lint lint <file>.bpmn --fix
+bpmnkit lint lint <file>.bpmn --fix
 ```
 
 Re-run Step 1 afterward to confirm.

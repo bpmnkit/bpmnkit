@@ -2,7 +2,7 @@
 
 The pattern library (`@bpmnkit/patterns`) provides domain knowledge for common business
 processes. When you run `/bpmnkit:implement`, Claude checks the library for a matching
-pattern (`casen pattern list`/`get`) and uses its readme and worker specs as context while
+pattern (`bpmnkit pattern list`/`get`) and uses its readme and worker specs as context while
 writing the `ProcessPlan` — the pattern's own `template` field is a compact diagram that
 predates the plan/synth pipeline. It expands (`expand`) to a model that deploys on Camunda 8,
 but it is a structural reference, not something pasted in directly.

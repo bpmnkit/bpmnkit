@@ -113,7 +113,7 @@ describe("buildPack", () => {
 		const collide = join(root, "collide")
 		mkdirSync(join(collide, "cli"), { recursive: true })
 		// Both of these want the id "cli.casen": a page at cli/casen with no sections,
-		// and a "## casen" section of a page at cli.
+		// and a "## bpmnkit" section of a page at cli.
 		writeFileSync(join(collide, "cli", "casen.md"), "---\ntitle: Casen\n---\n\nBody text.\n")
 		writeFileSync(join(collide, "cli.md"), doc("CLI", "casen", ["Body text."]))
 

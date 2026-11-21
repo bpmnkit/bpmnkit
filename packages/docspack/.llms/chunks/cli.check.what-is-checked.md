@@ -1,6 +1,6 @@
-# casen check — What is checked
+# bpmnkit check — What is checked
 
-**BPMN** — the XML is well-formed, then every [`casen lint`](/docs/cli/casen) rule runs
+**BPMN** — the XML is well-formed, then every [`bpmnkit lint`](/docs/cli/casen) rule runs
 (a project `.bpmnlintrc` is honoured).
 
 **DMN**

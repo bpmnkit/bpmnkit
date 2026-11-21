@@ -1,7 +1,7 @@
 # VS Code Extension
 
 **BPMN Kit for VS Code** puts the toolkit where the code already is. It renders `.bpmn`,
-`.dmn` and `.form` files, reports the same findings `casen lint` reports, compares a diagram
+`.dmn` and `.form` files, reports the same findings `bpmnkit lint` reports, compares a diagram
 against `HEAD`, runs the process without a cluster, and edits the file without reformatting
 it.
 

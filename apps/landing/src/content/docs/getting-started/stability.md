@@ -37,7 +37,7 @@ on it. Each README and each package page on this site shows it.
 - **Core:** `@bpmnkit/core`, `@bpmnkit/canvas`, `@bpmnkit/editor`, `@bpmnkit/plugins`,
   `@bpmnkit/engine`, `@bpmnkit/feel`, `@bpmnkit/api`, `@bpmnkit/ascii`, `@bpmnkit/docspack`,
   `@bpmnkit/connector-gen`, `@bpmnkit/connectors`, `@bpmnkit/cli`.
-- **Tools:** BPMN Kit for VS Code, Drop, `@bpmnkit/proxy` (the MCP server, `casen proxy mcp`),
+- **Tools:** BPMN Kit for VS Code, Drop, `@bpmnkit/proxy` (the MCP server, `bpmnkit proxy mcp`),
   `@bpmnkit/markdown`, `@bpmnkit/viewer-lite`, `@bpmnkit/camunda-docspack`, `@bpmnkit/patterns`,
   `@bpmnkit/worker-client`, `@bpmnkit/cli-sdk`, `@bpmnkit/create-casen-plugin`,
   `@bpmnkit/casen-report`, `@bpmnkit/casen-worker-http`, `@bpmnkit/casen-worker-ai`, and the
@@ -160,9 +160,9 @@ shipped as a *minor*. Under this policy it is a major, and 0.x is the only reaso
 These are contracts even though no TypeScript signature describes them, and the same rule
 applies — a change that makes an existing file, store or caller stop working is major:
 
-- The **`.bpmn.tests.json` sidecar** read by `casen test` and the runner's Tests tab.
+- The **`.bpmn.tests.json` sidecar** read by `bpmnkit test` and the runner's Tests tab.
 - **Profile storage on disk** — `~/.config/bpmnkit` on Linux, `~/Library/Application Support/bpmnkit`
-  on macOS, `%APPDATA%\bpmnkit` on Windows. A store that only exists under the old `casen` name is
+  on macOS, `%APPDATA%\bpmnkit` on Windows. A store that only exists under the old `bpmnkit` name is
   copied (never moved) on first use. A format change must migrate existing profiles, not
   invalidate them.
 - The **`@bpmnkit/proxy` HTTP surface**, for the routes the documentation names.
