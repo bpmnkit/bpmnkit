@@ -1,5 +1,13 @@
 # @bpmnkit/engine
 
+## 1.4.1
+
+### Patch Changes
+
+- b638979: Messages, help text and hints name the `bpmnkit` command instead of `casen` (still an alias).
+- Updated dependencies [b638979]
+  - @bpmnkit/core@1.18.1
+
 ## 1.4.0
 
 ### Minor Changes

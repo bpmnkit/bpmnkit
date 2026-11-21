@@ -1,5 +1,14 @@
 # @bpmnkit/operate
 
+## 0.2.2
+
+### Patch Changes
+
+- b638979: Messages, help text and hints name the `bpmnkit` command instead of `casen` (still an alias).
+- Updated dependencies [b638979]
+  - @bpmnkit/core@1.18.1
+  - @bpmnkit/plugins@1.4.1
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @bpmnkit/cli
 
+## 1.10.0
+
+### Minor Changes
+
+- b638979: The Node CLI is now `@bpmnkit/cli-legacy` (bin `bpmnkit-legacy`), the fallback behind the native `bpmnkit` binary that `@bpmnkit/cli` 2.0 installs. Help text, docs and examples say `bpmnkit`; `casen` is an alias. `@bpmnkit/cli-sdk` exports `BpmnkitPlugin` (`CasenPlugin` stays as an alias), and `@bpmnkit/create-bpmnkit-plugin` is the new name of the plugin scaffolder.
+
+### Patch Changes
+
+- Updated dependencies [b638979]
+- Updated dependencies [b638979]
+  - @bpmnkit/core@1.18.1
+  - @bpmnkit/engine@1.4.1
+  - @bpmnkit/patterns@0.1.4
+  - @bpmnkit/flow@0.2.2
+  - @bpmnkit/proxy@0.8.1
+  - @bpmnkit/profiles@0.2.0
+
 ## 1.9.3
 
 ### Patch Changes

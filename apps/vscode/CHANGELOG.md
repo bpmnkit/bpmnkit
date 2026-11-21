@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.22
+
+### Patch Changes
+
+- Updated dependencies [b638979]
+- Updated dependencies [b638979]
+  - @bpmnkit/core@1.18.1
+  - @bpmnkit/plugins@1.4.1
+  - @bpmnkit/engine@1.4.1
+  - @bpmnkit/profiles@0.2.0
+
 ## 0.5.21
 
 ### Patch Changes
