@@ -342,3 +342,38 @@ fn wrappers_are_executable() {
         assert_eq!(mode & 0o111, 0o111, "{f}");
     }
 }
+
+fn file_text(files: &[GenFile], suffix: &str) -> String {
+    let f = files.iter().find(|f| f.path.ends_with(suffix)).unwrap();
+    String::from_utf8(f.content.clone()).unwrap()
+}
+
+#[test]
+fn stream_is_off_by_default() {
+    for spring in [false, true] {
+        let files = emitter(spring).emit(&project(&[ORDER])).unwrap();
+        assert!(files
+            .iter()
+            .all(|f| !String::from_utf8_lossy(&f.content).contains("streamEnabled")));
+    }
+}
+
+#[test]
+fn stream_enables_it_per_worker() {
+    let plain = JavaEmitter {
+        stream: true,
+        ..emitter(false)
+    };
+    let files = plain.emit(&project(&[ORDER])).unwrap();
+    assert!(file_text(&files, "gen/Workers.java").contains(".streamEnabled(true)"));
+    let spring = JavaEmitter {
+        stream: true,
+        ..emitter(true)
+    };
+    let files = spring.emit(&project(&[ORDER])).unwrap();
+    let w = files
+        .iter()
+        .find(|f| f.path.ends_with("Worker.java") && f.path.contains("/gen/"))
+        .unwrap();
+    assert!(String::from_utf8_lossy(&w.content).contains("streamEnabled = true"));
+}

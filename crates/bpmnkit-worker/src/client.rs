@@ -62,9 +62,31 @@ pub struct RestClient {
 impl RestClient {
     pub fn new(config: ClientConfig) -> Result<Self, Error> {
         let base = normalize_base(&config.rest_address)?;
-        let http = reqwest::Client::builder()
-            .user_agent(concat!("bpmnkit-worker/", env!("CARGO_PKG_VERSION")))
-            .build()?;
+        let mut builder = reqwest::Client::builder()
+            .user_agent(concat!("bpmnkit-worker/", env!("CARGO_PKG_VERSION")));
+        if let Some(tls) = &config.tls {
+            tls.validate()?;
+            let bad = |what: &str, e: reqwest::Error| Error::Config(format!("{what}: {e}"));
+            if let Some(ca) = &tls.ca_cert_pem {
+                let cert =
+                    reqwest::Certificate::from_pem(ca).map_err(|e| bad("CA certificate", e))?;
+                builder = builder.add_root_certificate(cert);
+            }
+            if let (Some(cert), Some(key)) = (&tls.client_cert_pem, &tls.client_key_pem) {
+                // reqwest's rustls identity is one PEM holding chain and key.
+                let mut pem = cert.clone();
+                pem.push(b'\n');
+                pem.extend_from_slice(key);
+                let id =
+                    reqwest::Identity::from_pem(&pem).map_err(|e| bad("client identity", e))?;
+                builder = builder.identity(id);
+            }
+        }
+        // reqwest accepts a PEM with no certificate in it and only fails here.
+        let http = builder.build().map_err(|e| match config.tls {
+            Some(_) => Error::Config(format!("TLS setup: {e}")),
+            None => Error::Transport(e),
+        })?;
         Ok(Self {
             http,
             base,
@@ -87,6 +109,13 @@ impl RestClient {
     /// Tenant ids for workers that set none.
     pub fn tenant_ids(&self) -> &[String] {
         &self.tenant_ids
+    }
+
+    /// The `Authorization` header value the REST calls would carry, for other transports (gRPC)
+    /// to share this client's credentials and cached OAuth token.
+    #[cfg(feature = "grpc")]
+    pub(crate) async fn authorization(&self) -> Result<Option<String>, Error> {
+        self.auth.authorization(&self.http).await
     }
 
     async fn send(

@@ -76,3 +76,78 @@ fn oauth_from_client_id_and_secret() {
         "no OAuth URL"
     );
 }
+
+#[test]
+fn grpc_address_and_tls_files() {
+    assert_eq!(from(&[]).unwrap().grpc_address, "http://0.0.0.0:26500");
+    assert!(from(&[]).unwrap().tls.is_none());
+    let dir = std::env::temp_dir().join(format!("bpmnkit-worker-tls-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let write = |n: &str, c: &str| {
+        let p = dir.join(n);
+        std::fs::write(&p, c).unwrap();
+        p.to_string_lossy().into_owned()
+    };
+    let (ca, cert, key) = (
+        write("ca.pem", "-----BEGIN CERTIFICATE-----CA"),
+        write("c.pem", "-----BEGIN CERTIFICATE-----CERT"),
+        write("k.pem", "KEY"),
+    );
+    let c = from(&[
+        ("CAMUNDA_GRPC_ADDRESS", "https://g:443"),
+        ("CAMUNDA_CA_CERT_PATH", &ca),
+        ("CAMUNDA_CLIENT_CERT_PATH", &cert),
+        ("CAMUNDA_CLIENT_KEY_PATH", &key),
+    ])
+    .unwrap();
+    assert_eq!(c.grpc_address, "https://g:443");
+    let t = c.tls.unwrap();
+    assert_eq!(
+        t.ca_cert_pem.as_deref(),
+        Some(&b"-----BEGIN CERTIFICATE-----CA"[..])
+    );
+    assert_eq!(
+        t.client_cert_pem.as_deref(),
+        Some(&b"-----BEGIN CERTIFICATE-----CERT"[..])
+    );
+    assert_eq!(t.client_key_pem.as_deref(), Some(&b"KEY"[..]));
+    // The private key is not printable.
+    assert!(!format!("{t:?}").contains("KEY"));
+    // A client certificate without its key, and an unreadable file, are config errors.
+    assert!(matches!(
+        from(&[("CAMUNDA_CLIENT_CERT_PATH", &cert)]),
+        Err(Error::Config(_))
+    ));
+    assert!(matches!(
+        from(&[("CAMUNDA_CA_CERT_PATH", "/no/such/file.pem")]),
+        Err(Error::Config(_))
+    ));
+    std::fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
+fn rest_client_rejects_bad_tls_material() {
+    use bpmnkit_worker::{RestClient, TlsConfig};
+    let with = |t: TlsConfig| {
+        RestClient::new(ClientConfig {
+            tls: Some(t),
+            ..ClientConfig::default()
+        })
+        .err()
+    };
+    assert!(matches!(
+        with(TlsConfig {
+            ca_cert_pem: Some(b"not a pem".to_vec()),
+            ..Default::default()
+        }),
+        Some(Error::Config(_))
+    ));
+    assert!(matches!(
+        with(TlsConfig {
+            client_cert_pem: Some(b"-----BEGIN CERTIFICATE-----x".to_vec()),
+            client_key_pem: Some(b"not a pem".to_vec()),
+            ..Default::default()
+        }),
+        Some(Error::Config(_))
+    ));
+}

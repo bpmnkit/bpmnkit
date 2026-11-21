@@ -15,6 +15,7 @@ use crate::backoff::{parse_iso8601_duration, Backoff, Rng, SplitMix64};
 use crate::client::JobClient;
 use crate::config::{millis, WorkerConfig};
 use crate::metrics::{Metrics, NoopMetrics};
+use crate::stream::{JobStreamSource, StreamRequest};
 use crate::types::{
     ActivateJobsRequest, ActivatedJob, CompleteJobRequest, FailJobRequest, JobResult,
     ThrowErrorRequest,
@@ -233,6 +234,7 @@ pub struct Worker<C: JobClient, H: Handler> {
     tenant_ids: Vec<String>,
     metrics: Arc<dyn Metrics>,
     rng: Box<dyn Rng>,
+    stream: Option<Arc<dyn JobStreamSource>>,
 }
 
 impl<C: JobClient, H: Handler> Worker<C, H> {
@@ -244,6 +246,7 @@ impl<C: JobClient, H: Handler> Worker<C, H> {
             config,
             metrics: Arc::new(NoopMetrics),
             rng: Box::new(SplitMix64::from_entropy()),
+            stream: None,
         }
     }
 
@@ -255,6 +258,13 @@ impl<C: JobClient, H: Handler> Worker<C, H> {
     /// The jitter source (seed it in tests).
     pub fn rng(mut self, rng: Box<dyn Rng>) -> Self {
         self.rng = rng;
+        self
+    }
+
+    /// Where pushed jobs come from; used when `config.stream_enabled` is set. Polling keeps
+    /// running beside it, so jobs still arrive while the stream is down or reconnecting.
+    pub fn stream(mut self, source: Arc<dyn JobStreamSource>) -> Self {
+        self.stream = Some(source);
         self
     }
 
@@ -276,6 +286,7 @@ impl<C: JobClient, H: Handler> Worker<C, H> {
             tenant_ids,
             metrics,
             rng,
+            stream,
         } = self;
         let max = config.max_jobs_active.max(1);
         let permits = Arc::new(Semaphore::new(max));
@@ -285,6 +296,37 @@ impl<C: JobClient, H: Handler> Worker<C, H> {
         let mut interval = config.poll_interval;
         let mut wait: Option<Duration> = None;
         tokio::pin!(shutdown);
+
+        // Aborted on drop, i.e. when the loop below ends: pushing stops before the drain starts.
+        let _stream_task = match stream.filter(|_| config.stream_enabled) {
+            Some(source) => {
+                let req = StreamRequest {
+                    job_type: config.job_type.clone(),
+                    worker: config.worker_name.clone(),
+                    timeout: millis(config.timeout),
+                    fetch_variable: config.fetch_variables.clone(),
+                    tenant_ids: tenant_ids.clone(),
+                };
+                let ctx = StreamCtx {
+                    client: Arc::clone(&client),
+                    handler: Arc::clone(&handler),
+                    metrics: Arc::clone(&metrics),
+                    in_flight: Arc::clone(&in_flight),
+                    finished: Arc::clone(&finished),
+                    permits: Arc::clone(&permits),
+                    max,
+                };
+                let b = Backoff::new(config.backoff, Box::new(SplitMix64::from_entropy()));
+                Some(AbortOnDrop(tokio::spawn(stream_loop(
+                    source,
+                    req,
+                    config.backoff.min,
+                    b,
+                    ctx,
+                ))))
+            }
+            None => None,
+        };
 
         loop {
             if let Some(d) = wait.take() {
@@ -362,6 +404,77 @@ impl<C: JobClient, H: Handler> Worker<C, H> {
             job_type: config.job_type,
             abandoned,
         }
+    }
+}
+
+struct AbortOnDrop(tokio::task::JoinHandle<()>);
+impl Drop for AbortOnDrop {
+    fn drop(&mut self) {
+        self.0.abort();
+    }
+}
+
+struct StreamCtx<C: JobClient, H: Handler> {
+    client: Arc<C>,
+    handler: Arc<H>,
+    metrics: Arc<dyn Metrics>,
+    in_flight: Arc<Mutex<BTreeSet<String>>>,
+    finished: Arc<Notify>,
+    permits: Arc<Semaphore>,
+    max: usize,
+}
+
+/// Keeps a stream open: each pushed job takes a slot (waiting for one if all are busy) and is
+/// handled like a polled job. After a failure or a server-side close it reconnects with backoff.
+async fn stream_loop<C: JobClient, H: Handler>(
+    source: Arc<dyn JobStreamSource>,
+    req: StreamRequest,
+    first_delay: Duration,
+    mut backoff: Backoff,
+    ctx: StreamCtx<C, H>,
+) {
+    let mut delay = first_delay;
+    loop {
+        match source.open(req.clone()).await {
+            Ok(mut stream) => {
+                tracing::debug!(job_type = %req.job_type, "job stream open");
+                loop {
+                    match stream.next().await {
+                        Ok(Some(job)) => {
+                            // `acquire_owned` only fails on a closed semaphore, which never happens.
+                            let Ok(permit) = ctx.permits.clone().acquire_owned().await else {
+                                return;
+                            };
+                            delay = first_delay;
+                            ctx.metrics.activated(&req.job_type, 1);
+                            spawn_job(
+                                Arc::clone(&ctx.client),
+                                Arc::clone(&ctx.handler),
+                                Arc::clone(&ctx.metrics),
+                                Arc::clone(&ctx.in_flight),
+                                Arc::clone(&ctx.finished),
+                                permit,
+                                ctx.max,
+                                job,
+                            );
+                        }
+                        Ok(None) => {
+                            tracing::info!(job_type = %req.job_type, "job stream closed by the server; reconnecting");
+                            break;
+                        }
+                        Err(e) => {
+                            tracing::warn!(job_type = %req.job_type, error = %e, "job stream broke; reconnecting");
+                            break;
+                        }
+                    }
+                }
+            }
+            Err(e) => {
+                tracing::warn!(job_type = %req.job_type, error = %e, "job stream did not open; polling continues");
+            }
+        }
+        delay = backoff.next_delay(delay);
+        tokio::time::sleep(delay).await;
     }
 }
 

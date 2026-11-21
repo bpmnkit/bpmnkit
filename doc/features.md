@@ -1,5 +1,9 @@
 # Features
 
+## Job streaming for Rust and Java workers (2026-11-21)
+
+`bpmnkit-worker` with the `grpc` feature receives jobs by push (Zeebe `StreamActivatedJobs`) instead of waiting for the next poll: `WorkerConfig::new("charge").stream_enabled(true)` plus `Runtime::from_env()?.stream(Arc::new(GrpcJobSource::new(client, &config)?))`. It is off by default, as in the Java client. Polling keeps running beside the stream and takes over while the stream is down; the stream reconnects with backoff. Credentials are shared with the REST client (Basic, Bearer, OAuth2), and `CAMUNDA_CA_CERT_PATH` / `CAMUNDA_CLIENT_CERT_PATH` / `CAMUNDA_CLIENT_KEY_PATH` add a private CA and mutual TLS to both transports. `bpmnkit worker gen --lang java --stream` generates workers with `streamEnabled(true)`.
+
 ## Camunda 8 job workers in Rust: `bpmnkit-worker` (2026-11-21)
 
 `Runtime::from_env()?.register(WorkerConfig::new("charge"), handler).run().await` runs job workers against the Camunda 8.8+ REST API (`/v2/jobs`), with camunda-client-java's defaults. Handlers are async functions `ActivatedJob → Result<Complete, JobError>`: `JobError::bpmn` throws a catchable BPMN error, `JobError::fail` (or any `?` error, or a panic) fails with retries − 1 and the `retryBackoff` header. Concurrency is bounded, activation long-polls and backs off with jitter, shutdown drains running handlers. Auth: none, Basic, Bearer, OAuth2 client credentials (cached, refreshed). Metrics trait with Prometheus text; `testing` feature for unit tests (`MockJob`, `run_handler`, `FakeClient`). Facade feature `worker`.

@@ -40,6 +40,9 @@ pub struct GenArgs {
     /// Java: build tool (Gradle emits Kotlin DSL files and a pinned Gradle Wrapper)
     #[arg(long, value_enum, default_value = "maven")]
     build: BuildTool,
+    /// Java: open workers with streamEnabled(true) (gRPC job streaming next to polling)
+    #[arg(long)]
+    stream: bool,
     /// Java package [default: com.example.<name>]
     #[arg(long, default_value = "")]
     package: String,
@@ -89,6 +92,7 @@ pub fn run(a: &GenArgs) -> Result<i32, String> {
                     BuildTool::Maven => Build::Maven,
                     BuildTool::Gradle => Build::Gradle,
                 },
+                stream: a.stream,
                 all: a.all,
             }),
             "java",

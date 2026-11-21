@@ -1072,7 +1072,7 @@ not code.
 - [x] P3: Rust + template emitters, `worker gen --check`, `bpmnkit.lock.json`, JSON Schema subset extractor, `rust-golden` + Windows CI (I8), bench rows (I7)
 - [x] P4: `bpmnkit-codegen` Java emitter (Maven wrapper, plain + `--spring`, CPT stub), `bpmnkit worker gen --lang java`, CI `java-golden`
 - [ ] P5: `bpmnkit-connector-runtime` (`io.camunda:http-json:1`)
-- [ ] P6: `grpc` feature (job streaming)
+- [x] P6: `grpc` feature (job streaming)
 - [x] P7: Rust connector-gen + `connector bind`; native `lint/layout/diff/render/convert/profile`
 - [ ] P8: distribution + rename
 - [ ] P9: remaining commands, fallback removal
