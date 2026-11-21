@@ -1,4 +1,6 @@
-//! `bpmnkit worker …` (plan §9). P1: `classify`; `gen` and `run` arrive with the emitters.
+//! `bpmnkit worker …` (plan §9). `classify` (P1), `gen` (P4: Java); `run` arrives later.
+
+mod generate;
 
 use std::path::{Path, PathBuf};
 
@@ -24,6 +26,8 @@ pub enum WorkerCmd {
         #[arg(long, value_enum, default_value_t = Format::Text)]
         format: Format,
     },
+    /// Generate a job worker project from the job types classified as worker
+    Gen(generate::GenArgs),
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -45,6 +49,10 @@ pub fn run(cmd: WorkerCmd) -> i32 {
                 print!("{out}");
                 0
             }
+            Err(e) => crate::fail(&e),
+        },
+        WorkerCmd::Gen(args) => match generate::run(&args) {
+            Ok(code) => code,
             Err(e) => crate::fail(&e),
         },
     }
@@ -78,13 +86,13 @@ fn read(path: &Path) -> Result<String, String> {
     std::fs::read_to_string(path).map_err(|e| format!("{}: {e}", path.display()))
 }
 
-fn classify(
+/// Read, bind and classify the inputs shared by `classify` and `gen`; also returns the file count.
+fn load(
     bpmn: &[PathBuf],
     openapi: &[PathBuf],
     config: Option<&Path>,
     name: &str,
-    format: Format,
-) -> Result<String, String> {
+) -> Result<(bpmnkit_jobspec::Extracted, usize), String> {
     let mut files = Vec::new();
     for p in bpmn {
         collect(p, &mut files)?;
@@ -126,7 +134,17 @@ fn classify(
         catalog: &catalog,
         config: &config,
     });
+    Ok((out, files.len()))
+}
 
+fn classify(
+    bpmn: &[PathBuf],
+    openapi: &[PathBuf],
+    config: Option<&Path>,
+    name: &str,
+    format: Format,
+) -> Result<String, String> {
+    let (out, file_count) = load(bpmn, openapi, config, name)?;
     let hash = ir_hash(&out.project);
     Ok(match format {
         Format::Json => {
@@ -155,7 +173,7 @@ fn classify(
             s.push_str(&format!(
                 "# {} job type(s) from {} file(s), sha256:{hash}\n",
                 out.project.jobs.len(),
-                files.len()
+                file_count
             ));
             s
         }

@@ -1068,7 +1068,8 @@ not code.
 
 - [x] P0: `bpmnkit-cli` skeleton, `bpmnkit-profiles`, `packages/profiles` dual lookup
 - [x] P1: `bpmnkit-jobspec` (BPMN + connector-gen API index → IR, catalog lookup, rules R1–R13), `bpmnkit worker classify`
-- [ ] P2–P10: worker runtime, codegen (Rust, Java), connector runtime, native commands, release, Gradle
+- [x] P4: `bpmnkit-codegen` Java emitter (Maven wrapper, plain + `--spring`, CPT stub), `bpmnkit worker gen --lang java`, CI `java-golden`
+- [ ] P2, P3, P5–P10: worker runtime, Rust emitter, connector runtime, native commands, release, Gradle
 
 ## Completed
 

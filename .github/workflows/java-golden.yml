@@ -1,0 +1,69 @@
+name: Java golden
+
+# Generates the Java worker project from a fixture and builds it with its own Maven Wrapper, so
+# the pinned Camunda 8.8 coordinates and the generated code keep compiling (plan P4).
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "crates/bpmnkit-codegen/**"
+      - "crates/bpmnkit-jobspec/**"
+      - "crates/bpmnkit-cli/src/worker*"
+      - ".github/workflows/java-golden.yml"
+  push:
+    branches: [main]
+    paths:
+      - "crates/bpmnkit-codegen/**"
+      - "crates/bpmnkit-jobspec/**"
+      - "crates/bpmnkit-cli/src/worker*"
+      - ".github/workflows/java-golden.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  java-golden:
+    name: java-golden
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [plain, spring]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Cache ~/.m2
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: m2-java-golden-${{ matrix.mode }}-${{ hashFiles('crates/bpmnkit-codegen/src/java.rs') }}
+          restore-keys: m2-java-golden-${{ matrix.mode }}-
+
+      - name: Setup Rust
+        run: rustup show active-toolchain
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Generate
+        run: |
+          flags=""
+          if [ "${{ matrix.mode }}" = "spring" ]; then flags="--spring"; fi
+          cargo run -q -p bpmnkit-cli -- worker gen --lang java $flags --name order-workers \
+            --out "$RUNNER_TEMP/golden" crates/bpmnkit-codegen/tests/fixtures/order.bpmn
+          cargo run -q -p bpmnkit-cli -- worker gen --lang java $flags --name order-workers \
+            --out "$RUNNER_TEMP/golden" --check crates/bpmnkit-codegen/tests/fixtures/order.bpmn
+
+      # Camunda Process Test starts Camunda in Docker; ubuntu-latest has it.
+      - name: Build and test with the generated wrapper
+        working-directory: ${{ runner.temp }}/golden
+        run: ./mvnw -B -q verify

@@ -233,12 +233,23 @@ version = "0.6.1"
 dependencies = [
  "assert_cmd",
  "bpmnkit-bpmn",
+ "bpmnkit-codegen",
  "bpmnkit-jobspec",
  "bpmnkit-profiles",
  "clap",
  "clap_complete",
  "insta",
  "serde_json",
+ "tempfile",
+]
+
+[[package]]
+name = "bpmnkit-codegen"
+version = "0.6.1"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-jobspec",
+ "insta",
  "tempfile",
 ]
 

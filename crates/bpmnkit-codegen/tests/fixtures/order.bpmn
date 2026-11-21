@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="t">
+  <bpmn:error id="e1" errorCode="PAYMENT_DECLINED"/>
+  <bpmn:process id="order" isExecutable="true">
+    <bpmn:serviceTask id="charge" name="Charge card">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="charge-card" retries="3"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=order.total" target="amount"/>
+          <zeebe:input source="=customer.id" target="customer-id"/>
+          <zeebe:input source="=1" target="class"/>
+          <zeebe:output source="=result.receipt" target="receipt"/>
+          <zeebe:output source="=paid" target="paid"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="declined" attachedToRef="charge"><bpmn:errorEventDefinition errorRef="e1"/></bpmn:boundaryEvent>
+    <bpmn:serviceTask id="ship" name="Ship order">
+      <bpmn:extensionElements><zeebe:taskDefinition type="ship.order"/></bpmn:extensionElements>
+    </bpmn:serviceTask>
+  </bpmn:process>
+</bpmn:definitions>

@@ -19,6 +19,7 @@ path = "src/main.rs"
 
 [dependencies]
 bpmnkit-bpmn = { workspace = true }
+bpmnkit-codegen = { path = "../bpmnkit-codegen", version = "0.6.1" }
 bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.6.1" }
 bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.6.1" }
 clap = { version = "4.5", features = ["derive"] }
