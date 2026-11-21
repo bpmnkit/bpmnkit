@@ -374,6 +374,9 @@ dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-jobspec",
  "insta",
+ "prettyplease",
+ "serde_json",
+ "syn 2.0.119",
  "tempfile",
 ]
 
@@ -1806,6 +1809,16 @@ checksum = "d0de1b847b39c8131db0467e9df1ff60e6d0562ab8e9a16e568ad0fdb372e2f2"
 dependencies = [
  "predicates-core",
  "termtree",
+]
+
+[[package]]
+name = "prettyplease"
+version = "0.2.37"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "479ca8adacdd7ce8f1fb39ce9ecccbfe93a3f1344b3d0d97f20bc0196208f62b"
+dependencies = [
+ "proc-macro2",
+ "syn 2.0.119",
 ]
 
 [[package]]

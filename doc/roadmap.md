@@ -1069,7 +1069,7 @@ not code.
 - [x] P0: `bpmnkit-cli` skeleton, `bpmnkit-profiles`, `packages/profiles` dual lookup
 - [x] P1: `bpmnkit-jobspec` (BPMN + connector-gen API index → IR, catalog lookup, rules R1–R13), `bpmnkit worker classify`
 - [x] P2: `bpmnkit-worker` REST runtime (client, auth, loop, backoff, drain, metrics, `testing`)
-- [ ] P3: Rust + template emitters, `worker gen --check`
+- [x] P3: Rust + template emitters, `worker gen --check`, `bpmnkit.lock.json`, JSON Schema subset extractor, `rust-golden` + Windows CI (I8), bench rows (I7)
 - [x] P4: `bpmnkit-codegen` Java emitter (Maven wrapper, plain + `--spring`, CPT stub), `bpmnkit worker gen --lang java`, CI `java-golden`
 - [ ] P5: `bpmnkit-connector-runtime` (`io.camunda:http-json:1`)
 - [x] P6: `grpc` feature (job streaming)
