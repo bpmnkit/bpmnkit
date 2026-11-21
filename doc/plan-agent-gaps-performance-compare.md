@@ -193,14 +193,14 @@ page should say so; that candour is what makes the page credible.
   - LLM to raw XML;
   - LLM to compact JSON;
   - LLM to builder script;
-  - LLM to `ProcessPlan` compiled by `casen synth` (phase 2).
+  - LLM to `ProcessPlan` compiled by `bpmnkit synth` (phase 2).
 - Columns:
   - static SVG;
   - source excerpt plus a link to the full source;
   - output and input tokens, wall time, and cost from a dated price table;
   - parses, DI complete, lint errors;
   - closeness to the reference;
-  - `casen test` pass (phase 3).
+  - `bpmnkit test` pass (phase 3).
   Failed runs stay on the page as rows.
 - Data:
   - a new `scripts/build-compare-data.mjs` reads the recordings and writes
@@ -252,7 +252,7 @@ Commit the new `apps/demo/recordings/*.json` (~1.4 MB each) and the regenerated
 `compact-json` means the new `CompactDiagram` JSON.
 
 **D3 — execution and competitors (L).**
-- A `casen test` column on reebe-wasm.
+- A `bpmnkit test` column on reebe-wasm.
   *Done 2026-11-05 (test column only; no competitor lane, as decided):* `scripts/compare/references/<scenario>.test.json`
   per scenario, run by `build-compare-data.mjs` via `scripts/lib/cpt-run.mjs`. The tests address the reference's ids, so a
   model's output fails on naming; the page says so.
@@ -310,7 +310,7 @@ Commit the new `apps/demo/recordings/*.json` (~1.4 MB each) and the regenerated
 
 ## Decisions (2026-11-05)
 
-- **Competitors on the comparison page:** not at launch. D3 adds only the `casen test` column. A competitor lane needs a reproducible run of each tool under its own documented usage, and its author's review, first.
+- **Competitors on the comparison page:** not at launch. D3 adds only the `bpmnkit test` column. A competitor lane needs a reproducible run of each tool under its own documented usage, and its author's review, first.
 - **Reference scripts and closeness:** the hand-authored reference scripts and structure-mode closeness (D1b) stand.
 - **`ignoreNullValues` on GET (C10):** follow the connector's v18 schema. Never write a property the template does not offer for GET, and accept the closeness gap against the blueprint.
 - **Recording budget (D2, C9):** this cloud environment has no API key. Build the recording support and a dry run here. The maintainer records locally with a key, using a minimal matrix first: quote-to-cash × 4 routes × 3 runs = 12 runs. Cost (C9) comes from in/out token counts and a dated price table committed in the repo.

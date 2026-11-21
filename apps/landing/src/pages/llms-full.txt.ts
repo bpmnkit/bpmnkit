@@ -111,12 +111,12 @@ ESM tree-shakeable, zero transitive runtime dependencies.
 
 ---
 
-## CLI — casen
+## CLI — bpmnkit
 
 Interactive TUI for managing Camunda 8. Navigate with arrow keys.
 
 \`\`\`
-casen
+bpmnkit
 \`\`\`
 
 Main menu groups: profile, process, job, incident, decision, variable, message.

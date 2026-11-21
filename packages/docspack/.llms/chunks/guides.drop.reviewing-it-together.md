@@ -46,7 +46,7 @@ loses work. Undoing a restore is another restore.
 **Visual diff.** Two drops can be put side by side at `/drop/<before>/diff/<after>`: added,
 removed, changed and *moved* elements marked on synchronised canvases, with pan and zoom
 locked together. The same diff is available offline as
-[`casen diff bpmn`](/docs/cli/diff) and as a plugin in `@bpmnkit/plugins`.
+[`bpmnkit diff bpmn`](/docs/cli/diff) and as a plugin in `@bpmnkit/plugins`.
 
 ---
 Source: https://bpmnkit.com/docs/guides/drop

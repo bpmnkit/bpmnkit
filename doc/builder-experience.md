@@ -136,7 +136,7 @@ breach, invalid input), design the process to pass them, ship with a green test 
   - **Variables**: deep equality on final process scope variables against `expect.variables`
 - UI: new "Tests" tab in the process runner panel — list of scenarios, run button, pass/fail badges,
   expandable diff on failure showing expected vs actual path and variable mismatches
-- CLI: `casen test <file.bpmn>` runs all scenarios, outputs JUnit XML for CI pipeline integration
+- CLI: `bpmnkit test <file.bpmn>` runs all scenarios, outputs JUnit XML for CI pipeline integration
 - AI integration: "Generate test scenarios for this process" prompt uses the compact format + AI
   to draft scenario JSON that covers all gateway branches and error paths; user reviews and saves
 

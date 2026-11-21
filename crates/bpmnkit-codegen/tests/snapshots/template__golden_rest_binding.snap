@@ -1,0 +1,127 @@
+---
+source: crates/bpmnkit-codegen/tests/template.rs
+expression: s
+---
+===== patches/charge-card.json =====
+{
+  "elements": [
+    {
+      "elementId": "charge",
+      "headers": [],
+      "inputs": [
+        {
+          "source": "=order.total",
+          "target": "amount"
+        },
+        {
+          "source": "=1",
+          "target": "class"
+        },
+        {
+          "source": "=customer.id",
+          "target": "customer-id"
+        }
+      ],
+      "modelerTemplate": "io.bpmnkit.rest.charge-card",
+      "modelerTemplateVersion": 1,
+      "outputs": [
+        {
+          "source": "=paid",
+          "target": "paid"
+        },
+        {
+          "source": "=result.receipt",
+          "target": "receipt"
+        }
+      ],
+      "processId": "order",
+      "taskDefinitionType": "io.camunda:http-json:1"
+    }
+  ],
+  "jobType": "charge-card",
+  "template": "io.bpmnkit.rest.charge-card"
+}
+===== templates/charge-card.json =====
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "appliesTo": [
+    "bpmn:Task"
+  ],
+  "description": "Calls the REST endpoint behind job type charge-card",
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "id": "io.bpmnkit.rest.charge-card",
+  "name": "REST: charge-card",
+  "properties": [
+    {
+      "binding": {
+        "property": "type",
+        "type": "zeebe:taskDefinition"
+      },
+      "type": "Hidden",
+      "value": "io.camunda:http-json:1"
+    },
+    {
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "id": "method",
+      "label": "Method",
+      "type": "Hidden",
+      "value": "GET"
+    },
+    {
+      "binding": {
+        "name": "url",
+        "type": "zeebe:input"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "feel": "optional",
+      "id": "url",
+      "label": "URL",
+      "type": "String",
+      "value": ""
+    },
+    {
+      "binding": {
+        "key": "resultVariable",
+        "type": "zeebe:taskHeader"
+      },
+      "id": "resultVariable",
+      "label": "Result variable",
+      "type": "String"
+    },
+    {
+      "binding": {
+        "name": "amount",
+        "type": "zeebe:input"
+      },
+      "label": "amount",
+      "type": "Hidden",
+      "value": "=order.total"
+    },
+    {
+      "binding": {
+        "name": "class",
+        "type": "zeebe:input"
+      },
+      "label": "class",
+      "type": "Hidden",
+      "value": "=1"
+    },
+    {
+      "binding": {
+        "name": "customer-id",
+        "type": "zeebe:input"
+      },
+      "label": "customer-id",
+      "type": "Hidden",
+      "value": "=customer.id"
+    }
+  ],
+  "version": 1
+}

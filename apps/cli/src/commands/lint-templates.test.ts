@@ -6,7 +6,7 @@ import { checkFile } from "../dev/checks.js"
 import { lintBpmn } from "./lint.js"
 
 /**
- * `casen lint` checks a connector's required inputs against the templates the
+ * `bpmnkit lint` checks a connector's required inputs against the templates the
  * diagram's own folder sees — `.camunda/element-templates/` from its folder up
  * to the project root — not against the bundled catalogue alone, and not
  * against a sibling folder's templates.
@@ -92,7 +92,7 @@ describe("lintBpmn element templates", () => {
 	})
 })
 
-describe("casen dev checks", () => {
+describe("bpmnkit dev checks", () => {
 	it("resolve templates up to the served project's root, not the cwd", async () => {
 		const project = mkdtempSync(join(tmpdir(), "casen-dev-templates-"))
 		try {

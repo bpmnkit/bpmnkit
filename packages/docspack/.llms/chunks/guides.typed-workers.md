@@ -4,21 +4,21 @@ A job worker depends on names that the BPMN model defines: the job type, the var
 variables it returns, and the error codes it throws. If you type these names by hand, a typo shows
 only at runtime, as a job that no worker takes or as an incident.
 
-`casen gen types` reads the BPMN and generates the TypeScript types for these names. The compiler
+`bpmnkit gen types` reads the BPMN and generates the TypeScript types for these names. The compiler
 then checks them for you.
 
 
 ## Generate the types
 
 ```sh
-casen gen types processes/ --out src/generated/bpmn-types.ts
+bpmnkit gen types processes/ --out src/generated/bpmn-types.ts
 ```
 
 The command accepts files, directories and globs. Commit the generated file, and add the `--check`
 command to CI so that the file stays current:
 
 ```sh
-casen gen types processes/ --out src/generated/bpmn-types.ts --check   # exits 1 when stale
+bpmnkit gen types processes/ --out src/generated/bpmn-types.ts --check   # exits 1 when stale
 ```
 
 For a service task like this one:

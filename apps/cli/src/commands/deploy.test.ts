@@ -15,7 +15,7 @@ const UNDEPLOYABLE = `<?xml version="1.0" encoding="UTF-8"?>
   </bpmn:process>
 </bpmn:definitions>`
 
-describe("casen deploy: deploy gate", () => {
+describe("bpmnkit deploy: deploy gate", () => {
 	let dir: string
 	let file: string
 	const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }))

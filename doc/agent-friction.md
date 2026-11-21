@@ -24,9 +24,9 @@ This is a diagnosis only. No code was changed and no new eval runs were made.
 | 3 | Builder output passes `build()` but fails the c8ctl lint: `.branch(name)` becomes a flow label on event-based/parallel gateway flows (`superfluous-label`), and `userTask` has no form (`zeebe:FormDefinition`) | real bug (labels) + doc gap (forms) | S04 10/10, S16X 15/15, S11 9/10 | ~70 t / ~900 s | `S04/toolgatebr-*/r*` (first lint always 2-3 warnings); repro R5/R9 |
 | 4 | A message end event / throw gets an auto `Message_<name>` with no `zeebe:subscription`. `build()` accepts it, then lint or deploy rejects it. Declaring `.message("info-sent", {correlationKey})` collides with the auto id | missing API + misleading | S16X 15/15 | ~31 t / ~500 s | haiku r1 `cvc-id.2 … 'Message_information_sent'`; sonnet r4 `Message_interview_answer_received: Must have exactly one zeebe:subscription` |
 | 5 | Preserving edit with a loop-back (`continueProcess…insertAfter…withBoundary(…connectTo(newTask))`) gives a task with 2 incoming flows, and the boundary `errorEventDefinition` has no id. Then `placeNewShapes` reports `unplaced: []` but new shapes overlap old ones | real bug | S11 8/10 (opus 5, sonnet r1/r3/r5) | ~35 t / ~450 s | `S11/toolgatebr-opus/r*/ws/edit.ts`; repro R8 |
-| 6 | Data/annotation gaps:<br>• kit lint flags `dataStoreReference`/`dataObject` as `flow/unreachable` **error**, with fix hint "Connect this element…"<br>• `dataObjectReference` does not create its `dataObject` (raw XSD IDREF error)<br>• data associations get no id, so no DI edge<br>• `textAnnotation()` cannot be free-standing<br>• no root `bpmn:dataStore` | real bug (lint) + missing API | S16X 15/15 | ~30 t / ~500 s | `casen check` exit 1 in opus r4; sonnet r5 `IDREF 'd_listData'`; R3/R4/R7 |
+| 6 | Data/annotation gaps:<br>• kit lint flags `dataStoreReference`/`dataObject` as `flow/unreachable` **error**, with fix hint "Connect this element…"<br>• `dataObjectReference` does not create its `dataObject` (raw XSD IDREF error)<br>• data associations get no id, so no DI edge<br>• `textAnnotation()` cannot be free-standing<br>• no root `bpmn:dataStore` | real bug (lint) + missing API | S16X 15/15 | ~30 t / ~500 s | `bpmnkit check` exit 1 in opus r4; sonnet r5 `IDREF 'd_listData'`; R3/R4/R7 |
 | 7 | Ids must be unique across all pools. The builder does not check this or namespace ids, so the error comes back as a raw XSD message with no pool context | misleading error + doc gap | S16X haiku r1, r3, r4 (others pre-prefixed) | ~5 t / ~40 s | R6 |
-| 8 | Steering: compact mode is never picked, the "edit by size" rule pushes structural edits into scripts, and there is no single gate. Agents run `casen check`, kit `lintDiagram` and c8ctl, and the three disagree | doc gap | all 30 | see section below | AGENTS.md / bpmn.md quotes below |
+| 8 | Steering: compact mode is never picked, the "edit by size" rule pushes structural edits into scripts, and there is no single gate. Agents run `bpmnkit check`, kit `lintDiagram` and c8ctl, and the three disagree | doc gap | all 30 | see section below | AGENTS.md / bpmn.md quotes below |
 
 **Not bpmnkit, but large.** These are worth fixing in the harness:
 - **Bash guard rejects heredocs, `cd &&`, `sed -i` and `$VAR`:** `Contains brace with quote character (expansion obfuscation)`. This happens in ~every run, costing 1–15 turns each (~150 t total).
@@ -44,7 +44,7 @@ This is a diagnosis only. No code was changed and no new eval runs were made.
   - `textAnnotation()` that cannot stand alone.
 - **Control's fake-join is the same problem as cause 5.** In S11 the builder does not insert a merge gateway, and control hit this as `fake-join` 3/3.
 - **Present in control, not seen in branch runs:** discarding `applyAutoLayout`'s return value (3/6 S16X runs, `TypeError: Cannot read properties of undefined (reading 'plane')`). In the branch arm only haiku r2 hit it. The documented `embeddedForm` option was also rejected by the gate (S04 r2: `Exactly one of the attributes 'formId, externalReference' must be present … (zeebe/form-definition-native)`).
-- **Behaviour on `casen check`:** 4 control runs saw 7 `casen check` errors on data elements and still reported "clean".
+- **Behaviour on `bpmnkit check`:** 4 control runs saw 7 `bpmnkit check` errors on data elements and still reported "clean".
 - **Not used in either arm:** compact mode and the lanes API.
 
 ## Phase profile (branch arm, typical)
@@ -53,7 +53,7 @@ This is a diagnosis only. No code was changed and no new eval runs were made.
 |---|---|---|---|---|---|---|
 | S04 (13–31 t) | 1–5 s | 10–30 s | first build clean | 20–60 s (cause 3) | ~5 s | — |
 | S11 (20–51 t) | ~10 s | ~15 s | 50–100 s (cause 5) | 40–130 s (c8ctl rule-id hunt) | ~5 s | — |
-| S16X (33–114 t) | 30–100 s (AGENTS.md → card → full `builder-reference.md` → `casen --help`) | 100–250 s | 50–250 s (cause 1) | 60–180 s (causes 3, 4, 6) | 5–40 s | 0–750 s (cause 2) |
+| S16X (33–114 t) | 30–100 s (AGENTS.md → card → full `builder-reference.md` → `bpmnkit --help`) | 100–250 s | 50–250 s (cause 1) | 60–180 s (causes 3, 4, 6) | 5–40 s | 0–750 s (cause 2) |
 
 All 30 runs ended with 0/0 lint errors and warnings and a successful deploy. The turns are spent getting there, not on failing.
 
@@ -173,10 +173,10 @@ Nothing throws here. `applyAutoLayout` on a 9-pool collaboration lays out messag
 
 No run read the `.d.ts` files first. Every S16X run, though, ended up reading `dist/bpmn/bpmn-builder.js`, because of cause 1.
 
-### Compact mode / `casen generate`: 0 of 30 runs used it
+### Compact mode / `bpmnkit generate`: 0 of 30 runs used it
 
 - **S04 (new single-pool process).** The card does offer compact mode:
-  > `**Small new single-pool process:** write CompactDiagram JSON and run casen generate bpmn --definition '<json>' (schema: --help)`
+  > `**Small new single-pool process:** write CompactDiagram JSON and run bpmnkit generate bpmn --definition '<json>' (schema: --help)`
 
   Three things outweigh it:
   1. It is a bullet near line 99, below the main section.
@@ -184,11 +184,11 @@ No run read the `.d.ts` files first. Every S16X run, though, ended up reading `d
   3. It sits under a card that opens with:
      > "Write a Camunda 8 BPMN process with `@bpmnkit/core` in one script… Never write a whole BPMN file by hand."
 
-  The only runnable example in the card is the builder script, and S04 needs an event-based gateway, boundaries and a correlated message, which the builder example covers. No run even ran `casen generate --help`.
+  The only runnable example in the card is the builder script, and S04 needs an event-based gateway, boundaries and a correlated message, which the builder example covers. No run even ran `bpmnkit generate --help`.
 - **S16X.** The agents quoted:
   > "Several pools or message flows: `Bpmn.createDiagram()`"
 
-  r1 (haiku) checked `casen agent-card bpmn --text` and concluded: "The text format cannot express pools, message flows or data stores".
+  r1 (haiku) checked `bpmnkit agent-card bpmn --text` and concluded: "The text format cannot express pools, message flows or data stores".
 - **AGENTS.md rule 1** says:
   > "Build with the builders… Never write XML or form JSON by hand."
 
@@ -211,7 +211,7 @@ No scenario needs lanes, so none of the runs used or considered the lanes API. L
 - **What the docs say:**
   - AGENTS.md: "Validate before you finish: `npx @bpmnkit/cli check … --deploy`".
   - The task prompts name c8ctl lint and deploy.
-- **What the agents did:** they treated c8ctl as "the gate that counts". Only 2 runs ran `casen check`, and its `flow/unreachable` errors on data stores (cause 6) taught them to ignore it.
+- **What the agents did:** they treated c8ctl as "the gate that counts". Only 2 runs ran `bpmnkit check`, and its `flow/unreachable` errors on data stores (cause 6) taught them to ignore it.
 - **Result:** three validators that disagree (`build()` gate, kit `lintDiagram`, c8ctl lint) mean extra turns explaining findings away.
 
 ### Proposed card / CLAUDE.md changes

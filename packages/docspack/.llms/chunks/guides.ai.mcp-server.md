@@ -5,7 +5,7 @@ Claude Desktop, Cursor, VS Code — create, validate, simulate and deploy proces
 stdio and is started by the CLI:
 
 ```sh
-casen proxy mcp
+bpmnkit proxy mcp
 ```
 
 or, without installing the CLI first, in an MCP client's configuration:
@@ -30,8 +30,8 @@ Tools:
 - `bpmn_validate` — run the optimizer's findings over a file, plus the deploy gate's verdict
   (`summary.deployable`, `deployability`)
 - `bpmn_simulate`, `bpmn_run_history` — run a process on the local engine and read past runs
-  (needs the proxy running: `casen proxy start`)
-- `bpmn_deploy` — deploy to the active `casen` profile (Camunda 8 or a local Reebe), after the
+  (needs the proxy running: `bpmnkit proxy start`)
+- `bpmn_deploy` — deploy to the active `bpmnkit` profile (Camunda 8 or a local Reebe), after the
   deploy gate (`validate: false` skips it)
 - `form_create`, `dmn_create` — Camunda Forms and DMN decision tables
 - `worker_list`, `worker_scaffold` — list and generate job workers

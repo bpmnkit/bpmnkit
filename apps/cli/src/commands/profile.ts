@@ -226,17 +226,17 @@ export const profileGroup: CommandGroup = {
 				{
 					description: "Bearer token profile",
 					command:
-						"casen profile create local --base-url http://localhost:8080/v2 --auth-type bearer --token my-token",
+						"bpmnkit profile create local --base-url http://localhost:8080/v2 --auth-type bearer --token my-token",
 				},
 				{
 					description: "OAuth2 profile for Camunda SaaS",
 					command:
-						"casen profile create prod --base-url https://cluster.camunda.io/v2 --auth-type oauth2 --client-id id --client-secret secret --token-url https://login.cloud.camunda.io/oauth/token",
+						"bpmnkit profile create prod --base-url https://cluster.camunda.io/v2 --auth-type oauth2 --client-id id --client-secret secret --token-url https://login.cloud.camunda.io/oauth/token",
 				},
 				{
 					description: "Admin API profile",
 					command:
-						"casen profile create admin-prod --api-type admin --base-url https://api.cloud.camunda.io --auth-type oauth2 --client-id id --client-secret secret --token-url https://login.cloud.camunda.io/oauth/token",
+						"bpmnkit profile create admin-prod --api-type admin --base-url https://api.cloud.camunda.io --auth-type oauth2 --client-id id --client-secret secret --token-url https://login.cloud.camunda.io/oauth/token",
 				},
 			],
 			async run(ctx) {
@@ -264,12 +264,12 @@ export const profileGroup: CommandGroup = {
 			name: "list",
 			aliases: ["ls"],
 			description: "List all profiles",
-			examples: [{ description: "List profiles", command: "casen profile list" }],
+			examples: [{ description: "List profiles", command: "bpmnkit profile list" }],
 			async run(ctx) {
 				const profiles = listProfiles()
 				const active = getActiveName()
 				if (profiles.length === 0) {
-					ctx.output.info("No profiles. Create one with: casen profile create <name> ...")
+					ctx.output.info("No profiles. Create one with: bpmnkit profile create <name> ...")
 					return
 				}
 				ctx.output.printList(
@@ -299,14 +299,14 @@ export const profileGroup: CommandGroup = {
 			description: "Switch the active profile",
 			args: [{ name: "name", description: "Profile name", required: true }],
 			examples: [
-				{ description: "Activate production profile", command: "casen profile use production" },
+				{ description: "Activate production profile", command: "bpmnkit profile use production" },
 			],
 			async run(ctx) {
 				const name = ctx.positional[0]
 				if (!name) throw new Error("Missing required argument: <name>")
 				if (!useProfile(name)) {
 					throw new Error(
-						`Profile "${name}" not found. Run \`casen profile list\` to see available profiles.`,
+						`Profile "${name}" not found. Run \`bpmnkit profile list\` to see available profiles.`,
 					)
 				}
 				ctx.output.ok(`Now using profile "${name}"`)
@@ -317,8 +317,8 @@ export const profileGroup: CommandGroup = {
 			description: "Show profile details",
 			args: [{ name: "name", description: "Profile name (defaults to active)", required: false }],
 			examples: [
-				{ description: "Show active profile", command: "casen profile show" },
-				{ description: "Show specific profile", command: "casen profile show production" },
+				{ description: "Show active profile", command: "bpmnkit profile show" },
+				{ description: "Show specific profile", command: "bpmnkit profile show production" },
 			],
 			async run(ctx) {
 				const name = ctx.positional[0]
@@ -327,7 +327,7 @@ export const profileGroup: CommandGroup = {
 					throw new Error(
 						name
 							? `Profile "${name}" not found.`
-							: "No active profile. Create one with: casen profile create <name> ...",
+							: "No active profile. Create one with: bpmnkit profile create <name> ...",
 					)
 				}
 				const active = getActiveName()
@@ -354,15 +354,15 @@ export const profileGroup: CommandGroup = {
 			examples: [
 				{
 					description: "Import C8 credentials",
-					command: "casen profile import prod ./camunda-credentials.sh",
+					command: "bpmnkit profile import prod ./camunda-credentials.sh",
 				},
 				{
 					description: "Import Admin API credentials",
-					command: "casen profile import admin ./console-credentials.sh",
+					command: "bpmnkit profile import admin ./console-credentials.sh",
 				},
 				{
 					description: "Import from stdin",
-					command: "cat credentials.sh | casen profile import prod -",
+					command: "cat credentials.sh | bpmnkit profile import prod -",
 				},
 			],
 			async run(ctx) {
@@ -387,7 +387,7 @@ export const profileGroup: CommandGroup = {
 			examples: [
 				{
 					description: "Set description and tags",
-					command: 'casen profile meta prod --description "Production cluster" --tags prod',
+					command: 'bpmnkit profile meta prod --description "Production cluster" --tags prod',
 				},
 			],
 			async run(ctx) {
@@ -412,7 +412,9 @@ export const profileGroup: CommandGroup = {
 			aliases: ["rm"],
 			description: "Delete a profile",
 			args: [{ name: "name", description: "Profile name", required: true }],
-			examples: [{ description: "Delete a profile", command: "casen profile delete old-profile" }],
+			examples: [
+				{ description: "Delete a profile", command: "bpmnkit profile delete old-profile" },
+			],
 			async run(ctx) {
 				const name = ctx.positional[0]
 				if (!name) throw new Error("Missing required argument: <name>")

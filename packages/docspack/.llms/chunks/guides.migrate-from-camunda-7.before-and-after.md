@@ -16,7 +16,7 @@ A Camunda 7 service task, as Camunda Modeler writes it:
 </bpmn:serviceTask>
 ```
 
-After `casen migrate c7`:
+After `bpmnkit migrate c7`:
 
 ```xml
 <bpmn:serviceTask id="Task_charge" name="Charge payment">

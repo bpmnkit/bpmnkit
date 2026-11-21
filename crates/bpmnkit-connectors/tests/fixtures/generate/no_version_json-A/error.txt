@@ -1,0 +1,1 @@
+Invalid OpenAPI document: missing `openapi` version field

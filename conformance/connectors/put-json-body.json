@@ -1,0 +1,46 @@
+{
+  "description": "PUT with a JSON body",
+  "exchanges": [
+    {
+      "request": {
+        "body": {
+          "qty": 3
+        },
+        "method": "PUT",
+        "path": "/orders/o-1"
+      },
+      "response": {
+        "body": {
+          "id": "o-1",
+          "qty": 3
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myResponseBody": {
+          "id": "o-1",
+          "qty": 3
+        }
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "body": {
+        "qty": 3
+      },
+      "method": "PUT",
+      "url": "http://mock.local/orders/o-1"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/"
+}

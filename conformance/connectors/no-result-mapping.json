@@ -1,0 +1,32 @@
+{
+  "description": "no resultVariable/resultExpression completes with no variables",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/ping"
+      },
+      "response": {
+        "body": {
+          "pong": true
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {}
+    }
+  },
+  "job": {
+    "headers": {},
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/ping"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/"
+}

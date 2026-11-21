@@ -13,7 +13,7 @@ A process engine is the durable place for that state. This guide puts the two to
 
 - **[`@bpmnkit/flow`](/docs/packages/flow)** — you write the workflow as TypeScript steps, and
   it derives the BPMN, the job types and the worker.
-- **`casen agent`** — you hire coding-agent CLIs (Claude Code, Copilot, …) as job workers, and
+- **`bpmnkit agent`** — you hire coding-agent CLIs (Claude Code, Copilot, …) as job workers, and
   run them as a workforce.
 - **A Camunda 8 engine** — local [Reebe](/docs/cli/casen#local-engine-reebe) or a real cluster —
   holds the run. A crash of any worker costs a job lock, not the run.
@@ -67,13 +67,13 @@ else, so a crash in round 2 resumes in round 2.
 ## 2. Start an engine and deploy
 
 ```sh
-casen reebe start --port 26500 --grpc-port 26501   # local engine, SQLite-backed
-casen profile create local --base-url http://localhost:26500/v2 --auth-type none
-casen profile use local
-casen deploy deploy pr-review.bpmn
+bpmnkit reebe start --port 26500 --grpc-port 26501   # local engine, SQLite-backed
+bpmnkit profile create local --base-url http://localhost:26500/v2 --auth-type none
+bpmnkit profile use local
+bpmnkit deploy deploy pr-review.bpmn
 ```
 
-REST goes on 26500 because that is where `casen deploy` and the flow worker look by default
+REST goes on 26500 because that is where `bpmnkit deploy` and the flow worker look by default
 (`ZEEBE_ADDRESS`); Reebe's gRPC gateway, which also defaults to 26500, moves to 26501. Any
 Camunda 8 cluster works the same way — point the profile and `ZEEBE_ADDRESS` at it instead.
 
@@ -83,13 +83,13 @@ A hire saves a profile: the CLI to run, the roles it takes on, and how many jobs
 once. Everything after `--` is the command.
 
 ```sh
-casen agent hire claude --roles pr-review,plan --rank senior -- claude -p
-casen agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
-casen agent list
+bpmnkit agent hire claude --roles pr-review,plan --rank senior -- claude -p
+bpmnkit agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
+bpmnkit agent list
 ```
 
 The prompt goes to the CLI on stdin, unless an argument contains `{prompt}` — then it goes
-there. Profiles are saved in `workforce.json`, next to casen's profile config.
+there. Profiles are saved in `workforce.json`, next to bpmnkit's profile config.
 
 | Flag | Default | Description |
 |---|---|---|
@@ -99,7 +99,7 @@ there. Profiles are saved in `workforce.json`, next to casen's profile config.
 | `--timeout` | `30` | Minutes one run may take before it is stopped and the job failed |
 | `--cwd` | current directory | Directory the CLI runs in |
 
-`casen agent hire` with an existing name updates that agent; `casen agent fire <name>` removes
+`bpmnkit agent hire` with an existing name updates that agent; `bpmnkit agent fire <name>` removes
 it.
 
 ### Roles and ranks
@@ -130,9 +130,9 @@ await worker.done
 The workforce serves the `.agent()` steps. Start both, then an instance:
 
 ```sh
-casen agent work                  # every hired agent, until Ctrl+C
+bpmnkit agent work                  # every hired agent, until Ctrl+C
 npx tsx flows/worker.ts
-casen process-instance create --data '{"processDefinitionId":"pr-review","variables":{"repo":"acme/api","prKey":"42"}}'
+bpmnkit process-instance create --data '{"processDefinitionId":"pr-review","variables":{"repo":"acme/api","prKey":"42"}}'
 ```
 
 For each job, the workforce renders the task's prompt with the instance's variables, runs the
@@ -156,7 +156,7 @@ their locks expire.
 Publish the message when the outside event happens — from a CI webhook, for example:
 
 ```sh
-casen message publish --data '{"name":"ci-passed","correlationKey":"42"}'
+bpmnkit message publish --data '{"name":"ci-passed","correlationKey":"42"}'
 ```
 
 Nothing holds a worker, an agent slot or a context window while the instance waits.

@@ -1,6 +1,6 @@
 # Conformance — Linting — bpmnlint compatibility
 
-`casen lint` and the VS Code extension read a project's `.bpmnlintrc`. All 28 of bpmnlint's
+`bpmnkit lint` and the VS Code extension read a project's `.bpmnlintrc`. All 28 of bpmnlint's
 built-in rules map onto BPMN Kit findings exactly, in the top-level process and inside every
 kind of sub-process. When the project has bpmnlint installed, that bpmnlint runs the
 configuration itself, so `bpmnlint-plugin-*` rules work too.

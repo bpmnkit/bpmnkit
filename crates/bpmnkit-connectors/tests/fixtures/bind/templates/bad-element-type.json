@@ -1,0 +1,7 @@
+{
+  "id": "test.BadElementType",
+  "name": "Converts to nonsense",
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:Participant" },
+  "properties": []
+}

@@ -1,4 +1,4 @@
-# casen Plugin Authoring — Test locally
+# bpmnkit Plugin Authoring — Test locally
 
 Build and install your plugin from the local directory:
 
@@ -7,15 +7,15 @@ cd casen-deploy
 pnpm install
 pnpm build
 
-casen plugin install ./casen-deploy
+bpmnkit plugin install ./casen-deploy
 ```
 
-Restart casen. Your commands appear under `casen deploy` (or whatever group name you chose).
+Restart bpmnkit. Your commands appear under `bpmnkit deploy` (or whatever group name you chose).
 
 To uninstall during development:
 
 ```sh
-casen plugin remove casen-deploy
+bpmnkit plugin remove casen-deploy
 ```
 
 
@@ -34,7 +34,7 @@ publishing, so `dist/` is always up to date.
 Because `"casen-plugin"` is in `keywords`, your package is immediately discoverable via:
 
 ```sh
-casen plugin search deploy
+bpmnkit plugin search deploy
 ```
 
 ---

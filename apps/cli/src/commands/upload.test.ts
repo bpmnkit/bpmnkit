@@ -31,7 +31,7 @@ async function createDeployment(positional: string[]): Promise<FormData> {
 	return sent
 }
 
-describe("casen resource create-deployment", () => {
+describe("bpmnkit resource create-deployment", () => {
 	it("sends every file under the spec's `resources` field", async () => {
 		const dir = mkdtempSync(join(tmpdir(), "casen-upload-"))
 		writeFileSync(join(dir, "order.bpmn"), "<definitions/>")

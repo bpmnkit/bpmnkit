@@ -1,0 +1,57 @@
+{
+  "description": "the token endpoint answers 401: the job fails without calling the API",
+  "env": {
+    "AUDIENCE": "api.example",
+    "CLIENT_ID": "cid-4242",
+    "CLIENT_SECRET": "csecret-9999"
+  },
+  "exchanges": [
+    {
+      "request": {
+        "form": {
+          "audience": "api.example",
+          "client_id": "cid-4242",
+          "client_secret": "csecret-9999",
+          "grant_type": "client_credentials",
+          "scope": "read:clients"
+        },
+        "method": "POST",
+        "path": "/oauth/token"
+      },
+      "response": {
+        "body": {
+          "error": "invalid_client"
+        },
+        "status": 401
+      }
+    }
+  ],
+  "expected": {
+    "fail": {
+      "errorMessage": "OAuth token request failed with status 401",
+      "retries": 2,
+      "retryBackOff": 0
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "authentication": {
+        "audience": "{{secrets.AUDIENCE}}",
+        "clientAuthentication": "credentialsBody",
+        "clientId": "{{secrets.CLIENT_ID}}",
+        "clientSecret": "{{secrets.CLIENT_SECRET}}",
+        "oauthTokenEndpoint": "http://mock.local/oauth/token",
+        "scopes": "read:clients",
+        "type": "oauth-client-credentials-flow"
+      },
+      "method": "GET",
+      "url": "http://mock.local/clients"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#rest-connector-oauth-token"
+}

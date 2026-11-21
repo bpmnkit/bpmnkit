@@ -1,0 +1,38 @@
+{
+  "description": "bpmnError with variables from the error response",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/missing"
+      },
+      "response": {
+        "body": {
+          "field": "email"
+        },
+        "status": 422
+      }
+    }
+  ],
+  "expected": {
+    "throwError": {
+      "errorCode": "INVALID",
+      "errorMessage": "Validation failed",
+      "variables": {
+        "field": "email"
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "errorExpression": "=if error.code = \"422\" then bpmnError(\"INVALID\", \"Validation failed\", {field: error.variables.response.body.field}) else null"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/missing"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

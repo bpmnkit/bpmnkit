@@ -16,7 +16,7 @@ import { bpmnlintrcSuffix, lintBpmn } from "./lint.js"
 
 export type CheckKind = "bpmn" | "dmn" | "form"
 
-/** One finding of `casen check`, the same shape for every resource kind. */
+/** One finding of `bpmnkit check`, the same shape for every resource kind. */
 export interface CheckRow extends CheckFinding {
 	file: string
 	kind: CheckKind | "unknown"
@@ -351,12 +351,15 @@ const checkCmd: Command = {
 	examples: [
 		{
 			description: "Check a process with its form and decision",
-			command: "casen check order.bpmn order.form discount.dmn",
+			command: "bpmnkit check order.bpmn order.form discount.dmn",
 		},
-		{ description: "Deploy-readiness gate", command: "casen check order.bpmn order.form --deploy" },
+		{
+			description: "Deploy-readiness gate",
+			command: "bpmnkit check order.bpmn order.form --deploy",
+		},
 		{
 			description: "Machine-readable findings for an agent loop",
-			command: "casen check *.bpmn *.dmn *.form --json",
+			command: "bpmnkit check *.bpmn *.dmn *.form --json",
 		},
 	],
 	async run(ctx) {
@@ -399,6 +402,6 @@ const checkCmd: Command = {
 
 export const checkGroup: CommandGroup = {
 	name: "check",
-	description: "Check BPMN, DMN and form files before deploying — casen check <file...>",
+	description: "Check BPMN, DMN and form files before deploying — bpmnkit check <file...>",
 	commands: [checkCmd],
 }

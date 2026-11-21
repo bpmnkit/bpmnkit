@@ -1,6 +1,6 @@
 # BPMNKit — Reference
 
-This file is installed to `.claude/aikit.md` by `casen skills install`. The skill files (`/implement`, `/review`, `/test`, `/deploy`) reference it with `@.claude/aikit.md`.
+This file is installed to `.claude/aikit.md` by `bpmnkit skills install`. The skill files (`/implement`, `/review`, `/test`, `/deploy`) reference it with `@.claude/aikit.md`.
 
 These are lightweight, CLI-only slash commands. For the full skill set — `/bpmnkit:implement`, `/bpmnkit:extend`, `/bpmnkit:agent`, `/bpmnkit:connect`, plus generated reference docs (`plan-format.md`, `connectors.md`, `agentic.md`, `feel.md`) — install the Claude Code plugin instead:
 
@@ -16,29 +16,29 @@ These are lightweight, CLI-only slash commands. For the full skill set — `/bpm
 Every process is authored as a `ProcessPlan` JSON file, never hand-written BPMN XML:
 
 ```
-<name>.plan.json  →  casen synth  →  <name>.bpmn (+ <name>.bpmn.tests.json if plan.tests is set)
+<name>.plan.json  →  bpmnkit synth  →  <name>.bpmn (+ <name>.bpmn.tests.json if plan.tests is set)
 ```
 
-`casen plan schema` prints the full `ProcessPlan` format reference. `casen plan extract <file>.bpmn` lifts an existing process back into plan form (for `/extend`-style changes).
+`bpmnkit plan schema` prints the full `ProcessPlan` format reference. `bpmnkit plan extract <file>.bpmn` lifts an existing process back into plan form (for `/extend`-style changes).
 
 ## Key commands
 
 | Command | Does |
 |---|---|
-| `casen plan schema` | Print the `ProcessPlan` JSON format reference |
-| `casen agent-card bpmn\|dmn\|form` | Print a ~2k-token cheat sheet: runnable build script, top options, traps, lint |
-| `casen plan extract <file>.bpmn` | Lift an existing process into `<file>.plan.json` |
-| `casen synth <plan>.json --output <file>.bpmn` | Compile a plan to laid-out, deployable BPMN |
-| `casen synth <plan>.json --merge <file>.bpmn --output <file>.bpmn` | Compile a delta plan and merge it into an existing process |
-| `casen connector search "<query>"` | Find a Camunda connector template by name/keyword |
-| `casen connector show <template-id>` | Required/optional input keys, task type, direction |
-| `casen lint lint <file>.bpmn` | Full static analysis (all categories) |
-| `casen lint lint <file>.bpmn --profile deploy` | Deploy-readiness gate — errors only |
-| `casen check <file>.bpmn <name>.dmn <name>.form [--deploy] --json` | Check BPMN, DMN and forms in one call, with a fix hint per finding |
-| `casen lint lint <file>.bpmn --fix` | Apply auto-fixable findings, write back |
-| `casen test <file>.bpmn` | Run scenarios from `<file>.bpmn.tests.json` |
-| `casen deploy deploy <file>.bpmn [--target camunda8]` | Deploy to local Reebe (default) or Camunda 8 |
-| `casen worker start` | Start every scaffolded worker in `./workers/` |
+| `bpmnkit plan schema` | Print the `ProcessPlan` JSON format reference |
+| `bpmnkit agent-card bpmn\|dmn\|form` | Print a ~2k-token cheat sheet: runnable build script, top options, traps, lint |
+| `bpmnkit plan extract <file>.bpmn` | Lift an existing process into `<file>.plan.json` |
+| `bpmnkit synth <plan>.json --output <file>.bpmn` | Compile a plan to laid-out, deployable BPMN |
+| `bpmnkit synth <plan>.json --merge <file>.bpmn --output <file>.bpmn` | Compile a delta plan and merge it into an existing process |
+| `bpmnkit connector search "<query>"` | Find a Camunda connector template by name/keyword |
+| `bpmnkit connector show <template-id>` | Required/optional input keys, task type, direction |
+| `bpmnkit lint lint <file>.bpmn` | Full static analysis (all categories) |
+| `bpmnkit lint lint <file>.bpmn --profile deploy` | Deploy-readiness gate — errors only |
+| `bpmnkit check <file>.bpmn <name>.dmn <name>.form [--deploy] --json` | Check BPMN, DMN and forms in one call, with a fix hint per finding |
+| `bpmnkit lint lint <file>.bpmn --fix` | Apply auto-fixable findings, write back |
+| `bpmnkit test <file>.bpmn` | Run scenarios from `<file>.bpmn.tests.json` |
+| `bpmnkit deploy deploy <file>.bpmn [--target camunda8]` | Deploy to local Reebe (default) or Camunda 8 |
+| `bpmnkit worker start` | Start every scaffolded worker in `./workers/` |
 
 ## Conventions
 

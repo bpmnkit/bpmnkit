@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest"
 import { createWorkerClient } from "../src/index.js"
 
-/** The shape `casen gen types` emits for one job type. */
+/** The shape `bpmnkit gen types` emits for one job type. */
 type JobTypes = {
 	"ship-order": {
 		variables: { orderId: unknown; express?: unknown }

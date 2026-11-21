@@ -2,7 +2,7 @@
  * BPMN static analysis in the Problems panel.
  *
  * This runs in the extension host, where Node is available and `@bpmnkit/core`
- * runs unchanged — the analysis is the same code `casen lint` runs, not a
+ * runs unchanged — the analysis is the same code `bpmnkit lint` runs, not a
  * reimplementation of it, and the engine rule it applies is the same one
  * (`doc/roadmap.md`, Phase 3): a diagram that names no execution platform is
  * not judged against Camunda 8 deployability.
@@ -10,7 +10,7 @@
  * Only `.bpmn` is linted. The optimizer analyses BPMN; a DMN or form file has
  * nothing for it to say.
  *
- * A `.bpmnlintrc` in the file's folder or above is honoured the way `casen
+ * A `.bpmnlintrc` in the file's folder or above is honoured the way `bpmnkit
  * lint` honours it: its levels govern BPMN Kit's equivalent findings, and when
  * the workspace has bpmnlint installed, that bpmnlint runs the configured rules
  * — plugins included — in place of the equivalents.

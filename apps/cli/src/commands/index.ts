@@ -84,7 +84,7 @@ const sortedOtherGroups = [
 const workerGroup: CommandGroup = {
 	name: "worker",
 	description:
-		"Run job workers — auto-complete (casen worker <type>) or start scaffolded workers (casen worker start)",
+		"Run job workers — auto-complete (bpmnkit worker <type>) or start scaffolded workers (bpmnkit worker start)",
 	commands: [workerCmd, workerStartCmd],
 }
 

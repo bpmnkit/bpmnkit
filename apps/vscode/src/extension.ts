@@ -153,7 +153,7 @@ async function copyAscii(arg: unknown): Promise<void> {
 // ── Deploy ───────────────────────────────────────────────────────────────────
 
 /**
- * Deploys the open resource to a cluster `casen` knows about, and optionally
+ * Deploys the open resource to a cluster `bpmnkit` knows about, and optionally
  * starts an instance of what was deployed.
  */
 async function deploy(arg: unknown, andStart: boolean): Promise<void> {
@@ -245,7 +245,7 @@ async function pickProfile(): Promise<DeployTarget | null> {
 	const targets = listDeployTargets()
 	if (targets.length === 0) {
 		void vscode.window.showErrorMessage(
-			"No Camunda 8 profile configured. Create one with: casen profile create <name> --base-url <url>",
+			"No Camunda 8 profile configured. Create one with: bpmnkit profile create <name> --base-url <url>",
 		)
 		return null
 	}

@@ -1,0 +1,417 @@
+//! Goldens (insta), determinism (I1, I2, I3), stub preservation and `--check` for the Java target.
+
+use bpmnkit_codegen::java::{Build, JavaEmitter, Versions};
+use bpmnkit_codegen::write::{check, write, Drift};
+use bpmnkit_codegen::{EmitError, Emitter, GenFile, Kind};
+use bpmnkit_jobspec::{analyze, ApiIndex, Catalog, Inputs, WorkerConfig, WorkerProject};
+
+const ORDER: &str = include_str!("fixtures/order.bpmn");
+
+fn project(xmls: &[&str]) -> WorkerProject {
+    let defs: Vec<_> = xmls
+        .iter()
+        .map(|x| bpmnkit_bpmn::parse_bpmn(x).unwrap())
+        .collect();
+    analyze(Inputs {
+        name: "order-workers",
+        definitions: &defs,
+        apis: &ApiIndex::default(),
+        catalog: &Catalog::builtin(),
+        config: &WorkerConfig::default(),
+    })
+    .project
+}
+
+fn emitter(spring: bool) -> JavaEmitter {
+    JavaEmitter {
+        spring,
+        ..JavaEmitter::default()
+    }
+}
+
+fn gradle(spring: bool) -> JavaEmitter {
+    JavaEmitter {
+        spring,
+        build: Build::Gradle,
+        ..JavaEmitter::default()
+    }
+}
+
+/// All files in one text, the crate version masked so releases do not touch the goldens.
+fn dump(files: &[GenFile]) -> String {
+    let mut s = String::new();
+    for f in files {
+        // The wrapper scripts are upstream bytes: pin their hash instead of inlining them.
+        let body = if matches!(
+            f.path.as_str(),
+            "mvnw" | "mvnw.cmd" | "gradlew" | "gradlew.bat" | "gradle/wrapper/gradle-wrapper.jar"
+        ) {
+            format!("<{} bytes>\n", f.content.len())
+        } else {
+            String::from_utf8(f.content.clone()).unwrap()
+        };
+        s.push_str(&format!(
+            "===== {} [{:?}{}] =====\n{}",
+            f.path,
+            f.kind,
+            if f.executable { ", exec" } else { "" },
+            body.replace(env!("CARGO_PKG_VERSION"), "<version>")
+        ));
+    }
+    s
+}
+
+#[test]
+fn golden_plain() {
+    let files = emitter(false).emit(&project(&[ORDER])).unwrap();
+    insta::assert_snapshot!(dump(&files));
+}
+
+#[test]
+fn golden_spring() {
+    let files = emitter(true).emit(&project(&[ORDER])).unwrap();
+    insta::assert_snapshot!(dump(&files));
+}
+
+#[test]
+fn golden_gradle() {
+    let files = gradle(false).emit(&project(&[ORDER])).unwrap();
+    insta::assert_snapshot!(dump(&files));
+}
+
+#[test]
+fn golden_gradle_spring() {
+    let files = gradle(true).emit(&project(&[ORDER])).unwrap();
+    insta::assert_snapshot!(dump(&files));
+}
+
+#[test]
+fn gradle_same_sources_as_maven() {
+    // Only build files differ: sources, records, stubs and the README body stay the same.
+    for spring in [false, true] {
+        let src = |b: Build| {
+            JavaEmitter {
+                spring,
+                build: b,
+                ..JavaEmitter::default()
+            }
+            .emit(&project(&[ORDER]))
+            .unwrap()
+            .into_iter()
+            .filter(|f| {
+                f.path.ends_with(".java")
+                    || f.path.ends_with(".properties") && f.path.contains("resources")
+            })
+            .collect::<Vec<_>>()
+        };
+        assert_eq!(src(Build::Maven), src(Build::Gradle));
+    }
+}
+
+#[test]
+fn gradle_has_no_maven_files_and_vice_versa() {
+    let paths = |e: JavaEmitter| -> Vec<String> {
+        e.emit(&project(&[ORDER]))
+            .unwrap()
+            .into_iter()
+            .map(|f| f.path)
+            .collect()
+    };
+    let g = paths(gradle(false));
+    for p in [
+        "build.gradle.kts",
+        "settings.gradle.kts",
+        "gradlew",
+        "gradlew.bat",
+        "gradle/wrapper/gradle-wrapper.jar",
+        "gradle/wrapper/gradle-wrapper.properties",
+    ] {
+        assert!(g.contains(&p.to_owned()), "{p}");
+    }
+    assert!(!g.iter().any(|p| p == "pom.xml" || p.contains("mvn")));
+    let m = paths(emitter(false));
+    assert!(!m.iter().any(|p| p.contains("gradle")));
+}
+
+#[test]
+fn gradle_wrapper_is_pinned_and_verified() {
+    use sha2::{Digest, Sha256};
+    let files = gradle(false).emit(&project(&[ORDER])).unwrap();
+    let get = |p: &str| files.iter().find(|f| f.path == p).unwrap();
+    let hex = |b: &[u8]| {
+        Sha256::digest(b)
+            .iter()
+            .map(|x| format!("{x:02x}"))
+            .collect::<String>()
+    };
+    assert_eq!(
+        hex(&get("gradle/wrapper/gradle-wrapper.jar").content),
+        Versions::GRADLE_WRAPPER_JAR_SHA256
+    );
+    let props = String::from_utf8(
+        get("gradle/wrapper/gradle-wrapper.properties")
+            .content
+            .clone(),
+    )
+    .unwrap();
+    assert!(props.contains(&format!(
+        "distributionSha256Sum={}\n",
+        Versions::GRADLE_SHA256
+    )));
+    assert!(props.contains(&format!("gradle-{}-bin.zip", Versions::GRADLE)));
+    assert!(get("gradlew").executable);
+}
+
+#[test]
+fn gradle_is_deterministic_and_portable() {
+    for spring in [false, true] {
+        let a = gradle(spring).emit(&project(&[ORDER])).unwrap();
+        assert_eq!(a, gradle(spring).emit(&project(&[ORDER])).unwrap());
+        for f in a {
+            assert!(
+                !f.path.contains('\\') && !f.path.starts_with('/'),
+                "{}",
+                f.path
+            );
+            if f.path.ends_with(".jar") || f.path == "gradlew.bat" {
+                continue; // binary / upstream CRLF
+            }
+            let text = String::from_utf8(f.content).unwrap();
+            assert!(!text.contains('\r'), "{} has CR", f.path);
+            assert!(text.ends_with('\n'), "{} lacks trailing newline", f.path);
+            assert!(
+                !text.contains("/home/") && !text.contains("/tmp/"),
+                "{}",
+                f.path
+            );
+        }
+    }
+}
+
+#[test]
+fn same_input_same_bytes() {
+    let a = emitter(false).emit(&project(&[ORDER])).unwrap();
+    let b = emitter(false).emit(&project(&[ORDER])).unwrap();
+    assert_eq!(a, b);
+}
+
+#[test]
+fn permutation_invariant() {
+    // The second file declares the same tasks in the opposite order, in another process.
+    let other = ORDER
+        .replace("id=\"order\"", "id=\"order2\"")
+        .replace("charge", "charge2")
+        .replace("ship\"", "ship2\"")
+        .replace("declined", "declined2");
+    let ab = emitter(false).emit(&project(&[ORDER, &other])).unwrap();
+    let ba = emitter(false).emit(&project(&[&other, ORDER])).unwrap();
+    assert_eq!(ab, ba);
+}
+
+#[test]
+fn output_is_portable() {
+    for spring in [false, true] {
+        for f in emitter(spring).emit(&project(&[ORDER])).unwrap() {
+            assert!(
+                !f.path.contains('\\') && !f.path.starts_with('/'),
+                "{}",
+                f.path
+            );
+            if f.path == "mvnw.cmd" {
+                continue; // upstream CRLF
+            }
+            let text = String::from_utf8(f.content).unwrap();
+            assert!(!text.contains('\r'), "{} has CR", f.path);
+            assert!(text.ends_with('\n'), "{} lacks trailing newline", f.path);
+            assert!(
+                !text.contains("/home/") && !text.contains("/tmp/"),
+                "{}",
+                f.path
+            );
+        }
+    }
+}
+
+#[test]
+fn header_carries_ir_hash_on_generated_sources() {
+    let p = project(&[ORDER]);
+    let hash = bpmnkit_jobspec::ir_hash(&p);
+    for f in emitter(false).emit(&p).unwrap() {
+        if f.kind == Kind::Generated {
+            let text = String::from_utf8(f.content).unwrap();
+            assert!(text.starts_with("// @generated by bpmnkit "), "{}", f.path);
+            assert!(text
+                .lines()
+                .next()
+                .unwrap()
+                .contains(&format!("sha256:{hash} — DO NOT EDIT")));
+        }
+    }
+}
+
+#[test]
+fn fetch_variables_are_the_declared_inputs() {
+    let files = emitter(false).emit(&project(&[ORDER])).unwrap();
+    let text = |p: &str| {
+        String::from_utf8(
+            files
+                .iter()
+                .find(|f| f.path.ends_with(p))
+                .unwrap()
+                .content
+                .clone(),
+        )
+        .unwrap()
+    };
+    assert!(
+        text("ChargeCardWorker.java").contains("List.of(\"amount\", \"class\", \"customer-id\")")
+    );
+    // No inputs: omitted, because an empty list would fetch everything.
+    assert!(!text("Workers.java").contains("ShipOrderWorker.FETCH_VARIABLES"));
+    assert!(
+        text("ChargeCardInput.java").contains("@JsonProperty(\"customer-id\") Object customerId")
+    );
+    assert!(text("ChargeCardInput.java").contains("Object class_"));
+}
+
+#[test]
+fn only_worker_jobs_unless_all() {
+    // `charge-card` is classified worker (no OpenAPI binding) — a connector-bound task is not.
+    let mut p = project(&[ORDER]);
+    for job in p.jobs.values_mut() {
+        job.classified.as_mut().unwrap().decision = bpmnkit_jobspec::Decision::Rest;
+    }
+    assert_eq!(emitter(false).emit(&p), Err(EmitError::NoJobs));
+    let all = JavaEmitter {
+        all: true,
+        ..JavaEmitter::default()
+    };
+    assert!(all.emit(&p).is_ok());
+}
+
+#[test]
+fn regeneration_keeps_stubs_and_restores_generated() {
+    let dir = tempfile::tempdir().unwrap();
+    let files = emitter(false).emit(&project(&[ORDER])).unwrap();
+    let first = write(dir.path(), &files).unwrap();
+    assert!(first.kept.is_empty() && first.updated.is_empty());
+    assert!(check(dir.path(), &files).is_empty());
+
+    let handler = dir
+        .path()
+        .join("src/main/java/com/example/orderworkers/handlers/ChargeCardHandler.java");
+    let generated = dir
+        .path()
+        .join("src/main/java/com/example/orderworkers/gen/JobTypes.java");
+    std::fs::write(&handler, "// mine\n").unwrap();
+    std::fs::write(&generated, "// edited\n").unwrap();
+    std::fs::remove_file(dir.path().join("README.md")).unwrap();
+
+    let drift = check(dir.path(), &files);
+    assert_eq!(drift.len(), 2, "{drift:?}");
+    assert!(drift.contains(&Drift::Missing("README.md".into())));
+
+    let second = write(dir.path(), &files).unwrap();
+    assert_eq!(std::fs::read_to_string(&handler).unwrap(), "// mine\n");
+    assert!(std::fs::read_to_string(&generated)
+        .unwrap()
+        .contains("DO NOT EDIT"));
+    assert_eq!(second.updated.len(), 1);
+    assert_eq!(second.created, vec!["README.md".to_owned()]);
+    assert!(second.kept.contains(&"pom.xml".to_owned()));
+    // A stub edit is never drift.
+    assert!(check(dir.path(), &files).is_empty());
+}
+
+#[cfg(unix)]
+#[test]
+fn wrappers_are_executable() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = tempfile::tempdir().unwrap();
+    write(
+        dir.path(),
+        &emitter(false).emit(&project(&[ORDER])).unwrap(),
+    )
+    .unwrap();
+    write(dir.path(), &gradle(false).emit(&project(&[ORDER])).unwrap()).unwrap();
+    for f in ["mvnw", "gradlew"] {
+        let mode = std::fs::metadata(dir.path().join(f))
+            .unwrap()
+            .permissions()
+            .mode();
+        assert_eq!(mode & 0o111, 0o111, "{f}");
+    }
+}
+
+fn file_text(files: &[GenFile], suffix: &str) -> String {
+    let f = files.iter().find(|f| f.path.ends_with(suffix)).unwrap();
+    String::from_utf8(f.content.clone()).unwrap()
+}
+
+#[test]
+fn stream_is_off_by_default() {
+    for spring in [false, true] {
+        let files = emitter(spring).emit(&project(&[ORDER])).unwrap();
+        assert!(files
+            .iter()
+            .all(|f| !String::from_utf8_lossy(&f.content).contains("streamEnabled")));
+    }
+}
+
+#[test]
+fn stream_enables_it_per_worker() {
+    let plain = JavaEmitter {
+        stream: true,
+        ..emitter(false)
+    };
+    let files = plain.emit(&project(&[ORDER])).unwrap();
+    assert!(file_text(&files, "gen/Workers.java").contains(".streamEnabled(true)"));
+    let spring = JavaEmitter {
+        stream: true,
+        ..emitter(true)
+    };
+    let files = spring.emit(&project(&[ORDER])).unwrap();
+    let w = files
+        .iter()
+        .find(|f| f.path.ends_with("Worker.java") && f.path.contains("/gen/"))
+        .unwrap();
+    assert!(String::from_utf8_lossy(&w.content).contains("streamEnabled = true"));
+}
+
+// Regression: `--package` went unchecked into directory paths (`../..` escaped `--out`) and
+// into pom.xml.
+#[test]
+fn package_must_be_java_identifiers() {
+    let p = project(&[ORDER]);
+    for bad in [
+        "../../x",
+        "a/../../etc",
+        "a..b",
+        "1a.b",
+        "a.class",
+        "a-b",
+        ".a",
+    ] {
+        let e = JavaEmitter {
+            package: bad.into(),
+            ..JavaEmitter::default()
+        }
+        .emit(&p);
+        assert_eq!(e, Err(EmitError::InvalidPackage(bad.into())), "{bad}");
+    }
+    assert!(JavaEmitter {
+        package: "com.acme_1.Workers".into(),
+        ..JavaEmitter::default()
+    }
+    .emit(&p)
+    .is_ok());
+}
+
+#[test]
+fn write_refuses_paths_outside_the_directory() {
+    let dir = tempfile::tempdir().unwrap();
+    for rel in ["../x", "/abs", "a//b"] {
+        let f = GenFile::generated(rel.to_owned(), b"x".to_vec());
+        assert!(write(dir.path(), &[f]).is_err(), "{rel}");
+    }
+}

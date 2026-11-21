@@ -50,7 +50,7 @@ export const PACKAGES = [
 		description: "Full BPMN editor — canvas + properties panel + AI bridge + storage",
 	},
 	{
-		name: "casen (CLI)",
+		name: "bpmnkit (CLI)",
 		url: `${SITE.github}/tree/main/apps/cli`,
 		description:
 			"Interactive TUI for managing Camunda 8 from the terminal: processes, " +
@@ -75,7 +75,7 @@ const FEATURED: ReadonlyArray<{ name: string; role: string; note?: string }> = [
 	{ name: "@bpmnkit/api", role: "Deploy & operate on Camunda 8" },
 	{ name: "@bpmnkit/canvas", role: "View a diagram (SVG, pan/zoom)" },
 	{ name: "@bpmnkit/editor", role: "Edit a diagram in the browser" },
-	{ name: "@bpmnkit/cli", role: "Operate Camunda 8 from the terminal — the `casen` command" },
+	{ name: "@bpmnkit/cli", role: "Operate Camunda 8 from the terminal — the `bpmnkit` command" },
 ]
 
 /** Roles for the rest, where the manifest description is longer than the row. */
@@ -95,9 +95,9 @@ const ROLES: Readonly<Record<string, string>> = {
 	"@bpmnkit/flow": "Code-first durable flows — BPMN, job types and worker from one definition",
 	"@bpmnkit/proxy": "Local AI bridge and Camunda API proxy",
 	"@bpmnkit/reebe-wasm": "The Reebe dev/test engine, compiled to WebAssembly",
-	"@bpmnkit/casen-report": "casen plugin — HTML incident and SLA reports",
-	"@bpmnkit/casen-worker-http": "casen plugin — an HTTP connector job worker",
-	"@bpmnkit/casen-worker-ai": "casen plugin — classify, summarize and extract",
+	"@bpmnkit/casen-report": "bpmnkit plugin — HTML incident and SLA reports",
+	"@bpmnkit/casen-worker-http": "bpmnkit plugin — an HTTP connector job worker",
+	"@bpmnkit/casen-worker-ai": "bpmnkit plugin — classify, summarize and extract",
 }
 
 export interface EcosystemEntry {

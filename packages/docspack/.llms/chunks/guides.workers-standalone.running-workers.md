@@ -20,13 +20,13 @@ npm run start:prod # runs: node dist/index.js
 ### All workers at once
 
 ```sh
-casen worker start
+bpmnkit worker start
 ```
 
 To start a specific worker:
 
 ```sh
-casen worker start send-invoice
+bpmnkit worker start send-invoice
 ```
 
 

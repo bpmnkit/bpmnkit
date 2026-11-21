@@ -14,7 +14,7 @@ interface CatalogEntry {
 
 ## CLI
 
-The same functionality is available via `casen connector generate` and `casen connector catalog`.
+The same functionality is available via `bpmnkit connector generate` and `bpmnkit connector catalog`.
 See the [CLI reference](/docs/cli/connector).
 
 ---

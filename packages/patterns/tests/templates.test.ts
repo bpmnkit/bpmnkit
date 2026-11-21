@@ -24,7 +24,7 @@ function elementIds(defs: BpmnDefinitions): Set<string> {
 	return ids
 }
 
-/** What `casen template use` writes, read back the way `casen test` and a deploy would. */
+/** What `bpmnkit template use` writes, read back the way `bpmnkit test` and a deploy would. */
 function loadWritten(template: ProcessTemplate) {
 	const files = templateFiles(template)
 	const content = (suffix: string) =>
@@ -41,7 +41,7 @@ function loadWritten(template: ProcessTemplate) {
 		bpmnXml,
 		scenarios: content(".bpmn.tests.json").map((json) => JSON.parse(json) as unknown),
 		decisions: content(".dmn").map((xml) => Dmn.parse(xml)),
-		/** DMN XML by decision id, the way `casen test` finds it next to the BPMN file. */
+		/** DMN XML by decision id, the way `bpmnkit test` finds it next to the BPMN file. */
 		decisionXml,
 		forms: content(".form").map((json) => Form.parse(json)),
 	}
@@ -92,7 +92,7 @@ describe.each(ALL_TEMPLATES.map((t) => [t.id, t] as const))("%s", (_id, template
 		expect(defs.processes).toHaveLength(1)
 		expect(defs.processes[0]?.id).toBe(template.id)
 		expect(defs.processes[0]?.isExecutable).toBe(true)
-		// Every category, not only deploy: `casen lint` fails on any error, and a
+		// Every category, not only deploy: `bpmnkit lint` fails on any error, and a
 		// template should be something you can lint clean before changing it.
 		const errors = optimize(defs).findings.filter((f) => f.severity === "error")
 		expect(errors.map((f) => `${f.id}: ${f.message}`)).toEqual([])
@@ -160,7 +160,7 @@ describe.each(ALL_TEMPLATES.map((t) => [t.id, t] as const))("%s", (_id, template
 		},
 	)
 
-	// `casen test` runs the same sidecar on Reebe (WebAssembly), which has Zeebe's
+	// `bpmnkit test` runs the same sidecar on Reebe (WebAssembly), which has Zeebe's
 	// semantics; the gallery promises the scenarios pass there too.
 	it.each(template.scenarios.map((s) => [s.name, s] as const))(
 		"scenario passes on Reebe: %s",

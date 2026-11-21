@@ -1,0 +1,14 @@
+{
+  "id": "bad_ref",
+  "name": "Bad ref",
+  "auth": {
+    "type": "noAuth"
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/x",
+      "id": "x"
+    }
+  ]
+}

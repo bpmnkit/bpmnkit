@@ -1,0 +1,19 @@
+{
+  "id": "test.TaskExtensions",
+  "name": "Task extensions",
+  "version": 3,
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:UserTask" },
+  "properties": [
+    { "type": "Hidden", "binding": { "type": "zeebe:userTask" } },
+    { "id": "assignee", "label": "Assignee", "type": "String", "value": "=reviewer", "feel": "optional", "binding": { "type": "zeebe:assignmentDefinition", "property": "assignee" } },
+    { "id": "groups", "label": "Groups", "type": "String", "value": "ops,dev", "binding": { "type": "zeebe:assignmentDefinition", "property": "candidateGroups" } },
+    { "label": "Due", "type": "String", "value": "=now() + duration(\"P1D\")", "feel": "optional", "binding": { "type": "zeebe:taskSchedule", "property": "dueDate" } },
+    { "label": "Priority", "type": "Hidden", "value": "75", "binding": { "type": "zeebe:priorityDefinition", "property": "priority" } },
+    { "id": "formId", "label": "Form", "type": "String", "value": "review-form", "binding": { "type": "zeebe:formDefinition", "property": "formId" } },
+    { "id": "formBinding", "label": "Form binding", "type": "Dropdown", "value": "versionTag", "choices": [{ "name": "latest", "value": "latest" }], "binding": { "type": "zeebe:formDefinition", "property": "bindingType" } },
+    { "id": "formTag", "label": "Form tag", "type": "String", "value": "v2", "condition": { "property": "formBinding", "equals": "versionTag" }, "binding": { "type": "zeebe:formDefinition", "property": "versionTag" } },
+    { "label": "Header", "type": "String", "value": "x", "binding": { "type": "zeebe:taskHeader", "key": "k" } },
+    { "label": "Prop", "type": "String", "value": "y", "binding": { "type": "zeebe:property", "name": "p" } }
+  ]
+}

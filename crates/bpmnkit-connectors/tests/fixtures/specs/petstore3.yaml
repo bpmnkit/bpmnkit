@@ -1,0 +1,159 @@
+openapi: 3.0.3
+info:
+  title: Petstore
+  version: 1.0.0
+servers:
+  - url: https://{region}.petstore.test/{basePath}/
+    description: Regional
+    variables:
+      region:
+        default: eu
+      basePath:
+        default: v$&3
+  - url: https://ignored.test
+tags:
+  - name: pets
+paths:
+  /pets:
+    parameters:
+      - $ref: "#/components/parameters/TraceId"
+    get:
+      operationId: listPets
+      summary: List all pets
+      description: Returns every pet, paginated.
+      tags: [pets]
+      externalDocs:
+        url: https://docs.petstore.test/list
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          description: Max items
+          schema:
+            type: integer
+        - name: tag
+          in: query
+          schema:
+            type: string
+        - name: X-Request-Id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetList"
+    post:
+      operationId: createPet
+      summary: Create a pet
+      requestBody:
+        $ref: "#/components/requestBodies/PetBody"
+      responses:
+        201:
+          description: created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: {type: string}
+                  name: {type: string}
+                  tag: {type: string}
+                  extra: {type: string}
+  /pets/{petId}:
+    parameters:
+      - name: petId
+        in: path
+        required: true
+        description: The pet id
+        schema:
+          type: string
+    get:
+      operationId: showPetById
+      parameters:
+        - name: petId
+          in: path
+          required: false
+          description: Overridden id
+          schema:
+            type: string
+      responses:
+        default:
+          description: unexpected
+    put:
+      operationId: update_pet_by_ID
+      summary: Replace a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, age]
+              description: A pet update
+              properties:
+                name: {type: string, description: New name}
+                age: {type: integer}
+                vaccinated: {type: boolean}
+                owner: {$ref: "#/components/schemas/Owner"}
+                "9": {type: number}
+                "1": {type: string}
+    delete:
+      summary: Remove a pet
+      responses: {}
+  /pets/{petId}/photos/{photoId}.json:
+    patch:
+      description: Patch a photo
+      parameters:
+        - name: petId
+          in: path
+          required: true
+        - name: photoId
+          in: path
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                caption: {type: string}
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    TraceId:
+      name: X-Trace-Id
+      in: header
+      schema:
+        type: string
+  requestBodies:
+    PetBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NewPet"
+  schemas:
+    NewPet:
+      type: object
+      description: A new pet
+      required: [name]
+      properties:
+        name: {type: string}
+        tag: {type: string}
+    PetList:
+      type: object
+      properties:
+        items: {type: array}
+        next: {type: string}
+    Owner:
+      type: object

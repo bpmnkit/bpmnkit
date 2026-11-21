@@ -24,3 +24,4 @@ apps/landing/.astro/
 
 # npm pack output for local agent evals
 /out/
+packages/cli-*/bin/

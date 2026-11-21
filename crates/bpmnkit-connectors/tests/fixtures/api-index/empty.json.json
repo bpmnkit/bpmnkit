@@ -1,0 +1,8 @@
+{
+  "id": "empty",
+  "name": "Empty",
+  "auth": {
+    "type": "noAuth"
+  },
+  "operations": []
+}

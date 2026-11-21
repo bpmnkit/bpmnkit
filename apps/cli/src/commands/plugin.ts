@@ -49,7 +49,7 @@ export async function searchNpmRegistry(query: string): Promise<NpmSearchObject[
 
 export const pluginGroup: CommandGroup = {
 	name: "plugin",
-	description: "Manage casen CLI plugins",
+	description: "Manage bpmnkit CLI plugins",
 	commands: [
 		// ── list ──────────────────────────────────────────────────────────────
 		{
@@ -59,7 +59,7 @@ export const pluginGroup: CommandGroup = {
 			async run(ctx) {
 				const plugins = await readInstalledPlugins()
 				if (plugins.length === 0) {
-					ctx.output.info('No plugins installed. Run "casen plugin search" to discover plugins.')
+					ctx.output.info('No plugins installed. Run "bpmnkit plugin search" to discover plugins.')
 					return
 				}
 				ctx.output.printList(
@@ -86,10 +86,10 @@ export const pluginGroup: CommandGroup = {
 			description: "Install a plugin from the npm registry or a local path",
 			args: [{ name: "name", description: "npm package name or ./local-path", required: true }],
 			examples: [
-				{ description: "Install from npm", command: "casen plugin install casen-deploy" },
+				{ description: "Install from npm", command: "bpmnkit plugin install casen-deploy" },
 				{
 					description: "Install from local path (dev mode)",
-					command: "casen plugin install ./my-plugin",
+					command: "bpmnkit plugin install ./my-plugin",
 				},
 			],
 			async run(ctx) {
@@ -148,7 +148,7 @@ export const pluginGroup: CommandGroup = {
 				await writeFile(join(pluginDir, ".meta.json"), `${JSON.stringify(meta, null, 2)}\n`, "utf8")
 
 				ctx.output.ok(`Installed ${pkgName}@${version}`)
-				ctx.output.info("Restart casen to activate the plugin.")
+				ctx.output.info("Restart bpmnkit to activate the plugin.")
 			},
 		},
 
@@ -172,7 +172,7 @@ export const pluginGroup: CommandGroup = {
 
 				await rm(pluginDir, { recursive: true, force: true })
 				ctx.output.ok(`Removed ${pkgName}`)
-				ctx.output.info("Restart casen for the change to take effect.")
+				ctx.output.info("Restart bpmnkit for the change to take effect.")
 			},
 		},
 
@@ -227,7 +227,7 @@ export const pluginGroup: CommandGroup = {
 					ctx.output.ok(`Updated ${plugin.package} → ${newVersion}`)
 				}
 
-				ctx.output.info("Restart casen for the changes to take effect.")
+				ctx.output.info("Restart bpmnkit for the changes to take effect.")
 			},
 		},
 
@@ -276,15 +276,18 @@ export const pluginGroup: CommandGroup = {
 		// ── search ────────────────────────────────────────────────────────────
 		{
 			name: "search",
-			description: "Search the npm registry for casen plugins",
+			description: "Search the npm registry for bpmnkit plugins",
 			args: [{ name: "query", description: "Search terms (optional)", required: false }],
 			examples: [
-				{ description: "Browse all plugins", command: "casen plugin search" },
-				{ description: "Search for deploy-related plugins", command: "casen plugin search deploy" },
+				{ description: "Browse all plugins", command: "bpmnkit plugin search" },
+				{
+					description: "Search for deploy-related plugins",
+					command: "bpmnkit plugin search deploy",
+				},
 			],
 			async run(ctx) {
 				const query = ctx.positional[0] ?? ""
-				ctx.output.info(`Searching npm for casen plugins${query ? ` matching "${query}"` : ""}…`)
+				ctx.output.info(`Searching npm for bpmnkit plugins${query ? ` matching "${query}"` : ""}…`)
 
 				const results = await searchNpmRegistry(query)
 

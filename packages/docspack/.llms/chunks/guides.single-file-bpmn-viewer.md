@@ -9,8 +9,8 @@ small enough to inline into the page that carries the diagram.
 ## From the CLI
 
 ```sh
-casen export html order.bpmn                      # writes order.html next to the file
-casen export html order.bpmn -o site/order.html --title "Order process"
+bpmnkit export html order.bpmn                      # writes order.html next to the file
+bpmnkit export html order.bpmn -o site/order.html --title "Order process"
 ```
 
 The file has no layout (no `bpmndi` section)? The page shows a short message instead of a diagram:

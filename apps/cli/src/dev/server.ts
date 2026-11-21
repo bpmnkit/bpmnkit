@@ -1,5 +1,5 @@
 /**
- * The `casen dev` server: a local web UI over a project directory.
+ * The `bpmnkit dev` server: a local web UI over a project directory.
  *
  * Node built-ins only. It serves one HTML page and one pre-built script, a
  * small JSON API over the project's model files, and a Server-Sent Events
@@ -90,7 +90,7 @@ function page(title: string, token: string): string {
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="casen-dev-token" content="${escapeHtml(token)}" />
 <link rel="icon" href="data:," />
-<title>${escapeHtml(title)} — casen dev</title>
+<title>${escapeHtml(title)} — bpmnkit dev</title>
 </head>
 <body>
 <div id="app"></div>
@@ -293,7 +293,7 @@ export async function startDevServer(options: DevServerOptions): Promise<DevServ
 	async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
 		if (!allowedHost(req)) {
 			res.writeHead(403, { "content-type": "text/plain" })
-			res.end("casen dev only answers requests addressed to a loopback host.")
+			res.end("bpmnkit dev only answers requests addressed to a loopback host.")
 			return
 		}
 		res.setHeader("x-content-type-options", "nosniff")
@@ -323,7 +323,9 @@ export async function startDevServer(options: DevServerOptions): Promise<DevServ
 				const script = await readFile(options.uiScript).catch(() => null)
 				if (script === null) {
 					res.writeHead(500, { "content-type": "text/plain" })
-					res.end(`The casen dev UI bundle is missing (${options.uiScript}). Rebuild @bpmnkit/cli.`)
+					res.end(
+						`The bpmnkit dev UI bundle is missing (${options.uiScript}). Rebuild @bpmnkit/cli.`,
+					)
 					return
 				}
 				res.writeHead(200, {

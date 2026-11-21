@@ -1,0 +1,14 @@
+{
+  "id": "no_content",
+  "name": "t",
+  "auth": {
+    "type": "noAuth"
+  },
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/x",
+      "id": "x"
+    }
+  ]
+}

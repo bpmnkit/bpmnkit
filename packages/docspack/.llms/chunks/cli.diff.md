@@ -1,11 +1,11 @@
-# casen diff
+# bpmnkit diff
 
-`casen diff bpmn` answers the question a text diff cannot: *what changed about the process?*
+`bpmnkit diff bpmn` answers the question a text diff cannot: *what changed about the process?*
 Two files go in, and what comes out is the list of elements a reviewer would see differ —
 named, not just identified.
 
 ```sh
-casen diff bpmn old.bpmn new.bpmn
+bpmnkit diff bpmn old.bpmn new.bpmn
 ```
 
 ```
@@ -29,7 +29,7 @@ casen diff bpmn old.bpmn new.bpmn
 `moved` is the category that earns the command. The semantic hash behind
 [`diffSemantics()`](/docs/packages/core#diffsemanticsbefore-after) deliberately drops all
 diagram interchange — that is what makes it stable across a re-layout — so a task somebody
-dragged reads there as no change at all. `casen diff` computes the layout half separately
+dragged reads there as no change at all. `bpmnkit diff` computes the layout half separately
 from DI (bounds, waypoints, label placement, flags such as collapsed/expanded) and reports it
 as its own category. An element that changed *and* moved is reported as changed, because a
 semantic change is what a reviewer needs first.

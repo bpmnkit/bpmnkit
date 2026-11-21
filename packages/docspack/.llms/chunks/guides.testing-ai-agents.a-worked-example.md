@@ -1,6 +1,6 @@
 # Testing AI Agents — A worked example
 
-The `ai-agent-tool-loop` template (`casen template use ai-agent-tool-loop`) is a support agent
+The `ai-agent-tool-loop` template (`bpmnkit template use ai-agent-tool-loop`) is a support agent
 with three tools: `search-kb`, `lookup-order` and `create-ticket`. After the agent, a gateway
 reads `agent.responseJson.resolved`.
 

@@ -1,5 +1,5 @@
 // Template gallery: category filter (index page) and the copy button for the
-// `casen template use` command (template pages). Both pages render complete
+// `bpmnkit template use` command (template pages). Both pages render complete
 // without this script — the filter only hides cards, it never builds them.
 
 function setupFilter(): void {

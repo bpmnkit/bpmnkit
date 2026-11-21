@@ -1,17 +1,17 @@
 ---
-title: casen generate
+title: bpmnkit generate
 description: Generate BPMN files from built-in templates, CompactDiagram JSON, or by patching an existing file — and TypeScript types for job workers from BPMN.
 sidebar:
   order: 2
 ---
 
-`casen generate bpmn` produces BPMN 2.0 files without the interactive TUI. It has three operating
+`bpmnkit generate bpmn` produces BPMN 2.0 files without the interactive TUI. It has three operating
 modes: template, definition (full JSON), and modify-existing (patch). Auto-layout is applied in all modes.
 
 ## Commands
 
 ```
-casen generate          (alias: casen gen)
+bpmnkit generate          (alias: bpmnkit gen)
 ├── bpmn    — generate or modify a BPMN file
 └── types   — generate TypeScript types from BPMN; check workers against it
 ```
@@ -21,10 +21,10 @@ casen generate          (alias: casen gen)
 Pick a built-in template by name. Use `--process-id` and `--name` to customise the identifiers.
 
 ```sh
-casen generate bpmn --template minimal --process-id order --name "Order Processing"
-casen generate bpmn --template approval --process-id leave-request
-casen generate bpmn --template parallel --process-id enrichment --name Enrichment
-casen generate bpmn --template timer-start --process-id nightly-sync
+bpmnkit generate bpmn --template minimal --process-id order --name "Order Processing"
+bpmnkit generate bpmn --template approval --process-id leave-request
+bpmnkit generate bpmn --template parallel --process-id enrichment --name Enrichment
+bpmnkit generate bpmn --template timer-start --process-id nightly-sync
 ```
 
 | Template | Pattern |
@@ -79,13 +79,13 @@ definition types, boundary events, sub-processes, and Zeebe extensions.
 
 ```sh
 # Inline JSON
-casen generate bpmn --definition '{"id":"Definitions_order","processes":[...]}'
+bpmnkit generate bpmn --definition '{"id":"Definitions_order","processes":[...]}'
 
 # Pipe from a file or AI output
-cat definition.json | casen generate bpmn --output order.bpmn
+cat definition.json | bpmnkit generate bpmn --output order.bpmn
 
 # Write to stdout
-echo '{"id":"Defs","processes":[...]}' | casen generate bpmn --output -
+echo '{"id":"Defs","processes":[...]}' | bpmnkit generate bpmn --output -
 ```
 
 ### Print the JSON schema
@@ -94,7 +94,7 @@ Run `--help-schema` to print the full CompactDiagram reference — element types
 field descriptions, and a worked example — formatted for quick AI consumption:
 
 ```sh
-casen generate bpmn --help-schema
+bpmnkit generate bpmn --help-schema
 ```
 
 ### CompactDiagram structure
@@ -175,7 +175,7 @@ Use `--dump-compact` to print the file's CompactDiagram JSON. Use this to discov
 element IDs before writing a patch.
 
 ```sh
-casen generate bpmn --input order.bpmn --dump-compact
+bpmnkit generate bpmn --input order.bpmn --dump-compact
 ```
 
 Output is a `CompactDiagram` JSON object — the same format accepted by `--definition`.
@@ -184,7 +184,7 @@ Output is a `CompactDiagram` JSON object — the same format accepted by `--defi
 
 ```sh
 # Add a rejection path to an existing gateway with id "gw"
-casen generate bpmn --input order.bpmn \
+bpmnkit generate bpmn --input order.bpmn \
   --patch '{"elements":[
     {"id":"notify",     "type":"serviceTask","name":"Notify Customer","jobType":"notify-worker"},
     {"id":"end-reject", "type":"endEvent",   "name":"Rejected"}
@@ -201,7 +201,7 @@ element IDs — they are not required to be new.
 
 ```sh
 # AI generates the patch JSON, pipe it in
-echo '{"elements":[...],"flows":[...]}' | casen generate bpmn --input order.bpmn
+echo '{"elements":[...],"flows":[...]}' | bpmnkit generate bpmn --input order.bpmn
 ```
 
 ### Normalize layout
@@ -209,7 +209,7 @@ echo '{"elements":[...],"flows":[...]}' | casen generate bpmn --input order.bpmn
 Run `--input` without `--patch` to re-apply auto-layout without changing the process model:
 
 ```sh
-casen generate bpmn --input messy.bpmn --output clean.bpmn
+bpmnkit generate bpmn --input messy.bpmn --output clean.bpmn
 ```
 
 ### Flags for `--input` mode
@@ -225,36 +225,36 @@ casen generate bpmn --input messy.bpmn --output clean.bpmn
 
 ```sh
 # 1. Inspect the existing file — AI learns element IDs
-casen generate bpmn --input order.bpmn --dump-compact
+bpmnkit generate bpmn --input order.bpmn --dump-compact
 
 # 2. Check the schema if needed
-casen generate bpmn --help-schema
+bpmnkit generate bpmn --help-schema
 
 # 3. AI generates patch JSON and pipes it in
-echo '{"elements":[...],"flows":[...]}' | casen generate bpmn --input order.bpmn
+echo '{"elements":[...],"flows":[...]}' | bpmnkit generate bpmn --input order.bpmn
 
 # 4. Verify the result
-casen view bpmn order.bpmn
+bpmnkit view bpmn order.bpmn
 ```
 
-## Typed code generation (`casen generate types`)
+## Typed code generation (`bpmnkit generate types`)
 
-`casen generate types` (or `casen gen types`) reads BPMN files and writes TypeScript types for the
+`bpmnkit generate types` (or `bpmnkit gen types`) reads BPMN files and writes TypeScript types for the
 job workers, message publishers and error throwers that run against them. A misspelt job type,
 variable or error code then fails at compile time, not at runtime. The command lives under
 `generate` because it produces a file from a model, like `generate bpmn` does.
 
 ```sh
 # Files, directories (searched for .bpmn) and globs — quote globs to skip shell expansion
-casen gen types processes/ --out src/generated/bpmn-types.ts
-casen gen types "processes/**/*.bpmn" --out src/generated/bpmn-types.ts
+bpmnkit gen types processes/ --out src/generated/bpmn-types.ts
+bpmnkit gen types "processes/**/*.bpmn" --out src/generated/bpmn-types.ts
 
 # Print to stdout instead
-casen gen types order.bpmn
+bpmnkit gen types order.bpmn
 ```
 
 The output is deterministic: everything is sorted, so the file only changes when the model does.
-It starts with `// generated by casen gen types — do not edit`. It contains:
+It starts with `// generated by bpmnkit gen types — do not edit`. It contains:
 
 | Export | What it is |
 |---|---|
@@ -276,7 +276,7 @@ the types with a worker.
 out of date. It writes nothing.
 
 ```sh
-casen gen types processes/ --out src/generated/bpmn-types.ts --check
+bpmnkit gen types processes/ --out src/generated/bpmn-types.ts --check
 ```
 
 ### Check workers against the BPMN
@@ -286,8 +286,8 @@ reports job types that have no worker, and workers whose job type no BPMN elemen
 `--strict` to exit 1 when there is a mismatch.
 
 ```sh
-casen gen types processes/ --check-workers "src/**/*.ts" --strict
-casen gen types processes/ --check-workers src,workers --format json
+bpmnkit gen types processes/ --check-workers "src/**/*.ts" --strict
+bpmnkit gen types processes/ --check-workers src,workers --format json
 ```
 
 The scan is a heuristic. It finds a job type only when it is a string literal in one of these forms:

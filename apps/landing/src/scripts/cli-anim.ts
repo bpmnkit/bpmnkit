@@ -29,7 +29,9 @@ type CliFrame = {
 function frameShell(): string {
 	return [
 		tl(),
-		tl(`  ${td("~/projects")} <span class="tp">$</span> ${tb("casen")}<span class="tcur">▊</span>`),
+		tl(
+			`  ${td("~/projects")} <span class="tp">$</span> ${tb("bpmnkit")}<span class="tcur">▊</span>`,
+		),
 		tl(),
 	].join("")
 }
@@ -46,7 +48,7 @@ function frameMain(cursor: number): string {
 	]
 	return [
 		tl(),
-		tl(`  ${tb("casen")}`),
+		tl(`  ${tb("bpmnkit")}`),
 		tl(`  ${SEP}`),
 		tl(),
 		...groups.map(([name, desc], i) => {

@@ -40,7 +40,7 @@ What the scenarios can and cannot exercise follows from what the TypeScript engi
 - **The inclusive split** in `employee-onboarding` ends each branch at its own end event.
   The simulator does not synchronise an inclusive join.
 
-`casen test` runs the same scenarios on the Reebe WebAssembly engine, which has Zeebe's
+`bpmnkit test` runs the same scenarios on the Reebe WebAssembly engine, which has Zeebe's
 semantics. Every gallery scenario passes on both engines, and the package tests check both.
 Reebe runs the scenario in the same way as the simulator:
 

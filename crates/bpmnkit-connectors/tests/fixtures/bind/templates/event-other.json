@@ -1,0 +1,9 @@
+{
+  "id": "test.EventOther",
+  "name": "Other event definition",
+  "appliesTo": ["bpmn:StartEvent"],
+  "elementType": { "value": "bpmn:StartEvent", "eventDefinition": "bpmn:TimerEventDefinition" },
+  "properties": [
+    { "type": "Hidden", "value": "t", "binding": { "type": "zeebe:property", "name": "t" } }
+  ]
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * @bpmnkit/create-casen-plugin — Scaffold a new casen CLI plugin.
+ * @bpmnkit/create-casen-plugin — Scaffold a new bpmnkit CLI plugin.
  *
  * Usage:
  *   pnpm create @bpmnkit/casen-plugin
@@ -204,7 +204,7 @@ async function main(): Promise<void> {
 
 	const isInteractive = !opts.name || !opts.description
 
-	process.stdout.write("\n  @bpmnkit/create-casen-plugin — casen plugin scaffolding\n\n")
+	process.stdout.write("\n  @bpmnkit/create-casen-plugin — bpmnkit plugin scaffolding\n\n")
 
 	let name: string
 	let displayName: string
@@ -329,7 +329,7 @@ async function main(): Promise<void> {
     cd ${name}
     pnpm install        # install @bpmnkit/cli-sdk and typescript
     pnpm build          # compile src/ → dist/
-    casen plugin install ./${name}   # install into casen
+    bpmnkit plugin install ./${name}   # install into bpmnkit
 
   Then open src/index.ts and add your commands.
   Publish to npm so others can discover it:

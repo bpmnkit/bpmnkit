@@ -24,7 +24,7 @@ const CASES: [question: string, chunkId: string][] = [
 	["AI agent sub-process with tools", AGENT],
 	["flow label different from branch", `${RECIPE}.how-do-i-label-a-gateway-s-yes-and-no-flows`],
 	["lint before running tests", `${RECIPE}.how-do-i-check-the-file-is-executable-before-tests`],
-	["run camunda process test json without java", `${RECIPE}.does-it-run-test-it-with-casen-test`],
+	["run camunda process test json without java", `${RECIPE}.does-it-run-test-it-with-bpmnkit-test`],
 	// The agent cards: the one page an agent needs to write each file type.
 	["write a bpmn build script", "agent-cards.bpmn"],
 	["create a DMN decision table", "agent-cards.dmn"],

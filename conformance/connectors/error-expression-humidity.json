@@ -1,0 +1,37 @@
+{
+  "description": "docs: response value to BPMN error (weather station)",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/station"
+      },
+      "response": {
+        "body": {
+          "main": {
+            "humidity": -3
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "throwError": {
+      "errorCode": "HUMIDITY-FAIL",
+      "errorMessage": "Received invalid humidity"
+    }
+  },
+  "job": {
+    "headers": {
+      "errorExpression": "=if response.body.main.humidity < 0 then\n  bpmnError(\"HUMIDITY-FAIL\", \"Received invalid humidity\")\nelse null"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/station"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

@@ -1,0 +1,37 @@
+{
+  "description": "an HTTP error with no errorExpression fails the job (retries − 1, retryBackoff)",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/missing"
+      },
+      "response": {
+        "body": {
+          "message": "nope"
+        },
+        "status": 404
+      }
+    }
+  ],
+  "expected": {
+    "fail": {
+      "errorMessage": "Not Found",
+      "retries": 2,
+      "retryBackOff": 30000
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}",
+      "retryBackoff": "PT30S"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/missing"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

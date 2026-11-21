@@ -1,0 +1,52 @@
+[package]
+name = "bpmnkit-cli"
+description = "The bpmnkit command line (alias casen): native commands, subprocess plugins, legacy Node fallback"
+version.workspace = true
+authors = ["BPMN Kit contributors"]
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "camunda", "cli", "zeebe", "workflow"]
+categories = ["command-line-utilities"]
+
+# cargo-dist's MSI installer (dist-workspace.toml); the GUIDs identify the product across upgrades.
+[package.metadata.wix]
+upgrade-guid = "93AE86A8-0CAA-4366-811A-6DA61893DA4C"
+path-guid = "04D362A9-454E-4528-83E0-C2E3330D715B"
+license = false
+eula = false
+
+# The crate name `bpmnkit` is the facade crate, so the bin is renamed.
+[[bin]]
+name = "bpmnkit"
+path = "src/main.rs"
+
+[dependencies]
+bpmnkit-codegen = { path = "../bpmnkit-codegen", version = "0.6.1" }
+bpmnkit-connector-runtime = { path = "../bpmnkit-connector-runtime", version = "0.6.1" }
+bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.6.1" }
+bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.6.1" }
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-compat = { workspace = true }
+bpmnkit-connectors = { workspace = true }
+bpmnkit-diff = { workspace = true }
+bpmnkit-layout = { workspace = true }
+bpmnkit-lint = { workspace = true }
+bpmnkit-spec = { workspace = true }
+bpmnkit-worker = { workspace = true }
+bpmnkit-render = { workspace = true, features = ["auto-layout", "png"] }
+indexmap = { workspace = true }
+serde = { workspace = true }
+clap = { version = "4.5", features = ["derive"] }
+clap_complete = "4.5"
+# cargo-dist install receipts; blocking API so `self update` needs no runtime of its own.
+axoupdater = { version = "0.10", default-features = false, features = ["github_releases", "blocking"] }
+serde_json = { workspace = true, features = ["preserve_order"] }
+
+[dev-dependencies]
+assert_cmd = "2"
+insta = "1"
+tempfile = "3"

@@ -86,13 +86,13 @@ function render(state: State): void {
 
 	out.push("")
 	out.push(
-		`  ${bold("casen — Profile Manager")}  ${dim(`${rows.length} profile${rows.length !== 1 ? "s" : ""}`)}`,
+		`  ${bold("bpmnkit — Profile Manager")}  ${dim(`${rows.length} profile${rows.length !== 1 ? "s" : ""}`)}`,
 	)
 	out.push("")
 
 	if (rows.length === 0) {
 		out.push(dim("  No profiles yet."))
-		out.push(dim("  Create one with: casen profile create <name> ..."))
+		out.push(dim("  Create one with: bpmnkit profile create <name> ..."))
 		out.push("")
 	} else {
 		// Header
@@ -230,7 +230,7 @@ export async function runProfileManager(): Promise<void> {
 		const profiles = listProfiles()
 		const activeName = getActiveName()
 		if (profiles.length === 0) {
-			process.stdout.write("No profiles. Create one with: casen profile create <name> ...\n")
+			process.stdout.write("No profiles. Create one with: bpmnkit profile create <name> ...\n")
 			return
 		}
 		for (const p of profiles) {

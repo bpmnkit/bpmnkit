@@ -12,8 +12,8 @@ If $ARGUMENTS names a `.bpmn` file, use it. Otherwise run `ls *.bpmn` in the cur
 ## 2. Run both profiles
 
 ```sh
-casen lint lint <file>.bpmn --profile deploy --format json
-casen lint lint <file>.bpmn --format json
+bpmnkit lint lint <file>.bpmn --profile deploy --format json
+bpmnkit lint lint <file>.bpmn --format json
 ```
 
 (`lint`'s flag is `--format`, not `--output` — don't confuse it with `synth`'s `--output <path>`, which writes to a file and is a different flag on a different command.)
@@ -40,7 +40,7 @@ Ignore `data-flow` info/warning findings against an `aiAgent` step's own provide
 If there are any findings at all, offer to run:
 
 ```sh
-casen lint lint <file>.bpmn --fix
+bpmnkit lint lint <file>.bpmn --fix
 ```
 
 This applies every auto-fixable finding and writes the result back (the CLI reports how many were fixed, or "No auto-fixable issues found."). Re-run step 2 afterward to confirm.

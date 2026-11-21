@@ -9,7 +9,7 @@ export interface Recording {
 		"with-sdk-compact"?: RecordedPanel
 		/** LLM writes a `CompactDiagram` as JSON, expanded by `expand()`. Added 2026-11. */
 		"compact-json"?: RecordedPanel
-		/** LLM writes a `ProcessPlan`, compiled by `compilePlan()` (as `casen synth` does). Added 2026-11. */
+		/** LLM writes a `ProcessPlan`, compiled by `compilePlan()` (as `bpmnkit synth` does). Added 2026-11. */
 		plan?: RecordedPanel
 		"without-sdk"?: RecordedPanel
 	}

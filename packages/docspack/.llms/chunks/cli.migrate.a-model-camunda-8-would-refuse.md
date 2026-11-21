@@ -1,4 +1,4 @@
-# casen migrate — A model Camunda 8 would refuse
+# bpmnkit migrate — A model Camunda 8 would refuse
 
 The converted model must deploy. When Zeebe would reject it, nothing is written, the report is
 still printed, and the reasons come first:

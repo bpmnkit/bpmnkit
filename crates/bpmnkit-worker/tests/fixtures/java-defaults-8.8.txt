@@ -1,0 +1,17 @@
+# Verbatim lines from camunda-client-java 8.8, pinned for the D5 contract test (tests/java_defaults.rs).
+# repo: https://github.com/camunda/camunda  branch: stable/8.8  commit: bdfc18408ec235ed4748c93e82ff5c41eb3cd297
+# file: clients/java/src/main/java/io/camunda/client/impl/CamundaClientBuilderImpl.java
+  public static final URI DEFAULT_REST_ADDRESS = getURIFromString("http://0.0.0.0:8080");
+  public static final String DEFAULT_JOB_WORKER_NAME_VAR = "default";
+  public static final boolean DEFAULT_PREFER_REST_OVER_GRPC = true;
+  public static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(10);
+  public static final Duration DEFAULT_REQUEST_TIMEOUT_OFFSET = Duration.ofSeconds(1);
+  public static final Duration DEFAULT_JOB_TIMEOUT = Duration.ofMinutes(5);
+  public static final int DEFAULT_MAX_JOBS_ACTIVE = 32;
+  public static final Duration DEFAULT_JOB_POLL_INTERVAL = Duration.ofMillis(100);
+  public static final boolean DEFAULT_STREAM_ENABLED = false;
+# file: clients/java/src/main/java/io/camunda/client/impl/worker/ExponentialBackoffBuilderImpl.java
+  private static final long DEFAULT_MAX_DELAY = TimeUnit.SECONDS.toMillis(5);
+  private static final long DEFAULT_MIN_DELAY = TimeUnit.MILLISECONDS.toMillis(50);
+  private static final double DEFAULT_MULTIPLIER = 1.6;
+  private static final double DEFAULT_JITTER = 0.1;

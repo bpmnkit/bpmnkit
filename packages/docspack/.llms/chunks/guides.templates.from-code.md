@@ -11,7 +11,7 @@ import {
 
 const template = getTemplate("ai-evaluator-optimizer")
 const defs = template?.build()                  // BpmnDefinitions, laid out
-const files = template ? templateFiles(template) : [] // [{ path, content }] — what casen writes
+const files = template ? templateFiles(template) : [] // [{ path, content }] — what bpmnkit writes
 const workers = defs ? listJobTypes(defs) : []  // job types your workers must serve
 ```
 

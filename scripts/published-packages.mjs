@@ -32,8 +32,15 @@ export const PUBLISHED = [
 	"packages/flow",
 	"packages/user-tasks",
 	"apps/cli",
+	"packages/cli",
+	"packages/cli-linux-x64",
+	"packages/cli-linux-arm64",
+	"packages/cli-darwin-x64",
+	"packages/cli-darwin-arm64",
+	"packages/cli-win32-x64",
 	"packages/cli-sdk",
 	"packages/create-casen-plugin",
+	"packages/create-bpmnkit-plugin",
 	"apps/proxy",
 	"apps/reebe-wasm",
 	"plugins-cli/casen-report",
@@ -89,7 +96,24 @@ export const STABLE = [
 	"packages/connector-gen",
 	"packages/connectors",
 	"apps/cli",
+	"packages/cli",
+	"packages/cli-linux-x64",
+	"packages/cli-linux-arm64",
+	"packages/cli-darwin-x64",
+	"packages/cli-darwin-arm64",
+	"packages/cli-win32-x64",
 ]
+
+/**
+ * Packages whose documentation lives on another package's page: the per-platform binaries are
+ * installed by `@bpmnkit/cli` and never used on their own, so `docs/cli/` covers them.
+ */
+export const DOCUMENTED_BY = Object.fromEntries(
+	["linux-x64", "linux-arm64", "darwin-x64", "darwin-arm64", "win32-x64"].map((k) => [
+		`packages/cli-${k}`,
+		"cli",
+	]),
+)
 
 /**
  * What each product tier promises, in one line. The labels and lines here are the ones
@@ -131,8 +155,14 @@ export const TIER = {
 	"packages/connector-gen": "core",
 	"packages/connectors": "core",
 	"apps/cli": "core",
+	"packages/cli": "core",
+	"packages/cli-linux-x64": "core",
+	"packages/cli-linux-arm64": "core",
+	"packages/cli-darwin-x64": "core",
+	"packages/cli-darwin-arm64": "core",
+	"packages/cli-win32-x64": "core",
 
-	// The MCP server ships in the proxy and runs as `casen proxy mcp`.
+	// The MCP server ships in the proxy and runs as `bpmnkit proxy mcp`.
 	"apps/proxy": "tools",
 	"packages/markdown": "tools",
 	"packages/viewer-lite": "tools",
@@ -141,6 +171,7 @@ export const TIER = {
 	"packages/worker-client": "tools",
 	"packages/cli-sdk": "tools",
 	"packages/create-casen-plugin": "tools",
+	"packages/create-bpmnkit-plugin": "tools",
 	"plugins-cli/casen-report": "tools",
 	"plugins-cli/casen-worker-http": "tools",
 	"plugins-cli/casen-worker-ai": "tools",

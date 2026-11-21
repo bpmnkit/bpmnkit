@@ -1,4 +1,4 @@
-# casen build — Editing an existing file
+# bpmnkit build — Editing an existing file
 
 `--edit order.bpmn` passes the parsed file to a module spec and writes the result over it.
 Existing shapes keep their place; shapes right of an insertion move right only as far as the

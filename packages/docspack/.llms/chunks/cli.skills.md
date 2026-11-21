@@ -1,8 +1,8 @@
 # AIKit Skills
 
-`casen` ships six lightweight Claude Code slash commands that automate the process
+`bpmnkit` ships six lightweight Claude Code slash commands that automate the process
 development lifecycle — from natural language description to deployed, running process.
-They drive `casen` directly (no MCP server, no proxy daemon).
+They drive `bpmnkit` directly (no MCP server, no proxy daemon).
 
 For the full skill set — `/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, `:bpmn-script`, `:dmn`, `:form`, plus generated
 reference docs the skills read before authoring a plan — install the
@@ -12,7 +12,7 @@ reference docs the skills read before authoring a plan — install the
 ## Installation
 
 ```sh
-casen skills install
+bpmnkit skills install
 ```
 
 Copies the skill files into `.claude/commands/` in the current project directory.
@@ -20,7 +20,7 @@ Once installed, they appear in Claude Code's slash command picker.
 
 ```sh
 # Reinstall or overwrite existing skills
-casen skills install --force
+bpmnkit skills install --force
 ```
 
 ---

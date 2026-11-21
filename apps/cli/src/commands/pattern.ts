@@ -4,7 +4,7 @@ import type { Command, CommandGroup } from "../types.js"
 const listCmd: Command = {
 	name: "list",
 	description: "List the built-in domain process patterns",
-	examples: [{ description: "List all patterns", command: "casen pattern list" }],
+	examples: [{ description: "List all patterns", command: "bpmnkit pattern list" }],
 	async run(ctx) {
 		ctx.output.print(
 			ALL_PATTERNS.map((p) => ({
@@ -28,8 +28,8 @@ const getCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "By id", command: "casen pattern get invoice-approval" },
-		{ description: "By description", command: 'casen pattern get "employee onboarding"' },
+		{ description: "By id", command: "bpmnkit pattern get invoice-approval" },
+		{ description: "By description", command: 'bpmnkit pattern get "employee onboarding"' },
 	],
 	async run(ctx) {
 		const query = ctx.positional.join(" ")
@@ -38,7 +38,7 @@ const getCmd: Command = {
 		const pattern = findPattern(query)
 		if (!pattern) {
 			ctx.output.info(
-				`No pattern matched "${query}". Run \`casen pattern list\` to see all patterns.`,
+				`No pattern matched "${query}". Run \`bpmnkit pattern list\` to see all patterns.`,
 			)
 			return
 		}

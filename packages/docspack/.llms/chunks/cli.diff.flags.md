@@ -1,4 +1,4 @@
-# casen diff — Flags
+# bpmnkit diff — Flags
 
 | Flag | Default | What it does |
 | --- | --- | --- |
@@ -11,7 +11,7 @@
 ### As a pipeline gate
 
 ```sh
-casen diff bpmn main/order.bpmn branch/order.bpmn --exit-code
+bpmnkit diff bpmn main/order.bpmn branch/order.bpmn --exit-code
 ```
 
 Exits non-zero when anything differs, so a job can fail — or a review can be requested —
@@ -20,7 +20,7 @@ whenever a pull request touches the shape of a process rather than only its form
 ### Machine-readable
 
 ```sh
-casen diff bpmn old.bpmn new.bpmn --format json
+bpmnkit diff bpmn old.bpmn new.bpmn --format json
 ```
 
 ```json
@@ -37,17 +37,17 @@ casen diff bpmn old.bpmn new.bpmn --format json
 ### Alongside the picture
 
 ```sh
-casen diff bpmn old.bpmn new.bpmn --ascii
+bpmnkit diff bpmn old.bpmn new.bpmn --ascii
 ```
 
 Prints both diagrams as ASCII art above the summary — the same rendering
-[`casen view`](/docs/cli/view) produces, and the same one the VS Code extension copies into a
+[`bpmnkit view`](/docs/cli/view) produces, and the same one the VS Code extension copies into a
 pull request.
 
 ### A page to open or attach
 
 ```sh
-casen diff bpmn old.bpmn new.bpmn --html diff.html --png diff.png
+bpmnkit diff bpmn old.bpmn new.bpmn --html diff.html --png diff.png
 ```
 
 `diff.html` is one file that loads nothing: both diagrams side by side or overlaid (with a

@@ -4,10 +4,10 @@ Golden-prompt evaluation harness for AI-driven BPMN generation (WP7 of `doc/spec
 
 ## Modes
 
-**Plan-level (default, CI-safe, no LLM call).** Every prompt directory that ships a `fixture.plan.json` is run through the real deterministic pipeline: `casen synth` → `casen lint --profile deploy` → `casen test` → an attempted `casen deploy deploy` against local Reebe. This never shells out to an LLM, so it's safe to run in CI. When `reebe-server` isn't reachable at `ZEEBE_ADDRESS` (e.g. this monorepo's sandboxed dev environments, which lack the Rust toolchain to build it), the deploy dimension is reported as **skipped**, not failed — the report is explicit about how many prompts actually got a deploy attempt vs. how many were skipped.
+**Plan-level (default, CI-safe, no LLM call).** Every prompt directory that ships a `fixture.plan.json` is run through the real deterministic pipeline: `bpmnkit synth` → `bpmnkit lint --profile deploy` → `bpmnkit test` → an attempted `bpmnkit deploy deploy` against local Reebe. This never shells out to an LLM, so it's safe to run in CI. When `reebe-server` isn't reachable at `ZEEBE_ADDRESS` (e.g. this monorepo's sandboxed dev environments, which lack the Rust toolchain to build it), the deploy dimension is reported as **skipped**, not failed — the report is explicit about how many prompts actually got a deploy attempt vs. how many were skipped.
 
 ```sh
-pnpm --filter @bpmnkit/cli build   # the harness shells out to the built CLI
+pnpm --filter @bpmnkit/cli-legacy build   # the harness shells out to the built CLI
 node scripts/eval-generation/run-eval.mjs
 ```
 
@@ -27,7 +27,7 @@ node scripts/eval-generation/run-eval.mjs --full
 
 - `prompt.md` — the natural-language request
 - `expected.json` — `{ id, category, description, assertions? }`; `expectClarification: true` instead of `assertions` for the one ambiguous prompt. `assertions` are read by `apps/drop/scripts/bench-generate.mjs`: `minElements`, `mustContainElementTypes` (every type present) and `mustContainAnyOf` (a list of alternatives; each is met when any one of its types is present), `mustContainMultiInstance` (some task or sub-process runs once per item of a list), `mustContainTaskTypes` (connector job types; an entry that is a list is met by any one of them, for a request more than one connector answers) and `mustCallUrls` (each string must appear in some REST call's `url` input — the API index's base URL and path); `"connect": false` marks a prompt the connect pass must skip. `scripts/eval-generation/assertions.mjs` adds `mustContainElementIds`, `mustContainFormIds`, `mustContainInputTargets`, `mustContainFlowNames`, `mustContainAnnotations` (a minimum count, or texts) and `mustBeReady` (drop's `readiness()`), read by both this harness and the bench. `knownPlanGaps` — `[{ "assertion": "<key>", "value": <the value that misses> }]` — lists the misses a `fixture.plan.json` is known to have because the plan format cannot say the thing (start-event form, input mapping, annotation, loop back); `run-eval.mjs` prints those as known gaps, fails the run on any other miss, and prints a listed gap that no longer fails as stale. Run a subset with `--only 28,03` (no report files are written)
-- `fixture.plan.json` — a hand-authored, pre-verified `ProcessPlan` (omitted only for the ambiguous prompt) — every one of these compiles with zero `casen synth` problems and zero `casen lint --profile deploy` errors, verified while writing this harness
+- `fixture.plan.json` — a hand-authored, pre-verified `ProcessPlan` (omitted only for the ambiguous prompt) — every one of these compiles with zero `bpmnkit synth` problems and zero `bpmnkit lint --profile deploy` errors, verified while writing this harness
 - `base.bpmn` — only for the `extend` prompt, the pre-existing process the delta plan merges into
 
 | # | Prompt | Category |

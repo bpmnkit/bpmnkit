@@ -12,7 +12,7 @@ generates this pattern the same way it generates everything else: deterministica
 /bpmnkit:agent add a support-triage agent with tools: search KB (http), escalate to human (user task), post summary to slack
 ```
 
-Or, from the CLI directly: write an `aiAgent` plan step (see below), then `casen synth`.
+Or, from the CLI directly: write an `aiAgent` plan step (see below), then `bpmnkit synth`.
 
 ---
 Source: https://bpmnkit.com/docs/guides/ai-agents

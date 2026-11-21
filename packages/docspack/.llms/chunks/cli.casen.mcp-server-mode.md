@@ -1,12 +1,12 @@
-# casen CLI — MCP Server Mode
+# bpmnkit CLI — MCP Server Mode
 
-`casen proxy mcp` starts BPMN Kit's MCP (Model Context Protocol) server on stdio, so Claude
+`bpmnkit proxy mcp` starts BPMN Kit's MCP (Model Context Protocol) server on stdio, so Claude
 Code, Claude Desktop, Cursor or any MCP client can create, validate, simulate and deploy
 processes, and call any Camunda 8 REST operation through `camunda_search` and
 `camunda_execute`:
 
 ```sh
-casen proxy mcp
+bpmnkit proxy mcp
 ```
 
 Configure it in Claude Desktop (`claude_desktop_config.json`):
@@ -15,14 +15,14 @@ Configure it in Claude Desktop (`claude_desktop_config.json`):
 {
   "mcpServers": {
     "bpmnkit": {
-      "command": "casen",
+      "command": "bpmnkit",
       "args": ["proxy", "mcp"]
     }
   }
 }
 ```
 
-The server uses the active `casen` profile for cluster calls; set one with `casen profile`
+The server uses the active `bpmnkit` profile for cluster calls; set one with `bpmnkit profile`
 first, or pass `ZEEBE_ADDRESS`, `ZEEBE_CLIENT_ID` and `ZEEBE_CLIENT_SECRET` in `env`. The
 full tool list is in the [AI guide](/docs/guides/ai#mcp-server).
 

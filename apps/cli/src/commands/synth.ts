@@ -11,7 +11,7 @@ async function readPlan(path: string): Promise<ProcessPlan> {
 	return JSON.parse(text) as ProcessPlan
 }
 
-/** Convert plan-embedded test scenarios to the `.bpmn.tests.json` shape consumed by `casen test`. */
+/** Convert plan-embedded test scenarios to the `.bpmn.tests.json` shape consumed by `bpmnkit test`. */
 export function toScenarioSidecar(tests: PlanScenario[]): unknown[] {
 	const taken = new Set<string>()
 	return tests.map((t) => {
@@ -125,14 +125,14 @@ const synthCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Compile a plan to BPMN", command: "casen synth order-process.plan.json" },
+		{ description: "Compile a plan to BPMN", command: "bpmnkit synth order-process.plan.json" },
 		{
 			description: "Extend an existing process",
-			command: "casen synth delta.plan.json --merge order-process.bpmn",
+			command: "bpmnkit synth delta.plan.json --merge order-process.bpmn",
 		},
 		{
 			description: "Prove the result runs, and list the secrets to create",
-			command: "casen synth order-process.plan.json --check",
+			command: "bpmnkit synth order-process.plan.json --check",
 		},
 	],
 	async run(ctx) {
@@ -187,7 +187,7 @@ const synthCmd: Command = {
 			const sidecarPath = `${outputPath}.tests.json`
 			await writeFile(sidecarPath, JSON.stringify(toScenarioSidecar(plan.tests), null, 2), "utf-8")
 			ctx.output.info(
-				`Wrote ${sidecarPath} (${plan.tests.length} scenario(s) — run: casen test ${outputPath})`,
+				`Wrote ${sidecarPath} (${plan.tests.length} scenario(s) — run: bpmnkit test ${outputPath})`,
 			)
 		}
 

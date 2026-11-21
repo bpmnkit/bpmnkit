@@ -246,7 +246,7 @@ The calls that needed judgement rather than arithmetic:
   stability matters more than most. But it has **zero tests**, and the first condition is not
   one to waive for the package where breakage would be most expensive. It should be first in
   the queue to join.
-- **`cli-sdk` — out**, which leaves a real gap: `casen` is 1.0 while the SDK its plugin authors
+- **`cli-sdk` — out**, which leaves a real gap: `bpmnkit` is 1.0 while the SDK its plugin authors
   compile against is not. It has no tests and no docs page. Same queue as `worker-client`.
 
 **Enforcement, not just prose.** The set lives in `STABLE` in

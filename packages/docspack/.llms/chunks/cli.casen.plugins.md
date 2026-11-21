@@ -1,17 +1,17 @@
-# casen CLI — Plugins
+# bpmnkit CLI — Plugins
 
-casen's plugin system lets you extend the CLI with new command groups — your own organisation's
+bpmnkit's plugin system lets you extend the CLI with new command groups — your own organisation's
 workflows, third-party integrations, or community-built tools.
 
 ### Discover plugins
 
 ```sh
-# Browse all published casen plugins
-casen plugin search
+# Browse all published bpmnkit plugins
+bpmnkit plugin search
 
 # Search by keyword
-casen plugin search deploy
-casen plugin search slack
+bpmnkit plugin search deploy
+bpmnkit plugin search slack
 ```
 
 Results are fetched live from the npm registry. Any package tagged with the `casen-plugin` keyword
@@ -21,31 +21,31 @@ appears here.
 
 ```sh
 # Install from npm
-casen plugin install casen-deploy
+bpmnkit plugin install casen-deploy
 
 # Install a local plugin during development
-casen plugin install ./my-plugin
+bpmnkit plugin install ./my-plugin
 ```
 
-Plugins are installed into `~/.casen/plugins/` and loaded automatically the next time casen starts.
+Plugins are installed into `~/.casen/plugins/` and loaded automatically the next time bpmnkit starts.
 
 ### Manage installed plugins
 
 ```sh
 # List installed plugins
-casen plugin list
+bpmnkit plugin list
 
 # Show full details for one plugin
-casen plugin info casen-deploy
+bpmnkit plugin info casen-deploy
 
 # Update a single plugin to the latest version
-casen plugin update casen-deploy
+bpmnkit plugin update casen-deploy
 
 # Update all installed plugins
-casen plugin update
+bpmnkit plugin update
 
 # Remove a plugin
-casen plugin remove casen-deploy
+bpmnkit plugin remove casen-deploy
 ```
 
 Once installed, plugin commands appear in the main TUI and in tab-completion alongside built-in commands.

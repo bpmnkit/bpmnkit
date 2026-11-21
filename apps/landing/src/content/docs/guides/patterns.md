@@ -7,7 +7,7 @@ sidebar:
 
 The pattern library (`@bpmnkit/patterns`) provides domain knowledge for common business
 processes. When you run `/bpmnkit:implement`, Claude checks the library for a matching
-pattern (`casen pattern list`/`get`) and uses its readme and worker specs as context while
+pattern (`bpmnkit pattern list`/`get`) and uses its readme and worker specs as context while
 writing the `ProcessPlan` — the pattern's own `template` field is a compact diagram that
 predates the plan/synth pipeline. It expands (`expand`) to a model that deploys on Camunda 8,
 but it is a structural reference, not something pasted in directly.
@@ -29,7 +29,7 @@ them entirely when nothing relevant matches.
 
 ## How matching works
 
-`casen pattern get <query>` (via `findPattern()`) scores each pattern by counting how
+`bpmnkit pattern get <query>` (via `findPattern()`) scores each pattern by counting how
 many of its keywords appear in the request. The highest-scoring pattern is selected.
 Exact pattern ID matches take priority over keyword scoring.
 
@@ -61,9 +61,9 @@ so Claude can adapt the flow to the user's specific context.
 ## Using patterns from the CLI
 
 ```sh
-casen pattern list
-casen pattern get invoice-approval
-casen pattern get "employee onboarding workflow"   # free-text match
+bpmnkit pattern list
+bpmnkit pattern get invoice-approval
+bpmnkit pattern get "employee onboarding workflow"   # free-text match
 ```
 
 ## Patterns and templates
@@ -72,7 +72,7 @@ The same package has a second export, `@bpmnkit/patterns/templates`. It holds th
 [runnable process templates](/docs/guides/templates) behind the [gallery](/templates):
 complete, deployable processes with test scenarios. A pattern gives an AI model context to
 write its own process. A template is a finished process you copy and change. Use
-`casen pattern` for patterns and `casen template` for templates.
+`bpmnkit pattern` for patterns and `bpmnkit template` for templates.
 
 ## Using patterns from code
 

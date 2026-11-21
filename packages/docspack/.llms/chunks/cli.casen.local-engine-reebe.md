@@ -1,4 +1,4 @@
-# casen CLI — Local engine (Reebe)
+# bpmnkit CLI — Local engine (Reebe)
 
 Reebe is a **dev/test** workflow engine (~50 MB) that serves the Zeebe API locally, so you
 can deploy and run processes on your machine or in CI without a Camunda 8 cluster. It is
@@ -9,14 +9,14 @@ trademarks of Camunda Services GmbH.
 
 ```sh
 # Embedded SQLite, no external database
-casen reebe start
+bpmnkit reebe start
 
 # REST on 26500, where ZEEBE_ADDRESS points by default. The gRPC gateway uses 26500
 # unless told otherwise, so move it out of the way.
-casen reebe start --port 26500 --grpc-port 26501
+bpmnkit reebe start --port 26500 --grpc-port 26501
 
 # PostgreSQL instead of the embedded database
-casen reebe start --database-url postgres://user:pass@localhost/reebe
+bpmnkit reebe start --database-url postgres://user:pass@localhost/reebe
 ```
 
 | Flag | Default | Description |
@@ -26,7 +26,7 @@ casen reebe start --database-url postgres://user:pass@localhost/reebe
 | `--database-url` | embedded SQLite | PostgreSQL connection URL |
 | `--config` | `config.toml` | Path to the engine config file |
 
-`casen reebe` on its own is shorthand for `casen reebe start`. The command runs the
+`bpmnkit reebe` on its own is shorthand for `bpmnkit reebe start`. The command runs the
 `reebe-server` binary. If it is not on your `PATH`, build the embedded (SQLite) server with
 `cargo install --path apps/reebe/crates/reebe-server --no-default-features --features embedded`,
 or the PostgreSQL one — which needs `--database-url` — without the two feature flags.

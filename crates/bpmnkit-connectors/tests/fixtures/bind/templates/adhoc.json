@@ -1,0 +1,16 @@
+{
+  "id": "test.AdHoc",
+  "name": "Ad hoc agent",
+  "version": 2,
+  "appliesTo": ["bpmn:SubProcess"],
+  "elementType": { "value": "bpmn:AdHocSubProcess" },
+  "properties": [
+    { "type": "Hidden", "value": "io.camunda:ai-agent:1", "binding": { "type": "zeebe:taskDefinition", "property": "type" } },
+    { "type": "Hidden", "value": "agent-1", "binding": { "type": "zeebe:agentDefinition", "property": "agentType" } },
+    { "id": "oc", "type": "Hidden", "value": "toolResults", "binding": { "type": "zeebe:adHoc", "property": "outputCollection" } },
+    { "id": "oe", "type": "Hidden", "value": "=toolCallResult", "binding": { "type": "zeebe:adHoc", "property": "outputElement" } },
+    { "id": "ac", "type": "Hidden", "value": "=[\"a\"]", "binding": { "type": "zeebe:adHoc", "property": "activeElementsCollection" } },
+    { "label": "Agent", "type": "String", "value": "=agent", "binding": { "type": "zeebe:output", "source": "=agent" } },
+    { "label": "Out", "type": "String", "value": "agentContext", "binding": { "type": "zeebe:output", "source": "=agentContext" } }
+  ]
+}

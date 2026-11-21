@@ -1,8 +1,8 @@
-# `casen test` parity with Camunda Process Test
+# `bpmnkit test` parity with Camunda Process Test
 
 Date: 2026-10-18.
 
-This record compares `casen test` (Camunda process-test JSON on reebe-wasm) with real Camunda Process
+This record compares `bpmnkit test` (Camunda process-test JSON on reebe-wasm) with real Camunda Process
 Test (CPT). Both engines ran the same test file on the same BPMN files. A case agrees when both engines
 pass it or both fail it.
 
@@ -10,7 +10,7 @@ pass it or both fail it.
 
 - CPT: `camunda-process-test-spring` 8.10.0 with the `camunda/camunda:8.10.0` container, Java 21,
   Maven 3.9, connectors off. The Maven project also deploys the tutorial's two `.form` files.
-- casen: `casen test test <file.bpmn> --scenarios ai-agent-chat-with-tools.test.json`, reebe-wasm from
+- bpmnkit: `bpmnkit test test <file.bpmn> --scenarios ai-agent-chat-with-tools.test.json`, reebe-wasm from
   this repository.
 - Test file: the six cases of `ai-agent-chat-with-tools.test.json` from Camunda's AI agent tutorial.
   It is not committed, because its repository states no licence.
@@ -42,7 +42,7 @@ pass it or both fail it.
 
 ## Matrix
 
-Each cell is CPT / casen. ✓ is pass, ✗ is fail.
+Each cell is CPT / bpmnkit. ✓ is pass, ✗ is fail.
 
 | File | Happy | Loop | Users | Recipes | Joke | Products | Agree |
 |---|---|---|---|---|---|---|---|
@@ -59,7 +59,7 @@ Each cell is CPT / casen. ✓ is pass, ✗ is fail.
 
 The failures also happen at the same step on both engines:
 
-| File | CPT | casen |
+| File | CPT | bpmnkit |
 |---|---|---|
 | 4 | Loop: no `aiagent:subprocess:2` job for the second agent turn; incident `CONDITION_ERROR` at `Gateway_UserSatisfied` | Loop: instruction 4, no open job; incident at `Gateway_UserSatisfied` |
 | 5 | Recipes: `AI_Agent` stays active with no incident, and no `aiagent:subprocess:2` job is available | Recipes: instruction 1, reebe rejects `SearchRecipes` as not an element the ad-hoc sub-process can activate |
@@ -73,28 +73,28 @@ The failures also happen at the same step on both engines:
 
 Zeebe runs a `userTask` without `<zeebe:userTask/>` as a job-worker user task. Camunda's user-task API
 does not list it, so CPT's `COMPLETE_USER_TASK` finds nothing (file 7). reebe runs every user task as
-a Camunda user task, so the first casen run passed all six cases.
+a Camunda user task, so the first bpmnkit run passed all six cases.
 
 The runner now skips user tasks without `zeebe:userTask` when it matches a user-task selector, and the
 failure message says why. Regression test: "does not complete a user task without zeebe:userTask" in
 `packages/engine/tests/cpt/run.test.ts`.
 
 What is still different: CPT can complete a job-worker user task with `COMPLETE_JOB` on job type
-`io.camunda.zeebe:userTask`. reebe creates no such job, so that instruction fails on casen. No case
+`io.camunda.zeebe:userTask`. reebe creates no such job, so that instruction fails on bpmnkit. No case
 in this matrix uses it.
 
 ### Forms (documented, not fixed)
 
 Zeebe checks a user task's `formId` against the deployed forms when the task activates. A missing form
 raises a `FORM_NOT_FOUND` incident, so the task never opens and CPT fails every case (file 8). reebe
-does not deploy or check forms, and `casen test` ignores `.form` files, so all six cases pass. Check
+does not deploy or check forms, and `bpmnkit test` ignores `.form` files, so all six cases pass. Check
 form ids with the form files in Camunda, or with a CPT run, until reebe deploys forms.
 
 ## Run time
 
 Wall time for the six cases of one file, including start-up.
 
-| File | CPT | casen |
+| File | CPT | bpmnkit |
 |---|---|---|
 | 1 `expected` | 95 s | 0.6 s |
 | 2 `bk3` | 57 s | 0.6 s |
@@ -106,5 +106,5 @@ Wall time for the six cases of one file, including start-up.
 | 8 `form-missing` | 111 s | 0.8 s |
 
 CPT starts a Camunda container for each run. A missing job or user task costs about 10 s per case,
-because CPT waits for it before it fails. reebe-wasm finishes each step at once, so casen fails at
+because CPT waits for it before it fails. reebe-wasm finishes each step at once, so bpmnkit fails at
 once and lists what is open instead.

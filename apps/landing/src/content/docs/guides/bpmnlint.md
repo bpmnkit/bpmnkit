@@ -1,6 +1,6 @@
 ---
 title: bpmnlint Compatibility
-description: Keep your .bpmnlintrc. casen lint and the VS Code extension read it, map bpmnlint's rules onto BPMN Kit's findings, and run your project's own bpmnlint for bpmnlint-plugin-* rules. Includes the rule-by-rule mapping table.
+description: Keep your .bpmnlintrc. bpmnkit lint and the VS Code extension read it, map bpmnlint's rules onto BPMN Kit's findings, and run your project's own bpmnlint for bpmnlint-plugin-* rules. Includes the rule-by-rule mapping table.
 sidebar:
   order: 14
 ---
@@ -9,7 +9,7 @@ Teams coming from bpmn.io usually already have a lint configuration: a `.bpmnlin
 their diagrams, bpmnlint's built-in rules, and maybe a `bpmnlint-plugin-*` package or two.
 BPMN Kit reads that file. You do not need to translate it.
 
-`casen lint` and the [VS Code extension](/docs/guides/vscode) look for `.bpmnlintrc` in the
+`bpmnkit lint` and the [VS Code extension](/docs/guides/vscode) look for `.bpmnlintrc` in the
 diagram's folder and then in each parent folder, and use the first one they find. What happens
 next depends on whether your project has bpmnlint installed.
 
@@ -27,7 +27,7 @@ rule bpmnlint just ran, so no problem is reported twice.
 - A finding that is BPMN Kit's equivalent of a bpmnlint rule (see the table below) takes the
   level your config gives that rule. `"off"` removes it.
 - A rule your config enables, and that BPMN Kit implements natively for compatibility, runs.
-  These rules never run without a `.bpmnlintrc`, so the default `casen lint` report does not
+  These rules never run without a `.bpmnlintrc`, so the default `bpmnkit lint` report does not
   change.
 - A rule your config does not mention keeps BPMN Kit's default. The `.bpmnlintrc` overrides
   BPMN Kit where the two overlap. It does not switch off BPMN Kit's other checks (FEEL syntax,
@@ -41,10 +41,10 @@ bpmnlint is never a dependency of BPMN Kit. It is loaded with a dynamic `import(
 project, only when your project has it, the same way editor integrations load a project's
 own ESLint.
 
-## `casen lint`
+## `bpmnkit lint`
 
 ```sh
-casen lint lint diagrams/order.bpmn
+bpmnkit lint lint diagrams/order.bpmn
 ```
 
 ```text
@@ -71,7 +71,7 @@ error to `warn`. A `.bpmnlintrc` that is not valid JSON, or has a rule level tha
 message.
 
 Unlike the `bpmnlint` command, which reads `.bpmnlintrc` from the current directory only,
-BPMN Kit starts at the diagram's folder. Running `casen lint` from anywhere therefore gives
+BPMN Kit starts at the diagram's folder. Running `bpmnkit lint` from anywhere therefore gives
 the same result. Plugins and `moddleExtensions` resolve from the `.bpmnlintrc`'s folder.
 
 ## VS Code
@@ -102,7 +102,7 @@ For four rules, BPMN Kit's own check looks at a different set of elements, so th
 **replaces** it while your config sets the rule, at any level. For example, `flow/unreachable`
 reports everything that cannot be reached from a start event, and bpmnlint's
 `no-implicit-start` reports only elements without an incoming flow. Without a `.bpmnlintrc`,
-`casen lint` reports BPMN Kit's own checks as before.
+`bpmnkit lint` reports BPMN Kit's own checks as before.
 
 | bpmnlint rule | recommended | BPMN Kit finding | Match | Notes |
 |---|---|---|---|---|
@@ -157,7 +157,7 @@ bpmnlint sees no connections at all, and BPMN Kit sees the flows.
 Camunda Modeler checks a diagram against the Camunda 8 version it targets. The version is in
 `modeler:executionPlatformVersion` on `<bpmn:definitions>`, and the rules come from
 `@camunda/linting`, which runs `bpmnlint-plugin-camunda-compat`. BPMN Kit does the same check
-itself, as `compat/…` findings in the `deploy` category. It runs in `casen lint`, in `optimize()`, in the editor's lint
+itself, as `compat/…` findings in the `deploy` category. It runs in `bpmnkit lint`, in `optimize()`, in the editor's lint
 panel and in the VS Code extension, on every model that names a Camunda Cloud / Camunda 8
 platform and version. A model without them gets no `compat` findings.
 

@@ -16,7 +16,7 @@ The entry point is a **Claude Code skill**: `/implement "<any process descriptio
 
 The skill orchestrates everything: it reads domain patterns if one matches, spawns subagents (planner, implementer, reviewer, tester), calls BPMNKit via MCP, scaffolds standalone workers, runs simulations, and asks the user once — to approve and deploy.
 
-Workers are **standalone TypeScript programs** that call the Zeebe/reebe REST API directly. No casen SDK required at runtime. They can run as Docker containers, serverless functions, or via `casen worker start` as a convenience.
+Workers are **standalone TypeScript programs** that call the Zeebe/reebe REST API directly. No bpmnkit SDK required at runtime. They can run as Docker containers, serverless functions, or via `bpmnkit worker start` as a convenience.
 
 BPMN stays visible — it is the review and approval surface for both technical and business users. Studio renders the result; AI builds it.
 
@@ -28,7 +28,7 @@ BPMN stays visible — it is the review and approval surface for both technical 
 ┌─────────────────────────────────────────────────────┐
 │  INTENT LAYER                                       │
 │  /implement "<any process description>"             │
-│  casen CLI · Studio AI Drawer · Direct API          │
+│  bpmnkit CLI · Studio AI Drawer · Direct API          │
 └──────────────────┬──────────────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────────────┐
@@ -169,7 +169,7 @@ Patterns are hints, not rigid templates. Claude adapts them to the user's specif
 
 ### Phase 3 — Standalone Worker Infrastructure
 
-Workers call the Zeebe/reebe REST API directly. No casen SDK at runtime.
+Workers call the Zeebe/reebe REST API directly. No bpmnkit SDK at runtime.
 
 **Zeebe REST client**
 
@@ -186,7 +186,7 @@ Workers call the Zeebe/reebe REST API directly. No casen SDK at runtime.
 - [x] Generate `workers/<name>/index.ts` from spec — typed inputs/outputs, error handling, logging
 - [x] Generate `workers/<name>/package.json` — standalone, only depends on `@bpmnkit/worker-client`
 - [x] Generate `workers/<name>/README.md` — required env vars, how to run
-- [x] `casen worker start [name]` convenience command — starts worker process(es), not required
+- [x] `bpmnkit worker start [name]` convenience command — starts worker process(es), not required
 
 **Worker registry**
 
@@ -198,7 +198,7 @@ Workers call the Zeebe/reebe REST API directly. No casen SDK at runtime.
 
 ### Phase 4 — Claude Code Skills
 
-The `/implement` skill and its companions. Lives in `.claude/skills/` — shipped alongside the CLI so users get it automatically when they install casen.
+The `/implement` skill and its companions. Lives in `.claude/skills/` — shipped alongside the CLI so users get it automatically when they install bpmnkit.
 
 **`/implement` skill**
 
@@ -225,8 +225,8 @@ The `/implement` skill and its companions. Lives in `.claude/skills/` — shippe
 
 **Skill distribution**
 
-- [x] Ship skills in `apps/cli/skills/` so `casen skills install` copies them to `.claude/commands/`
-- [x] `casen skills install` command — (re)installs skills from bundled definitions
+- [x] Ship skills in `apps/cli/skills/` so `bpmnkit skills install` copies them to `.claude/commands/`
+- [x] `bpmnkit skills install` command — (re)installs skills from bundled definitions
 - [x] Skills included in npm `files` array
 
 ---
@@ -236,10 +236,10 @@ The `/implement` skill and its companions. Lives in `.claude/skills/` — shippe
 Update the public documentation site to reflect all new capabilities.
 
 - [x] New page: `content/docs/guides/ai-implement.md` — walkthrough of `/implement`, from intent to deployed process, with multiple example process types
-- [x] New page: `content/docs/guides/workers-standalone.md` — how standalone workers work, scaffolding, deployment options (Docker / `casen worker start`)
+- [x] New page: `content/docs/guides/workers-standalone.md` — how standalone workers work, scaffolding, deployment options (Docker / `bpmnkit worker start`)
 - [x] New page: `content/docs/packages/worker-client.md` — `@bpmnkit/worker-client` API reference
 - [x] New page: `content/docs/guides/patterns.md` — pattern library: format, how Claude uses them, how to contribute new patterns
-- [x] New page: `content/docs/cli/skills.md` — document `/implement`, `/review`, `/test`, `/deploy` skills and `casen skills install`
+- [x] New page: `content/docs/cli/skills.md` — document `/implement`, `/review`, `/test`, `/deploy` skills and `bpmnkit skills install`
 - [x] Update: `content/docs/getting-started/` — mention AI-first workflow as the recommended entry point
 - [x] Update `doc/features.md` — add AIKit section listing all new capabilities
 - [x] Update `doc/roadmap.md` — add AIKit phases and check items as they complete
@@ -249,7 +249,7 @@ Update the public documentation site to reflect all new capabilities.
 
 ## Worker Lifecycle (Option C)
 
-Scaffolded into the project, runnable anywhere, casen as convenience:
+Scaffolded into the project, runnable anywhere, bpmnkit as convenience:
 
 ```
 project/
@@ -269,9 +269,9 @@ node workers/<task-name>/index.js
 # Run via Docker
 docker run -e API_KEY=... bpmnkit/<task-name>
 
-# Run via casen (convenience, not required)
-casen worker start
-casen worker start <task-name>
+# Run via bpmnkit (convenience, not required)
+bpmnkit worker start
+bpmnkit worker start <task-name>
 ```
 
 ---

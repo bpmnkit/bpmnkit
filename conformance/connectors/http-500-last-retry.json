@@ -1,0 +1,36 @@
+{
+  "description": "an HTTP 500 on the last retry fails with retries 0",
+  "exchanges": [
+    {
+      "request": {
+        "body": {},
+        "method": "POST",
+        "path": "/boom"
+      },
+      "response": {
+        "bodyText": "oops",
+        "status": 500
+      }
+    }
+  ],
+  "expected": {
+    "fail": {
+      "errorMessage": "Internal Server Error",
+      "retries": 0,
+      "retryBackOff": 0
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 1,
+    "variables": {
+      "body": {},
+      "method": "POST",
+      "url": "http://mock.local/boom"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

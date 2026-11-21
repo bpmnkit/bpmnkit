@@ -194,7 +194,7 @@ stripe?.operations.find((o) => o.path === "/v1/customers" && o.method === "POST"
 ```
 
 [`@bpmnkit/core/connectors`](/docs/packages/connectors#api-cards) turns these into **API
-cards** for a model, and completes REST connector calls from them. `casen connector api
+cards** for a model, and completes REST connector calls from them. `bpmnkit connector api
 "create a stripe customer"` prints the cards.
 
 - **Building.** `pnpm update-api-index` (`scripts/build-api-index.mjs`) fetches each catalog
@@ -274,5 +274,5 @@ interface CatalogEntry {
 
 ## CLI
 
-The same functionality is available via `casen connector generate` and `casen connector catalog`.
+The same functionality is available via `bpmnkit connector generate` and `bpmnkit connector catalog`.
 See the [CLI reference](/docs/cli/connector).

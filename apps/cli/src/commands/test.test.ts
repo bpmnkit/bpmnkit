@@ -32,7 +32,7 @@ beforeEach(() => {
 	dir = mkdtempSync(join(tmpdir(), "casen-test-cmd-"))
 })
 
-/** Runs `casen test` the way the CLI does: argv through the real flag parser. */
+/** Runs `bpmnkit test` the way the CLI does: argv through the real flag parser. */
 async function run(argv: string[]): Promise<{ lines: string[]; error?: Error }> {
 	const lines: string[] = []
 	const { positional, flags, repeated } = parseArgs(argv)
@@ -91,7 +91,7 @@ describe("resolveScenariosPath", () => {
 	})
 })
 
-describe("casen test with a CPT file", () => {
+describe("bpmnkit test with a CPT file", () => {
 	it("runs a CPT file and passes", async () => {
 		const { lines, error } = await run([bakeoff()])
 		expect(error).toBeUndefined()
@@ -140,7 +140,7 @@ describe("casen test with a CPT file", () => {
 	})
 })
 
-describe("casen test with an old scenario file", () => {
+describe("bpmnkit test with an old scenario file", () => {
 	it("still runs array-format scenarios", async () => {
 		const bpmn = join(dir, "s.bpmn")
 		writeFileSync(bpmn, SIMPLE)
@@ -154,7 +154,7 @@ describe("casen test with an old scenario file", () => {
 	})
 })
 
-describe("casen test flags and routing", () => {
+describe("bpmnkit test flags and routing", () => {
 	it("-s selects the scenarios file even when a sidecar exists", async () => {
 		const bpmn = bakeoff()
 		writeFileSync(`${bpmn}.tests.json`, "[]") // the sidecar a silent -s would run: a false pass
@@ -194,14 +194,14 @@ describe("casen test flags and routing", () => {
 			return { out: out.join(""), failed }
 		}
 
-		it.each([["test"], []])("runs the command for `casen test %s<file>`", async (...pre) => {
+		it.each([["test"], []])("runs the command for `bpmnkit test %s<file>`", async (...pre) => {
 			const bpmn = bakeoff()
 			const { out, failed } = await capture(["test", ...pre.flat(), bpmn])
 			expect(out).toContain("PASS  ")
 			expect(failed).toBeUndefined()
 		})
 
-		it("`casen test --help` still shows help", async () => {
+		it("`bpmnkit test --help` still shows help", async () => {
 			const { out } = await capture(["test", "--help"])
 			expect(out).toContain("test")
 			expect(out).not.toContain("PASS  ")

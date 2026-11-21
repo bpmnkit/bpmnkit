@@ -7,7 +7,7 @@ own MCP servers, settings or plugins. What it can do depends on the request:
 | Request | The model gets |
 |---|---|
 | AI panel chat, improve, explain (`/chat`) | The diagram tools of the proxy's MCP server, which change only the diagram held in that server's memory. The result comes back as the `xml` event; nothing is written to your project. |
-| Create form or decision (`/chat`), improve with operations (`/improve`, `casen lint --ai`), Operate chat, incident assist, AI search, `casen ask` | No tools. The model answers with text or JSON, and the proxy does the rest. |
+| Create form or decision (`/chat`), improve with operations (`/improve`, `bpmnkit lint --ai`), Operate chat, incident assist, AI search, `bpmnkit ask` | No tools. The model answers with text or JSON, and the proxy does the rest. |
 
 Every tool call that changes the diagram ends with a deploy check, so the model sees what Camunda 8
 would refuse while it can still fix it. The diagram `/chat` and `/improve` return goes through the

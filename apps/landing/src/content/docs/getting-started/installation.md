@@ -54,7 +54,7 @@ pnpm add @bpmnkit/editor
 
 ## CLI
 
-The `casen` CLI is a standalone tool — install it globally:
+The `bpmnkit` CLI is a standalone tool — install it globally:
 
 ```sh
 pnpm add -g @bpmnkit/cli
@@ -64,9 +64,9 @@ With the CLI installed, you can use the AI-first workflow to implement processes
 language using Claude Code:
 
 ```sh
-casen skills install   # install /implement, /review, /test, /deploy slash commands
-casen proxy            # start the AI bridge
-casen reebe            # start local workflow engine
+bpmnkit skills install   # install /implement, /review, /test, /deploy slash commands
+bpmnkit proxy            # start the AI bridge
+bpmnkit reebe            # start local workflow engine
 ```
 
 Then in Claude Code: `/implement an invoice approval process`

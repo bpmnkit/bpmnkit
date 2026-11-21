@@ -1,5 +1,5 @@
 /**
- * Runs a Camunda process-test (CPT) file against a BPMN on reebe-wasm — what `casen test` does for
+ * Runs a Camunda process-test (CPT) file against a BPMN on reebe-wasm — what `bpmnkit test` does for
  * a `<name>.test.json` — for the comparison page's "tests" column.
  *
  * Needs `packages/engine` built and reebe-wasm built (`pnpm build:wasm`). Without them the result

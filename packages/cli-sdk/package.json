@@ -18,8 +18,8 @@
 		"check": "biome check .",
 		"test": "vitest run"
 	},
-	"description": "Plugin authoring SDK for the casen CLI",
-	"keywords": ["camunda", "casen", "cli", "plugin", "sdk", "bpmnkit"],
+	"description": "Plugin authoring SDK for the bpmnkit CLI",
+	"keywords": ["camunda", "bpmnkit", "casen", "cli", "plugin", "sdk"],
 	"license": "MIT",
 	"repository": {
 		"type": "git",

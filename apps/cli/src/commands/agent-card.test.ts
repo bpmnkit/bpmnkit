@@ -35,7 +35,7 @@ async function print(kind: AgentCardKind, flags: Record<string, boolean> = {}): 
 	return out
 }
 
-describe("casen agent-card", () => {
+describe("bpmnkit agent-card", () => {
 	it("is routed as a pinned group with one command per file type", () => {
 		const group = commandGroups.find((g) => g.name === "agent-card")
 		expect(group?.commands.map((c) => c.name)).toEqual(["bpmn", "dmn", "form"])
@@ -76,10 +76,10 @@ describe("casen agent-card", () => {
 		expect(readAgentCard("bpmn").split("\n").length).toBeLessThan(150)
 	})
 
-	it("points each card at the concrete casen check gate", () => {
+	it("points each card at the concrete bpmnkit check gate", () => {
 		// The BPMN card's one command lints (and deploys) what it builds.
 		for (const kind of AGENT_CARD_KINDS)
-			expect(readAgentCard(kind)).toContain(kind === "bpmn" ? "casen build " : "casen check ")
+			expect(readAgentCard(kind)).toContain(kind === "bpmn" ? "bpmnkit build " : "bpmnkit check ")
 	})
 
 	it("shows the multi-decision DRD script exactly as the tested file", () => {

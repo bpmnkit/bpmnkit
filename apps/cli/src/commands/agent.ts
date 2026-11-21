@@ -58,11 +58,11 @@ const hireCmd: Command = {
 	examples: [
 		{
 			description: "Claude Code, prompt on stdin",
-			command: "casen agent hire claude --roles plan,pr-review --rank senior -- claude -p",
+			command: "bpmnkit agent hire claude --roles plan,pr-review --rank senior -- claude -p",
 		},
 		{
 			description: "A CLI that takes the prompt as an argument, two at a time",
-			command: 'casen agent hire copilot --roles feature --instances 2 -- copilot -p "{prompt}"',
+			command: 'bpmnkit agent hire copilot --roles feature --instances 2 -- copilot -p "{prompt}"',
 		},
 	],
 	async run(ctx) {
@@ -96,14 +96,14 @@ const hireCmd: Command = {
 
 		ctx.output.ok(`${existing >= 0 ? "Updated" : "Hired"} ${name}`)
 		ctx.output.info(`  serves: ${agentJobTypes(profile.roles, profile.rank).join(", ")}`)
-		ctx.output.info("  Start the workforce with `casen agent work`.")
+		ctx.output.info("  Start the workforce with `bpmnkit agent work`.")
 	},
 }
 
 const listCmd: Command = {
 	name: "list",
 	description: "List hired agents and the job types they serve",
-	examples: [{ description: "List the workforce", command: "casen agent list" }],
+	examples: [{ description: "List the workforce", command: "bpmnkit agent list" }],
 	async run(ctx) {
 		const rows = loadWorkforce().map((a) => ({
 			name: a.name,
@@ -115,7 +115,7 @@ const listCmd: Command = {
 			cwd: a.cwd,
 		}))
 		if (rows.length === 0 && ctx.output.format === "table") {
-			ctx.output.info("No agents hired yet. Run `casen agent hire --help` to hire one.")
+			ctx.output.info("No agents hired yet. Run `bpmnkit agent hire --help` to hire one.")
 			return
 		}
 		ctx.output.printList({ items: rows }, [
@@ -133,7 +133,7 @@ const fireCmd: Command = {
 	name: "fire",
 	description: "Remove a hired agent",
 	args: [{ name: "name", description: "Agent to remove", required: true }],
-	examples: [{ description: "Remove an agent", command: "casen agent fire copilot" }],
+	examples: [{ description: "Remove an agent", command: "bpmnkit agent fire copilot" }],
 	async run(ctx) {
 		const name = ctx.positional[0]
 		if (!name) throw new Error("Missing required argument: <name>")
@@ -156,8 +156,8 @@ const workCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Run every hired agent", command: "casen agent work" },
-		{ description: "Run only one agent", command: "casen agent work claude" },
+		{ description: "Run every hired agent", command: "bpmnkit agent work" },
+		{ description: "Run only one agent", command: "bpmnkit agent work claude" },
 	],
 	async run(ctx) {
 		const hired = loadWorkforce()
@@ -166,7 +166,7 @@ const workCmd: Command = {
 		if (unknown.length > 0) throw new Error(`No agent named ${unknown.join(", ")} is hired`)
 		const agents = names.length > 0 ? hired.filter((a) => names.includes(a.name)) : hired
 		if (agents.length === 0) {
-			throw new Error(`No agents hired (${workforcePath()}). Run \`casen agent hire --help\`.`)
+			throw new Error(`No agents hired (${workforcePath()}). Run \`bpmnkit agent hire --help\`.`)
 		}
 
 		const client = await ctx.getClient()

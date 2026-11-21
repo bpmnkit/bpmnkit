@@ -1,6 +1,6 @@
 ---
 title: Migrate from Camunda 7
-description: Convert Camunda 7 BPMN models to Camunda 8 with casen migrate c7 or convertCamunda7() — what is converted, what needs a person and why, how JUEL becomes FEEL, and how this relates to Camunda's own migration tools.
+description: Convert Camunda 7 BPMN models to Camunda 8 with bpmnkit migrate c7 or convertCamunda7() — what is converted, what needs a person and why, how JUEL becomes FEEL, and how this relates to Camunda's own migration tools.
 sidebar:
   order: 15
 ---
@@ -25,18 +25,18 @@ every Camunda 7 construct it finds, with a severity and a Camunda 8 suggestion:
   models are, before they plan the migration.
 - Teams that work in TypeScript or JavaScript and do not want a Java toolchain to convert
   models.
-- CI pipelines: `casen migrate c7 --check` fails while manual work remains.
+- CI pipelines: `bpmnkit migrate c7 --check` fails while manual work remains.
 
 ## Run it
 
 ```sh
-casen migrate c7 models/*.bpmn            # writes models/*.c8.bpmn
-casen migrate c7 models/*.bpmn --out c8   # writes c8/*.bpmn
-casen migrate c7 models/*.bpmn --check    # report only, exit 1 on manual work
-casen migrate c7 order.bpmn --placeholders # fill values only a person knows with placeholders
+bpmnkit migrate c7 models/*.bpmn            # writes models/*.c8.bpmn
+bpmnkit migrate c7 models/*.bpmn --out c8   # writes c8/*.bpmn
+bpmnkit migrate c7 models/*.bpmn --check    # report only, exit 1 on manual work
+bpmnkit migrate c7 order.bpmn --placeholders # fill values only a person knows with placeholders
 ```
 
-[`casen migrate`](/docs/cli/migrate) has the flags and the JSON format. From code:
+[`bpmnkit migrate`](/docs/cli/migrate) has the flags and the JSON format. From code:
 
 ```typescript
 import { Bpmn, convertCamunda7 } from "@bpmnkit/core"
@@ -183,7 +183,7 @@ A Camunda 7 service task, as Camunda Modeler writes it:
 </bpmn:serviceTask>
 ```
 
-After `casen migrate c7`:
+After `bpmnkit migrate c7`:
 
 ```xml
 <bpmn:serviceTask id="Task_charge" name="Charge payment">
@@ -211,7 +211,7 @@ finding. An example is a receive task that has no correlation key yet.
 Camunda 8 stays the focus, but you can export a model for Camunda 7 or Operaton, best effort:
 
 ```sh
-casen migrate c7 order.bpmn --to camunda7   # writes order.c7.bpmn
+bpmnkit migrate c7 order.bpmn --to camunda7   # writes order.c7.bpmn
 ```
 
 In code, `convertCamunda8To7(Bpmn.parse(xml))` returns `{ definitions, findings }`. It maps job types to

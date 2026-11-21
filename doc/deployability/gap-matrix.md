@@ -4,7 +4,7 @@ Real rules: 189 (Z01..Z193 minus non-rules Z36, Z97, Z131, Z190).
 
 - P 10 · P~ 19 · D 1 · D~ 90 · M 69
 - M by kind: static 51 · feel 14 · context 4. D~ by kind: static 74 · feel 14 · context 2.
-- Legend: P = generator cannot emit it; D = always-on lint (flow/feel/feel-syntax, any platform); D~ = detected only with an execution platform/Camunda version (`compat/*`, `deploy/*`), or top-level only (`deploy/*`, `feel/empty-condition`), or opt-in (`bl/*` = bpmnlint-native rule needing a `.bpmnlintrc`; `casen check --deploy`), or only part of the rule; M = no guard. P~ = prevented on some paths only (usually the fresh builder; not `continueProcess`, compact, process-text).
+- Legend: P = generator cannot emit it; D = always-on lint (flow/feel/feel-syntax, any platform); D~ = detected only with an execution platform/Camunda version (`compat/*`, `deploy/*`), or top-level only (`deploy/*`, `feel/empty-condition`), or opt-in (`bl/*` = bpmnlint-native rule needing a `.bpmnlintrc`; `bpmnkit check --deploy`), or only part of the rule; M = no guard. P~ = prevented on some paths only (usually the fresh builder; not `continueProcess`, compact, process-text).
 - No guard runs automatically on generation paths: `Bpmn.export({validate})` is off by default; only `compilePlan` lints (and still emits). So every D/D~ is a detector, not a gate.
 - Parity: every lint/compat/bpmnlint/builder guard named here exists in TS (packages/core) and Rust (crates/bpmnkit-lint, bpmnkit-compat, bpmnkit-builder), pinned by conformance/; exceptions marked (TS) or (RS). `reebe` = apps/reebe validator (Rust dev engine), not a BPMN Kit generation guard.
 - Evidence = generator output (conformance/<kind>/<case>/expected) that real Zeebe 8.9.28 rejected with this rule; 'repro zNN' = hand file in doc/deployability/repro (ZCheck + Rust lint run, 26 files). Abbrev: c/ = compat/, d/ = deploy/, bl/ = opt-in bpmnlint-native.
@@ -127,7 +127,7 @@ Real rules: 189 (Z01..Z193 minus non-rules Z36, Z97, Z131, Z190).
 | Z115 | formDefinition formKey XOR formId | static | P~ | builder single form binding; c/user-task-form |  |
 | Z116 | Native form formId XOR externalReference | static | P~ | builder single form binding; c/user-task-form |  |
 | Z117 | form bindingType/versionTag rules | static | D~ | c/version-tag |  |
-| Z118 | form deployment binding resolves | context | D~ | casen check --deploy (TS, opt-in) |  |
+| Z118 | form deployment binding resolves | context | D~ | bpmnkit check --deploy (TS, opt-in) |  |
 | Z119 | Embedded userTaskForm non-empty | static | D~ | c/start-event-form-embedded/user-task-form |  |
 | Z120 | candidateGroups/Users CSV or FEEL | feel | M | - |  |
 | Z121 | taskSchedule dates valid | feel | D~ | c/task-schedule | compact/bpmn-compat-tasks |
@@ -144,7 +144,7 @@ Real rules: 189 (Z01..Z193 minus non-rules Z36, Z97, Z131, Z190).
 | Z133 | calledDecision decisionId+resultVariable | static | D~ | c/implementation |  |
 | Z134 | decisionId/versionTag FEEL | feel | M | - |  |
 | Z135 | calledDecision bindingType/versionTag | static | D~ | c/version-tag |  |
-| Z136 | Decision in same deployment | context | D~ | casen check --deploy (TS, opt-in) |  |
+| Z136 | Decision in same deployment | context | D~ | bpmnkit check --deploy (TS, opt-in) |  |
 | Z137 | Duplicate calledDecision | static | P~ | builder writes once |  |
 | Z138 | XOR default flow starts at gateway | static | P | builder defaultFlow() on branch |  |
 | Z139 | OR default flow starts at gateway | static | P | builder defaultFlow() on branch |  |
@@ -198,8 +198,8 @@ Real rules: 189 (Z01..Z193 minus non-rules Z36, Z97, Z131, Z190).
 | Z187 | Tenant authorization | context | M | - |  |
 | Z188 | Deployment already exists | context | M | - |  |
 | Z189 | Timer start creation failure | feel | M | - |  |
-| Z191 | Form JSON valid with id | static | D~ | lintForm via casen check (opt-in) |  |
-| Z192 | DMN parses, ids present | static | D~ | lintDmn via casen check (opt-in) |  |
+| Z191 | Form JSON valid with id | static | D~ | lintForm via bpmnkit check (opt-in) |  |
+| Z192 | DMN parses, ids present | static | D~ | lintDmn via bpmnkit check (opt-in) |  |
 | Z193 | RPA resource id present | static | M | - |  |
 
 ## Top misses (M / D~ ranked by Zeebe hits on generator outputs, then likelihood)

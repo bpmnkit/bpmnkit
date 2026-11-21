@@ -1,7 +1,7 @@
 <div align="center">
   <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>@bpmnkit/casen-worker-ai</h1>
-  <p>AI task worker plugin for casen — classify, summarize, extract, and decide using Claude</p>
+  <p>AI task worker plugin for bpmnkit — classify, summarize, extract, and decide using Claude</p>
 
   [![npm](https://img.shields.io/npm/v/@bpmnkit/casen-worker-ai?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/casen-worker-ai)
   [![license](https://img.shields.io/npm/l/@bpmnkit/casen-worker-ai?style=flat-square)](https://github.com/bpmnkit/bpmnkit/blob/main/LICENSE)
@@ -18,7 +18,7 @@
 
 ## Overview
 
-`casen-worker-ai` is an official `casen` CLI plugin that brings AI-powered task processing into Camunda 8 workflows. It subscribes to four job types and uses the [Anthropic Claude API](https://anthropic.com) to complete each job with structured output.
+`casen-worker-ai` is an official `bpmnkit` CLI plugin that brings AI-powered task processing into Camunda 8 workflows. It subscribes to four job types and uses the [Anthropic Claude API](https://anthropic.com) to complete each job with structured output.
 
 This is the right tool when you need AI logic in a process but don't want to build a full microservice — start the worker once and any process in your cluster can delegate AI tasks to it.
 
@@ -34,14 +34,14 @@ The worker handles all three via `failJob` and `throwJobError`, giving your proc
 ## Installation
 
 ```sh
-casen plugin install casen-worker-ai
+bpmnkit plugin install casen-worker-ai
 ```
 
 Set your Anthropic API key before starting:
 
 ```sh
 export ANTHROPIC_API_KEY=sk-ant-...
-casen ai-worker
+bpmnkit ai-worker
 ```
 
 ## Configuration
@@ -170,15 +170,16 @@ Add boundary events to your service tasks to handle AI failures gracefully:
 | [`@bpmnkit/operate`](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
 | [`@bpmnkit/connector-gen`](https://www.npmjs.com/package/@bpmnkit/connector-gen) | Generate connector templates from OpenAPI specs |
 | [`@bpmnkit/connectors`](https://www.npmjs.com/package/@bpmnkit/connectors) | Camunda 8 OOTB connector catalog and deterministic template application |
-| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (casen) |
+| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (bpmnkit, alias casen) |
+| [`@bpmnkit/cli-legacy`](https://www.npmjs.com/package/@bpmnkit/cli-legacy) | Node fallback behind the native bpmnkit binary |
 | [`@bpmnkit/proxy`](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
 | [`@bpmnkit/patterns`](https://www.npmjs.com/package/@bpmnkit/patterns) | Domain process patterns for BPMNKit AIKit |
 | [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm) | WebAssembly BPMN engine for browser simulation |
 | [`@bpmnkit/worker-client`](https://www.npmjs.com/package/@bpmnkit/worker-client) | Thin Zeebe REST client for standalone workers |
 | [`@bpmnkit/flow`](https://www.npmjs.com/package/@bpmnkit/flow) | Code-first durable flows that derive BPMN, job types and workers |
 | [`@bpmnkit/user-tasks`](https://www.npmjs.com/package/@bpmnkit/user-tasks) | Embeddable user task widget for Camunda 8 |
-| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the casen CLI |
-| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new casen CLI plugin in seconds |
+| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the bpmnkit CLI |
+| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new bpmnkit CLI plugin in seconds |
 | [`@bpmnkit/casen-report`](https://www.npmjs.com/package/@bpmnkit/casen-report) | HTML reports from Camunda 8 incident and SLA data |
 | [`@bpmnkit/casen-worker-http`](https://www.npmjs.com/package/@bpmnkit/casen-worker-http) | Example HTTP worker plugin — completes jobs with live JSONPlaceholder API data |
 

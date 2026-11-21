@@ -1,0 +1,35 @@
+{
+  "description": "docs: HTTP errors to fail job — jobError with defaults",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/r"
+      },
+      "response": {
+        "body": {},
+        "status": 404
+      }
+    }
+  ],
+  "expected": {
+    "fail": {
+      "errorMessage": "Resource not found",
+      "retries": 2,
+      "retryBackOff": 10000
+    }
+  },
+  "job": {
+    "headers": {
+      "errorExpression": "=if error.code = \"404\" then\n  jobError(\"Resource not found\")\nelse if error.code = \"504\" then\n  jobError(\"Gateway timeout\", {}, job.retries - 1, @\"PT30S\")\nelse if response.body.status = \"technicalProblem\" then\n  jobError(\"Technical Problem\", response.body)\nelse\n  null",
+      "retryBackoff": "PT10S"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/r"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

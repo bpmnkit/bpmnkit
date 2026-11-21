@@ -7,8 +7,8 @@
  *
  *   Plan-level (CI-safe, default, no LLM call): prompts that ship a
  *   `fixture.plan.json` are run through the real deterministic pipeline —
- *   `casen synth` -> `casen lint --profile deploy` -> `casen test` -> an
- *   attempted `casen deploy deploy` against local Reebe. This is what
+ *   `bpmnkit synth` -> `bpmnkit lint --profile deploy` -> `bpmnkit test` -> an
+ *   attempted `bpmnkit deploy deploy` against local Reebe. This is what
  *   `pnpm turbo test` does NOT run (kept as a separate script per the WP7
  *   acceptance criteria) but is safe to run in CI: it never shells out to an
  *   LLM, and gracefully reports "skipped (Reebe unavailable)" for the deploy
@@ -147,7 +147,7 @@ async function runPlanLevel(promptDir, expected, reebeUp) {
 			return result
 		}
 		// --json mode never writes files (main .bpmn or the plan.tests sidecar) — re-run without
-		// it to get the real on-disk artifacts, exactly as a user's `casen synth` invocation would.
+		// it to get the real on-disk artifacts, exactly as a user's `bpmnkit synth` invocation would.
 		const nonJsonArgs = synthArgs.filter((a) => a !== "--json")
 		runCli(nonJsonArgs, tmp)
 
@@ -174,7 +174,7 @@ async function runPlanLevel(promptDir, expected, reebeUp) {
 			if (passMatch) {
 				result.testPassRate = Number(passMatch[1]) / Math.max(1, Number(passMatch[2]))
 			} else if (test.stderr.includes("reebe-wasm is not installed")) {
-				// casen test runs scenarios via the WASM engine (@bpmnkit/reebe-wasm), which requires
+				// bpmnkit test runs scenarios via the WASM engine (@bpmnkit/reebe-wasm), which requires
 				// a Rust/wasm-pack build this sandbox doesn't have — same pre-existing, environment-
 				// specific gap as elsewhere in this repo. Not a real test failure: report it as such,
 				// not as a 0% pass rate.
@@ -287,14 +287,14 @@ async function runFullLlm(promptText, reebeUp) {
 
 async function main() {
 	if (!existsSync(CLI)) {
-		console.error(`CLI not built at ${CLI} — run: pnpm --filter @bpmnkit/cli build`)
+		console.error(`CLI not built at ${CLI} — run: pnpm --filter @bpmnkit/cli-legacy build`)
 		process.exit(1)
 	}
 
 	const reebeUp = await reebeReachable()
 	if (!reebeUp) {
 		console.log(
-			`Reebe not reachable at ${ZEEBE_ADDRESS} — the deploy dimension will be reported as skipped, not failed. Start it with: casen reebe start --port 26500`,
+			`Reebe not reachable at ${ZEEBE_ADDRESS} — the deploy dimension will be reported as skipped, not failed. Start it with: bpmnkit reebe start --port 26500`,
 		)
 	}
 

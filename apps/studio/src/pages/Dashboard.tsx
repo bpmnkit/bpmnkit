@@ -453,14 +453,14 @@ function OnboardingChecklist() {
 npm install -g @bpmnkit/cli
 
 # Add a Zeebe profile
-casen profile add my-cluster \\
+bpmnkit profile add my-cluster \\
   --base-url https://... \\
   --auth-type oauth2 \\
   --client-id YOUR_ID \\
   --client-secret YOUR_SECRET
 
 # Launch Studio with that profile
-casen studio --profile my-cluster`}</pre>
+bpmnkit studio --profile my-cluster`}</pre>
 					<Button size="sm" variant="outline" onClick={() => navigate("/settings")}>
 						Configure in Settings →
 					</Button>

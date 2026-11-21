@@ -239,7 +239,7 @@ own MCP servers, settings or plugins. What it can do depends on the request:
 | Request | The model gets |
 |---|---|
 | AI panel chat, improve, explain (`/chat`) | The diagram tools of the proxy's MCP server, which change only the diagram held in that server's memory. The result comes back as the `xml` event; nothing is written to your project. |
-| Create form or decision (`/chat`), improve with operations (`/improve`, `casen lint --ai`), Operate chat, incident assist, AI search, `casen ask` | No tools. The model answers with text or JSON, and the proxy does the rest. |
+| Create form or decision (`/chat`), improve with operations (`/improve`, `bpmnkit lint --ai`), Operate chat, incident assist, AI search, `bpmnkit ask` | No tools. The model answers with text or JSON, and the proxy does the rest. |
 
 Every tool call that changes the diagram ends with a deploy check, so the model sees what Camunda 8
 would refuse while it can still fix it. The diagram `/chat` and `/improve` return goes through the
@@ -261,7 +261,7 @@ Claude Desktop, Cursor, VS Code — create, validate, simulate and deploy proces
 stdio and is started by the CLI:
 
 ```sh
-casen proxy mcp
+bpmnkit proxy mcp
 ```
 
 or, without installing the CLI first, in an MCP client's configuration:
@@ -286,8 +286,8 @@ Tools:
 - `bpmn_validate` — run the optimizer's findings over a file, plus the deploy gate's verdict
   (`summary.deployable`, `deployability`)
 - `bpmn_simulate`, `bpmn_run_history` — run a process on the local engine and read past runs
-  (needs the proxy running: `casen proxy start`)
-- `bpmn_deploy` — deploy to the active `casen` profile (Camunda 8 or a local Reebe), after the
+  (needs the proxy running: `bpmnkit proxy start`)
+- `bpmn_deploy` — deploy to the active `bpmnkit` profile (Camunda 8 or a local Reebe), after the
   deploy gate (`validate: false` skips it)
 - `form_create`, `dmn_create` — Camunda Forms and DMN decision tables
 - `worker_list`, `worker_scaffold` — list and generate job workers

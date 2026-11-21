@@ -1,0 +1,19 @@
+{
+  "id": "test.BadValues",
+  "name": "Bad values",
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:CallActivity" },
+  "properties": [
+    { "id": "bt", "label": "Binding", "type": "String", "value": "bogus", "binding": { "type": "zeebe:calledElement", "property": "bindingType" } },
+    { "id": "pp", "label": "Parent", "type": "String", "value": "maybe", "binding": { "type": "zeebe:calledElement", "property": "propagateAllParentVariables" } },
+    { "id": "feel", "label": "Feel", "type": "String", "value": "=1 +", "feel": "optional", "binding": { "type": "zeebe:input", "name": "feelInput" } },
+    { "id": "static", "label": "Static", "type": "String", "value": "=not feel", "feel": "static", "binding": { "type": "zeebe:input", "name": "staticInput" } },
+    { "id": "req", "label": "Required one", "type": "String", "constraints": { "notEmpty": true }, "binding": { "type": "zeebe:input", "name": "req" } },
+    { "id": "reqNoLabel", "type": "String", "constraints": { "notEmpty": true }, "binding": { "type": "zeebe:input", "name": "reqNoLabel" } },
+    { "id": "ref", "label": "Ref", "type": "String", "value": "e", "binding": { "type": "zeebe:formDefinition", "property": "externalReference" } },
+    { "id": "fid", "label": "Fid", "type": "String", "value": "f", "binding": { "type": "zeebe:formDefinition", "property": "formId" } },
+    { "id": "dec", "label": "Dec", "type": "String", "value": "d", "binding": { "type": "zeebe:calledDecision", "property": "decisionId" } },
+    { "id": "pri", "label": "Pri", "type": "Hidden", "binding": { "type": "zeebe:priorityDefinition", "property": "priority" } },
+    { "id": "sc", "label": "Script res", "type": "String", "value": "r", "binding": { "type": "zeebe:script", "property": "resultVariable" } }
+  ]
+}

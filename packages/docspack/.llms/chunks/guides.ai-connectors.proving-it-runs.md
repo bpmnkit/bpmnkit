@@ -16,9 +16,9 @@ result:
 - **[Drop](/docs/guides/drop).** "Describe a process" drafts the diagram, connects it, and
   shows the secrets and the dry run. A shared diagram has **Add connectors** while editing.
 - **CLI.**
-  - `casen connector cards "<request>"` prints connector cards.
-  - `casen connector api "<request>"` prints the endpoints of an indexed API.
-  - `casen synth --check` dry-runs a compiled plan and lists its secrets.
+  - `bpmnkit connector cards "<request>"` prints connector cards.
+  - `bpmnkit connector api "<request>"` prints the endpoints of an indexed API.
+  - `bpmnkit synth --check` dry-runs a compiled plan and lists its secrets.
 - **The proxy's MCP server.** It is used by the AI chat and by your own agents:
   - `find_connectors { query }` returns cards and API endpoints.
   - `add_connector { processId, id, alias, operation, values }` configures a node through

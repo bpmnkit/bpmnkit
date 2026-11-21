@@ -23,10 +23,10 @@ const listCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "List all templates", command: "casen template list" },
+		{ description: "List all templates", command: "bpmnkit template list" },
 		{
 			description: "Only the AI agent patterns",
-			command: "casen template list --category ai-agents",
+			command: "bpmnkit template list --category ai-agents",
 		},
 	],
 	async run(ctx) {
@@ -58,7 +58,7 @@ const useCmd: Command = {
 	description:
 		"Write a template's .bpmn, its .bpmn.tests.json scenarios and any .dmn/.form files into a directory",
 	args: [
-		{ name: "id", description: "Template id (see casen template list)", required: true },
+		{ name: "id", description: "Template id (see bpmnkit template list)", required: true },
 		{ name: "dir", description: "Target directory (default: current directory)", default: "." },
 	],
 	flags: [
@@ -71,15 +71,15 @@ const useCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Into the current directory", command: "casen template use order-to-cash" },
-		{ description: "Into a folder", command: "casen template use ai-agent-tool-loop processes/" },
+		{ description: "Into the current directory", command: "bpmnkit template use order-to-cash" },
+		{ description: "Into a folder", command: "bpmnkit template use ai-agent-tool-loop processes/" },
 	],
 	async run(ctx) {
 		const id = ctx.positional[0]
 		if (!id) throw new Error("Missing required argument: <id>")
 		const template = getTemplate(id)
 		if (template === undefined) {
-			throw new Error(`No template "${id}". Run \`casen template list\` to see all templates.`)
+			throw new Error(`No template "${id}". Run \`bpmnkit template list\` to see all templates.`)
 		}
 
 		const dir = resolve(ctx.positional[1] ?? ".")
@@ -103,7 +103,7 @@ const useCmd: Command = {
 			`${template.title} — ${template.scenarios.length} scenarios in ${id}.bpmn.tests.json`,
 		)
 		ctx.output.info(`Gallery page: https://bpmnkit.com/templates/${id}`)
-		ctx.output.info("Deploy each file with: casen deploy deploy <file> --target camunda8")
+		ctx.output.info("Deploy each file with: bpmnkit deploy deploy <file> --target camunda8")
 	},
 }
 

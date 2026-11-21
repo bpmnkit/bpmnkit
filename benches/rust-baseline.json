@@ -12,6 +12,8 @@
 		"bpmnkit-builder/builder/serialize": 1990,
 		"bpmnkit-builder/builder/serialize dmn": 227,
 		"bpmnkit-builder/builder/serialize layout": 4700,
+		"bpmnkit-codegen/codegen/java 100 tasks": 5870,
+		"bpmnkit-codegen/codegen/rust 100 tasks": 22200,
 		"bpmnkit-dmn/io/evaluate": 498,
 		"bpmnkit-dmn/io/parse": 1220,
 		"bpmnkit-dmn/io/parse+serialize": 1640,
@@ -36,6 +38,7 @@
 		"bpmnkit-text/text/expand": 6490,
 		"bpmnkit-text/text/expand dmn": 181,
 		"bpmnkit-text/text/parse text": 5400,
-		"bpmnkit-text/text/write text": 2880
+		"bpmnkit-text/text/write text": 2880,
+		"bpmnkit-worker/stream_latency/stream push": 29
 	}
 }

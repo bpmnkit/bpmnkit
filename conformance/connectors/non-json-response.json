@@ -1,0 +1,37 @@
+{
+  "description": "a non-JSON body is a string",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/robots.txt"
+      },
+      "response": {
+        "bodyText": "User-agent: *",
+        "headers": {
+          "Content-Type": "text/plain"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "complete": {
+      "variables": {
+        "myResponseBody": "User-agent: *"
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/robots.txt"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/protocol/rest/#response"
+}

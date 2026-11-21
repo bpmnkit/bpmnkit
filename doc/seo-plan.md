@@ -96,7 +96,7 @@ and matches the monorepo's "single source of truth" convention.
   `meta description`, canonical link, full OG set (`og:title/description/url/type/
   image/site_name`), full Twitter card set. Builds absolute URLs from `Astro.site` +
   `Astro.url.pathname`.
-- Adopt it in every landing page (`index`, `cli`, `editor`, `operate`, `casen`, `404`)
+- Adopt it in every landing page (`index`, `cli`, `editor`, `operate`, `bpmnkit`, `404`)
   and in `apps/learn/src/layouts/BaseLayout.astro`. Fixes G6, G7.
 - For docs (Starlight), extend the existing `head[]` in `astro.config.mjs` to complete
   the OG set (Starlight already handles canonical + og:title/description).

@@ -1,0 +1,71 @@
+// The slice of Zeebe 8.8's gateway protocol (package gateway_protocol, service Gateway) that the
+// `grpc` feature speaks: StreamActivatedJobs and the messages it carries. Field numbers are the wire
+// contract; src/grpc.rs hand-writes the matching prost messages (no protoc at build time) and its
+// `matches_vendored_proto` test fails if they drift from this file. Source: camunda/camunda
+// stable/8.8 zeebe/gateway-protocol/src/main/proto/gateway.proto (comments dropped).
+syntax = "proto3";
+package gateway_protocol;
+
+service Gateway {
+  rpc StreamActivatedJobs(StreamActivatedJobsRequest) returns (stream ActivatedJob) {}
+}
+
+message StreamActivatedJobsRequest {
+  string type = 1;
+  string worker = 2;
+  int64 timeout = 3;
+  repeated string fetchVariable = 5;
+  repeated string tenantIds = 6;
+}
+
+message ActivatedJob {
+  enum JobKind {
+    BPMN_ELEMENT = 0;
+    EXECUTION_LISTENER = 1;
+    TASK_LISTENER = 2;
+    AD_HOC_SUB_PROCESS = 3;
+  }
+
+  enum ListenerEventType {
+    ASSIGNING = 0;
+    CANCELING = 1;
+    COMPLETING = 2;
+    CREATING = 3;
+    END = 4;
+    START = 5;
+    UNSPECIFIED = 6;
+    UPDATING = 7;
+  }
+
+  int64 key = 1;
+  string type = 2;
+  int64 processInstanceKey = 3;
+  string bpmnProcessId = 4;
+  int32 processDefinitionVersion = 5;
+  int64 processDefinitionKey = 6;
+  string elementId = 7;
+  int64 elementInstanceKey = 8;
+  string customHeaders = 9;
+  string worker = 10;
+  int32 retries = 11;
+  int64 deadline = 12;
+  string variables = 13;
+  string tenantId = 14;
+  optional UserTaskProperties userTask = 15;
+  JobKind kind = 16;
+  ListenerEventType listenerEventType = 17;
+  repeated string tags = 18;
+}
+
+message UserTaskProperties {
+  optional string action = 1;
+  optional string assignee = 2;
+  repeated string candidateGroups = 3;
+  repeated string candidateUsers = 4;
+  repeated string changedAttributes = 5;
+  optional string dueDate = 6;
+  optional string followUpDate = 7;
+  optional int64 formKey = 8;
+  optional int32 priority = 9;
+  optional int64 userTaskKey = 10;
+}

@@ -1,0 +1,82 @@
+name: Worker e2e
+
+# bpmnkit-worker against a real reebe server (activate → complete / fail / BPMN error, drain),
+# plus the feature sets the workspace test does not build. Kept out of ci.yml and `verify:rust`
+# so their time is unchanged; path-filtered like reebe.yml, with a weekly run for drift.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "crates/bpmnkit-worker/**"
+      - "crates/bpmnkit-connector-runtime/**"
+      - "apps/reebe/**"
+      - "Cargo.lock"
+      - ".github/workflows/worker-e2e.yml"
+  push:
+    branches: [main]
+    paths:
+      - "crates/bpmnkit-worker/**"
+      - "crates/bpmnkit-connector-runtime/**"
+      - "apps/reebe/**"
+      - "Cargo.lock"
+      - ".github/workflows/worker-e2e.yml"
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: worker-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  worker-e2e:
+    name: Worker e2e (reebe)
+    runs-on: ubuntu-latest
+    env:
+      CARGO_TERM_COLOR: always
+      BPMNKIT_WORKER_E2E_URL: http://localhost:18080
+      BPMNKIT_WORKER_E2E_GRPC: http://localhost:26599
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Two workspaces: the root one (the worker) and apps/reebe (the server).
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: worker-e2e
+          workspaces: |
+            . -> target
+            apps/reebe -> target
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build reebe (embedded SQLite)
+        run: cargo build --manifest-path apps/reebe/Cargo.toml --locked --no-default-features --features embedded -p reebe-server
+
+      - name: Feature sets (no default, all)
+        run: |
+          cargo clippy -p bpmnkit-worker --all-targets --no-default-features --locked -- -D warnings
+          cargo clippy -p bpmnkit-worker --all-targets --all-features --locked -- -D warnings
+          cargo test -p bpmnkit-worker --no-default-features --locked
+          cargo test -p bpmnkit-worker --all-features --locked
+
+      - name: Start reebe
+        run: |
+          mkdir -p "$RUNNER_TEMP/reebe-data"
+          XDG_DATA_HOME="$RUNNER_TEMP/reebe-data" REEBE_PORT=18080 REEBE_GRPC_PORT=26599 \
+            apps/reebe/target/debug/reebe-server > "$RUNNER_TEMP/reebe.log" 2>&1 &
+          for _ in $(seq 1 60); do
+            curl -sf "$BPMNKIT_WORKER_E2E_URL/v2/topology" > /dev/null && exit 0
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/reebe.log"
+          exit 1
+
+      - name: E2E tests
+        run: |
+          cargo test -p bpmnkit-worker --test reebe_e2e --features grpc --locked -- --ignored --nocapture
+          cargo test -p bpmnkit-connector-runtime --test reebe_e2e --locked -- --ignored
+
+      - name: reebe log
+        if: failure()
+        run: cat "$RUNNER_TEMP/reebe.log"

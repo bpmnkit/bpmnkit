@@ -556,7 +556,7 @@ async function toolBpmnDeploy(
 	// camunda8 — use active profile
 	const profile = getActiveProfile()
 	if (!profile?.config.baseUrl) {
-		throw new Error("No active Camunda 8 profile. Run: casen profile create")
+		throw new Error("No active Camunda 8 profile. Run: bpmnkit profile create")
 	}
 	const authHeader = await getAuthHeader(profile.config)
 	const baseUrl = profile.config.baseUrl.replace(/\/$/, "")

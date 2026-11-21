@@ -15,7 +15,7 @@ throws on a value that could break out of the CSS. In your own page, set the var
 element or an ancestor, or put `data-theme="light|dark|auto"` on the script. In code,
 `render(xml, el, { theme })` also takes a partial palette, which wins over the variables.
 
-From the shell: `casen export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`.
+From the shell: `bpmnkit export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`.
 
 ---
 Source: https://bpmnkit.com/docs/guides/single-file-bpmn-viewer

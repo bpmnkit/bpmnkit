@@ -32,7 +32,7 @@ One line in your `AGENTS.md` or `CLAUDE.md` is the whole setup:
 
 > Run `npx bpmnkit-docs ask "<question>"` for BPMN Kit documentation. It answers from the version this project installed. Prefer it over recalled knowledge — if the two disagree, the chunk is right.
 
-Writing a BPMN, DMN or form file? Start from its agent card, a ~1–1.5k-token cheat sheet with a runnable script and the known traps: `casen agent-card bpmn|dmn|form` (from `@bpmnkit/cli`), or [the docs](https://bpmnkit.com/docs/agent-cards/bpmn).
+Writing a BPMN, DMN or form file? Start from its agent card, a ~1–1.5k-token cheat sheet with a runnable script and the known traps: `bpmnkit agent-card bpmn|dmn|form` (from `@bpmnkit/cli`), or [the docs](https://bpmnkit.com/docs/agent-cards/bpmn).
 
 It follows the [docspack](https://docspack.dev) package format, so the upstream `docspack` CLI indexes it too. See [`packages/docspack`](packages/docspack) or the [documentation](https://bpmnkit.com/docs/packages/docspack).
 
@@ -43,7 +43,7 @@ It follows the [docspack](https://docspack.dev) package format, so the upstream 
 - **Interactive browser editor** — drag-and-drop BPMN editor with 40+ element types, undo/redo, multi-file tabs, AI chat, and in-browser process simulation
 - **34 composable plugins** — minimap, command palette, AI bridge, token highlight, storage, history, connector catalog, optimizer, and more
 - **100+ OpenAPI connectors** — generate Camunda REST connector templates from 100 built-in API specs (18,000+ endpoints: GitHub, Stripe, Slack, Jira, and more)
-- **`casen` CLI** — deploy, monitor, and manage Camunda 8 processes from the terminal; extend via a typed plugin SDK
+- **`bpmnkit` CLI** — deploy, monitor, and manage Camunda 8 processes from the terminal; extend via a typed plugin SDK
 - **AI-assisted design** — local proxy connects Claude, Copilot, and Gemini to edit diagrams via natural language or MCP tool calls
 - **Native desktop app** *(experimental)* — Tauri build of the editor for Windows, macOS and Linux, attached to [GitHub Releases](https://github.com/bpmnkit/bpmnkit/releases?q=desktop)
 - **Share a diagram as a link** — [Drop](https://bpmnkit.com/drop) renders a BPMN/DMN/Form file for anyone with the link, live, and lets one of them edit it at a time
@@ -57,8 +57,8 @@ says what each one promises; every package README shows its tier at the top.
 
 | Tier | Promise | Products |
 |------|---------|----------|
-| **Core** | Semver at 1.0: nothing breaks without a major release. | [`@bpmnkit/core`](packages/core), [`@bpmnkit/canvas`](packages/canvas), [`@bpmnkit/editor`](packages/editor), [`@bpmnkit/plugins`](packages/plugins), [`@bpmnkit/engine`](packages/engine), [`@bpmnkit/feel`](packages/feel), [`@bpmnkit/api`](packages/api), [`@bpmnkit/ascii`](packages/ascii), [`@bpmnkit/docspack`](packages/docspack), [`@bpmnkit/connector-gen`](packages/connector-gen), [`@bpmnkit/connectors`](packages/connectors), [`@bpmnkit/cli`](apps/cli) |
-| **Tools** | Maintained, on 0.x: a minor release can break, so pin a version. | [`@bpmnkit/ui`](packages/ui), [`@bpmnkit/markdown`](packages/markdown), [`@bpmnkit/viewer-lite`](packages/viewer-lite), [`@bpmnkit/camunda-docspack`](packages/camunda-docspack), [`@bpmnkit/profiles`](packages/profiles), [`@bpmnkit/astro-shared`](packages/astro-shared), [`@bpmnkit/patterns`](packages/patterns), [`@bpmnkit/worker-client`](packages/worker-client), [`@bpmnkit/cli-sdk`](packages/cli-sdk), [`@bpmnkit/create-casen-plugin`](packages/create-casen-plugin), [`@bpmnkit/proxy`](apps/proxy), [`@bpmnkit/casen-report`](plugins-cli/casen-report), [`@bpmnkit/casen-worker-http`](plugins-cli/casen-worker-http), [`@bpmnkit/casen-worker-ai`](plugins-cli/casen-worker-ai), BPMN Kit for VS Code ([`apps/vscode`](apps/vscode)), Drop ([`apps/drop`](apps/drop)) |
+| **Core** | Semver at 1.0: nothing breaks without a major release. | [`@bpmnkit/core`](packages/core), [`@bpmnkit/canvas`](packages/canvas), [`@bpmnkit/editor`](packages/editor), [`@bpmnkit/plugins`](packages/plugins), [`@bpmnkit/engine`](packages/engine), [`@bpmnkit/feel`](packages/feel), [`@bpmnkit/api`](packages/api), [`@bpmnkit/ascii`](packages/ascii), [`@bpmnkit/docspack`](packages/docspack), [`@bpmnkit/connector-gen`](packages/connector-gen), [`@bpmnkit/connectors`](packages/connectors), [`@bpmnkit/cli-legacy`](apps/cli), [`@bpmnkit/cli`](packages/cli), [`@bpmnkit/cli-linux-x64`](packages/cli-linux-x64), [`@bpmnkit/cli-linux-arm64`](packages/cli-linux-arm64), [`@bpmnkit/cli-darwin-x64`](packages/cli-darwin-x64), [`@bpmnkit/cli-darwin-arm64`](packages/cli-darwin-arm64), [`@bpmnkit/cli-win32-x64`](packages/cli-win32-x64) |
+| **Tools** | Maintained, on 0.x: a minor release can break, so pin a version. | [`@bpmnkit/ui`](packages/ui), [`@bpmnkit/markdown`](packages/markdown), [`@bpmnkit/viewer-lite`](packages/viewer-lite), [`@bpmnkit/camunda-docspack`](packages/camunda-docspack), [`@bpmnkit/profiles`](packages/profiles), [`@bpmnkit/astro-shared`](packages/astro-shared), [`@bpmnkit/patterns`](packages/patterns), [`@bpmnkit/worker-client`](packages/worker-client), [`@bpmnkit/cli-sdk`](packages/cli-sdk), [`@bpmnkit/create-casen-plugin`](packages/create-casen-plugin), [`@bpmnkit/create-bpmnkit-plugin`](packages/create-bpmnkit-plugin), [`@bpmnkit/proxy`](apps/proxy), [`@bpmnkit/casen-report`](plugins-cli/casen-report), [`@bpmnkit/casen-worker-http`](plugins-cli/casen-worker-http), [`@bpmnkit/casen-worker-ai`](plugins-cli/casen-worker-ai), BPMN Kit for VS Code ([`apps/vscode`](apps/vscode)), Drop ([`apps/drop`](apps/drop)) |
 | **Experimental** | May change or be discontinued. Not for production. | [`@bpmnkit/operate`](packages/operate), [`@bpmnkit/flow`](packages/flow), [`@bpmnkit/user-tasks`](packages/user-tasks), [`@bpmnkit/reebe-wasm`](apps/reebe-wasm), Reebe ([`apps/reebe`](apps/reebe)), Studio ([`apps/studio`](apps/studio)), Desktop app ([`apps/desktop`](apps/desktop)), proxy-rs ([`apps/proxy-rs`](apps/proxy-rs)) |
 
 Reebe is a dev/test engine, not for production. It is a clean-room implementation of the Zeebe
@@ -94,11 +94,11 @@ Camunda. "Zeebe" and "Camunda" are trademarks of Camunda Services GmbH.
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| [`@bpmnkit/cli`](apps/cli) | [![npm](https://img.shields.io/npm/v/@bpmnkit/cli?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli) | `casen` — Camunda 8 command-line interface |
+| [`@bpmnkit/cli`](packages/cli) | [![npm](https://img.shields.io/npm/v/@bpmnkit/cli?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli) | `bpmnkit` — Camunda 8 command-line interface |
 | [`@bpmnkit/proxy`](apps/proxy) | [![npm](https://img.shields.io/npm/v/@bpmnkit/proxy?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
 | [`@bpmnkit/operate`](packages/operate) | [![npm](https://img.shields.io/npm/v/@bpmnkit/operate?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
-| [`@bpmnkit/cli-sdk`](packages/cli-sdk) | [![npm](https://img.shields.io/npm/v/@bpmnkit/cli-sdk?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for `casen` |
-| [`@bpmnkit/create-casen-plugin`](packages/create-casen-plugin) | [![npm](https://img.shields.io/npm/v/@bpmnkit/create-casen-plugin?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new `casen` CLI plugin in seconds |
+| [`@bpmnkit/cli-sdk`](packages/cli-sdk) | [![npm](https://img.shields.io/npm/v/@bpmnkit/cli-sdk?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for `bpmnkit` |
+| [`@bpmnkit/create-casen-plugin`](packages/create-casen-plugin) | [![npm](https://img.shields.io/npm/v/@bpmnkit/create-casen-plugin?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new `bpmnkit` CLI plugin in seconds |
 
 ### CLI Plugins
 
@@ -176,27 +176,29 @@ See the [`@bpmnkit/editor`](packages/editor/README.md) and [`@bpmnkit/plugins`](
 
 ### CLI — manage Camunda 8 from the terminal
 
+`bpmnkit` is a native binary since 2.0 (alias `casen` stays); commands it does not run yet fall back to `@bpmnkit/cli-legacy`. Also on GitHub Releases as shell/PowerShell/MSI installers and a Homebrew tap (`bpmnkit self update` updates those).
+
 ```sh
 npm install -g @bpmnkit/cli
 
 # Connect to your Camunda cluster
-casen profile import production ./camunda-credentials.sh
-casen profile use production
+bpmnkit profile import production ./camunda-credentials.sh
+bpmnkit profile use production
 
 # Deploy a process
-casen deploy deploy order-process.bpmn --target camunda8
+bpmnkit deploy deploy order-process.bpmn --target camunda8
 
 # Monitor running instances
-casen pi list --filter '{"state":"ACTIVE"}'
+bpmnkit pi list --filter '{"state":"ACTIVE"}'
 
 # Generate connector templates from any OpenAPI spec
-casen connector generate https://api.example.com/openapi.json --out ./templates/
+bpmnkit connector generate https://api.example.com/openapi.json --out ./templates/
 
 # Start the local AI bridge and API proxy
-casen proxy start
+bpmnkit proxy start
 ```
 
-See the full [`@bpmnkit/cli` README](apps/cli/README.md) for all commands.
+See the full [`@bpmnkit/cli` README](packages/cli/README.md) for all commands.
 
 ### Monitoring — embed the operations frontend (experimental)
 
@@ -234,13 +236,13 @@ bpmnkit/bpmnkit
 │   ├── ui/             # @bpmnkit/ui      — Design tokens
 │   └── astro-shared/   # Shared Astro CSS/metadata
 ├── apps/               # Applications (cli, proxy and reebe-wasm are published)
-│   ├── cli/            # casen CLI tool
+│   ├── cli/            # bpmnkit CLI tool
 │   ├── proxy/          # Local AI + API proxy server
 │   ├── desktop/        # Tauri native desktop app
 │   ├── landing/        # bpmnkit.com — site + docs at /docs (Astro)
 │   ├── learn/          # Interactive learning center (Astro)
 │   └── examples/       # Runnable BPMN workflow examples
-├── plugins-cli/        # Official casen CLI plugins
+├── plugins-cli/        # Official bpmnkit CLI plugins
 │   ├── casen-report/        # HTML incident & SLA reports
 │   ├── casen-worker-http/   # Example HTTP worker plugin
 │   └── casen-worker-ai/      # AI task worker (Claude)
@@ -308,7 +310,7 @@ Packages version independently. Twelve are at **1.0** and covered by
 [Stability and Versioning](https://bpmnkit.com/docs/getting-started/stability) — the contract
 that says what counts as public API, what makes a change breaking (including when generated
 BPMN counts as one), which runtimes are supported, and how deprecations run:
-`@bpmnkit/core`, `@bpmnkit/canvas`, `@bpmnkit/editor`, `@bpmnkit/plugins`, `@bpmnkit/engine`, `@bpmnkit/feel`, `@bpmnkit/api`, `@bpmnkit/ascii`, `@bpmnkit/docspack`, `@bpmnkit/connector-gen`, `@bpmnkit/connectors`, `@bpmnkit/cli`.
+`@bpmnkit/core`, `@bpmnkit/canvas`, `@bpmnkit/editor`, `@bpmnkit/plugins`, `@bpmnkit/engine`, `@bpmnkit/feel`, `@bpmnkit/api`, `@bpmnkit/ascii`, `@bpmnkit/docspack`, `@bpmnkit/connector-gen`, `@bpmnkit/connectors`, `@bpmnkit/cli`, `@bpmnkit/cli`, `@bpmnkit/cli-linux-x64`, `@bpmnkit/cli-linux-arm64`, `@bpmnkit/cli-darwin-x64`, `@bpmnkit/cli-darwin-arm64`, `@bpmnkit/cli-win32-x64`.
 
 The other published packages are on **0.x**, which under semver promises nothing about
 compatibility — pin an exact version of those if that matters to you today. Their

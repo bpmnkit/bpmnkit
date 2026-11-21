@@ -295,7 +295,7 @@ function slugify(value: string): string {
 /**
  * Make `id` unique against `used`, recording it. Ids are unique within a document
  * by construction, but two documents can still land on the same one — a page
- * `cli/casen` and a `## casen` section of a page `cli` both want `cli.casen`.
+ * `cli/casen` and a `## bpmnkit` section of a page `cli` both want `cli.casen`.
  */
 export function uniqueId(id: string, used: Set<string>): string {
 	const base = id === "" ? "chunk" : id

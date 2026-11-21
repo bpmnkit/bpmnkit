@@ -1,11 +1,10 @@
 {
-	"name": "@bpmnkit/cli",
+	"name": "@bpmnkit/cli-legacy",
 	"version": "1.9.3",
-	"description": "Command-line interface for Camunda 8 — deploy, manage, and monitor processes from the terminal",
-	"mcpName": "io.github.bpmnkit/bpmnkit",
+	"description": "Legacy Node CLI for Camunda 8, the fallback behind the native bpmnkit binary for commands not ported yet",
 	"type": "module",
 	"bin": {
-		"casen": "./dist/index.js"
+		"bpmnkit-legacy": "./dist/index.js"
 	},
 	"files": ["LICENSE", "README.md", "dist/**/*.js", "skills/**/*.md", "agent-cards/*.md"],
 	"engines": {
@@ -40,7 +39,7 @@
 		"type": "git",
 		"url": "https://github.com/bpmnkit/bpmnkit"
 	},
-	"keywords": ["camunda", "bpmn", "cli", "terminal", "zeebe", "workflow", "typescript", "casen"],
+	"keywords": ["camunda", "bpmn", "cli", "terminal", "zeebe", "workflow", "typescript", "bpmnkit"],
 	"license": "MIT",
 	"homepage": "https://bpmnkit.com",
 	"bugs": {

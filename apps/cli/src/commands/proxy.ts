@@ -39,19 +39,19 @@ const startCmd: Command = {
 		},
 	],
 	examples: [
-		{ description: "Start on default port (3033)", command: "casen proxy start" },
-		{ description: "Start on a custom port", command: "casen proxy start --port 4000" },
+		{ description: "Start on default port (3033)", command: "bpmnkit proxy start" },
+		{ description: "Start on a custom port", command: "bpmnkit proxy start --port 4000" },
 		{
 			description: "Allow an extra web app to call the proxy",
-			command: "casen proxy start --allow-origin https://modeler.example.com",
+			command: "bpmnkit proxy start --allow-origin https://modeler.example.com",
 		},
 		{
 			description: "Allow a workspace folder the proxy would not open on its own",
-			command: "casen proxy start --root ~/.local/share/processes",
+			command: "bpmnkit proxy start --root ~/.local/share/processes",
 		},
 		{
 			description: "Listen on every interface (trusted networks only)",
-			command: "casen proxy start --host 0.0.0.0 --allow-host devbox.lan",
+			command: "bpmnkit proxy start --host 0.0.0.0 --allow-host devbox.lan",
 		},
 	],
 	async run(ctx) {
@@ -96,7 +96,7 @@ const mcpCmd: Command = {
 	examples: [
 		{
 			description: "Start MCP server (used by Claude Code plugin)",
-			command: "casen proxy mcp",
+			command: "bpmnkit proxy mcp",
 		},
 	],
 	async run(_ctx) {

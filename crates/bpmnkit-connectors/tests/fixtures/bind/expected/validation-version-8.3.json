@@ -1,0 +1,19 @@
+[
+	[
+		{
+			"key": "provider.anthropic.backend.anthropic.apiKey",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Anthropic API key\" (provider.anthropic.backend.anthropic.apiKey)"
+		},
+		{
+			"key": "provider.anthropic.model.model",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Model\" (provider.anthropic.model.model)"
+		},
+		{
+			"key": "data.userPrompt.prompt",
+			"kind": "missing-required",
+			"message": "Missing required value for \"User prompt\" (data.userPrompt.prompt)"
+		}
+	]
+]

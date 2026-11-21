@@ -1,4 +1,4 @@
-# casen build — Findings
+# bpmnkit build — Findings
 
 Each finding names the element, the BPMN Kit rule id and the key the rule has in
 `.bpmnlintrc` (what c8ctl and Camunda Modeler lint print):
@@ -21,7 +21,7 @@ Each finding names the element, the BPMN Kit rule id and the key the rule has in
 | `--no-forms` | Do not generate forms for form-less user tasks (with `--edit`, only new ones get forms anyway) |
 | `--verbose` | Also list what the text reader completed (ends, joins, renamed ids) |
 
-casen silences Node's process warnings (such as the proxy agent notice); `NODE_NO_WARNINGS=0` keeps them.
+bpmnkit silences Node's process warnings (such as the proxy agent notice); `NODE_NO_WARNINGS=0` keeps them.
 
 ---
 Source: https://bpmnkit.com/docs/cli/build

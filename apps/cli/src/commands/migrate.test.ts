@@ -42,7 +42,7 @@ beforeEach(() => {
 	dir = mkdtempSync(join(tmpdir(), "casen-migrate-"))
 })
 
-describe("casen migrate c7", () => {
+describe("bpmnkit migrate c7", () => {
 	it("is registered", () => {
 		expect(commandGroups.some((g) => g.name === "migrate")).toBe(true)
 		expect(c7).toBeDefined()

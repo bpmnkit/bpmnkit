@@ -113,7 +113,7 @@ apps) is larger than a one-maintainer project can credibly present, and several 
 | Expressions | `@bpmnkit/feel` parser/evaluator/formatter/highlighter, 87 built-ins, **94% DMN TCK** (1,940/2,053), nightly TCK workflow | 1.0.0 |
 | Execution | `@bpmnkit/engine` TS in-process *simulator*; **Reebe** — Rust Zeebe-compatible REST engine (Postgres/SQLite, event-sourced, single node, 292 Rust tests not in CI); `reebe-wasm` in-browser build | engine 1.0.0; Reebe 0.1.x private / experimental |
 | Camunda integration | `@bpmnkit/api` (~180 typed ops, OAuth2), `worker-client`, `user-tasks`, `connectors` (116+ OOTB templates applied deterministically), `connector-gen` (OpenAPI → template, 100 bundled specs) | api/connectors 1.0.0; rest 0.x |
-| Tools | `casen` CLI (deploy, instances, TUI, lint, diff, generate, test, view, skills) + plugin SDK; AI proxy + MCP server (Node) and Rust sidecar port; Operate-like UI; Studio (Preact) | CLI 1.0.0; others 0.x, thin tests |
+| Tools | `bpmnkit` CLI (deploy, instances, TUI, lint, diff, generate, test, view, skills) + plugin SDK; AI proxy + MCP server (Node) and Rust sidecar port; Operate-like UI; Studio (Preact) | CLI 1.0.0; others 0.x, thin tests |
 | Surfaces | bpmnkit.com (Astro, 38 docs pages, playgrounds), learn.bpmnkit.com, **Drop** (share-link SaaS with live single-writer editing on Cloudflare), VS Code extension, Tauri desktop, demo (AI benchmark) | mixed |
 | AI | docspack + camunda-docspack (offline BM25 docs for agents), Claude Code plugin (9 skills, 2 agents), patterns, AIKit ProcessPlan compiler | differentiated |
 
@@ -387,7 +387,7 @@ questions).
   Server, Vercel Local World, c8run). BPMN Kit has no single "dev" command that runs engine
   + UI.
 - **Testing with mocks inside the project's own test runner** (Step Functions TestState,
-  Temporal test env). BPMN Kit's `casen test` scenario runner exists but there is no
+  Temporal test env). BPMN Kit's `bpmnkit test` scenario runner exists but there is no
   first-class Vitest/Jest helper story on the site.
 
 ---
@@ -499,14 +499,14 @@ Legend: ✅ yes · ◐ partial · ❌ no · — n/a
 | FEEL engine | ✅ **94% TCK** | feelin (unlisted) | feel-scala | feel-scala (84%) | — | own | Drools 99.9% | — |
 | Forms | ✅ Camunda schema | form-js | ✅ | ✅ | ✅ | own | ❌ | — |
 | Execution-semantics simulation | ✅ TS engine + WASM | ❌ (token anim.) | token anim. | Play (needs cluster) | ◐ | model tests | test scenarios | ✅ |
-| Scenario/unit tests | ✅ `casen test` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Scenario/unit tests | ✅ `bpmnkit test` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
 | Visual diff | ✅ | lib | ❌ | versions | ✅ | ✅ | ❌ | — |
 | Collaboration | ◐ Drop (single-writer baton) | ❌ | ❌ | ✅ roles/comments/lock | Git | ✅ Git/PR | ❌ | ◐ |
 | Comments / @mentions | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ | ❌ | ✅ |
 | AI generation | ✅ (pools/lanes, BYO CLI) | ❌ | ❌ | ◐ alpha, no lanes | planned | ✅ | ❌ | ✅ |
 | MCP authoring server | ✅ (proxy) | ❌ | community | ❌ | ❌ | ✅ | ❌ | ❌ |
 | Offline agent docs | ✅ docspack | ❌ | ❌ | Docs MCP (online) | ❌ | ❌ | ❌ | ❌ |
-| CLI deploy/run | ✅ casen | ❌ | via c8ctl | c8ctl | ✅ | ❌ | ❌ | — |
+| CLI deploy/run | ✅ bpmnkit | ❌ | via c8ctl | c8ctl | ✅ | ❌ | ❌ | — |
 | VS Code | ◐ **not on Marketplace** | basic ext | — | — | ✅ 12.4k installs | ❌ | deprecated | ✅ |
 | Desktop | ◐ no installers | — | ✅ | — | Theia | — | — | — |
 | Camunda 7 / Operaton / CIB7 | ❌ | ✅ | ✅ | ❌ | ✅ | — | — | — |
@@ -682,9 +682,9 @@ testimonials; explicit open-source/no-lock-in; Discord/Slack; visible changelog.
 > - **Item 12:** inbound and linked-resource templates apply. Per-file resolution
 >   (2026-09-25): Studio asks the proxy for one model's templates
 >   (`GET /element-templates?root=…&file=…`) and swaps them when another model opens.
->   `casen lint`, the `casen dev` checks and the VS Code Problems panel check connector inputs
+>   `bpmnkit lint`, the `bpmnkit dev` checks and the VS Code Problems panel check connector inputs
 >   against each diagram's own `.camunda/element-templates/` chain. bpmnkit.com/editor and Drop
->   have no filesystem and use the bundled templates. The VS Code and `casen dev` editors have
+>   have no filesystem and use the bundled templates. The VS Code and `bpmnkit dev` editors have
 >   no properties panel yet, so their templates are used only by lint.
 > - **Item 13:** vendor DI, label styles and default-namespace files are preserved.
 > - **Item 14:** FEEL matches 375 of the 378 examples in Camunda's documentation.
@@ -711,7 +711,7 @@ testimonials; explicit open-source/no-lock-in; Discord/Slack; visible changelog.
 ### P2 — The developer loop (the wedge, 1–3 months)
 
 > **Status (2026-09-24): done.** See `doc/progress.md`.
-> - **Item 15:** `casen dev` runs editor, simulation, lint and scenario checks on save,
+> - **Item 15:** `bpmnkit dev` runs editor, simulation, lint and scenario checks on save,
 >   on the TS engine or Reebe WASM.
 > - **Item 16:** `@bpmnkit/engine/testing` (+ `/testing/vitest`) with job, connector and
 >   timer control and path assertions.
@@ -719,11 +719,11 @@ testimonials; explicit open-source/no-lock-in; Discord/Slack; visible changelog.
 >   event-based gateways, signals, escalations, multi-instance, link events and
 >   compensation, with Zeebe variable propagation. Reebe WASM correlates messages and keeps
 >   job results.
-> - **Item 18:** `casen generate types` with worker contract checks.
+> - **Item 18:** `bpmnkit generate types` with worker contract checks.
 > - **Item 19:** the runner's scrubber redraws the tokens at each event.
-> - **Item 20:** 25 runnable templates (7 AI-agent patterns), `casen template`, `/templates`.
+> - **Item 20:** 25 runnable templates (7 AI-agent patterns), `bpmnkit template`, `/templates`.
 
-15. **`npx bpmnkit dev`** (or `casen dev`): local engine (WASM) + editor + Operate-like view
+15. **`npx bpmnkit dev`** (or `bpmnkit dev`): local engine (WASM) + editor + Operate-like view
     in one command, no Docker, no licence key — the Camunda equivalent of
     `temporal server start-dev`.
 16. **Vitest/Jest test helpers**: `startInstance`, `completeJob`, `expectPath`,
@@ -733,12 +733,12 @@ testimonials; explicit open-source/no-lock-in; Discord/Slack; visible changelog.
     event-based gateway, event sub-process, compensation — or make the WASM runner the
     default and document it.
 18. **Typed codegen from BPMN**: job types, variable shapes, message names → TS types for
-    workers (`casen gen types`), plus contract checks between BPMN and workers.
+    workers (`bpmnkit gen types`), plus contract checks between BPMN and workers.
 19. **Time-travel in the simulator**: token-history scrubber, "re-run from here" (Kestra
     Playground pattern).
 20. **Template gallery**: 20–50 runnable processes, incl. AI-agent patterns (routing,
     orchestrator/worker, evaluator/optimizer, human approval, ad-hoc tool loop), each with
-    "open in playground" and "deploy with casen".
+    "open in playground" and "deploy with bpmnkit".
 
 ### P3 — Strategic bets (quarter+, pick deliberately)
 
@@ -790,7 +790,7 @@ Three proof pillars, each backed by a number on the homepage:
 
 1. **Code-first, standard-output** — typed builder → auto-laid-out BPMN any Camunda tool
    opens. *(proof: XML vs TS hero, round-trip + MIWG results)*
-2. **Local & free dev loop** — simulator + WASM engine + tests + `casen`. *(proof: `npx
+2. **Local & free dev loop** — simulator + WASM engine + tests + `bpmnkit`. *(proof: `npx
    bpmnkit dev`, FEEL 94% TCK, engine semantics matrix)*
 3. **Agent-native** — MCP server, offline version-pinned docspacks, compact format, Claude
    Code plugin, published generation benchmark. *(proof: benchmark numbers, research

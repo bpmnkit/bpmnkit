@@ -28,7 +28,7 @@ export interface TemplateScenarioMock {
 }
 
 /**
- * One test scenario, in the `.bpmn.tests.json` shape that `casen test` reads and
+ * One test scenario, in the `.bpmn.tests.json` shape that `bpmnkit test` reads and
  * `runScenario` from `@bpmnkit/engine` accepts.
  */
 export interface TemplateScenario {
@@ -50,7 +50,7 @@ export interface TemplateScenario {
 
 /** A runnable Camunda 8 process template. */
 export interface ProcessTemplate {
-	/** Unique slug — the gallery URL and `casen template use <id>`. */
+	/** Unique slug — the gallery URL and `bpmnkit template use <id>`. */
 	id: string
 	title: string
 	/** One paragraph: what the process does and what it shows. */

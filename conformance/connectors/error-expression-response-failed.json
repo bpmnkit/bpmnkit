@@ -1,0 +1,41 @@
+{
+  "description": "docs: a 2xx body with status failed becomes a BPMN error",
+  "exchanges": [
+    {
+      "request": {
+        "method": "GET",
+        "path": "/action"
+      },
+      "response": {
+        "body": {
+          "reason": "quota",
+          "status": "failed"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "expected": {
+    "throwError": {
+      "errorCode": "FAILED",
+      "errorMessage": "Action failed",
+      "variables": {
+        "reason": "quota",
+        "status": "failed"
+      }
+    }
+  },
+  "job": {
+    "headers": {
+      "errorExpression": "=if error.code = \"404\" then\n  bpmnError(\"404\", \"Got a 404\")\nelse if response.body.status = \"failed\" then\n  bpmnError(\"FAILED\", \"Action failed\", response.body)\nelse\n  null",
+      "resultExpression": "={\n  myResponseBody: response.body\n}"
+    },
+    "retries": 3,
+    "variables": {
+      "method": "GET",
+      "url": "http://mock.local/action"
+    }
+  },
+  "recorded": false,
+  "source": "https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors"
+}

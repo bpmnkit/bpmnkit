@@ -39,7 +39,7 @@ function cardCommand(kind: AgentCardKind): Command {
 						},
 					]
 				: [],
-		examples: [{ description: TITLES[kind], command: `casen agent-card ${kind}` }],
+		examples: [{ description: TITLES[kind], command: `bpmnkit agent-card ${kind}` }],
 		async run(ctx) {
 			// Plain Markdown on stdout: an agent pipes or reads it, so no colour or table output.
 			// The docspack ranking directive is noise outside the docs pack.

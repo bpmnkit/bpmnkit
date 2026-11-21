@@ -27,7 +27,7 @@ result.error        // why: the incident, or what it still waited for
 
 A process that cannot finish does not throw: `reachedEnd` is false, and `stoppedAt` and
 `error` say where and why. For example, a gateway with no matching condition and no default
-flow. `casen synth --check` and Drop's generator run it on what they produce.
+flow. `bpmnkit synth --check` and Drop's generator run it on what they produce.
 
 ---
 Source: https://bpmnkit.com/docs/guides/testing-processes

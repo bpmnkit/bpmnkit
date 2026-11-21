@@ -145,19 +145,19 @@ const c7Cmd: Command = {
 	examples: [
 		{
 			description: "Convert a model, writing order.c8.bpmn next to it",
-			command: "casen migrate c7 order.bpmn",
+			command: "bpmnkit migrate c7 order.bpmn",
 		},
 		{
 			description: "Convert a directory's models into another directory",
-			command: "casen migrate c7 models/*.bpmn --out c8-models",
+			command: "bpmnkit migrate c7 models/*.bpmn --out c8-models",
 		},
 		{
 			description: "Write a deployable model with placeholder job types and keys to replace",
-			command: "casen migrate c7 order.bpmn --placeholders",
+			command: "bpmnkit migrate c7 order.bpmn --placeholders",
 		},
 		{
 			description: "Gate CI on models that still need manual migration work",
-			command: "casen migrate c7 models/*.bpmn --check --format json",
+			command: "bpmnkit migrate c7 models/*.bpmn --check --format json",
 		},
 	],
 	async run(ctx) {

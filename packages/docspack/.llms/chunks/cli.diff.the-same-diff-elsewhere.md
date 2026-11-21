@@ -1,4 +1,4 @@
-# casen diff — The same diff elsewhere
+# bpmnkit diff — The same diff elsewhere
 
 The comparison itself is
 [`diffDiagram()`](/docs/packages/core#diffdiagrambefore-after) in `@bpmnkit/core`, so every

@@ -50,7 +50,7 @@ import { toHtml } from "@bpmnkit/viewer-lite/html"
 writeFileSync("order.html", toHtml(readFileSync("order.bpmn", "utf8"), { title: "Order process" }))
 ```
 
-`toHtml` inlines the script and the XML into `dist/template.html` and escapes any `</script` in the XML (text and comments are safe; CDATA is split and rejoined). Or from the shell: `casen export html order.bpmn -o order.html`. From another language, replace `{{BPMN}}` in `@bpmnkit/viewer-lite/template.html` with the XML, escaping `</script` the same way.
+`toHtml` inlines the script and the XML into `dist/template.html` and escapes any `</script` in the XML (text and comments are safe; CDATA is split and rejoined). Or from the shell: `bpmnkit export html order.bpmn -o order.html`. From another language, replace `{{BPMN}}` in `@bpmnkit/viewer-lite/template.html` with the XML, escaping `</script` the same way.
 
 Choose the theme and brand colours (the colours become `--bpmnkit-viewer-*` variables; a value that could break out of the CSS throws):
 
@@ -59,7 +59,7 @@ toHtml(xml, { theme: "dark" }) // or "auto"
 toHtml(xml, { colors: { bg: "#101820", shapeStroke: "#0b5fff" } })
 ```
 
-`casen export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`. Keys: `bg`, `fill`, `stroke`, `flow`, `text`, `pool-header`, `halo`.
+`bpmnkit export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`. Keys: `bg`, `fill`, `stroke`, `flow`, `text`, `pool-header`, `halo`.
 
 Or in your own page (`data-theme="light|dark|auto"` on the script picks the theme):
 
@@ -113,15 +113,16 @@ A file without diagram layout (`bpmndi`) shows a short message; lay it out first
 | [`@bpmnkit/operate`](https://www.npmjs.com/package/@bpmnkit/operate) | Monitoring & operations frontend for Camunda clusters |
 | [`@bpmnkit/connector-gen`](https://www.npmjs.com/package/@bpmnkit/connector-gen) | Generate connector templates from OpenAPI specs |
 | [`@bpmnkit/connectors`](https://www.npmjs.com/package/@bpmnkit/connectors) | Camunda 8 OOTB connector catalog and deterministic template application |
-| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (casen) |
+| [`@bpmnkit/cli`](https://www.npmjs.com/package/@bpmnkit/cli) | Camunda 8 command-line interface (bpmnkit, alias casen) |
+| [`@bpmnkit/cli-legacy`](https://www.npmjs.com/package/@bpmnkit/cli-legacy) | Node fallback behind the native bpmnkit binary |
 | [`@bpmnkit/proxy`](https://www.npmjs.com/package/@bpmnkit/proxy) | Local AI bridge and Camunda API proxy server |
 | [`@bpmnkit/patterns`](https://www.npmjs.com/package/@bpmnkit/patterns) | Domain process patterns for BPMNKit AIKit |
 | [`@bpmnkit/reebe-wasm`](https://www.npmjs.com/package/@bpmnkit/reebe-wasm) | WebAssembly BPMN engine for browser simulation |
 | [`@bpmnkit/worker-client`](https://www.npmjs.com/package/@bpmnkit/worker-client) | Thin Zeebe REST client for standalone workers |
 | [`@bpmnkit/flow`](https://www.npmjs.com/package/@bpmnkit/flow) | Code-first durable flows that derive BPMN, job types and workers |
 | [`@bpmnkit/user-tasks`](https://www.npmjs.com/package/@bpmnkit/user-tasks) | Embeddable user task widget for Camunda 8 |
-| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the casen CLI |
-| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new casen CLI plugin in seconds |
+| [`@bpmnkit/cli-sdk`](https://www.npmjs.com/package/@bpmnkit/cli-sdk) | Plugin authoring SDK for the bpmnkit CLI |
+| [`@bpmnkit/create-casen-plugin`](https://www.npmjs.com/package/@bpmnkit/create-casen-plugin) | Scaffold a new bpmnkit CLI plugin in seconds |
 | [`@bpmnkit/casen-report`](https://www.npmjs.com/package/@bpmnkit/casen-report) | HTML reports from Camunda 8 incident and SLA data |
 | [`@bpmnkit/casen-worker-http`](https://www.npmjs.com/package/@bpmnkit/casen-worker-http) | Example HTTP worker plugin — completes jobs with live JSONPlaceholder API data |
 | [`@bpmnkit/casen-worker-ai`](https://www.npmjs.com/package/@bpmnkit/casen-worker-ai) | AI task worker — classify, summarize, extract, and decide using Claude |

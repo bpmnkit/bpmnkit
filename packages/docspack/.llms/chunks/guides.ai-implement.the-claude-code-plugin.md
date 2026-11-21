@@ -7,7 +7,7 @@ The richest way to drive this pipeline is the `bpmnkit` Claude Code plugin:
 /plugin install bpmnkit@bpmnkit
 ```
 
-It's **CLI-first**: every skill drives `casen` via Bash — no MCP server, no proxy daemon. Each skill reads the relevant generated/hand-written reference doc (plan format, connector catalog, agentic pattern, FEEL syntax, modeling conventions) before authoring a plan.
+It's **CLI-first**: every skill drives `bpmnkit` via Bash — no MCP server, no proxy daemon. Each skill reads the relevant generated/hand-written reference doc (plan format, connector catalog, agentic pattern, FEEL syntax, modeling conventions) before authoring a plan.
 
 ```
 /bpmnkit:implement an invoice approval process for accounts payable

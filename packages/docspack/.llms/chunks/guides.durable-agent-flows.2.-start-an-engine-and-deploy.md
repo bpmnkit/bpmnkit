@@ -1,13 +1,13 @@
 # Durable Agent Flows — 2. Start an engine and deploy
 
 ```sh
-casen reebe start --port 26500 --grpc-port 26501   # local engine, SQLite-backed
-casen profile create local --base-url http://localhost:26500/v2 --auth-type none
-casen profile use local
-casen deploy deploy pr-review.bpmn
+bpmnkit reebe start --port 26500 --grpc-port 26501   # local engine, SQLite-backed
+bpmnkit profile create local --base-url http://localhost:26500/v2 --auth-type none
+bpmnkit profile use local
+bpmnkit deploy deploy pr-review.bpmn
 ```
 
-REST goes on 26500 because that is where `casen deploy` and the flow worker look by default
+REST goes on 26500 because that is where `bpmnkit deploy` and the flow worker look by default
 (`ZEEBE_ADDRESS`); Reebe's gRPC gateway, which also defaults to 26500, moves to 26501. Any
 Camunda 8 cluster works the same way — point the profile and `ZEEBE_ADDRESS` at it instead.
 
@@ -18,13 +18,13 @@ A hire saves a profile: the CLI to run, the roles it takes on, and how many jobs
 once. Everything after `--` is the command.
 
 ```sh
-casen agent hire claude --roles pr-review,plan --rank senior -- claude -p
-casen agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
-casen agent list
+bpmnkit agent hire claude --roles pr-review,plan --rank senior -- claude -p
+bpmnkit agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
+bpmnkit agent list
 ```
 
 The prompt goes to the CLI on stdin, unless an argument contains `{prompt}` — then it goes
-there. Profiles are saved in `workforce.json`, next to casen's profile config.
+there. Profiles are saved in `workforce.json`, next to bpmnkit's profile config.
 
 | Flag | Default | Description |
 |---|---|---|
@@ -34,7 +34,7 @@ there. Profiles are saved in `workforce.json`, next to casen's profile config.
 | `--timeout` | `30` | Minutes one run may take before it is stopped and the job failed |
 | `--cwd` | current directory | Directory the CLI runs in |
 
-`casen agent hire` with an existing name updates that agent; `casen agent fire <name>` removes
+`bpmnkit agent hire` with an existing name updates that agent; `bpmnkit agent fire <name>` removes
 it.
 
 ### Roles and ranks

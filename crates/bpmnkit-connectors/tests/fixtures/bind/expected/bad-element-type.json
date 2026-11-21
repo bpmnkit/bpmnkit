@@ -1,0 +1,7 @@
+[
+	[
+		{
+			"message": "Template \"test.BadElementType\" converts to \"bpmn:Participant\", which is not a flow element type"
+		}
+	]
+]

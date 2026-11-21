@@ -1,0 +1,31 @@
+[package]
+name = "bpmnkit-connector-runtime"
+description = "Local runner for Camunda 8 REST connector jobs (io.camunda:http-json:1): secrets, FEEL result/error expressions, auth, on top of bpmnkit-worker"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["camunda", "connectors", "rest", "bpmn", "zeebe"]
+categories = ["network-programming", "asynchronous"]
+exclude = ["tests/"]
+
+[dependencies]
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.6.1" }
+bpmnkit-worker = { workspace = true, features = ["oauth"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde_json = { workspace = true }
+tokio = { version = "1.40", features = ["rt", "rt-multi-thread", "net", "time", "macros", "signal"] }
+tracing = "0.1"
+
+[dev-dependencies]
+axum = "0.8"
+# The replay mock serves through hyper directly: axum::serve always sends `Date`, which would
+# make recorded response headers differ per run.
+hyper = { version = "1", features = ["http1", "server"] }
+hyper-util = { version = "0.1", features = ["tokio", "service"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"] }
+bpmnkit-worker = { workspace = true, features = ["oauth", "testing"] }
+tokio = { version = "1.40", features = ["rt-multi-thread", "macros"] }

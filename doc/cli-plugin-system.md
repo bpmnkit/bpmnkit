@@ -1,6 +1,6 @@
-# casen CLI — Plugin System Design
+# bpmnkit CLI — Plugin System Design
 
-## 1. Should casen Have a Plugin System?
+## 1. Should bpmnkit Have a Plugin System?
 
 ### Survey of Popular CLI Plugin Approaches
 
@@ -10,13 +10,13 @@
 
 **Fixed-feature model (`stripe`, `vercel`, `railway`, `flyctl`)** — No plugin system at all. If something belongs in the CLI it gets added to core; everything else is out of scope. These CLIs target a narrow, well-defined API surface and their teams can keep up with demand.
 
-### Verdict: Yes, a plugin system is appropriate for casen
+### Verdict: Yes, a plugin system is appropriate for bpmnkit
 
-The fixed-feature model works when a single team controls the entire surface area. casen targets Camunda 8, which is deployed by many organizations each with their own conventions, CI pipelines, and integrations. The compelling evidence:
+The fixed-feature model works when a single team controls the entire surface area. bpmnkit targets Camunda 8, which is deployed by many organizations each with their own conventions, CI pipelines, and integrations. The compelling evidence:
 
 - **Organizational diversity**: One team needs incident-to-PagerDuty routing; another needs Jira ticket creation on incident; a third needs deploy artifacts pushed to S3. No CLI core team can anticipate all of these.
 - **Community opportunity**: The `gh` plugin ecosystem (100+ community plugins) demonstrates that CLI users will build integrations when the contract is clear.
-- **casen's architecture is already primed**: `CommandGroup[]` is the natural extension point. `run.ts` assembles groups, passes them to `runCli` or `startTui`. Adding externally-loaded groups requires minimal structural change.
+- **bpmnkit's architecture is already primed**: `CommandGroup[]` is the natural extension point. `run.ts` assembles groups, passes them to `runCli` or `startTui`. Adding externally-loaded groups requires minimal structural change.
 - **Profile/auth sharing**: Plugins need authenticated Zeebe/Operate clients — the real value-add over a standalone script. A proper plugin SDK makes this trivial.
 
 The binary-on-PATH model is too weak here (no TUI integration, no profile sharing). The package-based model is the right fit.
@@ -25,7 +25,7 @@ The binary-on-PATH model is too weak here (no TUI integration, no profile sharin
 
 ## 2. Core vs. Plugin Matrix
 
-Everything in the matrix below that should stay in core does so because all casen users need it, it relies on stable internal types, or it would be impractical to maintain as a separate package.
+Everything in the matrix below that should stay in core does so because all bpmnkit users need it, it relies on stable internal types, or it would be impractical to maintain as a separate package.
 
 | Capability | Core | Plugin |
 |---|---|---|
@@ -62,7 +62,7 @@ Plugins export a single default object conforming to `CasenPlugin`. The SDK pack
 export interface CasenPlugin {
   /** Unique reverse-domain identifier, e.g. "com.acme.casen-deploy" */
   id: string
-  /** Human-readable name shown in `casen plugin list` */
+  /** Human-readable name shown in `bpmnkit plugin list` */
   name: string
   version: string
   /** One or more top-level command groups added to the CLI */
@@ -89,7 +89,7 @@ export type { CommandGroup, Command, RunContext } from "@bpmnkit/cli-types"
       index.js
 ```
 
-Each plugin directory is a standard npm package. `casen plugin install <name>` runs `npm install --prefix ~/.casen/plugins/<name> <name>` (or accepts a local path for development).
+Each plugin directory is a standard npm package. `bpmnkit plugin install <name>` runs `npm install --prefix ~/.casen/plugins/<name> <name>` (or accepts a local path for development).
 
 ### 3.3 Plugin Loader (`apps/cli/src/plugin-loader.ts`)
 
@@ -164,12 +164,12 @@ export async function run(argv: string[]): Promise<void> {
 ### 3.5 `plugin` Command Group
 
 ```
-casen plugin list               # list installed plugins (name, version, id)
-casen plugin install <name>     # install from npm registry
-casen plugin install ./path     # install from local directory (dev mode)
-casen plugin remove <name>      # uninstall
-casen plugin update [name]      # update one or all plugins
-casen plugin info <name>        # show metadata for an installed plugin
+bpmnkit plugin list               # list installed plugins (name, version, id)
+bpmnkit plugin install <name>     # install from npm registry
+bpmnkit plugin install ./path     # install from local directory (dev mode)
+bpmnkit plugin remove <name>      # uninstall
+bpmnkit plugin update [name]      # update one or all plugins
+bpmnkit plugin info <name>        # show metadata for an installed plugin
 ```
 
 The `plugin install` subcommand shells out to `npm install` inside `~/.casen/plugins/<name>/`. No custom package manager logic is needed.
@@ -184,13 +184,13 @@ Tab-completion (shell completions) is generated from `CommandGroup[]` at runtime
 
 ## 4. Security Model
 
-Plugin code runs in the same Node.js process as casen, with full access to the file system, network, and environment. This is intentional: plugins need profile access and authenticated clients.
+Plugin code runs in the same Node.js process as bpmnkit, with full access to the file system, network, and environment. This is intentional: plugins need profile access and authenticated clients.
 
-The trust model mirrors `gh` and `kubectl` plugins: **explicit install is the consent mechanism**. Users must run `casen plugin install <name>` to load a plugin. There is no auto-discovery from `$PATH` (unlike `gh`).
+The trust model mirrors `gh` and `kubectl` plugins: **explicit install is the consent mechanism**. Users must run `bpmnkit plugin install <name>` to load a plugin. There is no auto-discovery from `$PATH` (unlike `gh`).
 
 Mitigations:
 - Plugins are pinned in `~/.casen/plugins/<name>/package.json` (standard npm lockfile semantics).
-- `casen plugin update` is explicit — no automatic updates on startup.
+- `bpmnkit plugin update` is explicit — no automatic updates on startup.
 - A future `--no-plugins` flag can disable all plugin loading for CI environments where the plugins directory may be untrusted.
 
 ---
@@ -237,7 +237,7 @@ Plugin authors install the SDK as a `devDependency`:
 
 ---
 
-## 7. Plugin Discovery (`casen plugin search`)
+## 7. Plugin Discovery (`bpmnkit plugin search`)
 
 ### npm Registry API
 
@@ -251,12 +251,12 @@ No authentication, no new dependency — just `fetch`, which Node.js provides na
 
 ### Convention
 
-All casen plugins — first-party and community — must include `"casen-plugin"` in their `package.json` `keywords` array. This is the sole discovery mechanism. The scaffolding tool (§8) adds it automatically, so authors don't have to remember.
+All bpmnkit plugins — first-party and community — must include `"casen-plugin"` in their `package.json` `keywords` array. This is the sole discovery mechanism. The scaffolding tool (§8) adds it automatically, so authors don't have to remember.
 
 ### New command
 
 ```
-casen plugin search [query]     # search npm for casen-plugin packages
+bpmnkit plugin search [query]     # search npm for casen-plugin packages
 ```
 
 Implementation:
@@ -274,12 +274,12 @@ Output (plain mode):
 
 ```
 NAME              VERSION  DESCRIPTION                          SCORE
-casen-deploy      1.2.0    Git-tag-aware deploys for casen      0.85
+casen-deploy      1.2.0    Git-tag-aware deploys for bpmnkit      0.85
 casen-ci          0.9.1    CI-mode output (JUnit, SARIF)        0.78
 casen-slack       0.3.0    Slack notifications from incidents   0.61
 ```
 
-**TUI stretch goal**: make `casen plugin search` interactive — a live-filtered list where selecting a package immediately runs `casen plugin install <name>`. Fits naturally into the existing TUI pattern.
+**TUI stretch goal**: make `bpmnkit plugin search` interactive — a live-filtered list where selecting a package immediately runs `bpmnkit plugin install <name>`. Fits naturally into the existing TUI pattern.
 
 ### Rate limits
 
@@ -324,11 +324,11 @@ Lives in the monorepo alongside `@bpmnkit/cli-sdk`. No runtime dependencies beyo
 ```
 $ pnpm create casen-plugin
 
-  create-casen-plugin — casen plugin scaffolding
+  create-casen-plugin — bpmnkit plugin scaffolding
 
   Plugin name (npm package name): casen-deploy
   Display name:                   Deploy
-  Description:                    Git-tag-aware deploys for casen
+  Description:                    Git-tag-aware deploys for bpmnkit
   Author:                         acme
   Initialize git repo? (Y/n):     Y
 
@@ -342,7 +342,7 @@ $ pnpm create casen-plugin
     cd casen-deploy
     pnpm install
     pnpm build
-    casen plugin install ./casen-deploy
+    bpmnkit plugin install ./casen-deploy
 ```
 
 All prompts have sensible defaults so pressing Enter through them produces a valid package.
@@ -353,7 +353,7 @@ All prompts have sensible defaults so pressing Enter through them produces a val
 {
   "name": "casen-deploy",
   "version": "0.1.0",
-  "description": "Git-tag-aware deploys for casen",
+  "description": "Git-tag-aware deploys for bpmnkit",
   "type": "module",
   "main": "dist/index.js",
   "keywords": ["casen-plugin"],
@@ -367,7 +367,7 @@ All prompts have sensible defaults so pressing Enter through them produces a val
 }
 ```
 
-`"casen-plugin"` is always injected into `keywords` — the author cannot forget it. Once published, the package appears in `casen plugin search` automatically.
+`"casen-plugin"` is always injected into `keywords` — the author cannot forget it. Once published, the package appears in `bpmnkit plugin search` automatically.
 
 ### Generated `src/index.ts`
 
@@ -408,19 +408,19 @@ All prompts accept flags for scripted use:
 pnpm create casen-plugin \
   --name casen-deploy \
   --display-name Deploy \
-  --description "Git-tag-aware deploys for casen" \
+  --description "Git-tag-aware deploys for bpmnkit" \
   --author acme \
   --no-git
 ```
 
-### Why not a separate CLI command (`casen plugin new`)?
+### Why not a separate CLI command (`bpmnkit plugin new`)?
 
-`casen plugin new` could work, but `create-casen-plugin` is better for two reasons:
+`bpmnkit plugin new` could work, but `create-casen-plugin` is better for two reasons:
 
-1. **No prior install required.** `pnpm create casen-plugin` always fetches the latest scaffold. A new author doesn't need casen installed first.
+1. **No prior install required.** `pnpm create casen-plugin` always fetches the latest scaffold. A new author doesn't need bpmnkit installed first.
 2. **Convention.** The `create-*` pattern is immediately familiar to anyone who has used `create-react-app`, `create-next-app`, `create-vite`, etc. Authors know what to expect.
 
-Both could coexist (`casen plugin new` as a thin alias that execs `pnpm create casen-plugin`), but that's a cosmetic addition, not a requirement.
+Both could coexist (`bpmnkit plugin new` as a thin alias that execs `pnpm create casen-plugin`), but that's a cosmetic addition, not a requirement.
 
 ---
 
@@ -429,8 +429,8 @@ Both could coexist (`casen plugin new` as a thin alias that execs `pnpm create c
 1. **`packages/cli-sdk`** — define `CasenPlugin` interface; re-export shared types. No runtime code yet.
 2. **`apps/cli/src/plugin-loader.ts`** — loader with error isolation per plugin.
 3. **Wire into `run.ts`** — `await loadPlugins()` before group assembly.
-4. **`casen plugin` command group** — `list`, `install`, `remove`, `update`, `info`, `search`.
+4. **`bpmnkit plugin` command group** — `list`, `install`, `remove`, `update`, `info`, `search`.
 5. **`packages/create-casen-plugin`** — scaffolding tool; validates the authoring story end-to-end.
 6. **Reference plugin `casen-deploy`** — built with the scaffold; validates the contract; used in integration tests.
 7. **Shell completion update** — ensure completions include dynamically loaded groups.
-8. **Documentation** — `casen plugin --help`, README plugin authoring guide, link to `create-casen-plugin`.
+8. **Documentation** — `bpmnkit plugin --help`, README plugin authoring guide, link to `create-casen-plugin`.

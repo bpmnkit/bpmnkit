@@ -4,19 +4,19 @@
   models are, before they plan the migration.
 - Teams that work in TypeScript or JavaScript and do not want a Java toolchain to convert
   models.
-- CI pipelines: `casen migrate c7 --check` fails while manual work remains.
+- CI pipelines: `bpmnkit migrate c7 --check` fails while manual work remains.
 
 
 ## Run it
 
 ```sh
-casen migrate c7 models/*.bpmn            # writes models/*.c8.bpmn
-casen migrate c7 models/*.bpmn --out c8   # writes c8/*.bpmn
-casen migrate c7 models/*.bpmn --check    # report only, exit 1 on manual work
-casen migrate c7 order.bpmn --placeholders # fill values only a person knows with placeholders
+bpmnkit migrate c7 models/*.bpmn            # writes models/*.c8.bpmn
+bpmnkit migrate c7 models/*.bpmn --out c8   # writes c8/*.bpmn
+bpmnkit migrate c7 models/*.bpmn --check    # report only, exit 1 on manual work
+bpmnkit migrate c7 order.bpmn --placeholders # fill values only a person knows with placeholders
 ```
 
-[`casen migrate`](/docs/cli/migrate) has the flags and the JSON format. From code:
+[`bpmnkit migrate`](/docs/cli/migrate) has the flags and the JSON format. From code:
 
 ```typescript
 import { Bpmn, convertCamunda7 } from "@bpmnkit/core"

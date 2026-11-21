@@ -14,7 +14,7 @@ slack chat.postMessage — Slack Outbound Connector: Post message | token*(secre
   code. A card fits when the task's name names the system ("Post summary to **Slack**"), or
   when the request names it and no other task does.
 - **Searching.** `findConnectorCards(query)` searches all cards.
-- **From a terminal.** `casen connector cards "post a message to slack"` prints them.
+- **From a terminal.** `bpmnkit connector cards "post a message to slack"` prints them.
 
 ---
 Source: https://bpmnkit.com/docs/guides/ai-connectors

@@ -1,13 +1,13 @@
 # @bpmnkit/ascii — From the command line
 
-`casen view` wraps all three, picking the renderer from the file extension:
+`bpmnkit view` wraps all three, picking the renderer from the file extension:
 
 ```sh
-casen view order.bpmn
-casen view risk-score.dmn
+bpmnkit view order.bpmn
+bpmnkit view risk-score.dmn
 ```
 
-See [`casen view`](/docs/cli/view) for the flags it adds on top.
+See [`bpmnkit view`](/docs/cli/view) for the flags it adds on top.
 
 
 ## Stability

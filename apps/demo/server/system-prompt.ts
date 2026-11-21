@@ -186,7 +186,7 @@ ${DEPLOYABLE_RULES}
 export function buildPlanSystemPrompt(repoRoot: string): string {
 	const types = typeDeclarations(repoRoot, "packages/core/src/plan/types.ts", /./)
 	return `You are an expert at planning Camunda 8 BPMN processes as a \`ProcessPlan\`: a typed JSON
-description that \`compilePlan()\` (the \`casen synth\` step) turns into valid, laid-out BPMN. You
+description that \`compilePlan()\` (the \`bpmnkit synth\` step) turns into valid, laid-out BPMN. You
 never write XML, diagram coordinates or flow ids.
 
 ## Types

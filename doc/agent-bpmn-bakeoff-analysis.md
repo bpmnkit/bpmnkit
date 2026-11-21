@@ -49,13 +49,13 @@ that class of bug entirely.
   CLI only resolves `node_modules/@bpmnkit/*docspack`, and the root does not link it. The
   CLAUDE.md instruction does not work in a fresh checkout.
 - When it does run: "apply an element template to a service task" ranks the unrelated
-  `casen generate` table first; "set a form on a start event" returns a conformance page.
+  `bpmnkit generate` table first; "set a form on a start event" returns a conformance page.
   There are no task-shaped recipe chunks.
 - Template property keys are template property ids (`retryCount`, not `retries`). Nothing
   lists them compactly; the CLI winner had `template-props --filter --condensed`.
 - The Claude plugin's `agent` skill (`plugins-claude/bpmnkit-claude/skills/agent/SKILL.md`)
   targets the v1 job-worker agent.
-- No `casen` command applies a template to an element of an existing file.
+- No `bpmnkit` command applies a template to an element of an existing file.
 
 The competitor CLI closed these with per-command help, a filterable property listing, a
 "omitted properties keep their default" note and explicit flow ids. Its iteration log shows
@@ -67,7 +67,7 @@ each of those cut time; ours has the same levers.
   `io.camunda.connectors.agenticai.ai-agent-subprocess.v2` v1 (`connectors/templates/generated.ts`).
 - `applyTemplateToElement(defs, id, template, values)` — every binding kind incl. `zeebe:adHoc`,
   idempotent, no shell.
-- `lintDiagram` + `analyzeCamundaCompat` (8.0–8.10) and `casen lint lint --profile deploy`
+- `lintDiagram` + `analyzeCamundaCompat` (8.0–8.10) and `bpmnkit lint lint --profile deploy`
   emulate the gate's bpmnlint rules.
 - `renderBpmnAscii` and `exportSvg` give an agent a headless self-check.
 - Deterministic semantic auto layout, ad-hoc tool grids, loop-backs routed around the agent.

@@ -73,4 +73,4 @@ call site.
 
 - [Simulate a BPMN process without Camunda](/blog/simulate-bpmn-process-without-camunda) — test before you deploy
 - [`@bpmnkit/api` package reference](/docs/packages/api) — full method list
-- [`casen` CLI](/cli) — manage Camunda 8 from the terminal, built on this same client
+- [`bpmnkit` CLI](/cli) — manage Camunda 8 from the terminal, built on this same client

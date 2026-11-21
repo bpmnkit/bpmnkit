@@ -76,8 +76,10 @@ export function facadeProblems(crates) {
 	const facade = crates.find((c) => c.name === FACADE)
 	if (!facade) return [`${FACADE}: the facade crate is missing`]
 	const deps = new Set(facade.internalAll.map((d) => d.name))
+	// A crate that ships an executable (`bpmnkit-cli`) is an end product, not a library to re-export.
+	const isBin = (c) => c.targets?.some((t) => t.kind.includes("bin"))
 	return crates
-		.filter((c) => c.name !== FACADE && !deps.has(c.name))
+		.filter((c) => c.name !== FACADE && !isBin(c) && !deps.has(c.name))
 		.map((c) => `${FACADE}: the facade does not re-export ${c.name}`)
 }
 
