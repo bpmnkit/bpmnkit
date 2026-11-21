@@ -17,3 +17,7 @@ crates/bpmnkit-codegen/assets/** -text
 crates/bpmnkit-codegen/assets/java/gradle/wrapper/*.jar binary
 crates/bpmnkit-codegen/assets/java/gradle/gradlew text eol=lf
 crates/bpmnkit-codegen/assets/java/gradle/gradlew.bat text eol=crlf
+# npm bin scripts: a CRLF shebang breaks them on Unix, and pnpm pack refuses it (ERR_PNPM_BIN_CRLF).
+packages/*/bin/** text eol=lf
+apps/*/bin/** text eol=lf
+plugins-cli/*/bin/** text eol=lf
