@@ -40,6 +40,7 @@ fn repair_routes_matches_ts() {
                     height: f(&s["bounds"]["height"]),
                 },
                 container: s["container"].as_bool().unwrap(),
+                frame: s["frame"].as_bool().unwrap_or(false),
             })
             .collect();
         let mut edges: Vec<PlaneEdge> = case["input"]

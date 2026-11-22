@@ -1612,12 +1612,15 @@ function layoutDefinitions(
 		const laneIds = new Set(
 			defs.processes.flatMap((p) => laneLevels(p.laneSet).map((level) => level.lane.id)),
 		)
-		// Pools and lanes are containers; message flows cross them by design. It is
-		// the elements inside that a route has to miss.
+		// Pools, lanes and expanded sub-processes are containers; message flows
+		// cross them by design. It is the elements inside that a route has to miss:
+		// a solid sub-process frame walls off every column it spans, so a message
+		// from a pool below to one above it went round the whole stack and across
+		// every other message on the way.
 		const inside = allShapes.filter(
 			(s) => !participantIds.has(s.bpmnElement) && !laneIds.has(s.bpmnElement),
 		)
-		const obstacles = inside.map((s) => s.bounds)
+		const obstacles = inside.filter((s) => s.isExpanded !== true).map((s) => s.bounds)
 		// Labels are worth a sideways nudge on the dock, never a jog: a riser
 		// through a name is hard to read, but two extra bends read worse.
 		const labels = inside.flatMap((s) => (s.label?.bounds ? [s.label.bounds] : []))
@@ -2044,6 +2047,7 @@ function routeRepair(defs: BpmnDefinitions): (shapes: BpmnDiShape[], edges: Bpmn
 			id: s.bpmnElement,
 			bounds: s.bounds,
 			container: containers.has(s.bpmnElement),
+			frame: s.isExpanded === true,
 		}))
 		const planeEdges: Array<PlaneEdge & { di: BpmnDiEdge }> = []
 		for (const di of edges) {

@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-22 — Auto-layout: message flows cross sub-process frames
+
+Driven by the agentic-generation eval (17-pool collaboration: message crossings per run rose 0.1 → 2.5 once agents shared one black-box partner across pools); re-laid eval models are scored offline, outside the repo.
+- Auto-layout (TS and Rust): an expanded sub-process no longer counts as a solid obstacle for message flows, in the router or the route repair. Its frame walled off every column it spans, so a message from a pool below to a partner above found no clear column and the repair sent it round the whole stack, across every other message. It now crosses the frame and misses only the shapes inside; sequence flows and associations still go round.
+- Re-laid eval models: message crossings per run 4.4 → 0.6 (haiku), 2.8 → 0.6 (sonnet), 0.2 → 0.6 (opus; one run reorders its pools), message bends down; message × sequence crossings up by about 2 per run (a straight drop through a sub-process meets its inner flows where the detour went round). Models without such frames are unchanged; `pnpm layout:score` and conformance fixtures unchanged.
+
 ## 2026-11-22 — BPMN card keeps its docspack tags
 
 - The card trim had dropped the `build-script` and `write` tags, so docspack ranked the DMN card first for "write a bpmn build script" (recipe-ranking test). Restored them, dropped the stale `casen-build` and `annotation` tags to stay under the 2k-token card budget, re-synced the copies and rebuilt the docspack index.

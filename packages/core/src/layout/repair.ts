@@ -9,6 +9,12 @@ export interface PlaneShape {
 	bounds: Bounds
 	/** Pools, lanes and groups: drawn around other shapes, so never in the way. */
 	container: boolean
+	/**
+	 * An expanded sub-process. A message flow may cross its outline the way it
+	 * crosses a pool's, missing only what is inside: treated as solid, the frame
+	 * walls off every column it spans and sends messages round the whole stack.
+	 */
+	frame?: boolean
 }
 
 export interface PlaneEdge {
@@ -52,7 +58,9 @@ export function repairRoutes(
 		const exempt = new Set<string>([edge.sourceRef, edge.targetRef])
 		for (const id of related(edge.sourceRef)) exempt.add(id)
 		for (const id of related(edge.targetRef)) exempt.add(id)
-		const blocking = obstacles.filter((s) => !exempt.has(s.id))
+		const blocking = obstacles.filter(
+			(s) => !exempt.has(s.id) && !(edge.kind === "message" && s.frame),
+		)
 		const source = byId.get(edge.sourceRef)
 		const target = byId.get(edge.targetRef)
 		if (!source || !target) continue
