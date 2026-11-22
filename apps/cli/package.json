@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/cli-legacy",
-	"version": "1.10.0",
+	"version": "1.10.1",
 	"description": "Legacy Node CLI for Camunda 8, the fallback behind the native bpmnkit binary for commands not ported yet",
 	"type": "module",
 	"bin": {

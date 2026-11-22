@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/core",
-	"version": "1.18.1",
+	"version": "1.18.2",
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",

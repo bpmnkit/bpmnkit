@@ -1,5 +1,14 @@
 # @bpmnkit/cli
 
+## 1.10.1
+
+### Patch Changes
+
+- b784a61: Text spec: a data object named twice in one pool is one object (each pool keeps its own). The BPMN agent card shows a two-way message exchange (one message flow per direction), says to model only the named steps, `user` for a person's work and `service` for a system's, and a one-time timer unless the text says it repeats.
+- Updated dependencies [b784a61]
+- Updated dependencies [b784a61]
+  - @bpmnkit/core@1.18.2
+
 ## 1.10.0
 
 ### Minor Changes
