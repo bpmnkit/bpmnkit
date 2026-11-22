@@ -266,7 +266,7 @@ function loopsBack(graph: SemanticGraph, entry: string): boolean {
 }
 
 /** The nodes only `entry` leads to: it, and successors reached from nowhere else. */
-function chainOf(graph: SemanticGraph, entry: string): Set<string> {
+export function chainOf(graph: SemanticGraph, entry: string): Set<string> {
 	const chain = new Set([entry])
 	const stack = [entry]
 	while (stack.length > 0) {
@@ -394,7 +394,16 @@ export function placeExceptionRow(
 		demoted.add(entry)
 		for (const flow of entry.flows) steps.set(flow.id, 1)
 	}
-	for (let round = 0; round <= entries.length; round++) {
+	/** Hosts moved one column right to make room for an earlier handler's end. */
+	const widened = new Set<string>()
+	/** The earlier handler's nodes in `rank` are all events (narrow, and the chain ends there). */
+	const tailIsEvent = (entry: HandlerEntry, rank: number): boolean => {
+		const inRank = entry.flows.flatMap((flow) =>
+			[...(chains.get(flow.targetRef) ?? [])].filter((id) => graph.ranks.get(id) === rank),
+		)
+		return inRank.length > 0 && inRank.every((id) => graph.byId.get(id)?.type.endsWith("Event"))
+	}
+	for (let round = 0; round <= 2 * entries.length; round++) {
 		assignRanks(graph, steps)
 		const { ranks } = graph
 		const order = [...entries].sort((a, b) => (ranks.get(a.host) ?? 0) - (ranks.get(b.host) ?? 0))
@@ -406,12 +415,30 @@ export function placeExceptionRow(
 			if (busy.has(entry)) continue
 			const key = `${componentOf.get(entry.host) ?? 0}:${band(entry.host)}:${entry.side}`
 			const from = free.get(key) ?? Number.NEGATIVE_INFINITY
-			if (!demoted.has(entry) && from > (ranks.get(entry.host) ?? 0)) {
+			const hostRank = ranks.get(entry.host) ?? 0
+			const before = last.get(key)
+			if (
+				!demoted.has(entry) &&
+				from === hostRank + 1 &&
+				before &&
+				before.host !== entry.host &&
+				!widened.has(entry.host) &&
+				tailIsEvent(before, hostRank)
+			) {
+				// Only the earlier handler's closing event sits in this host's column:
+				// one narrow column more on the spine gives it room, and both handlers
+				// keep their straight drop, as a modeller spaces such a row.
+				for (const flow of graph.incoming.get(entry.host) ?? [])
+					if (!graph.backEdges.has(flow.id)) steps.set(flow.id, (steps.get(flow.id) ?? 1) + 1)
+				widened.add(entry.host)
+				changed = true
+				break
+			}
+			if (!demoted.has(entry) && from > hostRank) {
 				// An earlier handler on the row holds this host's column. A second
 				// event of the same host steps right as before; for another host the
 				// earlier handler's tail would sit in the way of its event, so both do.
 				demote(entry)
-				const before = last.get(key)
 				if (before && before.host !== entry.host && !demoted.has(before)) demote(before)
 				changed = true
 				break

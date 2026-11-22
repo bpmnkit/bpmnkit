@@ -75,6 +75,12 @@ type LocalBounds = { x: number; y: number; width: number; height: number }
 function contentBbox(
 	nodes: LayoutNode[],
 	extra?: Iterable<LocalBounds>,
+	/**
+	 * Flows whose vertical reach counts too: a loop routed over or under every
+	 * shape must stay inside the pool drawn around them. Only y: the pools'
+	 * x alignment is measured on the shapes.
+	 */
+	edges?: readonly LayoutEdge[],
 ): { minX: number; minY: number; maxX: number; maxY: number } {
 	let minX = Number.POSITIVE_INFINITY
 	let minY = Number.POSITIVE_INFINITY
@@ -92,6 +98,11 @@ function contentBbox(
 			maxY = Math.max(maxY, n.labelBounds.y + n.labelBounds.height)
 		}
 	}
+	for (const edge of edges ?? [])
+		for (const w of edge.waypoints) {
+			minY = Math.min(minY, w.y)
+			maxY = Math.max(maxY, w.y)
+		}
 	if (extra) {
 		for (const b of extra) {
 			minX = Math.min(minX, b.x)
@@ -1001,7 +1012,7 @@ function stackSketch(
 	const ends = new Map<string, { pool: number; x: number; top: number; bottom: number }>()
 	const pools: StackPool[] = layouts.map((layout, index) => {
 		if (layout.nodes.length === 0) return { height: EMPTY_POOL_HEIGHT, paths: [] }
-		const { minX, minY, maxY } = contentBbox(layout.nodes)
+		const { minX, minY, maxY } = contentBbox(layout.nodes, undefined, layout.edges)
 		const lanes = laneLevels(participantPools[index]?.process?.laneSet)
 		const dx = (offsets[index] ?? 0) + POOL_HEADER + laneHeadersWidth(lanes) + PADDING - minX
 		const dy = PADDING - minY
@@ -1470,7 +1481,7 @@ function layoutDefinitions(
 			? packAnnotations(annProcess, result.nodes, result.edges, hints?.annotationSides)
 			: new Map<string, Bounds>()
 
-		const { minX, minY, maxX, maxY } = contentBbox(result.nodes, annBounds.values())
+		const { minX, minY, maxX, maxY } = contentBbox(result.nodes, annBounds.values(), result.edges)
 		const contentW = maxX - minX
 		const contentH = maxY - minY
 
@@ -1601,12 +1612,15 @@ function layoutDefinitions(
 		const laneIds = new Set(
 			defs.processes.flatMap((p) => laneLevels(p.laneSet).map((level) => level.lane.id)),
 		)
-		// Pools and lanes are containers; message flows cross them by design. It is
-		// the elements inside that a route has to miss.
+		// Pools, lanes and expanded sub-processes are containers; message flows
+		// cross them by design. It is the elements inside that a route has to miss:
+		// a solid sub-process frame walls off every column it spans, so a message
+		// from a pool below to one above it went round the whole stack and across
+		// every other message on the way.
 		const inside = allShapes.filter(
 			(s) => !participantIds.has(s.bpmnElement) && !laneIds.has(s.bpmnElement),
 		)
-		const obstacles = inside.map((s) => s.bounds)
+		const obstacles = inside.filter((s) => s.isExpanded !== true).map((s) => s.bounds)
 		// Labels are worth a sideways nudge on the dock, never a jog: a riser
 		// through a name is hard to read, but two extra bends read worse.
 		const labels = inside.flatMap((s) => (s.label?.bounds ? [s.label.bounds] : []))
@@ -2033,6 +2047,7 @@ function routeRepair(defs: BpmnDefinitions): (shapes: BpmnDiShape[], edges: Bpmn
 			id: s.bpmnElement,
 			bounds: s.bounds,
 			container: containers.has(s.bpmnElement),
+			frame: s.isExpanded === true,
 		}))
 		const planeEdges: Array<PlaneEdge & { di: BpmnDiEdge }> = []
 		for (const di of edges) {

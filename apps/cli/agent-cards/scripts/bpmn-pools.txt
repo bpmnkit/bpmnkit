@@ -8,7 +8,7 @@ Pack order {
   [start Packing started] > [user Pick item | each=items] > [user Box items] > [end Packed]
 }
 ### Warehouse
-Pack order > [user Ship order] > [end Order shipped]
+Pack order > [user Confirm address] > [user Ship order] > [end Order shipped]
 Check stock ..> [store Stock DB]
 Ship order ..> [object Packing slip]
 [annotation Fragile items get extra padding] ..> Pack order
@@ -19,3 +19,5 @@ Ship order ..> [object Packing slip]
 Customer ~> Order placed: Order
 Request payment ~> Bank: Payment request
 Bank ~> Payment received: Payment confirmed
+Confirm address ~> Customer: Address query
+Customer ~> Confirm address: Address

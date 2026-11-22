@@ -458,7 +458,7 @@ class Placer {
 		if (el.type === "exclusiveGateway") extra.isMarkerVisible = true
 		if (content) extra.isExpanded = true
 		const shape = this.addShape(plane, el.id, chosen, extra)
-		if (label) shape.label = { bounds: this.labelRect(chosen, label) }
+		if (label) shape.label = { bounds: this.labelRect(chosen, label, this.dockedSide(el, chosen)) }
 		this.result.placed.push(el.id)
 		this.spotted.push(el.id)
 
@@ -825,7 +825,7 @@ class Placer {
 				const r = { x: Math.round(x), y: Math.round(y), ...size }
 				if (siblings.some((s) => overlaps(r, s, 6))) continue
 				first ??= r
-				const l = label ? this.labelRect(r, label) : undefined
+				const l = label ? this.labelRect(r, label, y < host.y ? "top" : "bottom") : undefined
 				if (others.some((o) => overlaps(r, o, 0))) continue
 				if (l !== undefined && obstacles.some((o) => overlaps(l, o, 0))) continue
 				return r
@@ -1206,6 +1206,23 @@ class Placer {
 			from = sidePorts(s)
 			to = sidePorts(t)
 		}
+		if (kind === "sequence") {
+			// A port another flow already ends at would start this flow along that one.
+			const used = plane.edges
+				.filter((e) => e.bpmnElement !== edgeId)
+				.flatMap((e) => [e.waypoints[0], e.waypoints[e.waypoints.length - 1]])
+			const free = (ports: Port[]) => {
+				const open = ports.filter(
+					(port) =>
+						!used.some(
+							(w) => w && Math.abs(w.x - port.point.x) < 1 && Math.abs(w.y - port.point.y) < 1,
+						),
+				)
+				return open.length > 0 ? open : ports
+			}
+			from = free(from)
+			to = free(to)
+		}
 		const others = edgeSegments(plane, edgeId)
 		const route = routeOrthogonal({
 			from,
@@ -1271,13 +1288,36 @@ class Placer {
 		return { width, height: LABEL_HEIGHT }
 	}
 
-	private labelRect(shape: Rect, label: { width: number; height: number }): Rect {
+	private labelRect(
+		shape: Rect,
+		label: { width: number; height: number },
+		/** A boundary event's side of its host: its flow leaves through the centre of that side. */
+		beside?: "top" | "bottom",
+	): Rect {
+		// Beside the exit stem, not across it, so the event's own flow never strikes it through.
+		if (beside)
+			return {
+				x: Math.round(shape.x + shape.width / 2 + 6),
+				y: Math.round(
+					beside === "bottom" ? shape.y + shape.height + 2 : shape.y - label.height - 2,
+				),
+				width: label.width,
+				height: label.height,
+			}
 		return {
 			x: Math.round(shape.x + shape.width / 2 - label.width / 2),
 			y: Math.round(shape.y + shape.height + 4),
 			width: label.width,
 			height: label.height,
 		}
+	}
+
+	/** The host border a boundary event sits on; undefined for anything else. */
+	private dockedSide(el: BpmnFlowElement, r: Rect): "top" | "bottom" | undefined {
+		if (el.type !== "boundaryEvent") return undefined
+		const host = this.shapes.get((el as BpmnBoundaryEvent).attachedToRef)?.shape.bounds
+		if (!host) return undefined
+		return r.y + r.height / 2 < host.y + host.height / 2 ? "top" : "bottom"
 	}
 
 	/** Pools and lanes: frames drawn around other shapes. */
@@ -1471,7 +1511,20 @@ function countCrossings(a: Waypoint, b: Waypoint, others: Segment[]): number {
 	let n = 0
 	const horizontal = a.y === b.y
 	for (const [p, q] of others) {
-		if (horizontal && p.x === q.x) {
+		// Running along another flow merges the two into one ambiguous line: worse than a crossing.
+		if (horizontal && p.y === q.y && p.y === a.y) {
+			if (
+				Math.min(Math.max(a.x, b.x), Math.max(p.x, q.x)) >
+				Math.max(Math.min(a.x, b.x), Math.min(p.x, q.x))
+			)
+				n += 2
+		} else if (!horizontal && p.x === q.x && p.x === a.x) {
+			if (
+				Math.min(Math.max(a.y, b.y), Math.max(p.y, q.y)) >
+				Math.max(Math.min(a.y, b.y), Math.min(p.y, q.y))
+			)
+				n += 2
+		} else if (horizontal && p.x === q.x) {
 			if (
 				p.x > Math.min(a.x, b.x) &&
 				p.x < Math.max(a.x, b.x) &&

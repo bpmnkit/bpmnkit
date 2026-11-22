@@ -172,16 +172,19 @@ it("keeps rework-loop boundary handlers out of the exception row", async () => {
 })
 
 // P2d: when a sibling branch blocks one spine handler's column, the others keep
-// the step too; a split row stretched edges (edgeLenCV 0.66 → 0.71).
+// the step too; a split row stretched edges (edgeLenCV 0.66 → 0.71). A gateway's
+// branch that would drop through the handlers' row goes above the spine instead
+// (room-deposit, visa-hold): every handler drops straight, nothing crosses.
 it("keeps spine handlers together when a sibling branch blocks one", async () => {
-	for (const [name, maxCv, maxHeight, maxWidth] of [
-		["p2-room-deposit", 0.66, 341, 1028],
-		["p2-visa-hold", 0.72, 341, 881],
-		["p2-pallet-reserve", 0.69, 481, 872],
+	for (const [name, maxCv, maxHeight, maxWidth, maxCrossings] of [
+		["p2-room-deposit", 0.66, 400, 856, 0],
+		["p2-visa-hold", 0.57, 400, 696, 0],
+		["p2-pallet-reserve", 0.69, 481, 872, 1],
 	]) {
 		const { metrics } = await lay(name)
 		expect(metrics.edgeLenCV, name).toBeLessThanOrEqual(maxCv)
 		expect(metrics.height, name).toBeLessThanOrEqual(maxHeight)
 		expect(metrics.width, name).toBeLessThanOrEqual(maxWidth)
+		expect(metrics.seqCrossings, name).toBeLessThanOrEqual(maxCrossings)
 	}
 })

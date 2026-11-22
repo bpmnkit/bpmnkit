@@ -257,6 +257,19 @@ fn content_bbox<'a>(nodes: &[LayoutNode], extra: impl IntoIterator<Item = &'a Bo
     b
 }
 
+/// `contentBbox`'s `edges`: flows whose vertical reach counts too, so a loop
+/// routed over or under every shape stays inside the pool drawn around them.
+/// Only y: the pools' x alignment is measured on the shapes.
+fn with_edge_reach(mut b: BBox, edges: &[LayoutEdge]) -> BBox {
+    for edge in edges {
+        for w in &edge.waypoints {
+            b.min_y = js::min(b.min_y, w.y);
+            b.max_y = js::max(b.max_y, w.y);
+        }
+    }
+    b
+}
+
 fn wp(x: f64, y: f64) -> BpmnWaypoint {
     BpmnWaypoint {
         x,
@@ -1376,7 +1389,7 @@ fn stack_sketch(
             });
             continue;
         }
-        let b = content_bbox(&layout.nodes, []);
+        let b = with_edge_reach(content_bbox(&layout.nodes, []), &layout.edges);
         let lanes = lane_levels(
             participant_pools[index]
                 .process
@@ -2049,7 +2062,10 @@ fn layout_definitions(
             None => IndexMap::new(),
         };
 
-        let bbox = content_bbox(&result.nodes, ann_bounds.values());
+        let bbox = with_edge_reach(
+            content_bbox(&result.nodes, ann_bounds.values()),
+            &result.edges,
+        );
         let content_w = bbox.max_x - bbox.min_x;
         let content_h = bbox.max_y - bbox.min_y;
 
@@ -2270,8 +2286,11 @@ fn layout_definitions(
                     .map(|level| level.lane.id.as_str())
             })
             .collect();
-        // Pools and lanes are containers; message flows cross them by design. It is
-        // the elements inside that a route has to miss.
+        // Pools, lanes and expanded sub-processes are containers; message flows
+        // cross them by design. It is the elements inside that a route has to miss:
+        // a solid sub-process frame walls off every column it spans, so a message
+        // from a pool below to one above it went round the whole stack and across
+        // every other message on the way.
         let inside: Vec<&BpmnDiShape> = all_shapes
             .iter()
             .filter(|s| {
@@ -2279,7 +2298,11 @@ fn layout_definitions(
                     && !lane_ids.contains(s.bpmn_element.as_str())
             })
             .collect();
-        let obstacles: Vec<&BpmnBounds> = inside.iter().map(|s| &s.bounds).collect();
+        let obstacles: Vec<&BpmnBounds> = inside
+            .iter()
+            .filter(|s| s.is_expanded != Some(true))
+            .map(|s| &s.bounds)
+            .collect();
         // Labels are worth a sideways nudge on the dock, never a jog: a riser
         // through a name is hard to read, but two extra bends read worse.
         let labels: Vec<&BpmnBounds> = inside
@@ -2986,6 +3009,7 @@ impl<'a> RouteRepair<'a> {
                 id: &s.bpmn_element,
                 bounds: to_layout_bounds(&s.bounds),
                 container: self.containers.contains(s.bpmn_element.as_str()),
+                frame: s.is_expanded == Some(true),
             })
             .collect();
         let mut plane_edges: Vec<PlaneEdge> = Vec::with_capacity(edges.len());

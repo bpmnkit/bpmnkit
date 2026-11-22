@@ -148,6 +148,48 @@ describe("repairRoutes", () => {
 		expect(crosses(through.waypoints, shapes[1]?.bounds as Bounds)).toBe(false)
 		expect(clear.waypoints).toBe(original)
 	})
+
+	it("lets a message flow cross an expanded sub-process's frame but not what is inside", () => {
+		const shapes = [
+			{ id: "Top", bounds: { x: 0, y: 0, width: 100, height: 80 }, container: false },
+			{ id: "Bottom", bounds: { x: 0, y: 400, width: 100, height: 80 }, container: false },
+			{
+				id: "Sub",
+				bounds: { x: -100, y: 150, width: 600, height: 180 },
+				container: false,
+				frame: true,
+			},
+			{ id: "Inner", bounds: { x: 200, y: 200, width: 100, height: 80 }, container: false },
+		]
+		const across = {
+			kind: "message" as const,
+			sourceRef: "Bottom",
+			targetRef: "Top",
+			waypoints: [
+				{ x: 50, y: 400 },
+				{ x: 50, y: 80 },
+			],
+		}
+		const original = across.waypoints
+		// A sequence flow has to go round the frame as before.
+		const around = {
+			kind: "sequence" as const,
+			sourceRef: "Bottom",
+			targetRef: "Top",
+			waypoints: [
+				{ x: 60, y: 400 },
+				{ x: 60, y: 80 },
+			],
+		}
+		repairRoutes(
+			shapes,
+			[across, around],
+			() => [],
+			() => undefined,
+		)
+		expect(across.waypoints).toBe(original)
+		expect(crosses(around.waypoints, shapes[2]?.bounds as Bounds)).toBe(false)
+	})
 })
 
 describe("route repair inside sub-processes", () => {
@@ -355,5 +397,66 @@ describe("auto-layout over the round-trip corpus", () => {
 	it.each(files)("%s routes no connection through a shape", (file) => {
 		const laid = applyAutoLayout(Bpmn.parse(readFileSync(join(dir, file), "utf8")))
 		expect(routesThroughShapes(laid)).toEqual([])
+	})
+})
+
+describe("message flows across an expanded sub-process", () => {
+	it("drops straight through the frame instead of going round the whole stack", () => {
+		// Regression: a sub-process frame counted as a solid shape, so a message
+		// between the pools above and below it found no clear column and the
+		// route repair sent it round the outside of every pool.
+		const chain = (prefix: string, ids: string[], tags: string[]): string =>
+			ids.map((id, i) => `<bpmn:${tags[i]} id="${id}"/>`).join("") +
+			ids
+				.slice(1)
+				.map(
+					(id, i) =>
+						`<bpmn:sequenceFlow id="${prefix}${i}" sourceRef="${ids[i]}" targetRef="${id}"/>`,
+				)
+				.join("")
+		const laid = applyAutoLayout(
+			Bpmn.parse(`<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="D" targetNamespace="t">
+<bpmn:collaboration id="C">
+<bpmn:participant id="PT" processRef="T"/><bpmn:participant id="PM" processRef="M"/><bpmn:participant id="PB" processRef="B"/>
+<bpmn:messageFlow id="tm" sourceRef="t0" targetRef="ms"/><bpmn:messageFlow id="tm2" sourceRef="me" targetRef="t3"/>
+<bpmn:messageFlow id="mb" sourceRef="me" targetRef="b0"/><bpmn:messageFlow id="mb2" sourceRef="b3" targetRef="ms"/>
+<bpmn:messageFlow id="up" sourceRef="b1" targetRef="t1"/><bpmn:messageFlow id="down" sourceRef="t2" targetRef="b2"/>
+</bpmn:collaboration>
+<bpmn:process id="T">${chain("t", ["t0", "t1", "t2", "t3"], ["startEvent", "receiveTask", "sendTask", "endEvent"])}</bpmn:process>
+<bpmn:process id="M"><bpmn:startEvent id="ms"/><bpmn:subProcess id="Sub">${chain(
+				"s",
+				["s0", "s1", "s2", "s3", "s4", "s5"],
+				["startEvent", "task", "task", "task", "task", "endEvent"],
+			)}</bpmn:subProcess><bpmn:endEvent id="me"/>
+<bpmn:sequenceFlow id="m1" sourceRef="ms" targetRef="Sub"/><bpmn:sequenceFlow id="m2" sourceRef="Sub" targetRef="me"/></bpmn:process>
+<bpmn:process id="B">${chain("b", ["b0", "b1", "b2", "b3"], ["startEvent", "sendTask", "receiveTask", "endEvent"])}</bpmn:process>
+</bpmn:definitions>`),
+		)
+		const plane = laid.diagrams[0]?.plane
+		const bounds = (id: string): Bounds => {
+			const b = plane?.shapes.find((s) => s.bpmnElement === id)?.bounds
+			if (!b) throw new Error(`${id} was not drawn`)
+			return b
+		}
+		const top = bounds("PT")
+		const sub = bounds("Sub")
+		const bottom = bounds("PB")
+		// The case only bites with the sub-process's pool between the other two.
+		expect(top.y).toBeLessThan(sub.y)
+		expect(sub.y).toBeLessThan(bottom.y)
+		for (const id of ["up", "down"]) {
+			const edge = plane?.edges.find((e) => e.bpmnElement === id)
+			if (!edge) throw new Error(`${id} was not drawn`)
+			expect(edge.waypoints.length).toBeLessThanOrEqual(4)
+			for (const p of edge.waypoints) {
+				expect(p.y).toBeGreaterThanOrEqual(top.y + top.height - 30)
+				expect(p.y).toBeLessThanOrEqual(bottom.y + 30)
+			}
+			for (const child of ["s0", "s1", "s2", "s3", "s4", "s5"]) {
+				const c = bounds(child)
+				const inner: Bounds = { x: c.x + 1, y: c.y + 1, width: c.width - 2, height: c.height - 2 }
+				expect(crosses(edge.waypoints, inner)).toBe(false)
+			}
+		}
 	})
 })

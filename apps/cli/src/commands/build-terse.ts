@@ -3,6 +3,7 @@
  * line by line (line numbers stay) before the spec is read:
  *
  * - `[user Review expense]` without an id gets one from its name (`reviewExpense`);
+ * - `[object Name]` written again in the same pool is that object again;
  * - a node or pool may later be named instead of its id (`Review expense > …`);
  * - service/send tasks and message throws default `job=` to the id kebab-cased;
  * - message events and receive tasks default `msg=` to the name kebab-cased.
@@ -147,10 +148,17 @@ export function desugarSpec(text: string, poolId: (name: string) => string): Des
 	}
 	const derived: string[] = []
 	const counters = new Map<string, number>()
-	for (const list of lineSpans)
+	/** Data objects by pool and name: a process holds one object per name. */
+	const objects = new Map<string, string>()
+	let pool = ""
+	for (const [n, list] of lineSpans.entries()) {
+		const t = lines[n]?.trim() ?? ""
+		if (t.startsWith("##") && !t.startsWith("###")) pool = t
 		for (const s of list) {
 			if (s.kind !== "decl") continue
 			const { kind, name } = parts(s.body)
+			const objectKey = /^objects?$/.test(kind) && name !== "" ? `${pool}\n${nameKey(name)}` : ""
+			if (s.id === undefined && objects.has(objectKey)) s.id = objects.get(objectKey)
 			if (s.id === undefined) {
 				const base =
 					(kind !== "annotation" && camelId(name)) ||
@@ -166,11 +174,13 @@ export function desugarSpec(text: string, poolId: (name: string) => string): Des
 				s.id = id
 				derived.push(`${id} (${name || kind})`)
 			}
+			if (objectKey !== "" && !objects.has(objectKey)) objects.set(objectKey, s.id)
 			if (name === "" || kind === "annotation") continue
 			const key = nameKey(name)
 			// A name two nodes share names neither: the reader must use the id.
 			byName.set(key, byName.has(key) && byName.get(key) !== s.id ? null : s.id)
 		}
+	}
 	if (derived.length > 0) fixes.push(`ids from names: ${derived.join(", ")}`)
 
 	const resolve = (segment: string, n: number): string => {

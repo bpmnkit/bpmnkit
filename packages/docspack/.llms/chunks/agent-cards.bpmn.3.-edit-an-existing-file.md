@@ -11,7 +11,7 @@ export default (kit, model) =>
 		)
 ```
 
-`--edit order.bpmn` rewrites it in place: existing shapes and forms stay, shapes right of the insertion move only as needed, new user tasks get forms. `--camunda 8.10` sets `executionPlatformVersion`. `kit` is `@bpmnkit/core`, `model` the parsed file.
+`--edit order.bpmn` rewrites it in place, keeping shapes and forms; new user tasks get forms. `kit` is `@bpmnkit/core`, `model` the parsed file.
 
 - `continueProcess(model, processId)`: `.insertAfter(id)` splices in after `id`; `.at(id)` continues from a node without outgoing flow.
 - Steps: `serviceTask(id, { name, taskType })` · `userTask(id, { name, formId, assignee, candidateGroups })` · `intermediateCatchEvent(id, { name, messageName, correlationKey: "=orderId" })` or `{ timerDuration: "PT1H" }` · `endEvent(id, { name })` · `.connectTo(id)`.

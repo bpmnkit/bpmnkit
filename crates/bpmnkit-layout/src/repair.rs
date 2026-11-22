@@ -21,6 +21,10 @@ pub struct PlaneShape<'a> {
     pub bounds: Bounds,
     /// Pools, lanes and groups: drawn around other shapes, so never in the way.
     pub container: bool,
+    /// An expanded sub-process. A message flow crosses its outline the way it
+    /// crosses a pool's, missing only what is inside: treated as solid, the frame
+    /// walls off every column it spans and sends messages round the whole stack.
+    pub frame: bool,
 }
 
 /// `PlaneEdge`.
@@ -71,7 +75,8 @@ pub fn repair_routes<'r>(
         exempt.push(target_ref);
         related(source_ref, &mut exempt);
         related(target_ref, &mut exempt);
-        let blocks = |s: &PlaneShape| !exempt.contains(&s.id);
+        let message = matches!(edge.kind, ConnectionKind::Message);
+        let blocks = |s: &PlaneShape| !exempt.contains(&s.id) && !(message && s.frame);
         if !hit_index.route_hits(&edge.waypoints, &blocks)
             && !through_own_end(&edge.waypoints, source, target)
         {

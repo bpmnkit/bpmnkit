@@ -1,5 +1,9 @@
 # Features
 
+## Auto-layout: crossing-free exception rows (2026-11-22)
+
+Boundary handlers drop straight under their hosts on one shared row, even when hosts sit side by side (the spine gets a narrow column for an earlier handler's end event), and a gateway's other branch goes above the spine when going below would cross that row. Loops stay inside their pool's frame. When an edit adds shapes (`placeNewShapes`), a loop back does not reuse another flow's port or run along it, and a boundary event's name sits beside its outgoing flow.
+
 ## Local REST connector runner: `bpmnkit connector run|test` (2026-11-21)
 
 `bpmnkit connector run` executes Camunda REST connector jobs (`io.camunda:http-json:1`, plus private types via `--as` or `--templates dir`) against your cluster without the Java connector runtime; `bpmnkit connector test template.json --vars vars.json` runs one call from a template and prints the command the engine would get. Secrets as in the 8.8 runtime (`{{secrets.X}}` from env, `CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_PREFIX`, never logged), auth none / API key / basic / bearer / OAuth2 client credentials, FEEL `resultExpression` / `errorExpression` with `bpmnError`, `jobError`, `ignoreError`. Library: `bpmnkit-connector-runtime`. `connector gen --api-index` writes the API index the worker rules read.

@@ -1,5 +1,29 @@
 # Progress
 
+## 2026-11-22 — Auto-layout: message flows cross sub-process frames
+
+Driven by the agentic-generation eval (17-pool collaboration: message crossings per run rose 0.1 → 2.5 once agents shared one black-box partner across pools); re-laid eval models are scored offline, outside the repo.
+- Auto-layout (TS and Rust): an expanded sub-process no longer counts as a solid obstacle for message flows, in the router or the route repair. Its frame walled off every column it spans, so a message from a pool below to a partner above found no clear column and the repair sent it round the whole stack, across every other message. It now crosses the frame and misses only the shapes inside; sequence flows and associations still go round.
+- Re-laid eval models: message crossings per run 4.4 → 0.6 (haiku), 2.8 → 0.6 (sonnet), 0.2 → 0.6 (opus; one run reorders its pools), message bends down; message × sequence crossings up by about 2 per run (a straight drop through a sub-process meets its inner flows where the detour went round). Models without such frames are unchanged; `pnpm layout:score` and conformance fixtures unchanged.
+
+## 2026-11-22 — BPMN card keeps its docspack tags
+
+- The card trim had dropped the `build-script` and `write` tags, so docspack ranked the DMN card first for "write a bpmn build script" (recipe-ranking test). Restored them, dropped the stale `casen-build` and `annotation` tags to stay under the 2k-token card budget, re-synced the copies and rebuilt the docspack index.
+
+## 2026-11-22 — Text spec: one data object per name and pool; BPMN card on two-way exchanges and modelling fidelity
+
+Driven by the agentic-generation eval's adherence findings (agents re-declared a data object by name and got two; dropped the answer flow back to a task that asks a partner).
+- `bpmnkit build` text spec: `[object Name]` written again in the same pool is that object again (one id, one shape, both associations), not `name2`; pools keep their own objects. Same-name references with explicit different ids in one process share one `dataObject`.
+- BPMN agent card (and its docs/plugin copies): message flows are one line per direction, and template 2 shows a task that asks a partner and gets the answer (`Confirm address`, a flow each way); a same-name object in a pool is one object; "model the text, no more" (one node per named step, `user` for a person's work, `service` for a system's, a timer `at=` unless the text says it repeats). Trimmed elsewhere to stay under the 2k-token budget.
+
+## 2026-11-22 — Auto-layout: exception rows without crossings, edit loops, loops inside pools
+
+Driven by the agentic-generation eval (Opus judge: bpmnkit layouts 3.1 vs Bare-Opus 4.1); re-laid eval models are scored offline, outside the repo.
+- Semantic engine (TS and Rust): a gateway's plain branch goes above the spine when a boundary handler's flow runs below past the gateway's rank (and none runs above), so its trunk no longer drops through the exception row. The side is decided on the first band pass and kept after the exception row re-ranks. The exception row widens the spine by one narrow column when only an earlier handler's end event sits in a host's column, so every handler stays straight under its host instead of stepping right. Card-payment-like flows: 1 crossing → 0, bends per flow 0.4 → 0.07.
+- Auto-layout (TS and Rust): a pool's height counts its flows' waypoints, so a loop routed over every shape stays inside the frame instead of running across the border.
+- `placeNewShapes` (edits): a new flow no longer starts or ends on a port another flow uses (a correction loop ran back along the boundary event's drop), a route that runs along another flow counts as two crossings, and a boundary event's name sits beside its exit stem, not across it.
+- `pnpm layout:score`: crossings 2.25 → 2.18, sequence crossings 0.14 → 0.07, bends per flow 0.35 → 0.33, boundary labels crossed 0.02 → 0; a few cases grow in height (room-deposit, visa-hold, it-incident: the branch moves above instead of crossing). Baseline, conformance fixtures, the compact-lanes capture and the P2d rule updated to match.
+
 ## 2026-11-21 — Release job: consumability check skips other platforms' binaries
 
 - `scripts/check-package-consumable.mjs` skips a package whose `os`/`cpu` excludes the runner (the `@bpmnkit/cli-<platform>` packages): npm refuses to install them there (EBADPLATFORM), which failed the Changesets release job on main after the CLI merge. PR CI only runs `--pack-only`, so it did not catch it.

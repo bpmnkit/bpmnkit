@@ -560,11 +560,25 @@ function addData(
 					},
 				]
 		} else {
-			const object = createFlowElement(`DataObject_${id}`, "dataObject", {})
-			if (object.type === "dataObject" && kind === "objects") object.isCollection = true
+			// Same name, same process: one object, seen through another reference.
+			const visible = new Set([...process.flowElements, ...scope])
+			const shared = all.find(
+				(e) =>
+					e.type === "dataObjectReference" &&
+					name !== undefined &&
+					e.name === name &&
+					[...visible].some((o) => o.type === "dataObject" && o.id === e.dataObjectRef),
+			)
 			const ref = createFlowElement(id, "dataObjectReference", { name })
-			if (ref.type === "dataObjectReference") ref.dataObjectRef = object.id
-			scope.push(object, ref)
+			if (shared?.type === "dataObjectReference" && ref.type === "dataObjectReference") {
+				ref.dataObjectRef = shared.dataObjectRef
+				scope.push(ref)
+			} else {
+				const object = createFlowElement(`DataObject_${id}`, "dataObject", {})
+				if (object.type === "dataObject" && kind === "objects") object.isCollection = true
+				if (ref.type === "dataObjectReference") ref.dataObjectRef = object.id
+				scope.push(object, ref)
+			}
 		}
 		all.push(...scope.slice(-2))
 	}

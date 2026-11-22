@@ -116,6 +116,81 @@ fn nested_sub_process_associations_are_repaired() {
     assert!(!crosses(&edge.waypoints, c), "As3 runs through C");
 }
 
+/// `layout-routing.test.ts`: "drops straight through the frame instead of going
+/// round the whole stack". A sub-process frame counted as a solid shape, so a
+/// message between the pools above and below it went round every pool.
+#[test]
+fn message_flows_cross_an_expanded_sub_process_frame() {
+    fn chain(prefix: &str, ids: &[&str], tags: &[&str]) -> String {
+        let mut out: String = ids
+            .iter()
+            .zip(tags)
+            .map(|(id, tag)| format!(r#"<bpmn:{tag} id="{id}"/>"#))
+            .collect();
+        for (i, pair) in ids.windows(2).enumerate() {
+            out.push_str(&format!(
+                r#"<bpmn:sequenceFlow id="{prefix}{i}" sourceRef="{}" targetRef="{}"/>"#,
+                pair[0], pair[1]
+            ));
+        }
+        out
+    }
+    let ends = ["startEvent", "receiveTask", "sendTask", "endEvent"];
+    let ends_b = ["startEvent", "sendTask", "receiveTask", "endEvent"];
+    let sub = ["startEvent", "task", "task", "task", "task", "endEvent"];
+    let children = ["s0", "s1", "s2", "s3", "s4", "s5"];
+    let xml = format!(
+        r#"<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="D" targetNamespace="t">
+<bpmn:collaboration id="C">
+<bpmn:participant id="PT" processRef="T"/><bpmn:participant id="PM" processRef="M"/><bpmn:participant id="PB" processRef="B"/>
+<bpmn:messageFlow id="tm" sourceRef="t0" targetRef="ms"/><bpmn:messageFlow id="tm2" sourceRef="me" targetRef="t3"/>
+<bpmn:messageFlow id="mb" sourceRef="me" targetRef="b0"/><bpmn:messageFlow id="mb2" sourceRef="b3" targetRef="ms"/>
+<bpmn:messageFlow id="up" sourceRef="b1" targetRef="t1"/><bpmn:messageFlow id="down" sourceRef="t2" targetRef="b2"/>
+</bpmn:collaboration>
+<bpmn:process id="T">{}</bpmn:process>
+<bpmn:process id="M"><bpmn:startEvent id="ms"/><bpmn:subProcess id="Sub">{}</bpmn:subProcess><bpmn:endEvent id="me"/>
+<bpmn:sequenceFlow id="m1" sourceRef="ms" targetRef="Sub"/><bpmn:sequenceFlow id="m2" sourceRef="Sub" targetRef="me"/></bpmn:process>
+<bpmn:process id="B">{}</bpmn:process>
+</bpmn:definitions>"#,
+        chain("t", &["t0", "t1", "t2", "t3"], &ends),
+        chain("s", &children, &sub),
+        chain("b", &["b0", "b1", "b2", "b3"], &ends_b),
+    );
+    let laid = laid_out(&xml);
+    let all = shapes(&laid);
+    let (top, frame, bottom) = (&all["PT"], &all["Sub"], &all["PB"]);
+    assert!(top.y < frame.y && frame.y < bottom.y, "pool order");
+    for id in ["up", "down"] {
+        let points = edge_points(&laid, id);
+        assert!(points.len() <= 4, "{id} bends round the stack: {points:?}");
+        for (_, y) in &points {
+            assert!(
+                *y >= top.y + top.height - 30.0 && *y <= bottom.y + 30.0,
+                "{id}: {points:?}"
+            );
+        }
+        let edge = laid.diagrams[0]
+            .plane
+            .edges
+            .iter()
+            .find(|e| e.bpmn_element == id)
+            .expect("drawn");
+        for child in children {
+            let c = &all[child];
+            let inner = BpmnBounds {
+                x: c.x + 1.0,
+                y: c.y + 1.0,
+                width: c.width - 2.0,
+                height: c.height - 2.0,
+            };
+            assert!(
+                !crosses(&edge.waypoints, &inner),
+                "{id} runs through {child}"
+            );
+        }
+    }
+}
+
 /// `auto-layout-keeps-di.test.ts`: "keeps each root process on its own source diagram
 /// when the first one draws another process". The primary plane used to take the first
 /// source diagram's ids, which the second process's plane kept too: two diagrams, one id.

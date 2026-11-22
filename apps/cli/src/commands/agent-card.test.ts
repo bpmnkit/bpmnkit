@@ -192,7 +192,7 @@ describe("bpmn card templates build as printed", () => {
 		}
 		expect(ok).toEqual([
 			"bpmn-process.bpmn + 2 forms (expense-reviewExpense.form, expense-reworkExpense.form) · lint clean · process expense, tasks 4, gateways 2, forms 2 · Camunda 8.10.0",
-			"bpmn-pools.bpmn + 3 forms (shop-pickItem.form, shop-boxItems.form, shop-shipOrder.form) · lint clean · pools 4, processes shop+restock, tasks 6, gateways 0, message flows 3, forms 3 · Camunda 8.10.0",
+			"bpmn-pools.bpmn + 4 forms (shop-pickItem.form, shop-boxItems.form, shop-confirmAddress.form, shop-shipOrder.form) · lint clean · pools 4, processes shop+restock, tasks 7, gateways 0, message flows 5, forms 4 · Camunda 8.10.0",
 			"bpmn-process.bpmn + 1 form (expense-fix.form) · lint clean · process expense, tasks 6, gateways 3, forms 3 · Camunda 8.10.0",
 		])
 		// The decision after the review reads `approved`: the generated form asks for it.
@@ -200,7 +200,12 @@ describe("bpmn card templates build as printed", () => {
 		expect(review.components.at(-1)).toMatchObject({ type: "checkbox", key: "approved" })
 		const edited = Bpmn.parse(readFileSync(join(dir, "bpmn-process.bpmn"), "utf8"))
 		expect(edited.processes[0]?.flowElements.some((e) => e.id === "validate")).toBe(true)
-		expect(readdirSync(dir).filter((f) => f.endsWith(".form"))).toHaveLength(6)
+		expect(readdirSync(dir).filter((f) => f.endsWith(".form"))).toHaveLength(7)
+		// Template 2 shows a task that asks a partner and gets the answer: one flow each way.
+		const pools = Bpmn.parse(readFileSync(join(dir, "bpmn-pools.bpmn"), "utf8"))
+		const flows = pools.collaborations[0]?.messageFlows ?? []
+		expect(flows.filter((f) => f.sourceRef === "confirmAddress")).toHaveLength(1)
+		expect(flows.filter((f) => f.targetRef === "confirmAddress")).toHaveLength(1)
 		rmSync(dir, { recursive: true, force: true })
 	})
 })

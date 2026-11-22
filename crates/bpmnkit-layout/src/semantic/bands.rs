@@ -1,6 +1,6 @@
 //! Twin of `layout/semantic/bands.ts`.
 
-use super::graph::{enters_detour, reaches_end, SemanticGraph};
+use super::graph::{chain_of, enters_detour, reaches_end, SemanticGraph};
 use crate::hash::{IndexMap, IndexSet};
 use bpmnkit_bpmn::model::{
     BpmnBoundaryEvent, BpmnEventDefinition, BpmnFlowElement, BpmnSequenceFlow,
@@ -74,6 +74,17 @@ pub fn boundary_side(event: &BpmnBoundaryEvent, host_titled: bool) -> i64 {
 /// `assignBands(graph, titled)`. `titled` are hosts whose title is drawn along
 /// their top border; see [`boundary_side`].
 pub fn assign_bands<'a>(graph: &SemanticGraph<'a>, titled: &IndexSet<&str>) -> BandLayout<'a> {
+    assign_bands_with(graph, titled, &mut IndexMap::default())
+}
+
+/// [`assign_bands`] with `plainSides`: the side each source's plain
+/// alternatives start on, decided on the first pass and kept when the
+/// exception row re-ranks and bands are assigned again.
+pub fn assign_bands_with<'a>(
+    graph: &SemanticGraph<'a>,
+    titled: &IndexSet<&str>,
+    plain_sides: &mut IndexMap<&'a str, i64>,
+) -> BandLayout<'a> {
     let mut bands: IndexMap<&'a str, i64> =
         IndexMap::with_capacity_and_hasher(graph.nodes.len(), Default::default());
     let mut spine: IndexSet<&'a str> = IndexSet::default();
@@ -101,10 +112,11 @@ pub fn assign_bands<'a>(graph: &SemanticGraph<'a>, titled: &IndexSet<&str>) -> B
     }
 
     let mut assigned: IndexSet<&'a str> = spine.clone();
+    let spans = handler_spans(graph, titled);
     let mut i = 0;
     while i < sources.len() {
         let source = sources[i];
-        for branch in branches_from(graph, &source, &assigned, titled) {
+        for branch in branches_from(graph, &source, &assigned, titled, &spans, plain_sides) {
             for &id in &branch.nodes {
                 assigned.insert(id);
                 sources.push(Source {
@@ -413,6 +425,8 @@ fn branches_from<'a>(
     source: &Source<'a>,
     assigned: &IndexSet<&'a str>,
     titled: &IndexSet<&str>,
+    spans: &HandlerSpans,
+    plain_sides: &mut IndexMap<&'a str, i64>,
 ) -> Vec<Branch<'a>> {
     let mut out: Vec<Branch<'a>> = Vec::new();
     let node = graph.by_id.get(source.id).copied();
@@ -431,6 +445,9 @@ fn branches_from<'a>(
     // A gateway with a default flow keeps its alternatives on one side; without
     // one they alternate below / above / farther below / farther above.
     let has_default = alternatives.iter().any(|f| is_default_flow(node, f));
+    let first = *plain_sides
+        .entry(source.id)
+        .or_insert_with(|| plain_side(spans, graph.ranks.get(source.id).copied().unwrap_or(0)));
     let mut below = 0;
     let mut above = 0;
     for (i, flow) in alternatives.iter().enumerate() {
@@ -438,9 +455,9 @@ fn branches_from<'a>(
         let side = if let Some(h) = handler {
             h
         } else if has_default || i % 2 == 0 {
-            1
+            first
         } else {
-            -1
+            -first
         };
         let step = if side == 1 {
             below += 1;
@@ -454,6 +471,51 @@ fn branches_from<'a>(
         }
     }
     out
+}
+
+/// Rank spans of boundary handler chains, per side of their host.
+#[derive(Default)]
+struct HandlerSpans {
+    below: Vec<(i64, i64)>,
+    above: Vec<(i64, i64)>,
+}
+
+/// `handlerSpans`.
+fn handler_spans(graph: &SemanticGraph, titled: &IndexSet<&str>) -> HandlerSpans {
+    let mut spans = HandlerSpans::default();
+    for (&host, events) in &graph.attachers {
+        let host_rank = graph.ranks.get(host).copied().unwrap_or(0);
+        for event in events {
+            for flow in graph.outgoing.get(host).into_iter().flatten() {
+                if flow.source_ref != event.base.id || graph.back_edges.contains(flow.id.as_str()) {
+                    continue;
+                }
+                let mut to = host_rank;
+                for id in chain_of(graph, flow.target_ref.as_str()) {
+                    to = to.max(graph.ranks.get(id).copied().unwrap_or(0));
+                }
+                if boundary_side(event, titled.contains(host)) == 1 {
+                    spans.below.push((host_rank, to));
+                } else {
+                    spans.above.push((host_rank, to));
+                }
+            }
+        }
+    }
+    spans
+}
+
+/// `plainSide`: plain alternatives start below the spine, unless a boundary
+/// handler's flow runs below past the rank they leave from (and none runs
+/// above): the branch's trunk would drop through the handlers' row and cross
+/// that flow.
+fn plain_side(spans: &HandlerSpans, rank: i64) -> i64 {
+    let hit = |list: &[(i64, i64)]| list.iter().any(|&(a, b)| a <= rank && rank < b);
+    if hit(&spans.below) && !hit(&spans.above) {
+        -1
+    } else {
+        1
+    }
 }
 
 /// `handlerSideOf`: the side a flow inherits when it leaves a boundary event of this host.

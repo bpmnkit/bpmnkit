@@ -135,7 +135,8 @@ export function semanticLayout(
 		assignRanks(graph)
 		// finish() moves the children, and a laned scope is laid out twice
 		const children = laneSet ? structuredClone(childResults) : childResults
-		let bandLayout = assignBands(graph, titled)
+		const plainSides = new Map<string, 1 | -1>()
+		let bandLayout = assignBands(graph, titled, plainSides)
 		// Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
 		if (
 			!laneSet &&
@@ -143,7 +144,7 @@ export function semanticLayout(
 				boundarySide(event, titled.has(host)),
 			)
 		) {
-			bandLayout = assignBands(graph, titled)
+			bandLayout = assignBands(graph, titled, plainSides)
 		}
 		const { bounds, lanes, gutterX } = place(
 			graph,

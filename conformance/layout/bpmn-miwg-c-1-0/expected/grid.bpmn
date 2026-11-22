@@ -812,19 +812,19 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Process_Engine_1_gui" bpmnElement="Process_Engine_1" isHorizontal="true">
-        <omgdc:Bounds x="0" y="290" width="1429.5" height="260"/>
+        <omgdc:Bounds x="0" y="290" width="1429.5" height="290"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_HHGRALdXEeSAMrpVrpCJkg" labelStyle="Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Accountant_gui" bpmnElement="Accountant" isHorizontal="true">
-        <omgdc:Bounds x="30" y="290" width="1400" height="78"/>
+        <omgdc:Bounds x="30" y="290" width="1400" height="87"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_Hq0CELdXEeSAMrpVrpCJkg" labelStyle="Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Approver_gui" bpmnElement="Approver" isHorizontal="true">
-        <omgdc:Bounds x="30" y="368" width="1400" height="52"/>
+        <omgdc:Bounds x="30" y="377" width="1400" height="58"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_GpRFgLdXEeSAMrpVrpCJkg" labelStyle="Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="teamAssistant_gui" bpmnElement="teamAssistant" isHorizontal="true">
-        <omgdc:Bounds x="30" y="420" width="1400" height="130"/>
+        <omgdc:Bounds x="30" y="435" width="1400" height="145"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_GKT4oLdXEeSAMrpVrpCJkg" labelStyle="Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="sid-71EF9530-A32A-49BC-A783-9B98A5801362_gui" bpmnElement="sid-71EF9530-A32A-49BC-A783-9B98A5801362">
@@ -884,12 +884,12 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="reviewSuccessful_gui" bpmnElement="reviewSuccessful">
-        <omgdi:waypoint x="1186" y="515"/>
-        <omgdi:waypoint x="1186" y="560"/>
-        <omgdi:waypoint x="736" y="560"/>
-        <omgdi:waypoint x="736" y="390"/>
+        <omgdi:waypoint x="1190" y="515"/>
+        <omgdi:waypoint x="1190" y="560"/>
+        <omgdi:waypoint x="740" y="560"/>
+        <omgdi:waypoint x="740" y="390"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_4qOvUbbIEeS1kPPByrr18w" labelStyle="Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig">
-          <omgdc:Bounds x="941" y="536" width="40" height="14"/>
+          <omgdc:Bounds x="945" y="536" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="reviewNotSuccessful_gui" bpmnElement="reviewNotSuccessful">
