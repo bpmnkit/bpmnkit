@@ -75,6 +75,12 @@ type LocalBounds = { x: number; y: number; width: number; height: number }
 function contentBbox(
 	nodes: LayoutNode[],
 	extra?: Iterable<LocalBounds>,
+	/**
+	 * Flows whose vertical reach counts too: a loop routed over or under every
+	 * shape must stay inside the pool drawn around them. Only y: the pools'
+	 * x alignment is measured on the shapes.
+	 */
+	edges?: readonly LayoutEdge[],
 ): { minX: number; minY: number; maxX: number; maxY: number } {
 	let minX = Number.POSITIVE_INFINITY
 	let minY = Number.POSITIVE_INFINITY
@@ -92,6 +98,11 @@ function contentBbox(
 			maxY = Math.max(maxY, n.labelBounds.y + n.labelBounds.height)
 		}
 	}
+	for (const edge of edges ?? [])
+		for (const w of edge.waypoints) {
+			minY = Math.min(minY, w.y)
+			maxY = Math.max(maxY, w.y)
+		}
 	if (extra) {
 		for (const b of extra) {
 			minX = Math.min(minX, b.x)
@@ -1001,7 +1012,7 @@ function stackSketch(
 	const ends = new Map<string, { pool: number; x: number; top: number; bottom: number }>()
 	const pools: StackPool[] = layouts.map((layout, index) => {
 		if (layout.nodes.length === 0) return { height: EMPTY_POOL_HEIGHT, paths: [] }
-		const { minX, minY, maxY } = contentBbox(layout.nodes)
+		const { minX, minY, maxY } = contentBbox(layout.nodes, undefined, layout.edges)
 		const lanes = laneLevels(participantPools[index]?.process?.laneSet)
 		const dx = (offsets[index] ?? 0) + POOL_HEADER + laneHeadersWidth(lanes) + PADDING - minX
 		const dy = PADDING - minY
@@ -1470,7 +1481,7 @@ function layoutDefinitions(
 			? packAnnotations(annProcess, result.nodes, result.edges, hints?.annotationSides)
 			: new Map<string, Bounds>()
 
-		const { minX, minY, maxX, maxY } = contentBbox(result.nodes, annBounds.values())
+		const { minX, minY, maxX, maxY } = contentBbox(result.nodes, annBounds.values(), result.edges)
 		const contentW = maxX - minX
 		const contentH = maxY - minY
 

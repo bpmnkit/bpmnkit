@@ -393,7 +393,7 @@ fn loops_back<'a>(graph: &SemanticGraph<'a>, entry: &'a str) -> bool {
 }
 
 /// `chainOf`: the nodes only `entry` leads to.
-fn chain_of<'a>(graph: &SemanticGraph<'a>, entry: &'a str) -> IndexSet<&'a str> {
+pub fn chain_of<'a>(graph: &SemanticGraph<'a>, entry: &'a str) -> IndexSet<&'a str> {
     let mut chain: IndexSet<&'a str> = IndexSet::default();
     chain.insert(entry);
     let mut stack = vec![entry];
@@ -591,7 +591,31 @@ pub fn place_exception_row<'a>(
 
     // Entries that keep their old step because they would collide on the row.
     let mut demoted = vec![false; entries.len()];
-    for _round in 0..=entries.len() {
+    // Hosts moved one column right to make room for an earlier handler's end.
+    let mut widened: IndexSet<&str> = IndexSet::default();
+    // The earlier handler's nodes in `rank` are all events (narrow, and the chain ends there).
+    let tail_is_event = |graph: &SemanticGraph, entry: &HandlerEntry, rank: i64| -> bool {
+        let mut any = false;
+        for flow in &entry.flows {
+            if let Some(chain) = chains.get(flow.target_ref.as_str()) {
+                for &id in chain {
+                    if graph.ranks.get(id).copied() != Some(rank) {
+                        continue;
+                    }
+                    any = true;
+                    if !graph
+                        .by_id
+                        .get(id)
+                        .is_some_and(|el| el.type_name().ends_with("Event"))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        any
+    };
+    for _round in 0..=2 * entries.len() {
         assign_ranks(graph, &steps);
         let mut order: Vec<usize> = (0..entries.len()).collect();
         order.sort_by_key(|&k| graph.ranks.get(entries[k].host).copied().unwrap_or(0));
@@ -610,7 +634,28 @@ pub fn place_exception_row<'a>(
                 entry.side,
             );
             let from = free.get(&key).copied().unwrap_or(f64::NEG_INFINITY);
-            if !demoted[k] && from > graph.ranks.get(entry.host).copied().unwrap_or(0) as f64 {
+            let host_rank = graph.ranks.get(entry.host).copied().unwrap_or(0);
+            if let Some(&before) = last.get(&key) {
+                if !demoted[k]
+                    && from == (host_rank + 1) as f64
+                    && entries[before].host != entry.host
+                    && !widened.contains(entry.host)
+                    && tail_is_event(graph, &entries[before], host_rank)
+                {
+                    // Only the earlier handler's closing event sits in this host's
+                    // column: one narrow column more on the spine gives it room.
+                    for flow in graph.incoming.get(entry.host).into_iter().flatten() {
+                        if !graph.back_edges.contains(flow.id.as_str()) {
+                            let step = steps.get(flow.id.as_str()).copied().unwrap_or(1);
+                            steps.insert(flow.id.as_str(), step + 1);
+                        }
+                    }
+                    widened.insert(entry.host);
+                    changed = true;
+                    break;
+                }
+            }
+            if !demoted[k] && from > host_rank as f64 {
                 // An earlier handler on the row holds this host's column.
                 let mut demote = |j: usize, demoted: &mut Vec<bool>| {
                     demoted[j] = true;

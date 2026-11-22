@@ -1,6 +1,6 @@
 import type { BpmnBoundaryEvent, BpmnFlowElement, BpmnSequenceFlow } from "../../bpmn/bpmn-model.js"
 import type { SemanticGraph } from "./graph.js"
-import { entersDetour, reachesEnd } from "./graph.js"
+import { chainOf, entersDetour, reachesEnd } from "./graph.js"
 
 /**
  * Vertical narrative roles for one process scope.
@@ -49,6 +49,12 @@ export function assignBands(
 	graph: SemanticGraph,
 	/** Hosts whose title is drawn along their top border; see {@link boundarySide}. */
 	titled: ReadonlySet<string> = new Set(),
+	/**
+	 * The side each source's plain alternatives start on, decided on the first
+	 * pass and kept when the exception row re-ranks and bands are assigned again:
+	 * judged on the new ranks the decision could flip back under the handlers.
+	 */
+	plainSides: Map<string, 1 | -1> = new Map(),
 ): BandLayout {
 	const bands = new Map<string, number>()
 	const spine = new Set<string>()
@@ -69,10 +75,11 @@ export function assignBands(
 	}
 
 	const assigned = new Set<string>(spine)
+	const spans = handlerSpans(graph, titled)
 	for (let i = 0; i < sources.length; i++) {
 		const source = sources[i]
 		if (!source) continue
-		for (const branch of branchesFrom(graph, source, assigned, titled)) {
+		for (const branch of branchesFrom(graph, source, assigned, titled, spans, plainSides)) {
 			branches.push(branch)
 			for (const id of branch.nodes) {
 				assigned.add(id)
@@ -272,6 +279,8 @@ function branchesFrom(
 	source: { id: string; depth: number; side: 1 | -1 },
 	assigned: Set<string>,
 	titled: ReadonlySet<string>,
+	spans: HandlerSpans = { below: [], above: [] },
+	plainSides: Map<string, 1 | -1> = new Map(),
 ): Branch[] {
 	const out: Branch[] = []
 	const node = graph.byId.get(source.id)
@@ -283,6 +292,8 @@ function branchesFrom(
 	// A gateway with a default flow keeps its alternatives on one side; without
 	// one they alternate below / above / farther below / farther above.
 	const hasDefault = alternatives.some((f) => isDefaultFlow(node, f))
+	const first = plainSides.get(source.id) ?? plainSide(spans, graph.ranks.get(source.id) ?? 0)
+	plainSides.set(source.id, first)
 	let below = 0
 	let above = 0
 	for (let i = 0; i < alternatives.length; i++) {
@@ -291,13 +302,44 @@ function branchesFrom(
 		const handler = handlerSideOf(graph, source.id, flow, titled)
 		let side: 1 | -1
 		if (handler !== undefined) side = handler
-		else if (hasDefault) side = 1
-		else side = i % 2 === 0 ? 1 : -1
+		else if (hasDefault) side = first
+		else side = i % 2 === 0 ? first : (-first as 1 | -1)
 		const step = side === 1 ? ++below : ++above
 		const branch = follow(graph, flow.targetRef, side, source.depth + step, assigned)
 		if (branch) out.push(branch)
 	}
 	return out
+}
+
+/** Rank spans of boundary handler chains, per side of their host. */
+interface HandlerSpans {
+	below: Array<[number, number]>
+	above: Array<[number, number]>
+}
+
+function handlerSpans(graph: SemanticGraph, titled: ReadonlySet<string>): HandlerSpans {
+	const spans: HandlerSpans = { below: [], above: [] }
+	for (const [host, events] of graph.attachers)
+		for (const event of events)
+			for (const flow of graph.outgoing.get(host) ?? []) {
+				if (flow.sourceRef !== event.id || graph.backEdges.has(flow.id)) continue
+				let to = graph.ranks.get(host) ?? 0
+				for (const id of chainOf(graph, flow.targetRef)) to = Math.max(to, graph.ranks.get(id) ?? 0)
+				const span: [number, number] = [graph.ranks.get(host) ?? 0, to]
+				if (boundarySide(event, titled.has(host)) === 1) spans.below.push(span)
+				else spans.above.push(span)
+			}
+	return spans
+}
+
+/**
+ * Plain alternatives start below the spine, unless a boundary handler's flow
+ * runs below past the rank they leave from (and none runs above): the branch's
+ * trunk would drop through the handlers' row and cross that flow.
+ */
+function plainSide(spans: HandlerSpans, rank: number): 1 | -1 {
+	const hit = (list: Array<[number, number]>) => list.some(([a, b]) => a <= rank && rank < b)
+	return hit(spans.below) && !hit(spans.above) ? -1 : 1
 }
 
 /** The side a flow inherits when it leaves a boundary event of this host. */

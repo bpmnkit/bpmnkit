@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-22 — Auto-layout: exception rows without crossings, edit loops, loops inside pools
+
+Driven by the agentic-generation eval (Opus judge: bpmnkit layouts 3.1 vs Bare-Opus 4.1); re-laid eval models are scored offline, outside the repo.
+- Semantic engine (TS and Rust): a gateway's plain branch goes above the spine when a boundary handler's flow runs below past the gateway's rank (and none runs above), so its trunk no longer drops through the exception row. The side is decided on the first band pass and kept after the exception row re-ranks. The exception row widens the spine by one narrow column when only an earlier handler's end event sits in a host's column, so every handler stays straight under its host instead of stepping right. Card-payment-like flows: 1 crossing → 0, bends per flow 0.4 → 0.07.
+- Auto-layout (TS and Rust): a pool's height counts its flows' waypoints, so a loop routed over every shape stays inside the frame instead of running across the border.
+- `placeNewShapes` (edits): a new flow no longer starts or ends on a port another flow uses (a correction loop ran back along the boundary event's drop), a route that runs along another flow counts as two crossings, and a boundary event's name sits beside its exit stem, not across it.
+- `pnpm layout:score`: crossings 2.25 → 2.18, sequence crossings 0.14 → 0.07, bends per flow 0.35 → 0.33, boundary labels crossed 0.02 → 0; a few cases grow in height (room-deposit, visa-hold, it-incident: the branch moves above instead of crossing). Baseline, conformance fixtures, the compact-lanes capture and the P2d rule updated to match.
+
 ## 2026-11-21 — Release job: consumability check skips other platforms' binaries
 
 - `scripts/check-package-consumable.mjs` skips a package whose `os`/`cpu` excludes the runner (the `@bpmnkit/cli-<platform>` packages): npm refuses to install them there (EBADPLATFORM), which failed the Changesets release job on main after the CLI merge. PR CI only runs `--pack-only`, so it did not catch it.

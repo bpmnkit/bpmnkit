@@ -14,7 +14,7 @@ use crate::types::{
     Bounds, GridHint, LaneBand, LayoutEdge, LayoutNode, LayoutResult, Plane, Waypoint,
     LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING,
 };
-use bands::{assign_bands, boundary_side};
+use bands::{assign_bands_with, boundary_side};
 use bpmnkit_bpmn::model::{BpmnFlowElement, BpmnLaneSet, BpmnProcess, BpmnSequenceFlow};
 use graph::{assign_ranks, build_semantic_graph, place_exception_row};
 use place::{external_label_width, place, size_of, LaneOptions};
@@ -156,14 +156,15 @@ pub fn semantic_layout(
         let mut graph = graph.borrow_mut();
         graph.handoffs = handoffs;
         assign_ranks(&mut graph, &IndexMap::default());
-        let mut band_layout = assign_bands(&graph, &titled);
+        let mut plain_sides = IndexMap::default();
+        let mut band_layout = assign_bands_with(&graph, &titled, &mut plain_sides);
         // Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
         if lane_set.is_none()
             && place_exception_row(&mut graph, &band_layout.bands, &|event, host| {
                 boundary_side(event, titled.contains(host))
             })
         {
-            band_layout = assign_bands(&graph, &titled);
+            band_layout = assign_bands_with(&graph, &titled, &mut plain_sides);
         }
         let placement = place(
             &graph,

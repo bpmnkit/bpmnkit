@@ -257,6 +257,19 @@ fn content_bbox<'a>(nodes: &[LayoutNode], extra: impl IntoIterator<Item = &'a Bo
     b
 }
 
+/// `contentBbox`'s `edges`: flows whose vertical reach counts too, so a loop
+/// routed over or under every shape stays inside the pool drawn around them.
+/// Only y: the pools' x alignment is measured on the shapes.
+fn with_edge_reach(mut b: BBox, edges: &[LayoutEdge]) -> BBox {
+    for edge in edges {
+        for w in &edge.waypoints {
+            b.min_y = js::min(b.min_y, w.y);
+            b.max_y = js::max(b.max_y, w.y);
+        }
+    }
+    b
+}
+
 fn wp(x: f64, y: f64) -> BpmnWaypoint {
     BpmnWaypoint {
         x,
@@ -1376,7 +1389,7 @@ fn stack_sketch(
             });
             continue;
         }
-        let b = content_bbox(&layout.nodes, []);
+        let b = with_edge_reach(content_bbox(&layout.nodes, []), &layout.edges);
         let lanes = lane_levels(
             participant_pools[index]
                 .process
@@ -2049,7 +2062,10 @@ fn layout_definitions(
             None => IndexMap::new(),
         };
 
-        let bbox = content_bbox(&result.nodes, ann_bounds.values());
+        let bbox = with_edge_reach(
+            content_bbox(&result.nodes, ann_bounds.values()),
+            &result.edges,
+        );
         let content_w = bbox.max_x - bbox.min_x;
         let content_h = bbox.max_y - bbox.min_y;
 
