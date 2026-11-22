@@ -381,6 +381,36 @@ describe("judge findings", () => {
 		expect(refs).toEqual(["DataStore_db", "DataStore_db"])
 	})
 
+	it("reads a data object declared again by name in one pool as the same object", () => {
+		const { definitions: d, problems } = compileTextSpec(
+			"# T\n## A | id=a\n[start S] > [task Make list] > [task Use list] > [end E]\nMake list ..> [object Item list]\n[object Item list] ..> Use list\n## B | id=b\n[start U] > [task Read list] > [end W]\n[object Item list] ..> Read list",
+		)
+		expect(problems).toEqual([])
+		const data = (i: number) =>
+			(d.processes[i]?.flowElements ?? []).filter(
+				(e) => e.type === "dataObject" || e.type === "dataObjectReference",
+			)
+		// One object written and read in pool A; pool B, its own process, has its own.
+		expect(data(0).map((e) => e.id)).toEqual(["DataObject_itemList", "itemList"])
+		expect(data(1)).toHaveLength(2)
+		const a = d.processes[0]?.flowElements ?? []
+		const assoc = (id: string, key: "dataInputAssociations" | "dataOutputAssociations") =>
+			(a.find((e) => e.id === id) as Record<string, unknown> | undefined)?.[key]
+		expect(JSON.stringify(assoc("makeList", "dataOutputAssociations"))).toContain("itemList")
+		expect(JSON.stringify(assoc("useList", "dataInputAssociations"))).toContain("itemList")
+	})
+
+	it("points same-name data object references in one pool at one data object", () => {
+		const { definitions: d, problems } = compileTextSpec(
+			"# T\ns[start S] > m[task Make] > u[task Use] > e[end E]\nm ..> out[object Item list]\nin[object Item list] ..> u",
+		)
+		expect(problems).toEqual([])
+		const els = d.processes[0]?.flowElements ?? []
+		expect(els.filter((e) => e.type === "dataObject")).toHaveLength(1)
+		const refs = els.flatMap((e) => (e.type === "dataObjectReference" ? [e.dataObjectRef] : []))
+		expect(refs).toEqual(["DataObject_out", "DataObject_out"])
+	})
+
 	it("makes a none start that a message flow targets a message start", () => {
 		const { definitions: d, problems } = compileTextSpec(
 			"# T\n## A | id=a\ns[start S] > t[send Ask | job=ask] > e[end E]\n## B | id=b\nu[start Asked] > w[end W]\nt ~> u: Pick list",

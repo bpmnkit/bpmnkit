@@ -1,10 +1,10 @@
 # BPMN agent card
 
-Self-sufficient: no `dist/*.d.ts` search, no prose plan, no other docs. Write the spec with the Write tool from the template that fits, run `bpmnkit build <spec>` once, fix what it reports.
+Self-sufficient: no `dist/*.d.ts` search, no prose plan, no other docs. Write the spec from the template that fits, run `bpmnkit build <spec>` once, fix what it reports.
 
 `bpmnkit build` writes the laid-out `.bpmn` and a `.form` per user task, lints like c8ctl and, with `--deploy`, deploys them.
 
-<!-- docspack: tags=agent-card,cheat-sheet,build,build-script,bpmn,process,create,write,script,builder,edit,casen-build,sub-process,annotation,conditional,text-spec,collaboration,pools,lanes,message-flow,data-object,form -->
+<!-- docspack: tags=agent-card,cheat-sheet,build,bpmn,process,create,script,builder,edit,casen-build,sub-process,annotation,conditional,text-spec,collaboration,pools,lanes,message-flow,data-object,form -->
 
 | Task | Write | Run |
 | --- | --- | --- |
@@ -12,10 +12,10 @@ Self-sufficient: no `dist/*.d.ts` search, no prose plan, no other docs. Write th
 | Pools, lanes, message flows, data | `shop.txt` (template 2) | `bpmnkit build shop.txt --deploy` |
 | Change an existing `.bpmn` | `edit.mjs` (template 3) | `bpmnkit build edit.mjs --edit order.bpmn --deploy` |
 
-- Success is one line: `✓ order.bpmn + 2 forms (…) · lint clean · process order, tasks 4, gateways 2, forms 2 · Camunda 8.10.0`. It is the proof: do not inspect the XML. Otherwise one `✖` line per problem: fix the spec, run again.
+- Success is one line, `✓ order.bpmn … · lint clean · …`, and the proof: do not inspect the XML. Otherwise one `✖` line per problem: fix the spec, run again.
 - After ✓: run the task's gate commands as given (one per Bash call), deploy the `.bpmn` plus the listed `.form` files, answer in one line. The layout is final: never move DI by hand or render images.
-- Write files with the Write tool, not heredocs. `-o out.bpmn` sets the output. `.dmn`/`.form` files after the spec are linted and deployed with it.
-- `--deploy` goes to `ZEEBE_REST_ADDRESS` (+ the `CAMUNDA_*` client variables), else the bpmnkit profile, else local Reebe. Not on PATH? `npm i -D @bpmnkit/cli`, then `npx bpmnkit …`.
+- Write files with the Write tool. `-o out.bpmn` sets the output; `.dmn`/`.form` files after the spec are linted and deployed with it.
+- `--deploy` targets `ZEEBE_REST_ADDRESS` (+ `CAMUNDA_*`), else the bpmnkit profile, else local Reebe. Not on PATH: `npx bpmnkit …`.
 
 ## 1. One pool
 
@@ -29,9 +29,10 @@ Approved? >(No: default) [user Rework expense] > Review expense
 
 - `# Name | id=<process id>`: the process id is the deploy key. `camunda=8.8` for an older cluster (default 8.10).
 - `a > b > c` is a path. Declare a node once: `[kind Name | attrs]`; its id is the name in camelCase (`[user Review expense]` is `reviewExpense`), or write `id[kind Name]`. Later write its id or its exact name. A path that stops gets an end event.
-- Kinds: `start end task user service rule send receive script manual call sub xor and or eventgw catch throw boundary adhoc`. Triggers: `<event kind>:message|timer|condition|error|signal|escalation|terminate`, e.g. `start:timer`, `boundary:error`, `end:message`.
+- Kinds: `start end task user service rule send receive script manual call sub xor and or eventgw catch throw boundary adhoc`. Triggers: `<event kind>:message|timer|condition|error|signal|escalation|terminate` (`start:timer`, `end:message`).
+- Model the text, no more: one node per named step, `user` for a person's work, `service` for a system's; a timer `at=` (once) unless the text says it repeats (`every=`).
 - Decision: `gw >(Label: FEEL condition) x` per branch, exactly one `gw >(Label: default) y`. Branches that meet are joined for you; parallel work: `and` split, `and` join.
-- Forms: a user task without `fields=` gets a field per variable the next decisions read (`approved = true` → checkbox, `amount > 1000` → number, `risk = "low"` → select). `fields=key[:number|checkbox|textarea|date|select(a|b)],…` sets them; `form=<id>` links your own.
+- Forms: a user task without `fields=` gets a field per variable the next decisions read (`approved = true` → checkbox, `amount > 1000` → number). `fields=key[:number|checkbox|textarea|date|select(a|b)],…` sets them; `form=<id>` links your own.
 - Defaults: `job=` (service, send, message end) is the id kebab-cased (`pay-expense`); `msg=` is the name kebab-cased. Other attributes: `key=<FEEL>` (every message caught after the start) · `after=PT1H`, `every=R/PT1H`, `at=2026-01-31T09:00:00Z` (a timer start takes only a literal date; `catch:timer at==<FEEL>` a variable) · `cond=<FEEL>` (last) · `error=`, `signal=`, `escalation=` · `on=<task id>`, `nonint` (boundary) · `result=<var>` · `called=<process id>` · `each=<list var>` · `in.x=`, `out.x=` · `feel=<FEEL>` (script, last) · `retries=3`, `header.k=v` · `assignee=` `groups=a;b` `users=` `due=P2D` `priority=0-100`.
 - A rule task calls `decision=<id>`, default its name kebab-cased (`[rule Assess risk]` calls `assess-risk`). Pass the `.dmn` too: `bpmnkit build order.txt risk.dmn --deploy`.
 
@@ -48,7 +49,7 @@ Pack order {
   [start Packing started] > [user Pick item | each=items] > [user Box items] > [end Packed]
 }
 ### Warehouse
-Pack order > [user Ship order] > [end Order shipped]
+Pack order > [user Confirm address] > [user Ship order] > [end Order shipped]
 Check stock ..> [store Stock DB]
 Ship order ..> [object Packing slip]
 [annotation Fragile items get extra padding] ..> Pack order
@@ -59,12 +60,14 @@ Ship order ..> [object Packing slip]
 Customer ~> Order placed: Order
 Request payment ~> Bank: Payment request
 Bank ~> Payment received: Payment confirmed
+Confirm address ~> Customer: Address query
+Customer ~> Confirm address: Address
 ```
 
 - `## Name | id=<process id>` starts a pool with its own process; `## Name | blackbox` a partner pool (id: `id=` or the name kebab-cased).
 - `### Lane`: nodes declared after it go in that lane; repeat a header to switch back.
-- `a ~> b: label` is a message flow between nodes or pools (ids or names) of different pools. A plain `start` it reaches becomes a message start. A same-name `store` in several pools is one data store.
-- `[object Name] ..> task`: the task reads it; `task ..> [store Name]`: it writes it. `objects` marks a collection.
+- `a ~> b: label` is a message flow between nodes or pools (ids or names) of different pools, one per direction: a task that asks and gets the answer has both (`Confirm address`). A plain `start` it reaches becomes a message start. A same-name `store` in several pools is one data store.
+- `[object Name] ..> task`: the task reads it; `task ..> [store Name]`: it writes it. `objects` marks a collection. Same name, same pool: one object.
 - `[sub Name]`, then `Name {`, its paths (own start and end), `}`: an expanded sub-process. Bodies nest.
 - `[annotation Text]`: on the collaboration before the first `##`; `[annotation Text] ..> task` links it. Ids are global across pools.
 
@@ -81,7 +84,7 @@ export default (kit, model) =>
 		)
 ```
 
-`--edit order.bpmn` rewrites it in place: existing shapes and forms stay, shapes right of the insertion move only as needed, new user tasks get forms. `--camunda 8.10` sets `executionPlatformVersion`. `kit` is `@bpmnkit/core`, `model` the parsed file.
+`--edit order.bpmn` rewrites it in place, keeping shapes and forms; new user tasks get forms. `kit` is `@bpmnkit/core`, `model` the parsed file.
 
 - `continueProcess(model, processId)`: `.insertAfter(id)` splices in after `id`; `.at(id)` continues from a node without outgoing flow.
 - Steps: `serviceTask(id, { name, taskType })` · `userTask(id, { name, formId, assignee, candidateGroups })` · `intermediateCatchEvent(id, { name, messageName, correlationKey: "=orderId" })` or `{ timerDuration: "PT1H" }` · `endEvent(id, { name })` · `.connectTo(id)`.
@@ -94,7 +97,7 @@ Event sub-processes, transactions, compensation, groups, nested lanes: write `fl
 
 ## Traps
 
-- A finding reads `✖ order.bpmn pay: <message> [<rule id>, .bpmnlintrc "<key>"]`: the key is c8ctl's rule name. Fix the model; do not silence rules unless the task says so.
-- `formId` and decision ids must equal the deployed form's and decision's ids. Generated forms already do; a hand-written `.form` next to the output is used instead.
+- A finding `✖ order.bpmn pay: <message> [<rule id>, .bpmnlintrc "<key>"]` names c8ctl's rule key. Fix the model; never silence rules unless the task says so.
+- `formId` and decision ids must equal the deployed form's and decision's ids. Generated forms do; a hand-written `.form` beside the output wins.
 - A message caught after the start needs `key=`; a message start does not. An `eventgw` is followed only by catch events.
-- `bpmnkit build` refuses what Camunda 8 cannot deploy, one line per problem, `- <id>: <message> (zeebe/<rule>)`, and writes nothing.
+- `bpmnkit build` refuses what Camunda 8 cannot deploy (`- <id>: <message> (zeebe/<rule>)`) and writes nothing.

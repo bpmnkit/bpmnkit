@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-22 — Text spec: one data object per name and pool; BPMN card on two-way exchanges and modelling fidelity
+
+Driven by the agentic-generation eval's adherence findings (agents re-declared a data object by name and got two; dropped the answer flow back to a task that asks a partner).
+- `bpmnkit build` text spec: `[object Name]` written again in the same pool is that object again (one id, one shape, both associations), not `name2`; pools keep their own objects. Same-name references with explicit different ids in one process share one `dataObject`.
+- BPMN agent card (and its docs/plugin copies): message flows are one line per direction, and template 2 shows a task that asks a partner and gets the answer (`Confirm address`, a flow each way); a same-name object in a pool is one object; "model the text, no more" (one node per named step, `user` for a person's work, `service` for a system's, a timer `at=` unless the text says it repeats). Trimmed elsewhere to stay under the 2k-token budget.
+
 ## 2026-11-22 — Auto-layout: exception rows without crossings, edit loops, loops inside pools
 
 Driven by the agentic-generation eval (Opus judge: bpmnkit layouts 3.1 vs Bare-Opus 4.1); re-laid eval models are scored offline, outside the repo.
