@@ -4,7 +4,7 @@ Self-sufficient: no `dist/*.d.ts` search, no prose plan, no other docs. Write th
 
 `bpmnkit build` writes the laid-out `.bpmn` and a `.form` per user task, lints like c8ctl and, with `--deploy`, deploys them.
 
-<!-- docspack: tags=agent-card,cheat-sheet,build,bpmn,process,create,script,builder,edit,casen-build,sub-process,annotation,conditional,text-spec,collaboration,pools,lanes,message-flow,data-object,form -->
+<!-- docspack: tags=agent-card,cheat-sheet,build,build-script,bpmn,process,create,write,script,builder,edit,sub-process,conditional,text-spec,collaboration,pools,lanes,message-flow,data-object,form -->
 
 | Task | Write | Run |
 | --- | --- | --- |

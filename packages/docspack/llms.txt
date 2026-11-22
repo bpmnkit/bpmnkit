@@ -6,11 +6,11 @@
 
 Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`bpmnkit agent-card bpmn|dmn|form` prints the same card).
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 5 chunks, 1972 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 5 chunks, 1979 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
-Version 1.3.1. 477 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.3.2. 477 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -19,11 +19,11 @@ npx bpmnkit-docs ask "how do I deploy a process"
 
 ## agent-cards
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 414 tokens
-- [BPMN agent card — 1. One pool](.llms/chunks/agent-cards.bpmn.1.-one-pool.md) — 546 tokens
-- [BPMN agent card — 2. Pools, lanes, message flows, data](.llms/chunks/agent-cards.bpmn.2.-pools-lanes-message-flows-data.md) — 448 tokens
-- [BPMN agent card — 3. Edit an existing file](.llms/chunks/agent-cards.bpmn.3.-edit-an-existing-file.md) — 344 tokens
-- [BPMN agent card — Not in the text spec](.llms/chunks/agent-cards.bpmn.not-in-the-text-spec.md) — 220 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 372 tokens
+- [BPMN agent card — 1. One pool](.llms/chunks/agent-cards.bpmn.1.-one-pool.md) — 580 tokens
+- [BPMN agent card — 2. Pools, lanes, message flows, data](.llms/chunks/agent-cards.bpmn.2.-pools-lanes-message-flows-data.md) — 500 tokens
+- [BPMN agent card — 3. Edit an existing file](.llms/chunks/agent-cards.bpmn.3.-edit-an-existing-file.md) — 323 tokens
+- [BPMN agent card — Not in the text spec](.llms/chunks/agent-cards.bpmn.not-in-the-text-spec.md) — 204 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 433 tokens
 - [DMN agent card — Several decisions in one file: `Dmn.drd()`](.llms/chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md) — 299 tokens
 - [DMN agent card — Top builder options](.llms/chunks/agent-cards.dmn.top-builder-options.md) — 188 tokens

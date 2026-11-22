@@ -5,10 +5,10 @@ Event sub-processes, transactions, compensation, groups, nested lanes: write `fl
 
 ## Traps
 
-- A finding reads `✖ order.bpmn pay: <message> [<rule id>, .bpmnlintrc "<key>"]`: the key is c8ctl's rule name. Fix the model; do not silence rules unless the task says so.
-- `formId` and decision ids must equal the deployed form's and decision's ids. Generated forms already do; a hand-written `.form` next to the output is used instead.
+- A finding `✖ order.bpmn pay: <message> [<rule id>, .bpmnlintrc "<key>"]` names c8ctl's rule key. Fix the model; never silence rules unless the task says so.
+- `formId` and decision ids must equal the deployed form's and decision's ids. Generated forms do; a hand-written `.form` beside the output wins.
 - A message caught after the start needs `key=`; a message start does not. An `eventgw` is followed only by catch events.
-- `bpmnkit build` refuses what Camunda 8 cannot deploy, one line per problem, `- <id>: <message> (zeebe/<rule>)`, and writes nothing.
+- `bpmnkit build` refuses what Camunda 8 cannot deploy (`- <id>: <message> (zeebe/<rule>)`) and writes nothing.
 
 ---
 Source: https://bpmnkit.com/docs/agent-cards/bpmn

@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-22 — BPMN card keeps its docspack tags
+
+- The card trim had dropped the `build-script` and `write` tags, so docspack ranked the DMN card first for "write a bpmn build script" (recipe-ranking test). Restored them, dropped the stale `casen-build` and `annotation` tags to stay under the 2k-token card budget, re-synced the copies and rebuilt the docspack index.
+
 ## 2026-11-22 — Text spec: one data object per name and pool; BPMN card on two-way exchanges and modelling fidelity
 
 Driven by the agentic-generation eval's adherence findings (agents re-declared a data object by name and got two; dropped the answer flow back to a task that asks a partner).
