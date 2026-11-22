@@ -68,6 +68,7 @@ const service: ApiService = {"id":"novu","name":"Novu Notifications API","baseUr
 	{"method":"PATCH","path":"/v2/subscribers/{subscriberId}/preferences","summary":"Update subscriber preferences","body":["channels","workflowId","schedule","context"]},
 	{"method":"PATCH","path":"/v2/subscribers/{subscriberId}/preferences/bulk","summary":"Bulk update subscriber preferences","body":["preferences*","context"]},
 	{"method":"GET","path":"/v2/subscribers/{subscriberId}/subscriptions","summary":"Retrieve subscriber subscriptions","query":["after","before","limit","orderDirection","orderBy","includeCursor"]},
+	{"method":"POST","path":"/v2/subscribers/{subscriberId}/tokens","summary":"Create a subscriber login token","body":["context","subscriber","scope","expiresIn"]},
 	{"method":"GET","path":"/v2/subscribers/{subscriberId}/notifications","summary":"Retrieve subscriber notifications","query":["limit","after","offset","tags","read","archived"]},
 	{"method":"GET","path":"/v2/subscribers/{subscriberId}/notifications/count","summary":"Retrieve subscriber notifications count","query":["filters*"]},
 	{"method":"PATCH","path":"/v2/subscribers/{subscriberId}/notifications/{notificationId}/read","summary":"Mark a notification as read","query":["contextKeys"]},

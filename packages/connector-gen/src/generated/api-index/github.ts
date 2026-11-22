@@ -764,7 +764,7 @@ const service: ApiService = {"id":"github","name":"GitHub REST API","baseUrl":"h
 	{"method":"GET","path":"/repos/{owner}/{repo}/contributors","summary":"List repository contributors","query":["anon","per_page","page"]},
 	{"method":"GET","path":"/repos/{owner}/{repo}/copilot/cloud-agent/configuration","summary":"Get Copilot cloud agent configuration for a repository"},
 	{"method":"GET","path":"/repos/{owner}/{repo}/copilot/code-review/settings","summary":"Get Copilot code review settings for a repository"},
-	{"method":"PATCH","path":"/repos/{owner}/{repo}/copilot/code-review/settings","summary":"Update Copilot code review settings for a repository","body":["review_effort","severity_filter","custom_instructions_enabled","mcp_enabled"]},
+	{"method":"PATCH","path":"/repos/{owner}/{repo}/copilot/code-review/settings","summary":"Update Copilot code review settings for a repository","body":["review_effort","severity_filter","custom_instructions_enabled","mcp_enabled","cross_repo_context_enabled"]},
 	{"method":"GET","path":"/repos/{owner}/{repo}/dependabot/alerts","summary":"List Dependabot alerts for a repository","query":["classification","state","severity","ecosystem","package","manifest"]},
 	{"method":"GET","path":"/repos/{owner}/{repo}/dependabot/alerts/{alert_number}","summary":"Get a Dependabot alert"},
 	{"method":"PATCH","path":"/repos/{owner}/{repo}/dependabot/alerts/{alert_number}","summary":"Update a Dependabot alert","body":["state","dismissed_reason","dismissed_comment","assignees","agent_assignment"]},

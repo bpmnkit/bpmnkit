@@ -7,7 +7,7 @@ const service: ApiService = {"id":"adyen","name":"Adyen Checkout API","baseUrl":
 	{"method":"POST","path":"/cardDetails","summary":"Get the brands and other details of a card","body":["merchantAccount*","cardNumber","countryCode","encryptedCardNumber","supportedBrands"]},
 	{"method":"POST","path":"/donationCampaigns","summary":"Get a list of donation campaigns","body":["currency*","merchantAccount*","label","locale","store"]},
 	{"method":"POST","path":"/donations","summary":"Make a donation","body":["amount*","merchantAccount*","reference*","returnUrl*","accountInfo","additionalData"]},
-	{"method":"POST","path":"/forward","summary":"Forward stored payment details","body":["baseUrl*","merchantAccount*","request*","shopperReference*","amount","merchantReference"]},
+	{"method":"POST","path":"/forward","summary":"Forward stored payment details","body":["baseUrl*","merchantAccount*","request*","amount","merchantReference","options"]},
 	{"method":"POST","path":"/orders","summary":"Create an order","body":["amount*","merchantAccount*","reference*","expiresAt"]},
 	{"method":"POST","path":"/orders/cancel","summary":"Cancel an order","body":["merchantAccount*","order*"]},
 	{"method":"POST","path":"/paymentLinks","summary":"Create a payment link","body":["amount*","merchantAccount*","reference*","description","allowedPaymentMethods","applicationInfo"]},

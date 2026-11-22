@@ -47,7 +47,7 @@ const service: ApiService = {"id":"intercom","name":"Intercom API","baseUrl":"ht
 	{"method":"POST","path":"/contacts/merge","summary":"Merge a lead and a user","body":["from*","into*"]},
 	{"method":"POST","path":"/contacts/search","summary":"Search contacts","body":["query*","pagination"]},
 	{"method":"GET","path":"/contacts","summary":"List all contacts"},
-	{"method":"POST","path":"/contacts","summary":"Create contact"},
+	{"method":"POST","path":"/contacts","summary":"Create contact","body":["name","email","role","external_id","phone","avatar"]},
 	{"method":"POST","path":"/contacts/{id}/archive","summary":"Archive contact"},
 	{"method":"POST","path":"/contacts/{id}/unarchive","summary":"Unarchive contact"},
 	{"method":"POST","path":"/conversations/{conversation_id}/tags","summary":"Add tag to a conversation","body":["id*","admin_id*"]},
