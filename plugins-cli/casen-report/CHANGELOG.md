@@ -1,5 +1,13 @@
 # @bpmnkit/casen-report
 
+## 0.1.14
+
+### Patch Changes
+
+- b638979: Messages, help text and hints name the `bpmnkit` command instead of `casen` (still an alias).
+- Updated dependencies [b638979]
+  - @bpmnkit/cli-sdk@0.1.0
+
 ## 0.1.13
 
 ### Patch Changes

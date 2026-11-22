@@ -1,5 +1,17 @@
 # @bpmnkit/ai-server
 
+## 0.8.1
+
+### Patch Changes
+
+- b638979: Messages, help text and hints name the `bpmnkit` command instead of `casen` (still an alias).
+- Updated dependencies [b638979]
+- Updated dependencies [b638979]
+  - @bpmnkit/core@1.18.1
+  - @bpmnkit/engine@1.4.1
+  - @bpmnkit/patterns@0.1.4
+  - @bpmnkit/profiles@0.2.0
+
 ## 0.8.0
 
 ### Minor Changes

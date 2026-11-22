@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/casen-worker-http",
-	"version": "0.1.12",
+	"version": "0.1.13",
 	"private": false,
 	"description": "Example bpmnkit worker plugin — processes HTTP connector jobs using the JSONPlaceholder API",
 	"type": "module",

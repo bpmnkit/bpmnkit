@@ -1,5 +1,11 @@
 # @bpmnkit/worker-client
 
+## 0.2.2
+
+### Patch Changes
+
+- b638979: Messages, help text and hints name the `bpmnkit` command instead of `casen` (still an alias).
+
 ## 0.2.1
 
 ### Patch Changes

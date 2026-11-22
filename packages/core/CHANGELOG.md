@@ -1,5 +1,11 @@
 # @bpmnkit/core
 
+## 1.18.1
+
+### Patch Changes
+
+- b638979: Messages, help text and hints name the `bpmnkit` command instead of `casen` (still an alias).
+
 ## 1.18.0
 
 ### Minor Changes

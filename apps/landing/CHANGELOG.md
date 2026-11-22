@@ -1,5 +1,16 @@
 # @bpmnkit/landing
 
+## 0.0.70
+
+### Patch Changes
+
+- Updated dependencies [b638979]
+  - @bpmnkit/core@1.18.1
+  - @bpmnkit/plugins@1.4.1
+  - @bpmnkit/engine@1.4.1
+  - @bpmnkit/operate@0.2.2
+  - @bpmnkit/patterns@0.1.4
+
 ## 0.0.69
 
 ### Patch Changes

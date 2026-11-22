@@ -1,5 +1,11 @@
 # @bpmnkit/profiles
 
+## 0.2.0
+
+### Minor Changes
+
+- b638979: The profile store moves to the `bpmnkit` config directory. A store that only exists under `casen` is copied (not moved) on first use and marked `migrated_from`; if the copy fails, the old directory is used.
+
 ## 0.1.0
 
 ### Minor Changes

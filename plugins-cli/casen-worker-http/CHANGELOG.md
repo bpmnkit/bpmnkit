@@ -1,5 +1,12 @@
 # @bpmnkit/casen-worker-http
 
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies [b638979]
+  - @bpmnkit/cli-sdk@0.1.0
+
 ## 0.1.12
 
 ### Patch Changes

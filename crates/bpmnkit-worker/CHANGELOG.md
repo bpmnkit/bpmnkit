@@ -1,1 +1,7 @@
 # @crates/bpmnkit-worker
+
+## 0.7.0
+
+### Minor Changes
+
+- b638979: `grpc` feature: job streaming (`StreamActivatedJobs`) with polling as the fallback and automatic reconnect; mTLS / private CA (`TlsConfig`, `CAMUNDA_CA_CERT_PATH`, `CAMUNDA_CLIENT_CERT_PATH`, `CAMUNDA_CLIENT_KEY_PATH`); `CAMUNDA_GRPC_ADDRESS`.
