@@ -10,7 +10,7 @@ Writing a BPMN process, DMN decision or form? Read its agent card first: a runna
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
-Version 1.3.2. 487 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.3.2. 510 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -189,7 +189,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AI Integration — Previewing While the Model Writes — What the model can do](.llms/chunks/guides.ai.previewing-while-the-model-writes-what-the-model-can-do.md) — 459 tokens
 - [AI Integration — MCP Server](.llms/chunks/guides.ai.mcp-server.md) — 383 tokens
 - [BPMN Diagrams in Markdown](.llms/chunks/guides.bpmn-in-markdown.md) — 660 tokens
-- [BPMN Diagrams in Markdown — What goes in a block](.llms/chunks/guides.bpmn-in-markdown.what-goes-in-a-block.md) — 247 tokens
+- [BPMN Diagrams in Markdown — What goes in a block](.llms/chunks/guides.bpmn-in-markdown.what-goes-in-a-block.md) — 368 tokens
 - [BPMN Diagrams in Markdown — Astro](.llms/chunks/guides.bpmn-in-markdown.astro.md) — 185 tokens
 - [BPMN Diagrams in Markdown — VitePress](.llms/chunks/guides.bpmn-in-markdown.vitepress.md) — 291 tokens
 - [BPMN Diagrams in Markdown — Plain HTML pipelines](.llms/chunks/guides.bpmn-in-markdown.plain-html-pipelines.md) — 488 tokens
@@ -282,12 +282,35 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Process documentation — From the editor](.llms/chunks/guides.process-documentation.from-the-editor.md) — 246 tokens
 - [Process documentation — From Drop](.llms/chunks/guides.process-documentation.from-drop.md) — 273 tokens
 - [Process documentation — From code](.llms/chunks/guides.process-documentation.from-code.md) — 344 tokens
+- [BPMN Kit Text — element reference — How to read this page](.llms/chunks/guides.process-text-reference.how-to-read-this-page.md) — 193 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks](.llms/chunks/guides.process-text-reference.process-basics-and-tasks.md) — 138 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks — `user` — a person does it](.llms/chunks/guides.process-text-reference.process-basics-and-tasks-user-a-person-does-it.md) — 129 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks — `service` — a worker runs a job](.llms/chunks/guides.process-text-reference.process-basics-and-tasks-service-a-worker-runs-a-job.md) — 163 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks — `rule` — a DMN decision](.llms/chunks/guides.process-text-reference.process-basics-and-tasks-rule-a-dmn-decision.md) — 139 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks — `script` — FEEL on process data](.llms/chunks/guides.process-text-reference.process-basics-and-tasks-script-feel-on-process-data.md) — 166 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks — `send` and `receive` — messages](.llms/chunks/guides.process-text-reference.process-basics-and-tasks-send-and-receive-messages.md) — 178 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks — `manual` and `task`](.llms/chunks/guides.process-text-reference.process-basics-and-tasks-manual-and-task.md) — 146 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks — `call` — another process](.llms/chunks/guides.process-text-reference.process-basics-and-tasks-call-another-process.md) — 178 tokens
+- [BPMN Kit Text — element reference — Process basics and tasks — `each=` — once per item](.llms/chunks/guides.process-text-reference.process-basics-and-tasks-each-once-per-item.md) — 151 tokens
+- [BPMN Kit Text — element reference — Gateways](.llms/chunks/guides.process-text-reference.gateways.md) — 72 tokens
+- [BPMN Kit Text — element reference — Gateways — `xor` — exactly one branch](.llms/chunks/guides.process-text-reference.gateways-xor-exactly-one-branch.md) — 230 tokens
+- [BPMN Kit Text — element reference — Gateways — `and` — all branches](.llms/chunks/guides.process-text-reference.gateways-and-all-branches.md) — 187 tokens
+- [BPMN Kit Text — element reference — Gateways — `or` — one or more branches](.llms/chunks/guides.process-text-reference.gateways-or-one-or-more-branches.md) — 235 tokens
+- [BPMN Kit Text — element reference — Gateways — `eventgw` — the first event wins](.llms/chunks/guides.process-text-reference.gateways-eventgw-the-first-event-wins.md) — 205 tokens
+- [BPMN Kit Text — element reference — Events and exceptions](.llms/chunks/guides.process-text-reference.events-and-exceptions.md) — 146 tokens
+- [BPMN Kit Text — element reference — Events and exceptions — Start events](.llms/chunks/guides.process-text-reference.events-and-exceptions-start-events.md) — 219 tokens
+- [BPMN Kit Text — element reference — Events and exceptions — End events](.llms/chunks/guides.process-text-reference.events-and-exceptions-end-events.md) — 175 tokens
+- [BPMN Kit Text — element reference — Events and exceptions — Intermediate catch and throw](.llms/chunks/guides.process-text-reference.events-and-exceptions-intermediate-catch-and-throw.md) — 179 tokens
+- [BPMN Kit Text — element reference — Events and exceptions — Boundary events](.llms/chunks/guides.process-text-reference.events-and-exceptions-boundary-events.md) — 583 tokens
+- [BPMN Kit Text — element reference — Pools, lanes and messages](.llms/chunks/guides.process-text-reference.pools-lanes-and-messages.md) — 428 tokens
+- [BPMN Kit Text — element reference — Ad-hoc, AI agent, note and doc](.llms/chunks/guides.process-text-reference.ad-hoc-ai-agent-note-and-doc.md) — 249 tokens
+- [BPMN Kit Text — element reference — Not in Text: Fluent only](.llms/chunks/guides.process-text-reference.not-in-text-fluent-only.md) — 373 tokens
 - [BPMN Kit Text — the line format — What it is](.llms/chunks/guides.process-text.what-it-is.md) — 229 tokens
-- [BPMN Kit Text — the line format — Syntax cheat sheet](.llms/chunks/guides.process-text.syntax-cheat-sheet.md) — 442 tokens
+- [BPMN Kit Text — the line format — Syntax cheat sheet](.llms/chunks/guides.process-text.syntax-cheat-sheet.md) — 462 tokens
 - [BPMN Kit Text — the line format — Example](.llms/chunks/guides.process-text.example.md) — 159 tokens
 - [BPMN Kit Text — the line format — API](.llms/chunks/guides.process-text.api.md) — 346 tokens
 - [BPMN Kit Text — the line format — Where it is used](.llms/chunks/guides.process-text.where-it-is-used.md) — 179 tokens
-- [BPMN Kit Text — the line format — Next](.llms/chunks/guides.process-text.next.md) — 41 tokens
+- [BPMN Kit Text — the line format — Next](.llms/chunks/guides.process-text.next.md) — 47 tokens
 - [Recipes: Element Templates and Connectors](.llms/chunks/guides.recipes-element-templates.md) — 360 tokens
 - [Recipes: Element Templates and Connectors — How do I find a connector template's property ids?](.llms/chunks/guides.recipes-element-templates.how-do-i-find-a-connector-template-s-property-ids.md) — 181 tokens
 - [Recipes: Forms and User Tasks](.llms/chunks/guides.recipes-forms-and-user-tasks.md) — 138 tokens

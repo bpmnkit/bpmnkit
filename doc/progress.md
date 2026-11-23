@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-23 — BPMN Kit Text element reference with rendered diagrams
+
+- `@bpmnkit/markdown` renders a ` ```bpmnkit-text ` fence (`BPMN_LANGS`): `parseProcessText`, an error for any `problems` instead of a partial drawing, then `expand` without the deploy gate. Tests in `render.test.ts`.
+- New guide `guides/process-text-reference` ("BPMN Kit Text — element reference"): every kind, gateway, trigger, boundary, lane, pool, ad-hoc agent, note and doc with a rendered diagram and the BPMN Kit Fluent equivalent; Fluent-only elements and a cheat sheet. Linked from `guides/process-text` and `guides/bpmn-in-markdown`. Left out: `link` events (Text has no link name, the parser draws a plain event), sub-process, event sub-process, transaction, data objects and complex gateway (Fluent only).
+- Test `process-text-reference-page.test.ts` parses every text block of the page with no problems and builds and exports every Fluent snippet. Docspack rebuilt.
+
 ## 2026-11-23 — Name and docs page for the line format
 
 - The process line format (`parseProcessText`, `createProcessTextStream`, `writeProcessText`, `PROCESS_TEXT_GUIDE`) is now "BPMN Kit Text" (short: bpmnkit text), with a linkable guide `guides/process-text` (cheat sheet, verified example, API, where it is used, vs Fluent). Linked both ways from `guides/fluent-builder` and `packages/core`. Test `process-text-guide-page.test.ts` runs the page's example.

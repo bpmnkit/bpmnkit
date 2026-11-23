@@ -6,16 +6,18 @@ import {
 	checkDiCompleteness,
 	expand,
 	exportSvg,
+	parseProcessText,
 } from "@bpmnkit/core"
 import { themeSvg } from "./theme.js"
 import { escapeHtml } from "./util.js"
 
 /** The fenced-code-block languages this package renders. */
-export const BPMN_LANGS = ["bpmn", "bpmn-compact", "bpmn-json"] as const
+export const BPMN_LANGS = ["bpmn", "bpmn-compact", "bpmn-json", "bpmnkit-text"] as const
 
 /**
  * `bpmn` holds BPMN 2.0 XML; `bpmn-compact` and its alias `bpmn-json` hold the
- * compact JSON format from `compactify()` in `@bpmnkit/core`.
+ * compact JSON format from `compactify()` in `@bpmnkit/core`; `bpmnkit-text` holds
+ * BPMN Kit Text, the line format `parseProcessText()` reads.
  */
 export type BpmnLang = (typeof BPMN_LANGS)[number]
 
@@ -130,6 +132,17 @@ function parseBlock(code: string, lang: BpmnLang): BpmnDefinitions {
 			return applyAutoLayout(defs)
 		}
 		return defs
+	}
+
+	if (lang === "bpmnkit-text") {
+		// A block that parses only in part would draw a different process than the author wrote.
+		const { diagram, problems } = parseProcessText(code)
+		const first = problems[0]
+		if (first) {
+			const more = problems.length > 1 ? ` (and ${problems.length - 1} more)` : ""
+			throw new Error(`line ${first.line}: ${first.message}${more}`)
+		}
+		return expand(diagram, { validate: false })
 	}
 
 	let json: unknown
