@@ -22,7 +22,7 @@ export interface VFileLike {
 }
 
 /**
- * remark plugin: replaces ` ```bpmn `, ` ```bpmn-compact ` and ` ```bpmn-json ` code
+ * remark plugin: replaces ` ```bpmn `, ` ```bpmn-compact ` and ` ```bpmn-json ` and ` ```bpmnkit-text ` code
  * blocks with an inline SVG diagram.
  *
  * It works on mdast, before any syntax highlighter sees the block, and hands the

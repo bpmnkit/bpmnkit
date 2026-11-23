@@ -2468,7 +2468,7 @@
 		{
 			"id": "guides.bpmn-in-markdown.what-goes-in-a-block",
 			"file": "chunks/guides.bpmn-in-markdown.what-goes-in-a-block.md",
-			"tokens": 247,
+			"tokens": 368,
 			"tags": [
 				"guides",
 				"bpmn-in-markdown",
@@ -2476,7 +2476,8 @@
 				"block"
 			],
 			"entities": [
-				"compactify()"
+				"compactify()",
+				"parseProcessText"
 			]
 		},
 		{
@@ -3889,6 +3890,340 @@
 			]
 		},
 		{
+			"id": "guides.process-text-reference.how-to-read-this-page",
+			"file": "chunks/guides.process-text-reference.how-to-read-this-page.md",
+			"tokens": 193,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"read",
+				"page"
+			],
+			"entities": [
+				"parseProcessText"
+			]
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks.md",
+			"tokens": 138,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks-user-a-person-does-it",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks-user-a-person-does-it.md",
+			"tokens": 129,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks",
+				"user",
+				"person"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks-service-a-worker-runs-a-job",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks-service-a-worker-runs-a-job.md",
+			"tokens": 163,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks",
+				"service",
+				"worker",
+				"runs",
+				"job"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks-rule-a-dmn-decision",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks-rule-a-dmn-decision.md",
+			"tokens": 139,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks",
+				"rule",
+				"dmn",
+				"decision"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks-script-feel-on-process-data",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks-script-feel-on-process-data.md",
+			"tokens": 166,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks",
+				"script",
+				"feel",
+				"data"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks-send-and-receive-messages",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks-send-and-receive-messages.md",
+			"tokens": 178,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks",
+				"send",
+				"receive",
+				"messages"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks-manual-and-task",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks-manual-and-task.md",
+			"tokens": 146,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks",
+				"manual",
+				"task"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks-call-another-process",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks-call-another-process.md",
+			"tokens": 178,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks",
+				"call",
+				"another"
+			],
+			"entities": [
+				"in.",
+				"out."
+			]
+		},
+		{
+			"id": "guides.process-text-reference.process-basics-and-tasks-each-once-per-item",
+			"file": "chunks/guides.process-text-reference.process-basics-and-tasks-each-once-per-item.md",
+			"tokens": 151,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"process",
+				"basics",
+				"tasks",
+				"each",
+				"once",
+				"per",
+				"item"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.gateways",
+			"file": "chunks/guides.process-text-reference.gateways.md",
+			"tokens": 72,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"gateways"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.gateways-xor-exactly-one-branch",
+			"file": "chunks/guides.process-text-reference.gateways-xor-exactly-one-branch.md",
+			"tokens": 230,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"gateways",
+				"xor",
+				"exactly",
+				"one",
+				"branch"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.gateways-and-all-branches",
+			"file": "chunks/guides.process-text-reference.gateways-and-all-branches.md",
+			"tokens": 187,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"gateways",
+				"all",
+				"branches"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.gateways-or-one-or-more-branches",
+			"file": "chunks/guides.process-text-reference.gateways-or-one-or-more-branches.md",
+			"tokens": 235,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"gateways",
+				"one",
+				"more",
+				"branches"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.gateways-eventgw-the-first-event-wins",
+			"file": "chunks/guides.process-text-reference.gateways-eventgw-the-first-event-wins.md",
+			"tokens": 205,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"gateways",
+				"eventgw",
+				"first",
+				"event",
+				"wins"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.events-and-exceptions",
+			"file": "chunks/guides.process-text-reference.events-and-exceptions.md",
+			"tokens": 146,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"events",
+				"exceptions"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.events-and-exceptions-start-events",
+			"file": "chunks/guides.process-text-reference.events-and-exceptions-start-events.md",
+			"tokens": 219,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"events",
+				"exceptions",
+				"start"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.events-and-exceptions-end-events",
+			"file": "chunks/guides.process-text-reference.events-and-exceptions-end-events.md",
+			"tokens": 175,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"events",
+				"exceptions",
+				"end"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.events-and-exceptions-intermediate-catch-and-throw",
+			"file": "chunks/guides.process-text-reference.events-and-exceptions-intermediate-catch-and-throw.md",
+			"tokens": 179,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"events",
+				"exceptions",
+				"intermediate",
+				"catch",
+				"throw"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.events-and-exceptions-boundary-events",
+			"file": "chunks/guides.process-text-reference.events-and-exceptions-boundary-events.md",
+			"tokens": 583,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"events",
+				"exceptions",
+				"boundary"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.pools-lanes-and-messages",
+			"file": "chunks/guides.process-text-reference.pools-lanes-and-messages.md",
+			"tokens": 428,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"pools",
+				"lanes",
+				"messages"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.ad-hoc-ai-agent-note-and-doc",
+			"file": "chunks/guides.process-text-reference.ad-hoc-ai-agent-note-and-doc.md",
+			"tokens": 249,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"ad-hoc",
+				"agent",
+				"note",
+				"doc"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text-reference.not-in-text-fluent-only",
+			"file": "chunks/guides.process-text-reference.not-in-text-fluent-only.md",
+			"tokens": 373,
+			"tags": [
+				"guides",
+				"process-text-reference",
+				"not",
+				"text",
+				"fluent",
+				"only",
+				"cheat",
+				"sheet"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.process-text.what-it-is",
 			"file": "chunks/guides.process-text.what-it-is.md",
 			"tokens": 229,
@@ -3903,7 +4238,7 @@
 		{
 			"id": "guides.process-text.syntax-cheat-sheet",
 			"file": "chunks/guides.process-text.syntax-cheat-sheet.md",
-			"tokens": 442,
+			"tokens": 462,
 			"tags": [
 				"guides",
 				"process-text",
@@ -3967,7 +4302,7 @@
 		{
 			"id": "guides.process-text.next",
 			"file": "chunks/guides.process-text.next.md",
-			"tokens": 41,
+			"tokens": 47,
 			"tags": [
 				"guides",
 				"process-text",

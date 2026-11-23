@@ -11,7 +11,7 @@ const USAGE = `Usage: bpmnkit-md [options] <file.md | file.bpmn>...
 Pre-renders BPMN diagrams to committed SVG files, for Markdown that no plugin
 will ever process (GitHub READMEs).
 
-  file.md     Every \`\`\`bpmn / \`\`\`bpmn-compact / \`\`\`bpmn-json block becomes an image
+  file.md     Every \`\`\`bpmn / \`\`\`bpmn-compact / \`\`\`bpmn-json / \`\`\`bpmnkit-text block becomes an image
               of the diagram plus its source, between bpmnkit-md markers.
               Re-running re-renders from the source; it is idempotent.
   file.bpmn   Written to file.svg next to it.

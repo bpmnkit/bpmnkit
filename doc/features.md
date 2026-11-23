@@ -1,5 +1,9 @@
 # Features
 
+## BPMN Kit Text element reference (2026-11-23)
+
+`guides/process-text-reference` shows every element of BPMN Kit Text as a rendered diagram next to its BPMN Kit Fluent code; `@bpmnkit/markdown` renders ` ```bpmnkit-text ` fences. A test keeps every example parsing and building.
+
 ## BPMN Kit Text docs page (2026-11-23)
 
 Named the process line format "BPMN Kit Text" (`parseProcessText`, `createProcessTextStream`, `writeProcessText`, `PROCESS_TEXT_GUIDE`) and added `guides/process-text` as its reference page, with an example the test suite runs.

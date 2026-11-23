@@ -52,6 +52,8 @@ tool[service Look up | inside=agent]   a tool of an ad-hoc agent (adhoc kind)
 A boundary starts its own line, `on=` a task, and leads only to the handling. Branches that meet
 again are joined automatically; join parallel branches with an `and` node.
 
+Every kind, trigger and attribute has a rendered example in the [element reference](/docs/guides/process-text-reference).
+
 ## Example
 
 ```text
@@ -118,4 +120,4 @@ want types and refactoring. Both end in the same model.
 
 ## Next
 
-[BPMN Kit Fluent](/docs/guides/fluent-builder) · [Building Processes](/docs/guides/building-processes) · [`@bpmnkit/core`](/docs/packages/core)
+[Element reference](/docs/guides/process-text-reference) · [BPMN Kit Fluent](/docs/guides/fluent-builder) · [Building Processes](/docs/guides/building-processes) · [`@bpmnkit/core`](/docs/packages/core)

@@ -1,6 +1,6 @@
 import { Bpmn, exportSvg } from "@bpmnkit/core"
 import { describe, expect, it } from "vitest"
-import { type BpmnLang, type RenderOptions, renderBpmnBlock } from "../src/index.js"
+import { type BpmnLang, type RenderOptions, isBpmnLang, renderBpmnBlock } from "../src/index.js"
 import { COMPACT, COMPACT_FULL, XML_WITHOUT_DI, XML_WITH_DI } from "./fixtures.js"
 
 function svgOf(code: string, lang: BpmnLang, options: RenderOptions = {}) {
@@ -181,5 +181,26 @@ describe("renderBpmnBlock: sketches that would not deploy", () => {
 			],
 		})
 		expect(svgOf(sketch, "bpmn-compact", { onError: "throw" }).svg).toContain("Charge card")
+	})
+})
+
+describe("renderBpmnBlock — bpmnkit-text", () => {
+	const TEXT = `# Order check
+start[start Order received] > check[service Check stock | job=check-stock] > done[end Shipped]`
+
+	it("renders a BPMN Kit Text block", () => {
+		const { svg, title } = svgOf(TEXT, "bpmnkit-text")
+		expect(title).toBe("Order check")
+		expect(svg).toContain(">Check stock</text>")
+	})
+
+	it("reports a block the parser could not read in full instead of drawing part of it", () => {
+		const result = renderBpmnBlock(`${TEXT}\nnot a path at all ??`, "bpmnkit-text")
+		expect(result.ok).toBe(false)
+		if (!result.ok) expect(result.error).toMatch(/line 3/)
+	})
+
+	it("is a BPMN lang", () => {
+		expect(isBpmnLang("bpmnkit-text")).toBe(true)
 	})
 })

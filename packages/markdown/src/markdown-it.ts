@@ -31,7 +31,7 @@ export interface MarkdownItRendererLike {
 }
 
 /**
- * markdown-it plugin: renders ` ```bpmn `, ` ```bpmn-compact ` and ` ```bpmn-json `
+ * markdown-it plugin: renders ` ```bpmn `, ` ```bpmn-compact ` and ` ```bpmn-json ` and ` ```bpmnkit-text `
  * fences as inline SVG diagrams, and leaves every other fence to the rule that was
  * there before (VitePress's code groups and highlighting keep working).
  *
