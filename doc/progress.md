@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-23 — Name and docs page for the line format
+
+- The process line format (`parseProcessText`, `createProcessTextStream`, `writeProcessText`, `PROCESS_TEXT_GUIDE`) is now "BPMN Kit Text" (short: bpmnkit text), with a linkable guide `guides/process-text` (cheat sheet, verified example, API, where it is used, vs Fluent). Linked both ways from `guides/fluent-builder` and `packages/core`. Test `process-text-guide-page.test.ts` runs the page's example.
+
 ## 2026-11-23 — Name and docs page for the fluent builder
 
 - The TS builder (`Bpmn.createProcess`) is now "BPMN Kit Fluent" (short: bpmnkit fluent), with a linkable guide `guides/fluent-builder` (cheat sheet, branching/joins, continue mode, vs process text). Mentioned in concepts, packages/core, the landing hero text and README. Sidebar picks the page up from the content collection.

@@ -3508,7 +3508,7 @@
 		{
 			"id": "guides.fluent-builder.dmn-and-forms",
 			"file": "chunks/guides.fluent-builder.dmn-and-forms.md",
-			"tokens": 150,
+			"tokens": 157,
 			"tags": [
 				"guides",
 				"fluent-builder",
@@ -3886,6 +3886,95 @@
 				"documentationToMarkdown",
 				"documentationToDocx",
 				"exportSvg"
+			]
+		},
+		{
+			"id": "guides.process-text.what-it-is",
+			"file": "chunks/guides.process-text.what-it-is.md",
+			"tokens": 229,
+			"tags": [
+				"guides",
+				"process-text"
+			],
+			"entities": [
+				"@bpmnkit/core"
+			]
+		},
+		{
+			"id": "guides.process-text.syntax-cheat-sheet",
+			"file": "chunks/guides.process-text.syntax-cheat-sheet.md",
+			"tokens": 442,
+			"tags": [
+				"guides",
+				"process-text",
+				"syntax",
+				"cheat",
+				"sheet"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.process-text.example",
+			"file": "chunks/guides.process-text.example.md",
+			"tokens": 159,
+			"tags": [
+				"guides",
+				"process-text",
+				"example"
+			],
+			"entities": [
+				"packages/core/tests/process-text-guide-page.test.ts"
+			]
+		},
+		{
+			"id": "guides.process-text.api",
+			"file": "chunks/guides.process-text.api.md",
+			"tokens": 346,
+			"tags": [
+				"guides",
+				"process-text",
+				"api"
+			],
+			"entities": [
+				"@bpmnkit/core",
+				"applyConnectorLines",
+				"@bpmnkit/core/connectors",
+				"createProcessTextStream()",
+				"BpmnDefinitions",
+				"end()",
+				"parseProcessText"
+			]
+		},
+		{
+			"id": "guides.process-text.where-it-is-used",
+			"file": "chunks/guides.process-text.where-it-is-used.md",
+			"tokens": 179,
+			"tags": [
+				"guides",
+				"process-text",
+				"used",
+				"text",
+				"fluent"
+			],
+			"entities": [
+				"apps/drop",
+				"apps/cli",
+				"parseProcessText",
+				"packages/editor",
+				"writeProcessText"
+			]
+		},
+		{
+			"id": "guides.process-text.next",
+			"file": "chunks/guides.process-text.next.md",
+			"tokens": 41,
+			"tags": [
+				"guides",
+				"process-text",
+				"next"
+			],
+			"entities": [
+				"@bpmnkit/core"
 			]
 		},
 		{
@@ -6247,7 +6336,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 920,
+			"tokens": 936,
 			"tags": [
 				"packages",
 				"core",

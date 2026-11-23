@@ -518,7 +518,7 @@ arrived 16% of the way into the tool argument, with 15 frames following.
 
 ### `parseProcessText(text)` and `createProcessTextStream()`
 
-A line format for a model to write a new process in. It costs about a quarter of the output
+**BPMN Kit Text** (short: *bpmnkit text*; [guide](/docs/guides/process-text)) is the line format for a model to write a new process in. It costs about a quarter of the output
 tokens of minified compact JSON. A path is written once as `a > b > c`, a node is declared inline
 the first time it is used, and the parser adds what the model would otherwise spend tokens on.
 `PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~600 tokens,

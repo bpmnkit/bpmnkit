@@ -1,5 +1,9 @@
 # Features
 
+## BPMN Kit Text docs page (2026-11-23)
+
+Named the process line format "BPMN Kit Text" (`parseProcessText`, `createProcessTextStream`, `writeProcessText`, `PROCESS_TEXT_GUIDE`) and added `guides/process-text` as its reference page, with an example the test suite runs.
+
 ## BPMN Kit Fluent docs page (2026-11-23)
 
 Named the TS fluent builder and added `guides/fluent-builder` as its reference page.
