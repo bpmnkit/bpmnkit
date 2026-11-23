@@ -1,5 +1,7 @@
 # Core Concepts — The Fluent Builder
 
+The builder is called **BPMN Kit Fluent** — see [its guide](/docs/guides/fluent-builder).
+
 `Bpmn.createProcess(id)` returns a `ProcessBuilder` — a chainable object that tracks the
 current "cursor" position in the process graph. Each method call appends an element and
 advances the cursor:

@@ -10,7 +10,7 @@ sidebar:
 `@bpmnkit/core` is the foundation of BPMN Kit. It provides everything needed to work with
 BPMN 2.0 programmatically:
 
-- **Fluent builder** — chain method calls to construct any process shape
+- **Fluent builder** (*BPMN Kit Fluent*, [guide](/docs/guides/fluent-builder)) — chain method calls to construct any process shape
 - **Parser/serializer** — round-trip BPMN 2.0 XML, keeping unmodelled content verbatim
 - **Auto-layout** — Sugiyama algorithm assigns coordinates automatically
 - **Compact format** — token-efficient AI-friendly intermediate representation
@@ -518,7 +518,7 @@ arrived 16% of the way into the tool argument, with 15 frames following.
 
 ### `parseProcessText(text)` and `createProcessTextStream()`
 
-A line format for a model to write a new process in. It costs about a quarter of the output
+**BPMN Kit Text** (short: *bpmnkit text*; [guide](/docs/guides/process-text)) is the line format for a model to write a new process in. It costs about a quarter of the output
 tokens of minified compact JSON. A path is written once as `a > b > c`, a node is declared inline
 the first time it is used, and the parser adds what the model would otherwise spend tokens on.
 `PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~600 tokens,
