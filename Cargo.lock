@@ -352,7 +352,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-ascii",
  "bpmnkit-bpmn",
@@ -380,7 +380,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-ascii"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-dmn",
@@ -390,7 +390,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-bpmn"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-spec",
@@ -402,7 +402,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-builder"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-compat",
@@ -416,7 +416,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-cli"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "assert_cmd",
  "axoupdater",
@@ -444,7 +444,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-codegen"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-jobspec",
@@ -458,7 +458,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-compat"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-feel",
@@ -471,7 +471,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-conformance"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-ascii",
  "bpmnkit-bpmn",
@@ -492,7 +492,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-connector-runtime"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "axum",
  "bpmnkit-feel",
@@ -508,7 +508,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-connectors"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-compat",
@@ -525,7 +525,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-diff"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-render",
@@ -537,7 +537,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-dmn"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-spec",
@@ -549,7 +549,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-feel"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-spec",
  "chrono",
@@ -562,7 +562,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-form"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-spec",
  "indexmap",
@@ -572,7 +572,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-fuzz"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-conformance",
@@ -588,7 +588,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-jobspec"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-feel",
@@ -601,7 +601,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-layout"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-dmn",
@@ -611,7 +611,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-lint"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-compat",
@@ -627,7 +627,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-profiles"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "serde_json",
  "tempfile",
@@ -635,7 +635,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-render"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-dmn",
@@ -646,14 +646,14 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-spec"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "serde_json",
 ]
 
 [[package]]
 name = "bpmnkit-text"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-compat",
@@ -669,14 +669,14 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-viewer"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "serde_json",
 ]
 
 [[package]]
 name = "bpmnkit-worker"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "prost",
  "reqwest 0.12.28",
@@ -692,7 +692,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-xml"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "indexmap",
  "quick-xml",

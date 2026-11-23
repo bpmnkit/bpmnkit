@@ -1,5 +1,7 @@
 # @crates/bpmnkit-ascii
 
+## 0.7.1
+
 ## 0.7.0
 
 ## 0.6.1
