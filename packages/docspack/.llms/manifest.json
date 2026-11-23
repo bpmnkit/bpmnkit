@@ -1292,7 +1292,7 @@
 		{
 			"id": "getting-started.concepts.the-fluent-builder",
 			"file": "chunks/getting-started.concepts.the-fluent-builder.md",
-			"tokens": 308,
+			"tokens": 327,
 			"tags": [
 				"getting-started",
 				"concepts",
@@ -3450,6 +3450,83 @@
 			"entities": [
 				"process.bpmn.tests.json",
 				"process.test.json"
+			]
+		},
+		{
+			"id": "guides.fluent-builder.what-it-is",
+			"file": "chunks/guides.fluent-builder.what-it-is.md",
+			"tokens": 225,
+			"tags": [
+				"guides",
+				"fluent-builder",
+				"install",
+				"quick",
+				"example"
+			],
+			"entities": [
+				"@bpmnkit/core",
+				"build()"
+			]
+		},
+		{
+			"id": "guides.fluent-builder.cheat-sheet",
+			"file": "chunks/guides.fluent-builder.cheat-sheet.md",
+			"tokens": 374,
+			"tags": [
+				"guides",
+				"fluent-builder",
+				"cheat",
+				"sheet"
+			],
+			"entities": [
+				"ProcessBuilder",
+				"DiagramBuilder",
+				"scriptTask",
+				"sendTask",
+				"receiveTask",
+				"businessRuleTask",
+				"manualTask",
+				"callActivity",
+				"build()",
+				"BpmnDefinitions"
+			]
+		},
+		{
+			"id": "guides.fluent-builder.branching-and-joins",
+			"file": "chunks/guides.fluent-builder.branching-and-joins.md",
+			"tokens": 212,
+			"tags": [
+				"guides",
+				"fluent-builder",
+				"branching",
+				"joins",
+				"continue",
+				"mode"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.fluent-builder.dmn-and-forms",
+			"file": "chunks/guides.fluent-builder.dmn-and-forms.md",
+			"tokens": 150,
+			"tags": [
+				"guides",
+				"fluent-builder",
+				"dmn",
+				"forms",
+				"fluent",
+				"process",
+				"text",
+				"next"
+			],
+			"entities": [
+				"Dmn.parse",
+				"Dmn.export",
+				"Dmn.drd()",
+				"Form.parse",
+				"Form.export",
+				"parseProcessText",
+				"@bpmnkit/core"
 			]
 		},
 		{
@@ -5793,7 +5870,7 @@
 		{
 			"id": "packages.core.overview",
 			"file": "chunks/packages.core.overview.md",
-			"tokens": 159,
+			"tokens": 168,
 			"tags": [
 				"packages",
 				"core",

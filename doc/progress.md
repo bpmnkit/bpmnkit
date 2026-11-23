@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-23 — Name and docs page for the fluent builder
+
+- The TS builder (`Bpmn.createProcess`) is now "BPMN Kit Fluent" (short: bpmnkit fluent), with a linkable guide `guides/fluent-builder` (cheat sheet, branching/joins, continue mode, vs process text). Mentioned in concepts, packages/core, the landing hero text and README. Sidebar picks the page up from the content collection.
+
 ## 2026-11-22 — Auto-layout: message flows cross sub-process frames
 
 Driven by the agentic-generation eval (17-pool collaboration: message crossings per run rose 0.1 → 2.5 once agents shared one black-box partner across pools); re-laid eval models are scored offline, outside the repo.

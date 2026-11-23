@@ -3,7 +3,7 @@
 `@bpmnkit/core` is the foundation of BPMN Kit. It provides everything needed to work with
 BPMN 2.0 programmatically:
 
-- **Fluent builder** — chain method calls to construct any process shape
+- **Fluent builder** (*BPMN Kit Fluent*, [guide](/docs/guides/fluent-builder)) — chain method calls to construct any process shape
 - **Parser/serializer** — round-trip BPMN 2.0 XML, keeping unmodelled content verbatim
 - **Auto-layout** — Sugiyama algorithm assigns coordinates automatically
 - **Compact format** — token-efficient AI-friendly intermediate representation

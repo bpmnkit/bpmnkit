@@ -1,5 +1,9 @@
 # Features
 
+## BPMN Kit Fluent docs page (2026-11-23)
+
+Named the TS fluent builder and added `guides/fluent-builder` as its reference page.
+
 ## Auto-layout: crossing-free exception rows (2026-11-22)
 
 Boundary handlers drop straight under their hosts on one shared row, even when hosts sit side by side (the spine gets a narrow column for an earlier handler's end event), and a gateway's other branch goes above the spine when going below would cross that row. Loops stay inside their pool's frame. When an edit adds shapes (`placeNewShapes`), a loop back does not reuse another flow's port or run along it, and a boundary event's name sits beside its outgoing flow.

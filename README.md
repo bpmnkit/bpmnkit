@@ -71,7 +71,7 @@ Camunda. "Zeebe" and "Camunda" are trademarks of Camunda Services GmbH.
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| [`@bpmnkit/core`](packages/core) | [![npm](https://img.shields.io/npm/v/@bpmnkit/core?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/core) | BPMN/DMN/Form parser, builder, layout engine, optimizer |
+| [`@bpmnkit/core`](packages/core) | [![npm](https://img.shields.io/npm/v/@bpmnkit/core?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/core) | BPMN/DMN/Form parser, builder (BPMN Kit Fluent), layout engine, optimizer |
 | [`@bpmnkit/canvas`](packages/canvas) | [![npm](https://img.shields.io/npm/v/@bpmnkit/canvas?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/canvas) | Zero-dependency SVG BPMN viewer with pan/zoom and plugin API |
 | [`@bpmnkit/editor`](packages/editor) | [![npm](https://img.shields.io/npm/v/@bpmnkit/editor?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/editor) | Full-featured interactive BPMN editor |
 | [`@bpmnkit/engine`](packages/engine) | [![npm](https://img.shields.io/npm/v/@bpmnkit/engine?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/engine) | Zero-dependency BPMN simulator for tests and demos |
