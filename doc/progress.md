@@ -1,5 +1,25 @@
 # Progress
 
+## 2026-11-24 — Wasm workers WP3: host
+
+- `wasm/crates/host` (`bpmnkit-wasm-host`, lib + bin): `Engine` (Cranelift, pooling allocator,
+  epoch ticker, compiled components cached by `Digest`), `load(dir)` / `load_bytes` (re-runs
+  `inspect` + `verify`), one linker per world, a fresh `Store` per job with a memory limiter
+  (`memory_mb`, traps with a clear message) and a wall-clock timeout (epoch yields every 10 ms, so
+  host-side waits are covered too); no preopens, env, args or sockets.
+- `http`: own `wasi:http` send path: exact `host:port` allow-list, https only, host-side DNS
+  (`Resolver` trait), any private/loopback/link-local/ULA/CGNAT address rejects the name, connects
+  to the checked address (rustls + webpki roots).
+- `secrets`: `SecretSource` (`EnvSecrets` `BPMNKIT_WASM_SECRET_<NAME>`, `FileSecrets`, `MapSecrets`);
+  only manifest names reach the guest. `run_job` / `run_job_blocking`: trap, timeout, memory and
+  instantiation errors become `Outcome::Fail`.
+- `WasmHandler: bpmnkit_worker::Handler` (semaphore of `max_concurrent`, `ActivatedJob` ↔ WIT `job`,
+  `Outcome` → `Complete` / `JobError`); bin `bpmnkit-wasm-host run --dir <dir>… [--secrets-dir]`,
+  cluster from `CAMUNDA_*` or `BPMNKIT_PROFILE_JSON`, drain on SIGINT/SIGTERM.
+- Tests: WAT components (complete/fail/throw, trap, timeout, memory, secret scoping, cache, load
+  errors), handler via `FakeClient` + `Runtime`, and the WP2 fixtures (spin timeout, panic, secret,
+  http allow-list denial, loopback block, request to a local server).
+
 ## 2026-11-24 — Wasm workers WP2: guest SDK, fixtures, test-support
 
 - `wasm/crates/sdk` (`bpmnkit-wasm-sdk`): `wit_bindgen` bindings of `bpmnkit:worker/worker-http`, `Job`
