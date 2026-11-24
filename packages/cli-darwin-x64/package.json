@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/cli-darwin-x64",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"private": true,
 	"description": "The bpmnkit native binary for Intel macOS. Installed by @bpmnkit/cli, not used directly",
 	"os": ["darwin"],

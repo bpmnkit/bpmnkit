@@ -3,7 +3,7 @@
 
 ## 2026-11-24 — @bpmnkit/cli 2.0.1: one bin, right binary version
 
-`npx @bpmnkit/cli …` failed on 2.0.0 ("could not determine executable to run"): the launcher had two bins (`bpmnkit`, `casen`) and npm picks only a single bin or one named like the package. The launcher now ships only `bpmnkit` (scripts that call `casen` must call `bpmnkit`). `bpmnkit.binaryVersion` pointed at 0.6.1, a release that does not exist; `publish-cli-npm.mjs` now writes the Cargo workspace version into the packed manifest (in-tree value 0.7.1). The npm smoke test runs `@bpmnkit/cli --version` the way npx does.
+`npx @bpmnkit/cli …` failed on 2.0.0 ("could not determine executable to run"): the launcher had two bins (`bpmnkit`, `casen`) and npm picks only a single bin or one named like the package. The launcher now ships only `bpmnkit` (scripts that call `casen` must call `bpmnkit`). `bpmnkit.binaryVersion` pointed at 0.6.1, a release that does not exist; `publish-cli-npm.mjs` now writes the Cargo workspace version into the packed manifest (in-tree value 0.7.1). The npm smoke test runs `@bpmnkit/cli --version` the way npx does. The five platform packages move to 2.0.1 with it (their versions move together).
 
 ## 2026-11-24 — release-cli: publish with npm, not pnpm
 
