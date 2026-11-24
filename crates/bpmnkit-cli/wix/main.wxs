@@ -69,7 +69,7 @@
 
         <Package Id='*'
             Keywords='Installer'
-            Description='The bpmnkit command line (alias casen): native commands, subprocess plugins, legacy Node fallback'
+            Description='The bpmnkit command line: native commands, subprocess plugins, legacy Node fallback'
             Manufacturer='BPMN Kit contributors'
             InstallerVersion='450'
             Languages='1033'
