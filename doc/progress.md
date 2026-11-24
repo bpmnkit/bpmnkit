@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-24 — Wasm workers: implementation plan
+
+- `doc/wasm-workers/plan.md`: plan for milestones 1 + 2 of `concept.md` (contract, guest SDK, host, build lib + CLI) in 5 work packages (WP1 → WP2 ∥ WP3 → WP4 → WP5). Crates `bpmnkit-wasm-{contract,sdk,host,build}` in a separate `wasm/` cargo workspace, because wasmtime 51 needs Rust 1.97 and the main workspace keeps MSRV 1.85. The host reuses `bpmnkit-worker` (one `Handler` per component); the CLI forwards `bpmnkit worker wasm` to a `bpmnkit-wasm` plugin binary.
+- Feasibility in the cloud container: `wasm32-wasip2` target installs and builds a component; wasmtime 51 + wasmtime-wasi build clean in 2 min 11 s.
+
 ## 2026-11-23 — BPMN Kit Text element reference with rendered diagrams
 
 - `@bpmnkit/markdown` renders a ` ```bpmnkit-text ` fence (`BPMN_LANGS`): `parseProcessText`, an error for any `problems` instead of a partial drawing, then `expand` without the deploy gate. Tests in `render.test.ts`.
