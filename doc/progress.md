@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-24 — release-cli: publish with npm, not pnpm
+
+`publish-npm` failed twice with a 404 from `pnpm publish`'s OIDC token exchange, although the trusted publisher was right. `scripts/publish-cli-npm.mjs` now packs with `pnpm pack` (rewrites `workspace:` ranges) and publishes the tarball with `npm publish` (npm's own trusted publishing, as in `release.yml`); the job runs on Node `lts/*` without `registry-url`. Versions already on npm are skipped, so a re-run is safe, and the manifests are restored byte for byte.
+
 ## 2026-11-24 — npm-trust: ask for the 2FA code
 
 `scripts/npm-trust.mjs` failed with `EOTP` on `npm trust list`: npm cannot prompt while the script reads its output. The script now asks for the code and retries with `--otp` (reused until rejected). Test for the EOTP detection.

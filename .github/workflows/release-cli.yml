@@ -352,8 +352,8 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-          registry-url: "https://registry.npmjs.org"
+          # npm >= 11.5 for trusted publishing; no registry-url, whose placeholder token would win.
+          node-version: lts/*
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Download the release archives
         run: gh release download "${{ needs.plan.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --pattern 'bpmnkit-cli-*.tar.xz' --pattern 'bpmnkit-cli-*.zip' --dir artifacts
