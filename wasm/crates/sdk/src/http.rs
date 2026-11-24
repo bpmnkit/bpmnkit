@@ -1,7 +1,7 @@
 //! Blocking HTTP client over `wasi:http`. Only hosts in the manifest's `[network] allow` list are
 //! reachable; the host denies the rest (returned as [`Error::Transport`]).
 //!
-//! ```ignore
+//! ```text
 //! let r = http::post("https://api.stripe.com/v1/charges")
 //!     .bearer(&key)
 //!     .form(&[("amount", "500"), ("currency", "eur")])

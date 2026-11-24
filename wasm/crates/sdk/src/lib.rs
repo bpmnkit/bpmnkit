@@ -1,6 +1,6 @@
 //! Guest SDK for BPMN Kit Wasm job workers (`wasm32-wasip2`, world `bpmnkit:worker/worker-http`).
 //!
-//! ```ignore
+//! ```no_run
 //! use bpmnkit_wasm_sdk::prelude::*;
 //!
 //! struct Echo;
@@ -19,6 +19,7 @@
 //! worker without HTTP still targets the plain `worker` world.
 
 #[doc(hidden)]
+#[allow(clippy::too_many_arguments)] // generated wasi bindings
 pub mod bindings {
     wit_bindgen::generate!({
         path: "../contract/wit",

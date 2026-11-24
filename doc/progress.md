@@ -1,5 +1,16 @@
 # Progress
 
+## 2026-11-24 — Wasm workers WP2: guest SDK, fixtures, test-support
+
+- `wasm/crates/sdk` (`bpmnkit-wasm-sdk`): `wit_bindgen` bindings of `bpmnkit:worker/worker-http`, `Job`
+  (`variables::<T>()`, `header`), `Outcome` builders, `Worker` + `export!` (panic → `fail` where
+  unwinding exists; on wasm the panic hook logs the message before the trap), `secrets`, `log`,
+  blocking `http` client over `wasi:http`, `AGENT_GUIDE.md`.
+- `wasm/fixtures/` (own cargo workspace): `echo`, `throw`, `panic`, `spin`, `http-get`, `secret`, each
+  with `worker.toml`; `wasm/crates/test-support`: `build_fixture`, `fixture_dir` (host layout).
+- Contract: vendored WASI 0.2.0 WIT under `wit/deps/` so the package resolves; `inspect` ignores type
+  imports (`job`, `outcome`), which real components carry.
+
 ## 2026-11-24 — Wasm workers WP1: workspace + contract
 
 - New cargo workspace `wasm/` (`rust-version` 1.97, `publish = false`) with `bpmnkit-wasm-contract`: WIT package `bpmnkit:worker@0.1.0` (`pub const WIT`, worlds `worker` / `worker-http`, string job keys), `Manifest` / `ValidManifest` (private field, `validate`, `validate_with(PlatformCeilings)`, `ManifestError`, `World`, `world_for`), `check_bundle` (missing / unused / duplicated / dynamic job types through `bpmnkit_jobspec::extract`), shared build API types (`BuildRequest`, `BuildReport`, `Diagnostic`, `ArtifactMetadata`, `Digest`, `SampleJob`, `TestResult`), and feature `inspect` (`inspect`, `verify`, `Violation`) on `wasmparser`.

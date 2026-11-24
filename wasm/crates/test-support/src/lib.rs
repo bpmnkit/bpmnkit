@@ -2,7 +2,7 @@
 //! `wasm/target/fixtures/`. Tests that call this need the target
 //! (`rustup target add wasm32-wasip2`) and are `#[ignore = "needs wasm32-wasip2"]`.
 //!
-//! ```ignore
+//! ```text
 //! let dir = bpmnkit_wasm_test_support::fixture_dir("echo"); // worker.toml + worker.wasm
 //! let wasm = bpmnkit_wasm_test_support::build_fixture("spin");
 //! ```
