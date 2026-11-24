@@ -59,8 +59,10 @@ async fn panic_becomes_fail() {
 #[tokio::test]
 #[ignore = "needs wasm32-wasip2"]
 async fn spin_hits_the_timeout() {
+    // Load first: compiling the component is slow in a debug build and is not the timeout.
+    let spin = fixture("spin");
     let t = std::time::Instant::now();
-    let m = fail_message(run_job(&fixture("spin"), job("{}"), &MapSecrets::default()).await);
+    let m = fail_message(run_job(&spin, job("{}"), &MapSecrets::default()).await);
     assert_eq!(m, "worker exceeded its timeout of 1000 ms");
     assert!(t.elapsed().as_millis() < 3000, "{:?}", t.elapsed());
 }
