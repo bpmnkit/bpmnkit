@@ -1,5 +1,11 @@
 # @bpmnkit/docspack
 
+## 1.3.3
+
+### Patch Changes
+
+- 1ce4bd7: Index the `bpmnkit worker wasm` CLI reference and the CLI 2.0 install instructions.
+
 ## 1.3.2
 
 ### Patch Changes

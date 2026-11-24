@@ -1,5 +1,11 @@
 # @bpmnkit/markdown
 
+## 0.2.0
+
+### Minor Changes
+
+- 1a7b461: Render `bpmnkit-text` fences (BPMN Kit Text) to static SVG; parse problems fail the render.
+
 ## 0.1.2
 
 ### Patch Changes
