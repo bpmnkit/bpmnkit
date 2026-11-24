@@ -210,7 +210,7 @@ pub fn run(args: Vec<OsString>) -> i32 {
             }
             0
         }
-        Cmd::Worker { action } => worker::run(action),
+        Cmd::Worker { action } => worker::run(action, &roots),
         Cmd::Installation {
             action: SelfAction::Update,
         } => selfupdate::run(),

@@ -1,0 +1,26 @@
+[package]
+name = "bpmnkit-wasm-build"
+description = "Builds BPMN Kit Wasm job workers: render, check, compile, verify and smoke-test; lib plus the bpmnkit-wasm CLI"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "bpmnkit-wasm"
+path = "src/main.rs"
+
+[dependencies]
+bpmnkit-wasm-contract = { path = "../contract", features = ["inspect"] }
+bpmnkit-wasm-host = { path = "../host" }
+proc-macro2 = { version = "1", features = ["span-locations"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+syn = { version = "2", features = ["full", "visit"] }
+toml = "0.8"
+
+[dev-dependencies]
+bpmnkit-wasm-test-support = { path = "../test-support" }

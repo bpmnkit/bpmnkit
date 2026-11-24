@@ -2,9 +2,11 @@
 
 mod generate;
 
+use std::ffi::OsString;
 use std::path::{Path, PathBuf};
 
 use bpmnkit_jobspec::{analyze, ir_hash, ApiIndex, Catalog, Inputs, WorkerConfig};
+use bpmnkit_profiles::Roots;
 use clap::{Subcommand, ValueEnum};
 
 #[derive(Subcommand)]
@@ -28,6 +30,13 @@ pub enum WorkerCmd {
     },
     /// Generate a job worker project from the job types classified as worker
     Gen(generate::GenArgs),
+    /// Build, test and run Wasm job workers (forwards to the `bpmnkit-wasm` plugin)
+    #[command(disable_help_flag = true)]
+    Wasm {
+        /// Arguments for `bpmnkit-wasm` (`init`, `check`, `build`, `test`, `inspect`, `run`)
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        args: Vec<OsString>,
+    },
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -36,8 +45,22 @@ pub enum Format {
     Json,
 }
 
-pub fn run(cmd: WorkerCmd) -> i32 {
+/// Runs `bpmnkit-wasm <args>` through the plugin contract (profile env included), so the main
+/// binary carries no wasmtime.
+fn wasm(roots: &Roots, args: Vec<OsString>) -> i32 {
+    let mut argv = vec![OsString::from("wasm")];
+    argv.extend(args);
+    crate::plugin::dispatch(roots, &argv).unwrap_or_else(|| {
+        crate::fail(
+            "`bpmnkit-wasm` not found on PATH or in ~/.bpmnkit/plugins/bin \
+             (build it with `cargo install --path wasm/crates/build` from the repo)",
+        )
+    })
+}
+
+pub fn run(cmd: WorkerCmd, roots: &Roots) -> i32 {
     match cmd {
+        WorkerCmd::Wasm { args } => wasm(roots, args),
         WorkerCmd::Classify {
             bpmn,
             openapi,

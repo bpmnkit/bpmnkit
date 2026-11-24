@@ -1,5 +1,24 @@
 # Progress
 
+## 2026-11-24 — Wasm workers WP4: build library, `bpmnkit-wasm` CLI, `bpmnkit worker wasm`
+
+- `wasm/crates/build` (`bpmnkit-wasm-build`, lib + bin `bpmnkit-wasm`): `Toolchain`, `Executor` +
+  `LocalExecutor` (wall-time and output caps), `render` (fixed `Cargo.toml`: SDK path dep, serde,
+  serde_json, `unsafe_code = "forbid"`, empty `[workspace]`; path and size rules), `check_source`
+  (`syn`: `extern crate`, `#[path]` incl. via `cfg_attr`, `include*!`/`env!`/`option_env!` also hidden
+  in macro bodies or `use`, crate attributes), `check` / `build` (cargo JSON → `Diagnostic`, only
+  `src/` files), `verify_built`, `smoke_test` (WP3 runner, fake secrets, recording resolver that
+  refuses all names), `package`, `run_pipeline[_until]` with per-stage timings.
+- CLI `init | check | build | test | inspect | run`, `--format json`; shared target dir cache under
+  `~/.cache/bpmnkit-wasm/target`.
+- `crates/bpmnkit-cli`: `bpmnkit worker wasm <args…>` forwards to the `bpmnkit-wasm` plugin; tests with
+  a fake plugin; patch changeset `@crates/bpmnkit-cli`.
+- Measured (ignored e2e, debug test build, scaffold worker): cold shared target dir 35.5 s
+  (check 18.3, build 14.6, test 2.6); warm `test` 3.1 s; warm `check` 0.36 s.
+- Deviations: no `vendor_dir`/`warm_target` in `Toolchain` (`target_dir` + `lockfile` + `offline`),
+  no source tarball in `Artifact`, no chrono/regex in the allow-list, smoke-test network is a
+  recording resolver (no canned responses: needs a TLS stub).
+
 ## 2026-11-24 — Wasm workers WP3: host
 
 - `wasm/crates/host` (`bpmnkit-wasm-host`, lib + bin): `Engine` (Cranelift, pooling allocator,
