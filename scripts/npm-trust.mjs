@@ -8,10 +8,14 @@
  *   node scripts/npm-trust.mjs            print the plan (reads the current configs, changes nothing)
  *   node scripts/npm-trust.mjs --apply    revoke and create; npm asks for 2FA on each change
  *
+ * `npm trust list` needs a 2FA code too. npm cannot ask for it while this script reads its output,
+ * so the script asks instead and retries with `--otp`; the code is reused until npm rejects it.
+ *
  * Every package must exist on npm (step 1 publishes the placeholders) and you must be logged in
  * as an owner (`npm login`).
  */
 import { spawnSync } from "node:child_process"
+import { createInterface } from "node:readline/promises"
 import { pathToFileURL } from "node:url"
 
 export const REPOSITORY = "bpmnkit/bpmnkit"
@@ -55,30 +59,51 @@ export function planPackage(configs, file, repository = REPOSITORY) {
 	}
 }
 
-function npm(args, capture) {
-	const r = spawnSync("npm", args, {
-		stdio: capture ? ["inherit", "pipe", "inherit"] : "inherit",
+/** True when npm refused for want of a one-time password. */
+export function needsOtp(stderr) {
+	return /\bEOTP\b|one-time password/i.test(stderr)
+}
+
+let otp
+let ask
+
+function run(args, capture) {
+	const full = otp ? [...args, `--otp=${otp}`] : args
+	return spawnSync("npm", full, {
+		stdio: capture ? ["inherit", "pipe", "pipe"] : "inherit",
 		encoding: "utf8",
 		shell: process.platform === "win32",
 	})
-	if (r.status !== 0) throw new Error(`npm ${args.join(" ")} exited ${r.status}`)
+}
+
+async function npm(args, capture) {
+	let r = run(args, capture)
+	for (let tries = 0; capture && r.status !== 0 && needsOtp(r.stderr ?? "") && tries < 3; tries++) {
+		ask ??= createInterface({ input: process.stdin, output: process.stdout })
+		otp = (await ask.question(`2FA code for npm ${args.slice(0, 3).join(" ")}: `)).trim()
+		r = run(args, capture)
+	}
+	if (r.status !== 0) {
+		if (capture && r.stderr) process.stderr.write(r.stderr)
+		throw new Error(`npm ${args.join(" ")} exited ${r.status}`)
+	}
 	return r.stdout ?? ""
 }
 
-function main() {
+async function main() {
 	const apply = process.argv.includes("--apply")
 	try {
-		npm(["trust", "--help"], true)
+		await npm(["trust", "--help"], true)
 	} catch {
 		console.error("`npm trust` is missing: update npm (npm i -g npm@latest)")
 		process.exit(1)
 	}
-	console.log(`npm user: ${npm(["whoami"], true).trim()}`)
+	console.log(`npm user: ${(await npm(["whoami"], true)).trim()}`)
 
 	let failed = 0
 	for (const [pkg, file] of Object.entries(WANT)) {
 		try {
-			const configs = parseTrustList(npm(["trust", "list", pkg, "--json"], true))
+			const configs = parseTrustList(await npm(["trust", "list", pkg, "--json"], true))
 			const { revoke, create, foreign } = planPackage(configs, file)
 			for (const c of foreign)
 				console.log(`! ${pkg}: other trust config left alone: ${JSON.stringify(c)}`)
@@ -88,7 +113,7 @@ function main() {
 			}
 			for (const id of revoke) {
 				console.log(`${apply ? "-" : "would revoke"} ${pkg}: config ${id}`)
-				if (apply) npm(["trust", "revoke", pkg, `--id=${id}`])
+				if (apply) await npm(["trust", "revoke", pkg, `--id=${id}`])
 			}
 			console.log(`${apply ? "+" : "would add"} ${pkg}: ${REPOSITORY} ${file}`)
 			if (apply)
@@ -108,8 +133,9 @@ function main() {
 			console.error(`✗ ${pkg}: ${e.message}`)
 		}
 	}
+	ask?.close()
 	if (!apply) console.log("\nDry run. Run again with --apply to make the changes.")
 	process.exit(failed ? 1 : 0)
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) main()
+if (import.meta.url === pathToFileURL(process.argv[1]).href) await main()

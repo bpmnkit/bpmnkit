@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { parseTrustList, planPackage } from "./npm-trust.mjs"
+import { needsOtp, parseTrustList, planPackage } from "./npm-trust.mjs"
 
 const gh = (id, file, extra = {}) => ({
 	id,
@@ -46,4 +46,12 @@ test("leaves other repositories alone", () => {
 	assert.deepEqual(p.revoke, [])
 	assert.deepEqual(p.foreign, [other])
 	assert.equal(p.create, true)
+})
+
+test("detects npm's one-time-password refusal", () => {
+	assert.equal(
+		needsOtp("npm error code EOTP\nnpm error This operation requires a one-time password."),
+		true,
+	)
+	assert.equal(needsOtp("npm error code E404"), false)
 })

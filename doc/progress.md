@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-24 — npm-trust: ask for the 2FA code
+
+`scripts/npm-trust.mjs` failed with `EOTP` on `npm trust list`: npm cannot prompt while the script reads its output. The script now asks for the code and retries with `--otp` (reused until rejected). Test for the EOTP detection.
+
 ## 2026-11-24 — Wasm workers WP5: e2e, docs, PR
 
 - e2e: `wasm/crates/host/tests/reebe_e2e.rs` completes a job of a real `echo` component on a reebe
