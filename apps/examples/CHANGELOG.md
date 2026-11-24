@@ -1,5 +1,12 @@
 # @bpmnkit/examples
 
+## 0.0.67
+
+### Patch Changes
+
+- Updated dependencies [1ce4bd7]
+  - @bpmnkit/docspack@1.3.3
+
 ## 0.0.66
 
 ### Patch Changes

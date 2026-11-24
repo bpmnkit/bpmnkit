@@ -17,7 +17,7 @@ exclude = ["tests/", "package.json"]
 bpmnkit-spec = { workspace = true, optional = true }
 bpmnkit-xml = { workspace = true, optional = true }
 bpmnkit-bpmn = { workspace = true, optional = true }
-bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.7.1", optional = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.7.2", optional = true }
 bpmnkit-dmn = { workspace = true, optional = true }
 bpmnkit-form = { workspace = true, optional = true }
 bpmnkit-compat = { workspace = true, optional = true }
@@ -30,11 +30,11 @@ bpmnkit-diff = { workspace = true, optional = true }
 bpmnkit-ascii = { workspace = true, optional = true }
 bpmnkit-viewer = { workspace = true, optional = true }
 bpmnkit-worker = { workspace = true, optional = true }
-bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.7.1", optional = true }
-bpmnkit-codegen = { path = "../bpmnkit-codegen", version = "0.7.1", optional = true }
-bpmnkit-connectors = { path = "../bpmnkit-connectors", version = "0.7.1", optional = true }
-bpmnkit-connector-runtime = { path = "../bpmnkit-connector-runtime", version = "0.7.1", optional = true }
-bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.7.1", optional = true }
+bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.7.2", optional = true }
+bpmnkit-codegen = { path = "../bpmnkit-codegen", version = "0.7.2", optional = true }
+bpmnkit-connectors = { path = "../bpmnkit-connectors", version = "0.7.2", optional = true }
+bpmnkit-connector-runtime = { path = "../bpmnkit-connector-runtime", version = "0.7.2", optional = true }
+bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.7.2", optional = true }
 serde_json = { workspace = true }
 
 [features]

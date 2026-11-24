@@ -16,7 +16,7 @@ exclude = ["tests/", "benches/"]
 
 # WASM-safe core: no tokio, no network. `write` is the only module touching the filesystem.
 [dependencies]
-bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.7.1" }
+bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.7.2" }
 # Generated Rust is parsed and pretty-printed, so it is rustfmt-stable and syntactically valid.
 prettyplease = "0.2"
 syn = { version = "2", default-features = false, features = ["full", "parsing", "printing", "clone-impls"] }

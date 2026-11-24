@@ -1,5 +1,12 @@
 # @crates/bpmnkit-cli
 
+## 0.7.2
+
+### Patch Changes
+
+- 2680965: Add `bpmnkit worker wasm <args…>`, which forwards to the `bpmnkit-wasm` plugin (build, test and run Wasm job workers).
+- 1ce4bd7: Help text and crate description no longer call `casen` an alias; `self update` on a Homebrew install suggests `brew upgrade bpmnkit-cli`.
+
 ## 0.7.1
 
 ## 0.7.0

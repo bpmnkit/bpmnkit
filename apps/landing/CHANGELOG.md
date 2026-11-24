@@ -1,5 +1,12 @@
 # @bpmnkit/landing
 
+## 0.0.72
+
+### Patch Changes
+
+- Updated dependencies [1a7b461]
+  - @bpmnkit/markdown@0.2.0
+
 ## 0.0.71
 
 ### Patch Changes
