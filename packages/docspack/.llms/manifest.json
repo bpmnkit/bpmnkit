@@ -316,11 +316,23 @@
 		{
 			"id": "cli.casen",
 			"file": "chunks/cli.casen.md",
-			"tokens": 783,
+			"tokens": 194,
 			"tags": [
 				"cli",
 				"casen",
-				"installation",
+				"installation"
+			],
+			"entities": [
+				"@bpmnkit/cli-legacy"
+			]
+		},
+		{
+			"id": "cli.casen.quick-start",
+			"file": "chunks/cli.casen.quick-start.md",
+			"tokens": 762,
+			"tags": [
+				"cli",
+				"casen",
 				"quick",
 				"start",
 				"navigation",
@@ -1290,6 +1302,114 @@
 			"entities": []
 		},
 		{
+			"id": "cli.wasm",
+			"file": "chunks/cli.wasm.md",
+			"tokens": 196,
+			"tags": [
+				"cli",
+				"wasm"
+			],
+			"entities": [
+				"wasm/",
+				"wasm/crates/host"
+			]
+		},
+		{
+			"id": "cli.wasm.commands",
+			"file": "chunks/cli.wasm.commands.md",
+			"tokens": 368,
+			"tags": [
+				"cli",
+				"wasm",
+				"commands"
+			],
+			"entities": [
+				"worker.toml",
+				"src/lib.rs",
+				"samples.json",
+				"worker.wasm",
+				"metadata.json"
+			]
+		},
+		{
+			"id": "cli.wasm.options",
+			"file": "chunks/cli.wasm.options.md",
+			"tokens": 195,
+			"tags": [
+				"cli",
+				"wasm",
+				"options"
+			],
+			"entities": [
+				"DIR/dist"
+			]
+		},
+		{
+			"id": "cli.wasm.exit-codes",
+			"file": "chunks/cli.wasm.exit-codes.md",
+			"tokens": 138,
+			"tags": [
+				"cli",
+				"wasm",
+				"exit",
+				"codes"
+			],
+			"entities": []
+		},
+		{
+			"id": "cli.wasm.worker.toml",
+			"file": "chunks/cli.wasm.worker.toml.md",
+			"tokens": 289,
+			"tags": [
+				"cli",
+				"wasm",
+				"worker.toml"
+			],
+			"entities": [
+				"network.allow",
+				"secrets.names"
+			]
+		},
+		{
+			"id": "cli.wasm.samples.json",
+			"file": "chunks/cli.wasm.samples.json.md",
+			"tokens": 141,
+			"tags": [
+				"cli",
+				"wasm",
+				"samples.json"
+			],
+			"entities": []
+		},
+		{
+			"id": "cli.wasm.json-output",
+			"file": "chunks/cli.wasm.json-output.md",
+			"tokens": 239,
+			"tags": [
+				"cli",
+				"wasm",
+				"json",
+				"output"
+			],
+			"entities": [
+				"metadata.json"
+			]
+		},
+		{
+			"id": "cli.wasm.bpmnkit-wasm-host",
+			"file": "chunks/cli.wasm.bpmnkit-wasm-host.md",
+			"tokens": 201,
+			"tags": [
+				"cli",
+				"wasm",
+				"bpmnkit-wasm-host"
+			],
+			"entities": [
+				"worker.toml",
+				"worker.wasm"
+			]
+		},
+		{
 			"id": "getting-started.concepts.the-fluent-builder",
 			"file": "chunks/getting-started.concepts.the-fluent-builder.md",
 			"tokens": 327,
@@ -1574,7 +1694,7 @@
 		{
 			"id": "getting-started.installation.svg-canvas-viewer",
 			"file": "chunks/getting-started.installation.svg-canvas-viewer.md",
-			"tokens": 189,
+			"tokens": 235,
 			"tags": [
 				"getting-started",
 				"installation",
@@ -5452,7 +5572,7 @@
 		{
 			"id": "guides.wasm-workers.the-flow",
 			"file": "chunks/guides.wasm-workers.the-flow.md",
-			"tokens": 210,
+			"tokens": 231,
 			"tags": [
 				"guides",
 				"wasm-workers",

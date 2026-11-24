@@ -1,6 +1,6 @@
 [package]
 name = "bpmnkit-cli"
-description = "The bpmnkit command line (alias casen): native commands, subprocess plugins, legacy Node fallback"
+description = "The bpmnkit command line: native commands, subprocess plugins, legacy Node fallback"
 version.workspace = true
 authors = ["BPMN Kit contributors"]
 edition.workspace = true

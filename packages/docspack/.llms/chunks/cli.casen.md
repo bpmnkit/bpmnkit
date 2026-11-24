@@ -6,80 +6,19 @@ no flags to memorize.
 
 ## Installation
 
-```sh
-pnpm add -g @bpmnkit/cli
-```
-
-
-## Quick Start
+Since 2.0 `bpmnkit` is a native binary (one bin, `bpmnkit`; the old alias `casen` is gone). Pick one:
 
 ```sh
-bpmnkit
+npm install -g @bpmnkit/cli                    # native binary via per-platform packages
+npx @bpmnkit/cli --help                        # no install
+brew install bpmnkit/tap/bpmnkit-cli          # Homebrew
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/bpmnkit/bpmnkit/releases/latest/download/bpmnkit-cli-installer.sh | sh
 ```
 
-The main menu appears. Use ↑ ↓ to navigate, Enter to select, Escape to go back.
-
-
-## Navigation Structure
-
-```
-bpmnkit
-├── generate        — generate or modify BPMN files without the TUI (alias: gen)
-│   ├── bpmn        — templates, CompactDiagram JSON, or patch existing files
-│   └── types       — TypeScript types for job workers, generated from BPMN
-├── view            — view BPMN, DMN, and form files in the browser
-│   ├── open        — any mix of .bpmn/.dmn/.form files or folders (auto-detect)
-│   ├── bpmn        — BPMN diagrams rendered as SVG
-│   ├── dmn         — DMN decision tables
-│   └── form        — Camunda form layouts
-├── build           — spec → .bpmn + forms → lint → deploy in one call (bpmnkit build <spec>)
-├── check           — check .bpmn, .dmn and .form files in one call (bpmnkit check <file...>)
-├── lint            — static analysis and auto-fix for BPMN files
-│   ├── lint        — run all checks, report findings
-│   └── improve     — AI-assisted improvement suggestions
-├── story           — render a BPMN process as a narrative HTML page
-├── migrate         — migrate models from other engines to Camunda 8
-│   └── c7          — convert Camunda 7 models and report the manual work
-├── ask             — ask an AI assistant about your process or cluster
-├── connector       — generate element templates from OpenAPI specs
-│   ├── generate    — generate templates from a spec file or catalog entry
-│   └── catalog     — list built-in catalog entries
-├── profile         — manage connection profiles
-│   ├── list        — show all profiles
-│   ├── add         — create a new profile
-│   └── switch      — set the active profile
-├── process
-│   ├── list        — list deployed process definitions
-│   ├── start       — start a new instance
-│   ├── instances   — list running instances
-│   └── cancel      — cancel an instance
-├── job
-│   ├── list        — list active jobs
-│   ├── complete    — complete a job
-│   └── fail        — fail a job with a message
-├── incident
-│   ├── list        — list open incidents
-│   └── resolve     — resolve an incident
-├── decision
-│   ├── list        — list deployed DMN decision tables
-│   └── evaluate    — evaluate a decision with test inputs
-├── variable
-│   ├── list        — list variables for an instance
-│   └── update      — set a variable value
-├── message
-│   └── publish     — publish a message for correlation
-├── worker          — run job workers
-│   ├── <job-type>  — auto-complete worker for a job type
-│   └── start       — start scaffolded workers from ./workers/
-├── proxy           — start the local AI bridge server
-└── plugin          — manage CLI plugins
-    ├── search      — discover plugins on npm
-    ├── install     — install a plugin from npm or a local path
-    ├── list        — list installed plugins
-    ├── update      — update one or all plugins
-    ├── remove      — uninstall a plugin
-    └── info        — show details for an installed plugin
-```
+PowerShell and MSI installers are on the same [GitHub release](https://github.com/bpmnkit/bpmnkit/releases);
+`bpmnkit self update` updates installs made with the shell, PowerShell or MSI installers. Commands the binary does not run yet
+fall back to [`@bpmnkit/cli-legacy`](/docs/packages/cli-legacy) (set `BPMNKIT_NO_LEGACY=1` to
+disable). Scripts that used alias `casen` must call `bpmnkit`.
 
 ---
 Source: https://bpmnkit.com/docs/cli/casen

@@ -18,10 +18,12 @@ pnpm add @bpmnkit/editor
 
 ## CLI
 
-The `bpmnkit` CLI is a standalone tool — install it globally:
+The `bpmnkit` CLI is a standalone native binary (2.0+) — install it globally, run it with `npx`, or
+use Homebrew or the shell installer from GitHub releases (see the [CLI reference](/docs/cli/casen#installation)):
 
 ```sh
-pnpm add -g @bpmnkit/cli
+npm install -g @bpmnkit/cli
+# or: npx @bpmnkit/cli …   ·   brew install bpmnkit/tap/bpmnkit-cli
 ```
 
 With the CLI installed, you can use the AI-first workflow to implement processes from natural

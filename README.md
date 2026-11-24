@@ -177,7 +177,7 @@ See the [`@bpmnkit/editor`](packages/editor/README.md) and [`@bpmnkit/plugins`](
 
 ### CLI — manage Camunda 8 from the terminal
 
-`bpmnkit` is a native binary since 2.0 (alias `casen` stays); commands it does not run yet fall back to `@bpmnkit/cli-legacy`. Also on GitHub Releases as shell/PowerShell/MSI installers and a Homebrew tap (`bpmnkit self update` updates those).
+`bpmnkit` is a native binary since 2.0 (one bin; alias `casen` was dropped in 2.0.1, `npx @bpmnkit/cli …` works); commands it does not run yet fall back to `@bpmnkit/cli-legacy`. Also on GitHub Releases as shell/PowerShell/MSI installers and a Homebrew tap (`bpmnkit self update` updates those).
 
 ```sh
 npm install -g @bpmnkit/cli
