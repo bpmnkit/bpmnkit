@@ -52,6 +52,9 @@ function packPublic(dir, dest) {
 	const original = readFileSync(p, "utf8")
 	const pkg = JSON.parse(original)
 	pkg.private = undefined
+	// The launcher's download fallback fetches the GitHub release of the binary it was published
+	// with: the Rust workspace version, which is what the release tag names.
+	if (pkg.bpmnkit?.binaryVersion) pkg.bpmnkit.binaryVersion = CARGO_VERSION
 	writeFileSync(p, `${JSON.stringify(pkg, null, "\t")}\n`)
 	try {
 		sh("pnpm", ["pack", "--pack-destination", dest], dir)
@@ -59,6 +62,11 @@ function packPublic(dir, dest) {
 		writeFileSync(p, original)
 	}
 }
+
+const CARGO_VERSION = readFileSync(join(ROOT, "Cargo.toml"), "utf8").match(
+	/^\[workspace\.package\][^[]*?^version = "([^"]+)"/m,
+)?.[1]
+if (!CARGO_VERSION) throw new Error("no [workspace.package] version in Cargo.toml")
 
 const launcher = join(ROOT, "packages", "cli")
 const dirs = []

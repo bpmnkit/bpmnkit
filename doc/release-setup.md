@@ -98,14 +98,14 @@ itself as each crate's trusted publisher. Later runs use OIDC only.
    ```
 
    `release-cli.yml` builds the binaries, creates the GitHub release with the installers, pushes the
-   Homebrew formula and publishes the five platform packages and `@bpmnkit/cli` 2.0.0 under the
+   Homebrew formula and publishes the five platform packages and `@bpmnkit/cli` 2.0.1 under the
    dist-tag `next`. `latest` stays at 1.9.3.
 5. Try it: `npx @bpmnkit/cli@next --version`, `brew install bpmnkit/tap/bpmnkit-cli`, and the shell
    installer from the GitHub release.
 6. When it works, make 2.0 the default:
 
    ```bash
-   npm dist-tag add @bpmnkit/cli@2.0.0 latest
+   npm dist-tag add @bpmnkit/cli@2.0.1 latest
    ```
 
 If `publish-npm` stops part way, the packages it already published cannot be published again at

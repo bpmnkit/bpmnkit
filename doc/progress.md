@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-24 — @bpmnkit/cli 2.0.1: one bin, right binary version
+
+`npx @bpmnkit/cli …` failed on 2.0.0 ("could not determine executable to run"): the launcher had two bins (`bpmnkit`, `casen`) and npm picks only a single bin or one named like the package. The launcher now ships only `bpmnkit` (scripts that call `casen` must call `bpmnkit`). `bpmnkit.binaryVersion` pointed at 0.6.1, a release that does not exist; `publish-cli-npm.mjs` now writes the Cargo workspace version into the packed manifest (in-tree value 0.7.1). The npm smoke test runs `@bpmnkit/cli --version` the way npx does.
+
 ## 2026-11-24 — release-cli: publish with npm, not pnpm
 
 `publish-npm` failed twice with a 404 from `pnpm publish`'s OIDC token exchange, although the trusted publisher was right. `scripts/publish-cli-npm.mjs` now packs with `pnpm pack` (rewrites `workspace:` ranges) and publishes the tarball with `npm publish` (npm's own trusted publishing, as in `release.yml`); the job runs on Node `lts/*` without `registry-url`. Versions already on npm are skipped, so a re-run is safe, and the manifests are restored byte for byte.

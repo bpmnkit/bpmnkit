@@ -105,7 +105,7 @@ function footer(currentPkg) {
 			name: "@bpmnkit/connectors",
 			desc: "Camunda 8 OOTB connector catalog and deterministic template application",
 		},
-		{ name: "@bpmnkit/cli", desc: "Camunda 8 command-line interface (bpmnkit, alias casen)" },
+		{ name: "@bpmnkit/cli", desc: "Camunda 8 command-line interface (bpmnkit)" },
 		{ name: "@bpmnkit/cli-legacy", desc: "Node fallback behind the native bpmnkit binary" },
 		{ name: "@bpmnkit/proxy", desc: "Local AI bridge and Camunda API proxy server" },
 		{ name: "@bpmnkit/patterns", desc: "Domain process patterns for BPMNKit AIKit" },
@@ -2314,7 +2314,7 @@ interface ApplyResult {
 		name: "@bpmnkit/cli",
 		dir: "packages",
 		description:
-			"BPMN Kit command line for Camunda 8 (bpmnkit, alias casen): a native binary with a Node fallback for commands not ported yet",
+			"BPMN Kit command line for Camunda 8 (bpmnkit): a native binary with a Node fallback for commands not ported yet",
 		content: `## Overview
 
 \`@bpmnkit/cli\` provides the \`bpmnkit\` command-line tool (alias \`bpmnkit\`) for interacting with Camunda 8 clusters. Manage profiles, deploy processes, run queries, and generate connector templates — all from your terminal.
