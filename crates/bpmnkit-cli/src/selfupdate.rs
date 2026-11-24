@@ -38,7 +38,9 @@ pub fn run() -> i32 {
             1
         }
         Install::Brew => {
-            eprintln!("bpmnkit: installed through Homebrew; update with `brew upgrade bpmnkit`");
+            eprintln!(
+                "bpmnkit: installed through Homebrew; update with `brew upgrade bpmnkit-cli`"
+            );
             1
         }
         Install::Other => update(),

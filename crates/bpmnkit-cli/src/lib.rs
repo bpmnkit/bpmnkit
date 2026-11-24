@@ -38,7 +38,7 @@ const NATIVE: &[&str] = &[
     version,
     about = "BPMN Kit command line",
     after_help = "Other commands run a `bpmnkit-<name>` plugin from PATH or <plugins dir>/bin, or fall\n\
-back to the legacy Node CLI (disable with BPMNKIT_NO_LEGACY=1). `casen` is an alias."
+back to the legacy Node CLI (disable with BPMNKIT_NO_LEGACY=1)."
 )]
 struct Cli {
     #[command(subcommand)]
