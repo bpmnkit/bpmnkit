@@ -49,6 +49,8 @@ function main() {
 
 	const manifests = [
 		join(ROOT, "Cargo.toml"),
+		// The wasm workspace mirrors the crates' version and consumes some of them by path.
+		join(ROOT, "wasm", "Cargo.toml"),
 		...readdirSync(dir)
 			.map((n) => join(dir, n, "Cargo.toml"))
 			.filter((p) => existsSync(p)),
@@ -59,8 +61,8 @@ function main() {
 		if (after !== before) writeFileSync(path, after)
 	}
 
-	// Lockfiles: the root workspace, and apps/reebe, which consumes the crates by path.
-	for (const manifest of ["Cargo.toml", "apps/reebe/Cargo.toml"]) {
+	// Lockfiles: the root workspace, and apps/reebe and wasm, which consume the crates by path.
+	for (const manifest of ["Cargo.toml", "apps/reebe/Cargo.toml", "wasm/Cargo.toml"]) {
 		const r = spawnSync(
 			"cargo",
 			["update", "--workspace", "--manifest-path", join(ROOT, manifest)],

@@ -129,7 +129,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-bpmn"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-spec",
@@ -140,7 +140,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-feel"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "bpmnkit-spec",
  "chrono",
@@ -152,7 +152,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-jobspec"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-feel",
@@ -164,11 +164,11 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-spec"
-version = "0.7.1"
+version = "0.7.2"
 
 [[package]]
 name = "bpmnkit-wasm-build"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "bpmnkit-wasm-contract",
  "bpmnkit-wasm-host",
@@ -182,7 +182,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-wasm-contract"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-jobspec",
@@ -198,7 +198,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-wasm-host"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "bpmnkit-wasm-contract",
  "bpmnkit-wasm-test-support",
@@ -223,7 +223,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-wasm-sdk"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -232,14 +232,14 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-wasm-test-support"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "bpmnkit-wasm-contract",
 ]
 
 [[package]]
 name = "bpmnkit-worker"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "reqwest",
  "serde",
@@ -250,7 +250,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-xml"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "indexmap",
  "quick-xml",

@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-24 — crates-version: keep the wasm workspace in step
+
+The 0.7.2 release (#317) left `wasm/Cargo.lock` at 0.7.1, so `cargo … --locked` in `wasm/` failed on `main`. `scripts/crates-version.mjs` (run by `pnpm version-packages`) now also sets `wasm/Cargo.toml`'s workspace version and refreshes `wasm/Cargo.lock`; both are at 0.7.2.
+
 ## 2026-11-24 — bpmnkit-cli: drop stale `casen` alias text
 
 `--help`, the crate description and `doc/features.md` still called `casen` an alias after 2.0.1 dropped the bin; `self update` told Homebrew users `brew upgrade bpmnkit` (the formula is `bpmnkit-cli`). Fixed, with a patch changeset.
