@@ -10,6 +10,7 @@ on:
       - "crates/bpmnkit-worker/**"
       - "crates/bpmnkit-jobspec/**"
       - "crates/bpmnkit-bpmn/**"
+      - "apps/reebe/**"
       - ".cargo/audit.toml"
       - ".github/workflows/wasm-workers.yml"
   push:
@@ -29,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CARGO_TERM_COLOR: always
+      BPMNKIT_WORKER_E2E_URL: http://localhost:18080
     steps:
       - uses: actions/checkout@v4
 
@@ -50,9 +52,36 @@ jobs:
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
         working-directory: wasm
 
+      # The e2e test (crates/host/tests/reebe_e2e.rs) completes a job of a real `echo`
+      # component on a reebe server; reebe is its own workspace, cached separately.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: reebe
+          workspaces: apps/reebe -> target
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build reebe (embedded SQLite)
+        run: cargo build --manifest-path apps/reebe/Cargo.toml --locked --no-default-features --features embedded -p reebe-server
+
+      - name: Start reebe
+        run: |
+          mkdir -p "$RUNNER_TEMP/reebe-data"
+          XDG_DATA_HOME="$RUNNER_TEMP/reebe-data" REEBE_PORT=18080 REEBE_GRPC_PORT=26599 \
+            apps/reebe/target/debug/reebe-server > "$RUNNER_TEMP/reebe.log" 2>&1 &
+          for _ in $(seq 1 60); do
+            curl -sf "$BPMNKIT_WORKER_E2E_URL/v2/topology" > /dev/null && exit 0
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/reebe.log"
+          exit 1
+
       - name: Test
         run: cargo test --workspace --locked -- --include-ignored
         working-directory: wasm
+
+      - name: reebe log
+        if: failure()
+        run: cat "$RUNNER_TEMP/reebe.log"
 
       - name: Audit
         run: |

@@ -29,6 +29,7 @@ webpki-roots = "1"
 [dev-dependencies]
 bpmnkit-worker = { path = "../../../crates/bpmnkit-worker", features = ["testing"] }
 wat = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
 bpmnkit-wasm-test-support = { path = "../test-support" }
 wit-component = "0.263"
 wit-parser = "0.263"
