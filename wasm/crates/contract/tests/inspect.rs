@@ -92,3 +92,13 @@ fn core_module_and_garbage_rejected() {
     assert!(inspect(&wat::parse_str("(module)").unwrap()).is_err());
     assert!(inspect(b"nope").is_err());
 }
+
+#[test]
+fn type_imports_are_not_capabilities() {
+    // What wit-component emits for the world's `use types.{job, outcome}`.
+    let wasm = wat::parse_str(format!(
+        "(component\n  (import \"{SECRETS}\" (instance))\n  (import \"job\" (type (sub resource)))\n)"
+    ))
+    .unwrap();
+    assert_eq!(inspect(&wasm).unwrap().imports, [SECRETS]);
+}

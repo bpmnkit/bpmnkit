@@ -1,0 +1,13 @@
+[package]
+name = "bpmnkit-wasm-test-support"
+description = "Test helper for the wasm/ crates: builds the guest fixtures in wasm/fixtures for wasm32-wasip2"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dev-dependencies]
+bpmnkit-wasm-contract = { path = "../contract", features = ["inspect"] }

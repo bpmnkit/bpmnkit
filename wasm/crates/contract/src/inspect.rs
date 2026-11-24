@@ -41,12 +41,11 @@ pub fn inspect(component: &[u8]) -> Result<ComponentInfo, InspectError> {
             Payload::End(_) if depth > 0 => depth -= 1,
             Payload::ComponentImportSection(s) if depth == 0 => {
                 for i in s {
-                    info.imports.push(
-                        i.map_err(|e| InspectError(e.to_string()))?
-                            .name
-                            .name
-                            .to_owned(),
-                    );
+                    let i = i.map_err(|e| InspectError(e.to_string()))?;
+                    // World-level `use` (e.g. `job`, `outcome`) becomes a type import: no capability.
+                    if !matches!(i.ty, wasmparser::ComponentTypeRef::Type(_)) {
+                        info.imports.push(i.name.name.to_owned());
+                    }
                 }
             }
             Payload::ComponentExportSection(s) if depth == 0 => {

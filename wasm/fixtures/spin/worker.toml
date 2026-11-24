@@ -1,0 +1,7 @@
+[worker]
+name = "spin"
+version = "0.1.0"
+job_types = ["spin"]
+
+[limits]
+timeout_ms = 1000
