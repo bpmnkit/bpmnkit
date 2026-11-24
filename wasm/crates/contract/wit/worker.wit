@@ -1,0 +1,53 @@
+package bpmnkit:worker@0.1.0;
+
+interface types {
+  record job {
+    key: string,
+    job-type: string,
+    process-instance-key: string,
+    element-id: string,
+    retries: u32,
+    /// JSON object.
+    variables: string,
+    custom-headers: list<tuple<string, string>>,
+  }
+  record failure {
+    message: string,
+    retries: option<u32>,
+    retry-backoff-ms: option<u64>,
+  }
+  record bpmn-error {
+    code: string,
+    message: string,
+    /// JSON object.
+    variables: option<string>,
+  }
+  variant outcome {
+    /// JSON object merged into the process variables.
+    complete(string),
+    fail(failure),
+    throw-error(bpmn-error),
+  }
+}
+
+interface secrets {
+  /// Only names listed in the manifest resolve; anything else is `none`.
+  get: func(name: string) -> option<string>;
+}
+
+interface log {
+  enum level { debug, info, warn, error }
+  emit: func(level: level, msg: string);
+}
+
+world worker {
+  use types.{job, outcome};
+  import secrets;
+  import log;
+  export handle: func(job: job) -> outcome;
+}
+
+world worker-http {
+  include worker;
+  import wasi:http/outgoing-handler@0.2.0;
+}

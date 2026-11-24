@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-24 — Wasm workers WP1: workspace + contract
+
+- New cargo workspace `wasm/` (`rust-version` 1.97, `publish = false`) with `bpmnkit-wasm-contract`: WIT package `bpmnkit:worker@0.1.0` (`pub const WIT`, worlds `worker` / `worker-http`, string job keys), `Manifest` / `ValidManifest` (private field, `validate`, `validate_with(PlatformCeilings)`, `ManifestError`, `World`, `world_for`), `check_bundle` (missing / unused / duplicated / dynamic job types through `bpmnkit_jobspec::extract`), shared build API types (`BuildRequest`, `BuildReport`, `Diagnostic`, `ArtifactMetadata`, `Digest`, `SampleJob`, `TestResult`), and feature `inspect` (`inspect`, `verify`, `Violation`) on `wasmparser`.
+- Tests: one table row per validation rule, TOML + JSON round trips, bundle check on a BPMN fixture, `verify` on WAT components (plain, http without allow-list, unknown import, missing `handle`). None need the wasm target.
+- `.github/workflows/wasm-workers.yml` (fmt, clippy, tests, audit; path-filtered + weekly) and `pnpm verify:wasm`, deliberately outside `pnpm verify`.
+
 ## 2026-11-24 — Wasm workers: implementation plan
 
 - `doc/wasm-workers/plan.md`: plan for milestones 1 + 2 of `concept.md` (contract, guest SDK, host, build lib + CLI) in 5 work packages (WP1 → WP2 ∥ WP3 → WP4 → WP5). Crates `bpmnkit-wasm-{contract,sdk,host,build}` in a separate `wasm/` cargo workspace, because wasmtime 51 needs Rust 1.97 and the main workspace keeps MSRV 1.85. The host reuses `bpmnkit-worker` (one `Handler` per component); the CLI forwards `bpmnkit worker wasm` to a `bpmnkit-wasm` plugin binary.

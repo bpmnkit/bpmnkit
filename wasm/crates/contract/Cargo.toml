@@ -1,0 +1,28 @@
+[package]
+name = "bpmnkit-wasm-contract"
+description = "Contract for BPMN Kit Wasm job workers: WIT world, manifest and its validation, bundle check, build API types"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[features]
+# Component inspection (wasmparser); the guest SDK does not need it.
+inspect = ["dep:wasmparser"]
+
+[dependencies]
+bpmnkit-bpmn = { path = "../../../crates/bpmnkit-bpmn", version = "0.7.1" }
+bpmnkit-jobspec = { path = "../../../crates/bpmnkit-jobspec", version = "0.7.1" }
+semver = { version = "1", features = ["serde"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = "0.10"
+toml = "0.8"
+wasmparser = { version = "0.263", optional = true }
+
+[dev-dependencies]
+wat = "1"
+bpmnkit-wasm-contract = { path = ".", features = ["inspect"] }

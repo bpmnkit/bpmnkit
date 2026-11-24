@@ -1,0 +1,60 @@
+name: Wasm workers
+
+# Separate cargo workspace (wasm/): wasmtime needs a newer rustc than the root workspace's MSRV.
+# Path-filtered so the main CI time is unchanged; weekly run for dependency drift.
+on:
+  pull_request:
+    branches: [main]
+    paths: &paths
+      - "wasm/**"
+      - "crates/bpmnkit-worker/**"
+      - "crates/bpmnkit-jobspec/**"
+      - "crates/bpmnkit-bpmn/**"
+      - ".cargo/audit.toml"
+      - ".github/workflows/wasm-workers.yml"
+  push:
+    branches: [main]
+    paths: *paths
+  schedule:
+    - cron: "0 6 * * 2"
+  workflow_dispatch:
+
+concurrency:
+  group: wasm-workers-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wasm-workers:
+    name: Wasm workers
+    runs-on: ubuntu-latest
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rust toolchain
+        run: |
+          rustup toolchain install 1.97 --profile minimal --component rustfmt,clippy --target wasm32-wasip2
+          rustup default 1.97
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: wasm -> target
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Format
+        run: cargo fmt --check
+        working-directory: wasm
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+        working-directory: wasm
+
+      - name: Test
+        run: cargo test --workspace --locked -- --include-ignored
+        working-directory: wasm
+
+      - name: Audit
+        run: |
+          cargo install cargo-audit --locked
+          cargo audit --file wasm/Cargo.lock --deny warnings
