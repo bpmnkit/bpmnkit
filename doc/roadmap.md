@@ -1082,3 +1082,15 @@ not code.
 ## Completed
 
 *(Items moved here from above as they ship)*
+
+## Wasm job workers (`doc/wasm-workers/plan.md`)
+
+- [x] M1: contract, guest SDK, host (`bpmnkit-wasm-contract`, `-sdk`, `-host`)
+- [x] M2: build library + `bpmnkit-wasm` CLI, `bpmnkit worker wasm`, reebe e2e test
+- [ ] Vendored or pre-warmed dependencies (cold `check` is 18 s)
+- [ ] Source tarball stored in the artifact
+- [ ] Wider dependency allow-list than SDK, serde and serde_json
+- [ ] Canned-response HTTP stub for smoke tests
+- [ ] M3: `worker-builder` service (sandboxed rustc, warm pool)
+- [ ] Signing and OCI distribution; host hot-loads from the registry
+- [ ] M4: Slack agent tool (generate, fix loop, manifest approval, deploy)

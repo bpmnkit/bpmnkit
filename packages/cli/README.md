@@ -3,7 +3,7 @@
 <div align="center">
   <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>@bpmnkit/cli</h1>
-  <p>BPMN Kit command line for Camunda 8 (bpmnkit, alias casen): a native binary with a Node fallback for commands not ported yet</p>
+  <p>BPMN Kit command line for Camunda 8 (bpmnkit): a native binary with a Node fallback for commands not ported yet</p>
 
   [![npm](https://img.shields.io/npm/v/@bpmnkit/cli?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/cli)
   [![license](https://img.shields.io/npm/l/@bpmnkit/cli?style=flat-square)](https://github.com/bpmnkit/bpmnkit/blob/main/LICENSE)

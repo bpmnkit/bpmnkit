@@ -1,5 +1,9 @@
 # Features
 
+## Wasm job workers (2026-11-24)
+
+Write a Camunda 8 job worker in Rust, build it to a sandboxed `wasm32-wasip2` component and run it on `bpmnkit-wasm-host`. `bpmnkit worker wasm init|check|build|test|inspect|run` (also `bpmnkit-wasm`) covers the loop; `worker.toml` sets the memory, time, HTTP allow-list and secret names the sandbox enforces. See [the guide](https://bpmnkit.com/docs/guides/wasm-workers).
+
 ## BPMN Kit Text element reference (2026-11-23)
 
 `guides/process-text-reference` shows every element of BPMN Kit Text as a rendered diagram next to its BPMN Kit Fluent code; `@bpmnkit/markdown` renders ` ```bpmnkit-text ` fences. A test keeps every example parsing and building.

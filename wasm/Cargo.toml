@@ -1,0 +1,17 @@
+# Own workspace (like apps/reebe): wasmtime needs a newer rustc than the root workspace's MSRV.
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.7.1"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/bpmnkit/bpmnkit"
+homepage = "https://bpmnkit.com"
+rust-version = "1.97"
+publish = false
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

@@ -1,4 +1,93 @@
 # Progress
+- Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
+
+## 2026-11-24 — wasm host: spin test times only the job
+
+`spin_hits_the_timeout` failed in CI (3.6 s against a 3 s bound) because its timer also counted loading and compiling the component in a debug build. The component is now loaded before the timer starts.
+
+## 2026-11-24 — @bpmnkit/cli 2.0.1: one bin, right binary version
+
+`npx @bpmnkit/cli …` failed on 2.0.0 ("could not determine executable to run"): the launcher had two bins (`bpmnkit`, `casen`) and npm picks only a single bin or one named like the package. The launcher now ships only `bpmnkit` (scripts that call `casen` must call `bpmnkit`). `bpmnkit.binaryVersion` pointed at 0.6.1, a release that does not exist; `publish-cli-npm.mjs` now writes the Cargo workspace version into the packed manifest (in-tree value 0.7.1). The npm smoke test runs `@bpmnkit/cli --version` the way npx does. The five platform packages move to 2.0.1 with it (their versions move together).
+
+## 2026-11-24 — release-cli: publish with npm, not pnpm
+
+`publish-npm` failed twice with a 404 from `pnpm publish`'s OIDC token exchange, although the trusted publisher was right. `scripts/publish-cli-npm.mjs` now packs with `pnpm pack` (rewrites `workspace:` ranges) and publishes the tarball with `npm publish` (npm's own trusted publishing, as in `release.yml`); the job runs on Node `lts/*` without `registry-url`. Versions already on npm are skipped, so a re-run is safe, and the manifests are restored byte for byte.
+
+## 2026-11-24 — npm-trust: ask for the 2FA code
+
+`scripts/npm-trust.mjs` failed with `EOTP` on `npm trust list`: npm cannot prompt while the script reads its output. The script now asks for the code and retries with `--otp` (reused until rejected). Test for the EOTP detection.
+
+## 2026-11-24 — Wasm workers WP5: e2e, docs, PR
+
+- e2e: `wasm/crates/host/tests/reebe_e2e.rs` completes a job of a real `echo` component on a reebe
+  server; `#[ignore]`d, skips without `BPMNKIT_WORKER_E2E_URL`.
+- `.github/workflows/wasm-workers.yml`: builds and starts reebe (`apps/reebe`, embedded SQLite) before
+  the tests; `apps/reebe/**` added to the path filter.
+- Docs: `guides/wasm-workers` (flow, `worker.toml`, sandbox limits, measured build timings, not-yet
+  list), `doc/features.md`, `doc/roadmap.md` "Wasm job workers", README highlight, measured timings
+  in `doc/wasm-workers/concept.md`, "As built" deviations in `doc/wasm-workers/plan.md`.
+- Measured: cold build 35.5 s total (check 18.3 s, build 14.6 s, test 2.6 s); warm `test` 3.1 s.
+
+## 2026-11-24 — Wasm workers WP4: build library, `bpmnkit-wasm` CLI, `bpmnkit worker wasm`
+
+- `wasm/crates/build` (`bpmnkit-wasm-build`, lib + bin `bpmnkit-wasm`): `Toolchain`, `Executor` +
+  `LocalExecutor` (wall-time and output caps), `render` (fixed `Cargo.toml`: SDK path dep, serde,
+  serde_json, `unsafe_code = "forbid"`, empty `[workspace]`; path and size rules), `check_source`
+  (`syn`: `extern crate`, `#[path]` incl. via `cfg_attr`, `include*!`/`env!`/`option_env!` also hidden
+  in macro bodies or `use`, crate attributes), `check` / `build` (cargo JSON → `Diagnostic`, only
+  `src/` files), `verify_built`, `smoke_test` (WP3 runner, fake secrets, recording resolver that
+  refuses all names), `package`, `run_pipeline[_until]` with per-stage timings.
+- CLI `init | check | build | test | inspect | run`, `--format json`; shared target dir cache under
+  `~/.cache/bpmnkit-wasm/target`.
+- `crates/bpmnkit-cli`: `bpmnkit worker wasm <args…>` forwards to the `bpmnkit-wasm` plugin; tests with
+  a fake plugin; patch changeset `@crates/bpmnkit-cli`.
+- Measured (ignored e2e, debug test build, scaffold worker): cold shared target dir 35.5 s
+  (check 18.3, build 14.6, test 2.6); warm `test` 3.1 s; warm `check` 0.36 s.
+- Deviations: no `vendor_dir`/`warm_target` in `Toolchain` (`target_dir` + `lockfile` + `offline`),
+  no source tarball in `Artifact`, no chrono/regex in the allow-list, smoke-test network is a
+  recording resolver (no canned responses: needs a TLS stub).
+
+## 2026-11-24 — Wasm workers WP3: host
+
+- `wasm/crates/host` (`bpmnkit-wasm-host`, lib + bin): `Engine` (Cranelift, pooling allocator,
+  epoch ticker, compiled components cached by `Digest`), `load(dir)` / `load_bytes` (re-runs
+  `inspect` + `verify`), one linker per world, a fresh `Store` per job with a memory limiter
+  (`memory_mb`, traps with a clear message) and a wall-clock timeout (epoch yields every 10 ms, so
+  host-side waits are covered too); no preopens, env, args or sockets.
+- `http`: own `wasi:http` send path: exact `host:port` allow-list, https only, host-side DNS
+  (`Resolver` trait), any private/loopback/link-local/ULA/CGNAT address rejects the name, connects
+  to the checked address (rustls + webpki roots).
+- `secrets`: `SecretSource` (`EnvSecrets` `BPMNKIT_WASM_SECRET_<NAME>`, `FileSecrets`, `MapSecrets`);
+  only manifest names reach the guest. `run_job` / `run_job_blocking`: trap, timeout, memory and
+  instantiation errors become `Outcome::Fail`.
+- `WasmHandler: bpmnkit_worker::Handler` (semaphore of `max_concurrent`, `ActivatedJob` ↔ WIT `job`,
+  `Outcome` → `Complete` / `JobError`); bin `bpmnkit-wasm-host run --dir <dir>… [--secrets-dir]`,
+  cluster from `CAMUNDA_*` or `BPMNKIT_PROFILE_JSON`, drain on SIGINT/SIGTERM.
+- Tests: WAT components (complete/fail/throw, trap, timeout, memory, secret scoping, cache, load
+  errors), handler via `FakeClient` + `Runtime`, and the WP2 fixtures (spin timeout, panic, secret,
+  http allow-list denial, loopback block, request to a local server).
+
+## 2026-11-24 — Wasm workers WP2: guest SDK, fixtures, test-support
+
+- `wasm/crates/sdk` (`bpmnkit-wasm-sdk`): `wit_bindgen` bindings of `bpmnkit:worker/worker-http`, `Job`
+  (`variables::<T>()`, `header`), `Outcome` builders, `Worker` + `export!` (panic → `fail` where
+  unwinding exists; on wasm the panic hook logs the message before the trap), `secrets`, `log`,
+  blocking `http` client over `wasi:http`, `AGENT_GUIDE.md`.
+- `wasm/fixtures/` (own cargo workspace): `echo`, `throw`, `panic`, `spin`, `http-get`, `secret`, each
+  with `worker.toml`; `wasm/crates/test-support`: `build_fixture`, `fixture_dir` (host layout).
+- Contract: vendored WASI 0.2.0 WIT under `wit/deps/` so the package resolves; `inspect` ignores type
+  imports (`job`, `outcome`), which real components carry.
+
+## 2026-11-24 — Wasm workers WP1: workspace + contract
+
+- New cargo workspace `wasm/` (`rust-version` 1.97, `publish = false`) with `bpmnkit-wasm-contract`: WIT package `bpmnkit:worker@0.1.0` (`pub const WIT`, worlds `worker` / `worker-http`, string job keys), `Manifest` / `ValidManifest` (private field, `validate`, `validate_with(PlatformCeilings)`, `ManifestError`, `World`, `world_for`), `check_bundle` (missing / unused / duplicated / dynamic job types through `bpmnkit_jobspec::extract`), shared build API types (`BuildRequest`, `BuildReport`, `Diagnostic`, `ArtifactMetadata`, `Digest`, `SampleJob`, `TestResult`), and feature `inspect` (`inspect`, `verify`, `Violation`) on `wasmparser`.
+- Tests: one table row per validation rule, TOML + JSON round trips, bundle check on a BPMN fixture, `verify` on WAT components (plain, http without allow-list, unknown import, missing `handle`). None need the wasm target.
+- `.github/workflows/wasm-workers.yml` (fmt, clippy, tests, audit; path-filtered + weekly) and `pnpm verify:wasm`, deliberately outside `pnpm verify`.
+
+## 2026-11-24 — Wasm workers: implementation plan
+
+- `doc/wasm-workers/plan.md`: plan for milestones 1 + 2 of `concept.md` (contract, guest SDK, host, build lib + CLI) in 5 work packages (WP1 → WP2 ∥ WP3 → WP4 → WP5). Crates `bpmnkit-wasm-{contract,sdk,host,build}` in a separate `wasm/` cargo workspace, because wasmtime 51 needs Rust 1.97 and the main workspace keeps MSRV 1.85. The host reuses `bpmnkit-worker` (one `Handler` per component); the CLI forwards `bpmnkit worker wasm` to a `bpmnkit-wasm` plugin binary.
+- Feasibility in the cloud container: `wasm32-wasip2` target installs and builds a component; wasmtime 51 + wasmtime-wasi build clean in 2 min 11 s.
 
 ## 2026-11-23 — BPMN Kit Text element reference with rendered diagrams
 

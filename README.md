@@ -48,6 +48,7 @@ It follows the [docspack](https://docspack.dev) package format, so the upstream 
 - **Native desktop app** *(experimental)* — Tauri build of the editor for Windows, macOS and Linux, attached to [GitHub Releases](https://github.com/bpmnkit/bpmnkit/releases?q=desktop)
 - **Share a diagram as a link** — [Drop](https://bpmnkit.com/drop) renders a BPMN/DMN/Form file for anyone with the link, live, and lets one of them edit it at a time
 - **VS Code extension** — preview, edit, lint, simulate and visually diff `.bpmn`, `.dmn` and `.form` beside the code, with no bpmn.io and no reformatting on save
+- **Wasm job workers** *(experimental)* — write a Camunda 8 job worker in Rust, build it to a sandboxed WebAssembly component and run it with `bpmnkit-wasm-host` ([guide](https://bpmnkit.com/docs/guides/wasm-workers))
 - **Zero-dependency execution** — lightweight BPMN simulation engine for offline testing and step-through debugging
 
 ## Product tiers

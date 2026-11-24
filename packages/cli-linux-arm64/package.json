@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/cli-linux-arm64",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"private": true,
 	"description": "The bpmnkit native binary for arm64 Linux (glibc). Installed by @bpmnkit/cli, not used directly",
 	"os": ["linux"],

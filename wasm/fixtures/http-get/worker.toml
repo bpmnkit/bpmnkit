@@ -1,0 +1,7 @@
+[worker]
+name = "http-get"
+version = "0.1.0"
+job_types = ["http-get"]
+
+[network]
+allow = ["api.example.com:443"]

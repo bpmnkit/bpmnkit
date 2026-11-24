@@ -70,7 +70,8 @@ must(
 )
 
 const expectVersion = /^bpmnkit \d+\.\d+\.\d+/m
-for (const name of ["bpmnkit", "casen"]) {
+// `@bpmnkit/cli` is what `npx @bpmnkit/cli …` runs: npm needs a single bin to pick one.
+for (const name of ["bpmnkit", "@bpmnkit/cli"]) {
 	const out = must(
 		`${name} --version`,
 		run("npm", ["exec", "--no-install", "--", name, "--version"], project),

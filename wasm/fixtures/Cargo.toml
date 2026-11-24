@@ -1,0 +1,20 @@
+# Guest fixtures for the wasm/ tests, built for wasm32-wasip2 by `bpmnkit-wasm-test-support`.
+# Own workspace so `cargo test --workspace` in wasm/ does not build them for the host.
+[workspace]
+resolver = "2"
+members = ["*"]
+exclude = ["target"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[workspace.dependencies]
+bpmnkit-wasm-sdk = { path = "../crates/sdk" }
+
+[profile.release]
+opt-level = "s"
+debug = false
+strip = true

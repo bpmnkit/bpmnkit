@@ -1,0 +1,4 @@
+[worker]
+name = "echo"
+version = "0.1.0"
+job_types = ["echo"]

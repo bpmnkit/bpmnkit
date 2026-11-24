@@ -105,7 +105,7 @@ function untar(archivePath, dest) {
 	if (r.status !== 0) throw new Error("could not unpack the release archive with `tar`")
 }
 
-/** Runs the binary and returns its exit code. `alias` is `bpmnkit` or `casen`. */
+/** Runs the binary and returns its exit code. `alias` is the command name shown in messages. */
 export async function launch(alias, importMetaUrl, args = process.argv.slice(2)) {
 	const require = createRequire(importMetaUrl)
 	const key = platformKey()

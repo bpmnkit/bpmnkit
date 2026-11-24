@@ -138,6 +138,34 @@ mod unix {
     }
 
     #[test]
+    fn worker_wasm_forwards_to_the_wasm_plugin() {
+        let t = tempfile::tempdir().unwrap();
+        script(
+            &t.path().join("path/bpmnkit-wasm"),
+            "echo \"api=$BPMNKIT_PLUGIN_API args=$*\"; exit 4",
+        );
+        sandboxed(t.path())
+            .args(["worker", "wasm", "build", "--format", "json", "-x"])
+            .assert()
+            .code(4)
+            .stdout("api=1 args=build --format json -x\n");
+    }
+
+    #[test]
+    fn worker_wasm_without_the_plugin_says_how_to_get_it() {
+        let t = tempfile::tempdir().unwrap();
+        fs::create_dir_all(t.path().join("path")).unwrap();
+        let err = sandboxed(t.path())
+            .args(["worker", "wasm", "build"])
+            .assert()
+            .failure()
+            .get_output()
+            .stderr
+            .clone();
+        assert!(String::from_utf8_lossy(&err).contains("bpmnkit-wasm"));
+    }
+
+    #[test]
     fn hello_plugin_env_contract() {
         let t = tempfile::tempdir().unwrap();
         script(

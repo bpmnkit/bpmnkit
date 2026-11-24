@@ -10,7 +10,7 @@ Writing a BPMN process, DMN decision or form? Read its agent card first: a runna
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
-Version 1.3.2. 510 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.3.2. 516 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -380,6 +380,12 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [VS Code Extension — Commands](.llms/chunks/guides.vscode.commands.md) — 181 tokens
 - [VS Code Extension — Settings](.llms/chunks/guides.vscode.settings.md) — 268 tokens
 - [VS Code Extension — Support](.llms/chunks/guides.vscode.support.md) — 99 tokens
+- [Wasm Job Workers](.llms/chunks/guides.wasm-workers.md) — 157 tokens
+- [Wasm Job Workers — The flow](.llms/chunks/guides.wasm-workers.the-flow.md) — 210 tokens
+- [Wasm Job Workers — The worker](.llms/chunks/guides.wasm-workers.the-worker.md) — 239 tokens
+- [Wasm Job Workers — `worker.toml`](.llms/chunks/guides.wasm-workers.worker.toml.md) — 385 tokens
+- [Wasm Job Workers — Build stage timing](.llms/chunks/guides.wasm-workers.build-stage-timing.md) — 215 tokens
+- [Wasm Job Workers — Running the host](.llms/chunks/guides.wasm-workers.running-the-host.md) — 221 tokens
 - [Standalone Workers](.llms/chunks/guides.workers-standalone.md) — 184 tokens
 - [Standalone Workers — Anatomy of a worker](.llms/chunks/guides.workers-standalone.anatomy-of-a-worker.md) — 212 tokens
 - [Standalone Workers — Environment variables](.llms/chunks/guides.workers-standalone.environment-variables.md) — 140 tokens

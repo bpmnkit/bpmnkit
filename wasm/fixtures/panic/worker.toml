@@ -1,0 +1,4 @@
+[worker]
+name = "panic"
+version = "0.1.0"
+job_types = ["panic"]

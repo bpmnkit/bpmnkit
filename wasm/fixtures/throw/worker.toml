@@ -1,0 +1,4 @@
+[worker]
+name = "throw"
+version = "0.1.0"
+job_types = ["throw"]

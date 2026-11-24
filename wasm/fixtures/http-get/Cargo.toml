@@ -1,0 +1,13 @@
+[package]
+name = "fixture-http-get"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+bpmnkit-wasm-sdk = { workspace = true }
+serde = { version = "1", features = ["derive"] }
