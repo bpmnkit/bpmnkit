@@ -316,7 +316,7 @@
 		{
 			"id": "cli.casen",
 			"file": "chunks/cli.casen.md",
-			"tokens": 192,
+			"tokens": 194,
 			"tags": [
 				"cli",
 				"casen",
@@ -1334,7 +1334,7 @@
 		{
 			"id": "cli.wasm.options",
 			"file": "chunks/cli.wasm.options.md",
-			"tokens": 187,
+			"tokens": 195,
 			"tags": [
 				"cli",
 				"wasm",
@@ -1347,16 +1347,25 @@
 		{
 			"id": "cli.wasm.exit-codes",
 			"file": "chunks/cli.wasm.exit-codes.md",
-			"tokens": 401,
+			"tokens": 138,
 			"tags": [
 				"cli",
 				"wasm",
 				"exit",
-				"codes",
+				"codes"
+			],
+			"entities": []
+		},
+		{
+			"id": "cli.wasm.worker.toml",
+			"file": "chunks/cli.wasm.worker.toml.md",
+			"tokens": 289,
+			"tags": [
+				"cli",
+				"wasm",
 				"worker.toml"
 			],
 			"entities": [
-				"worker.toml",
 				"network.allow",
 				"secrets.names"
 			]

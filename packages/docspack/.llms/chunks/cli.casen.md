@@ -6,7 +6,7 @@ no flags to memorize.
 
 ## Installation
 
-Since 2.0 `bpmnkit` is a native binary (one bin, `bpmnkit`; the old `casen` alias is gone). Pick one:
+Since 2.0 `bpmnkit` is a native binary (one bin, `bpmnkit`; the old alias `casen` is gone). Pick one:
 
 ```sh
 npm install -g @bpmnkit/cli                    # native binary via per-platform packages
@@ -18,7 +18,7 @@ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/bpmnkit/bpmnkit/release
 PowerShell and MSI installers are on the same [GitHub release](https://github.com/bpmnkit/bpmnkit/releases);
 `bpmnkit self update` updates installs made with the shell, PowerShell or MSI installers. Commands the binary does not run yet
 fall back to [`@bpmnkit/cli-legacy`](/docs/packages/cli-legacy) (set `BPMNKIT_NO_LEGACY=1` to
-disable). Scripts that call `casen` must call `bpmnkit`.
+disable). Scripts that used alias `casen` must call `bpmnkit`.
 
 ---
 Source: https://bpmnkit.com/docs/cli/casen
