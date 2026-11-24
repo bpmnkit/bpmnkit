@@ -11,6 +11,7 @@ bpmnkit worker wasm run --dir dist        # exec bpmnkit-wasm-host run --dir dis
 ```
 
 `bpmnkit worker wasm …` forwards to the `bpmnkit-wasm` binary, so both spellings do the same thing.
+Every command, flag, exit code and the JSON report are in the [CLI reference](/docs/cli/wasm).
 `run` reads the cluster from the active profile (`BPMNKIT_PROFILE_JSON`) or from `CAMUNDA_*`
 variables. `--format json` prints the build report as JSON for tools.
 

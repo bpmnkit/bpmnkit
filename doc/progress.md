@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-24 — Docs: CLI 2.0 install, `bpmnkit worker wasm` reference
+
+New `cli/wasm.md`: commands, flags, exit codes, `worker.toml` fields and ceilings, `samples.json`, the JSON build report and `bpmnkit-wasm-host`, checked against `wasm/crates/{build,host,contract}`. Linked from the Wasm guide and the CLI nav tree. CLI install docs now cover the 2.0 native binary (`npm`, `npx`, Homebrew, shell installer, legacy fallback) and say the `casen` bin is gone (README, CLI page, installation page). Docspack rebuilt.
+
 ## 2026-11-24 — wasm host: spin test times only the job
 
 `spin_hits_the_timeout` failed in CI (3.6 s against a 3 s bound) because its timer also counted loading and compiling the component in a debug build. The component is now loaded before the timer starts.
