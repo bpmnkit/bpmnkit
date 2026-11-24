@@ -52,15 +52,15 @@ bpmnkit-wasm <command> [options]
 | `--sdk PATH` | `check`, `build`, `test` | Path to the `bpmnkit-wasm-sdk` crate. Env `BPMNKIT_WASM_SDK`; inside the repo it is found automatically. |
 | `--target-dir PATH` | `check`, `build`, `test` | Shared cargo target directory. Env `BPMNKIT_WASM_TARGET_DIR`; default `$XDG_CACHE_HOME/bpmnkit-wasm/target` (else `~/.cache/…`). |
 
-Unknown options and unknown commands print the usage and fail.
+An unknown command prints the usage and fails; an unknown option prints an error and fails.
 
 ## Exit codes
 
 | Code | Meaning |
 |------|---------|
 | `0` | Success (`ok: true` in the report). |
-| `1` | The build or test ran and failed (`ok: false`), or `run` returned the host's failure. |
-| `2` | Usage or I/O error: no command, unknown command or option, missing argument, unreadable file, `init` over an existing worker, SDK not found. Printed on stderr as `bpmnkit-wasm: …`. |
+| `1` | The build or test ran and failed (`ok: false`), `run` returned the host's failure, or `run` could not start `bpmnkit-wasm-host`. |
+| `2` | Usage or I/O error: no command, unknown command or option, missing argument, unreadable file (not for `run`), `init` over an existing worker, SDK not found. Printed on stderr as `bpmnkit-wasm: …`. |
 
 ## `worker.toml`
 
