@@ -1,4 +1,16 @@
 # Progress
+- Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
+
+## 2026-11-24 — Wasm workers WP5: e2e, docs, PR
+
+- e2e: `wasm/crates/host/tests/reebe_e2e.rs` completes a job of a real `echo` component on a reebe
+  server; `#[ignore]`d, skips without `BPMNKIT_WORKER_E2E_URL`.
+- `.github/workflows/wasm-workers.yml`: builds and starts reebe (`apps/reebe`, embedded SQLite) before
+  the tests; `apps/reebe/**` added to the path filter.
+- Docs: `guides/wasm-workers` (flow, `worker.toml`, sandbox limits, measured build timings, not-yet
+  list), `doc/features.md`, `doc/roadmap.md` "Wasm job workers", README highlight, measured timings
+  in `doc/wasm-workers/concept.md`, "As built" deviations in `doc/wasm-workers/plan.md`.
+- Measured: cold build 35.5 s total (check 18.3 s, build 14.6 s, test 2.6 s); warm `test` 3.1 s.
 
 ## 2026-11-24 — Wasm workers WP4: build library, `bpmnkit-wasm` CLI, `bpmnkit worker wasm`
 

@@ -45,7 +45,9 @@ impl Checker<'_> {
     }
 
     fn name(&mut self, id: &proc_macro2::Ident, bang: bool) {
-        let n = id.to_string();
+        // `r#include_str!` still resolves to the built-in macro.
+        let raw = id.to_string();
+        let n = raw.strip_prefix("r#").unwrap_or(&raw).to_owned();
         if INCLUDES.contains(&n.as_str()) || (bang && ENV.contains(&n.as_str())) {
             self.forbidden_macro(id.span(), &n);
         }
@@ -69,13 +71,8 @@ impl Checker<'_> {
                         it.next();
                     }
                     if let Some(TokenTree::Group(g)) = it.peek() {
-                        if g.delimiter() == Delimiter::Bracket {
-                            let mut inner = g.stream().into_iter();
-                            if matches!(inner.next(), Some(TokenTree::Ident(i)) if i == "path")
-                                && matches!(inner.next(), Some(TokenTree::Punct(e)) if e.as_char() == '=')
-                            {
-                                self.path_attr(p.span());
-                            }
+                        if g.delimiter() == Delimiter::Bracket && has_path_assign(g.stream()) {
+                            self.path_attr(p.span());
                         }
                     }
                 }
@@ -106,6 +103,23 @@ impl Checker<'_> {
     }
 }
 
+/// `path =` anywhere in the stream, at any nesting depth.
+fn has_path_assign(ts: TokenStream) -> bool {
+    let mut it = ts.into_iter().peekable();
+    while let Some(tt) = it.next() {
+        match tt {
+            TokenTree::Ident(i) if i == "path" || i == "r#path" => {
+                if matches!(it.peek(), Some(TokenTree::Punct(e)) if e.as_char() == '=') {
+                    return true;
+                }
+            }
+            TokenTree::Group(g) if has_path_assign(g.stream()) => return true,
+            _ => {}
+        }
+    }
+    false
+}
+
 impl<'ast> Visit<'ast> for Checker<'_> {
     fn visit_item_extern_crate(&mut self, i: &'ast syn::ItemExternCrate) {
         self.extern_crate(i.extern_token.span);
@@ -117,17 +131,9 @@ impl<'ast> Visit<'ast> for Checker<'_> {
             self.path_attr(a.span());
         } else if a.path().is_ident("cfg_attr") {
             if let syn::Meta::List(l) = &a.meta {
-                // `#[cfg_attr(all(), path = "…")]` hides the attribute one level down.
-                let mut prev_path = false;
-                for tt in l.tokens.clone() {
-                    match &tt {
-                        TokenTree::Ident(i) if i == "path" => prev_path = true,
-                        TokenTree::Punct(p) if p.as_char() == '=' && prev_path => {
-                            self.path_attr(a.span());
-                            break;
-                        }
-                        _ => prev_path = false,
-                    }
+                // `#[cfg_attr(all(), cfg_attr(all(), path = "…"))]` hides it at any depth.
+                if has_path_assign(l.tokens.clone()) {
+                    self.path_attr(a.span());
                 }
             }
         }
@@ -228,6 +234,19 @@ mod tests {
                 "forbidden-macro",
             ),
             ("extern crate libc;", "extern-crate"),
+            (
+                r#"const X: &str = r#include_str!("/etc/passwd");"#,
+                "forbidden-macro",
+            ),
+            (r#"const X: &str = r#env!("HOME");"#, "forbidden-macro"),
+            (
+                r#"#[cfg_attr(all(), cfg_attr(all(), path = "/etc/x.rs"))] mod m;"#,
+                "path-attribute",
+            ),
+            (
+                r#"macro_rules! m { () => { #[cfg_attr(all(), path = "/x.rs")] mod q; } }"#,
+                "path-attribute",
+            ),
             (r#"#[path = "/etc/x.rs"] mod m;"#, "path-attribute"),
             (
                 r#"#[cfg_attr(all(), path = "/etc/x.rs")] mod m;"#,

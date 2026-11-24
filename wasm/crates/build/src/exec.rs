@@ -66,11 +66,28 @@ pub trait Executor {
 #[derive(Debug, Default, Clone, Copy)]
 pub struct LocalExecutor;
 
+const PASS_ENV: &[&str] = &[
+    "PATH",
+    "HOME",
+    "CARGO_HOME",
+    "RUSTUP_HOME",
+    "RUSTUP_TOOLCHAIN",
+    "TMPDIR",
+];
+
 impl Executor for LocalExecutor {
     fn run(&self, cmd: &Cmd, limits: &ExecLimits) -> Result<ExecOutput, ExecError> {
         let mut child = Command::new(&cmd.program)
             .args(&cmd.args)
             .current_dir(&cmd.cwd)
+            // Nothing from the caller's environment (profile secrets, RUSTFLAGS, RUSTC_WRAPPER…)
+            // reaches cargo or the worker's build; only what the toolchain needs to run.
+            .env_clear()
+            .envs(
+                PASS_ENV
+                    .iter()
+                    .filter_map(|k| std::env::var_os(k).map(|v| (*k, v))),
+            )
             .envs(cmd.env.iter().map(|(k, v)| (k, v)))
             .stdin(Stdio::null())
             .stdout(Stdio::piped())

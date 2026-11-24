@@ -382,6 +382,19 @@ The agent drives the first stages in a loop. Times are estimates for a single sm
 | Human approves the manifest in Slack | person | – | – | nothing deploys |
 | Host verifies, compiles, starts polling | host | host | \< 1 s | keep previous version |
 
+**Measured** (WP4, debug test build, this container, scaffold worker; the estimates above stay for the
+full agent loop, which is not built yet):
+
+| Stage | Measured | Note |
+| --- | --- | --- |
+| Render | 1 ms | |
+| `check` (cargo check) | 18.3 s cold / 0.36 s warm | cold = empty shared target dir |
+| `build` (release to `wasm32-wasip2`) | 14.6 s | |
+| Verify imports | 0 ms | |
+| Smoke test (`test`) | 2.6 s cold / 3.1 s warm | |
+| Package | 3 ms | |
+| **Total** | **35.5 s cold** | `check` + `build` + `test` dominate |
+
 ## Security layers
 
 Each layer assumes the one before it can fail.

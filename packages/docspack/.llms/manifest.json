@@ -5440,6 +5440,90 @@
 			"entities": []
 		},
 		{
+			"id": "guides.wasm-workers",
+			"file": "chunks/guides.wasm-workers.md",
+			"tokens": 157,
+			"tags": [
+				"guides",
+				"wasm-workers"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.wasm-workers.the-flow",
+			"file": "chunks/guides.wasm-workers.the-flow.md",
+			"tokens": 210,
+			"tags": [
+				"guides",
+				"wasm-workers",
+				"flow"
+			],
+			"entities": [
+				"worker.toml",
+				"src/lib.rs",
+				"samples.json",
+				"Cargo.toml"
+			]
+		},
+		{
+			"id": "guides.wasm-workers.the-worker",
+			"file": "chunks/guides.wasm-workers.the-worker.md",
+			"tokens": 239,
+			"tags": [
+				"guides",
+				"wasm-workers",
+				"worker"
+			],
+			"entities": [
+				"wasm/crates/sdk/AGENT_GUIDE.md"
+			]
+		},
+		{
+			"id": "guides.wasm-workers.worker.toml",
+			"file": "chunks/guides.wasm-workers.worker.toml.md",
+			"tokens": 385,
+			"tags": [
+				"guides",
+				"wasm-workers",
+				"worker.toml",
+				"sandbox",
+				"limits"
+			],
+			"entities": [
+				"build.rs"
+			]
+		},
+		{
+			"id": "guides.wasm-workers.build-stage-timing",
+			"file": "chunks/guides.wasm-workers.build-stage-timing.md",
+			"tokens": 215,
+			"tags": [
+				"guides",
+				"wasm-workers",
+				"build",
+				"stage",
+				"timing"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.wasm-workers.running-the-host",
+			"file": "chunks/guides.wasm-workers.running-the-host.md",
+			"tokens": 221,
+			"tags": [
+				"guides",
+				"wasm-workers",
+				"running",
+				"host",
+				"not",
+				"yet"
+			],
+			"entities": [
+				"worker.toml",
+				"worker.wasm"
+			]
+		},
+		{
 			"id": "guides.workers-standalone",
 			"file": "chunks/guides.workers-standalone.md",
 			"tokens": 184,

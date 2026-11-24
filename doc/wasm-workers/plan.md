@@ -143,3 +143,16 @@ Depends on WP1–4.
   @bpmnkit/docspack build`), `doc/features.md`, `doc/roadmap.md`, measured stage timings back into
   `concept.md`'s table, README line.
 - Full `pnpm verify` (main workspace unaffected) + `pnpm verify:wasm`; open the one PR.
+
+## As built
+
+Milestones 1 and 2 shipped as specified in the work packages above, with these deviations:
+
+- **Toolchain:** `target_dir`, `lockfile` and `offline` instead of `vendor_dir` / `warm_target`.
+- **Artifact:** no source tarball is stored with the artifact.
+- **Dependency allow-list:** `bpmnkit_wasm_sdk`, `serde` and `serde_json` only (no chrono or regex).
+- **Smoke-test HTTP:** a recording resolver that refuses every name; no canned-response stub yet.
+- **Host runtime:** async. `run_job` is async and `run_job_blocking` wraps it for the handler.
+- **Out of scope:** builder service (M3), signing and OCI distribution, Slack agent (M4).
+- **E2E:** `wasm/crates/host/tests/reebe_e2e.rs` (skips without `BPMNKIT_WORKER_E2E_URL`); the
+  `wasm-workers.yml` workflow builds and starts reebe before running the ignored tests.
