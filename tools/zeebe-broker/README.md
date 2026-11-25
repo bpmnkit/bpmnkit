@@ -17,6 +17,8 @@ Deploys the conformance corpus to a real Camunda 8 engine. `.github/workflows/ze
 | `doc/deployability/repro/*.bpmn` | Rejected with the errors in `expected-verdicts.json`. Skipped when the rule's `since` (in `spec/zeebe-rules.json`) is newer than the engine. |
 | `doc/deployability/broker-repro/deployments.json` | Multi-resource and runtime-only cases, each with `ok` and the text the rejection must `contain`. |
 
+A corpus file the broker rejects for a feature that version lacks, or for a limit of every broker (straight-through loop, a decision/form reference a single file cannot satisfy), is `info`, not `fail`. The classes live in `doc/deployability/broker-expectations.json`; any other error stays a mismatch.
+
 The outcome of each item is one of four values:
 
 - **pass**

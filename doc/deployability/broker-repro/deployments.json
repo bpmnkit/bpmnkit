@@ -22,7 +22,7 @@
 		"z183-duplicate-process-id": {
 			"resources": ["z183_dup_a.bpmn", "z183_dup_b.bpmn"],
 			"ok": false,
-			"contains": ["Duplicated process id in resources 'z183_dup_a.bpmn' and 'z183_dup_b.bpmn'"]
+			"contains": ["Duplicated process id", "z183_dup_a.bpmn", "z183_dup_b.bpmn"]
 		}
 	}
 }

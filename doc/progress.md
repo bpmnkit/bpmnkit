@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-25 — Zeebe broker nightly: expected rejections classified per Zeebe version
+
+The nightly failed on all four versions at "Deploy the corpus" (run 45606802601): new corpus files (text/compact/migrate/builder outputs) use ad-hoc sub-processes, conditional events, loops and decision/form references that a single-file deployment to an older broker rejects. `doc/deployability/broker-expectations.json` now lists rejection classes (`supportedSince` a version, or `always`); `classify` reports a corpus rejection as `info` only when every `ERROR:` of it belongs to an applying class, so new files using a feature a given Zeebe lacks need no edit while unknown rejections and rejections by a version that supports the feature still fail. The z183 expectation matches order- and wording-independently, and z145 accepts the pre-conditional wording of older brokers. Tests: `scripts/zeebe-broker-lib.test.mjs`. Not verified against a live broker (no Docker); `conditional-event` `supportedSince: 8.9` is an assumption (8.9 is not in the matrix).
+
 ## 2026-11-25 — PR CI fixes for Decimal128 (#320)
 
 Rust MSRV 1.85 → 1.94: every `fastnum` release needs ≥ 1.87 and 0.7.5 needs 1.94. `wasm/Cargo.lock` follows `bpmnkit-feel` (rust_decimal out, fastnum in); `apps/reebe` takes `url` 2.5.9 (RUSTSEC-2026-0592). `api-surface.json` records the new `@bpmnkit/feel` exports; `@crates/bpmnkit-feel` gets its changeset.
