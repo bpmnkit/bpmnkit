@@ -14,8 +14,8 @@ publish.workspace = true
 inspect = ["dep:wasmparser"]
 
 [dependencies]
-bpmnkit-bpmn = { path = "../../../crates/bpmnkit-bpmn", version = "0.7.1" }
-bpmnkit-jobspec = { path = "../../../crates/bpmnkit-jobspec", version = "0.7.1" }
+bpmnkit-bpmn = { path = "../../../crates/bpmnkit-bpmn" }
+bpmnkit-jobspec = { path = "../../../crates/bpmnkit-jobspec" }
 semver = { version = "1", features = ["serde"] }
 serde = { workspace = true }
 serde_json = { workspace = true }

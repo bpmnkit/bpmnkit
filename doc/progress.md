@@ -1,4 +1,8 @@
 # Progress
+
+## 2026-11-25 — CI: version bumps no longer race the registry
+
+After "version packages" (#322) two jobs failed because they resolved just-bumped, unpublished versions from a registry. `scripts/smoke-cli-npm.mjs` now also packs every workspace package in the CLI's `dependencies` closure and installs them all from the tarballs, so `@bpmnkit/core@^x` is never fetched from npm. `wasm/` path deps (`contract`, `host`) drop their `version = "0.7.1"` pin (the workspace is `publish = false`; the pin stopped matching the lockstep 0.8.0 and sent cargo to crates.io), and `wasm/Cargo.lock` is refreshed. `scripts/crates-version.mjs` now also runs `cargo update --workspace` for `wasm/`, so `--locked` keeps passing after a bump. `worker-e2e` and `release-cli` need no change (root/reebe locks were already synced; release-cli publishes from artifacts).
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
 ## 2026-11-25 — PR CI fixes for Decimal128 (#320)

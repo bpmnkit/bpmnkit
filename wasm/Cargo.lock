@@ -105,7 +105,7 @@ checksum = "f781dba93de3a5ef6dc5b17c9958b208f6f3f021623b360fb605ea51ce443f10"
 
 [[package]]
 name = "bpmnkit-bpmn"
-version = "0.7.2"
+version = "0.8.0"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-spec",
@@ -116,7 +116,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-feel"
-version = "0.7.2"
+version = "0.8.0"
 dependencies = [
  "bpmnkit-spec",
  "chrono",
@@ -128,7 +128,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-jobspec"
-version = "0.7.2"
+version = "0.8.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-feel",
@@ -140,7 +140,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-spec"
-version = "0.7.2"
+version = "0.8.0"
 
 [[package]]
 name = "bpmnkit-wasm-build"
@@ -215,7 +215,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-worker"
-version = "0.7.2"
+version = "0.8.0"
 dependencies = [
  "reqwest",
  "serde",
@@ -226,7 +226,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-xml"
-version = "0.7.2"
+version = "0.8.0"
 dependencies = [
  "indexmap",
  "quick-xml",
