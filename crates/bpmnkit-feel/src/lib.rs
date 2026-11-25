@@ -8,13 +8,16 @@
 //! assert_eq!(evaluate("x * 3 + 1", &ctx).unwrap(), Value::from(7));
 //! ```
 //!
-//! Numbers are exact decimals (28 significant digits), contexts keep insertion
+//! Numbers are DMN Decimal128, as Camunda 8 computes them ([`Decimal`]: 34
+//! significant digits, rounded half-even; `sqrt`, `exp`, `log` and fractional
+//! powers in float64), contexts keep insertion
 //! order, and evaluation never fails: like FEEL, an invalid operation yields
 //! `null`. Only parsing reports errors. [`evaluate_with_diagnostics`] also
 //! says why a result became null, as FEEL-Scala's suppressed failures do.
 
 pub mod ast;
 mod builtins;
+mod decimal;
 mod evaluator;
 mod format;
 mod lexer;
@@ -27,9 +30,9 @@ use std::cell::RefCell;
 use std::fmt;
 use std::sync::Arc;
 
+pub use decimal::{Decimal, DecimalError, RoundingStrategy};
 pub use format::format;
 pub use parser::{ParseError, ParseOptions};
-pub use rust_decimal::Decimal;
 pub use value::{
     Context, Date, DateTime, DaysTimeDuration, Function, Range, Time, Value, YearsMonthsDuration,
 };

@@ -1,6 +1,6 @@
 //! Syntax tree. Mirrors `packages/feel/src/ast.ts`; `start`/`end` are byte offsets.
 
-use rust_decimal::Decimal;
+use crate::Decimal;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BinaryOp {

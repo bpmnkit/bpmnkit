@@ -3,8 +3,8 @@
 use super::BuiltinFn;
 use crate::temporal::{date_to_epoch_days, day_of_week, day_of_year, days_in_month, is_leap_year};
 use crate::value::{Date, DateTime, Time, Value};
+use crate::Decimal;
 use chrono::{Datelike, Offset, Timelike};
-use rust_decimal::Decimal;
 
 pub fn lookup(name: &str) -> Option<BuiltinFn> {
     Some(match name {
