@@ -1,9 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
-## 2026-11-25 — Nightly fuzz (feel): oracle numbers, Decimal128 rounding
+## 2026-11-25 — Nightly fuzz (feel): oracle numbers, Decimal128 rounding, date-time fractions
 
 Run 45618369741 reported 10 FEEL mismatches with every TS number encoded as `{coefficient, exponent}`: `scripts/fuzz/oracle.mjs` still encoded/decoded JS `number`, but since #320 FEEL numbers are `FeelNumber`. It now encodes like `packages/feel/tests/conformance.test.ts` (regression test `scripts/fuzz/oracle.test.mjs`, in `pnpm test:scripts`). Fuzzing on then found a real Rust bug: `fastnum`'s `rescale` settles half-even/half-down on the first dropped digit, so `decimal(850.01, -2)` was `800` (TS and Camunda: `900`) and 34-digit arithmetic results just past a tie rounded down. `bpmnkit-feel`'s `Decimal` now truncates with `rescale` and rounds in one step from the whole remainder (`round_to_scale`). Tests: `decimal.rs` `rounding` / `rounds_to_34_digits_half_even`, conformance `fuzz/32`.
+Then a TS precision bug: `date and time + duration` added the fraction at epoch magnitude (~1.7e9 s), so `@"2023-12-31T23:59:59" + 0.001 * @"P1D"` was `…25.40000009536743`; whole and fractional seconds are now added apart, the fraction in integer nanoseconds (java.time's resolution). Tests: `evaluator.test.ts` temporal arithmetic, conformance `fuzz/33`.
 
 ## 2026-11-25 — PR CI fixes for Decimal128 (#320)
 

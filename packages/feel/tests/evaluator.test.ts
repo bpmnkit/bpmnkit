@@ -266,6 +266,17 @@ describe("evaluate", () => {
 			const result = eval_('date("2021-01-15") + duration("P1Y")')
 			expect(result).toMatchObject({ type: "date", year: 2022, month: 1, day: 15 })
 		})
+
+		// Regression (nightly fuzz): the fraction was added at epoch magnitude (~1.7e9 s), where
+		// float64 keeps only ~1e-7 s, giving 25.40000009536743.
+		it("keeps a date-time's fractional seconds exact when adding a duration", () => {
+			const result = eval_('string(@"2023-12-31T23:59:59" + 0.001 * @"P1D")')
+			expect(result).toBe("2024-01-01T00:01:25.4")
+			expect(eval_('string(@"2024-01-01T00:00:00.75" - @"PT1.5S")')).toBe("2023-12-31T23:59:59.25")
+			expect(eval_('string(@"2024-01-01T00:00:59.9+01:00" + @"PT0.2S")')).toBe(
+				"2024-01-01T00:01:00.1+01:00",
+			)
+		})
 	})
 
 	describe("instance of", () => {
