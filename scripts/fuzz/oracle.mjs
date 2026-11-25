@@ -45,6 +45,12 @@ function encode(v) {
 	if (typeof v === "boolean") return { t: "boolean", v }
 	if (typeof v === "string") return { t: "string", v }
 	if (isFeelNumber(v)) return { t: "number", v: numberToDecimal(v) }
+	// The engine's DMN API returns plain JS values (`toJs`), so dmn-eval results hold JS numbers.
+	if (typeof v === "number") {
+		return Number.isFinite(v)
+			? { t: "number", v: numberToDecimal(FeelNumber.from(v)) }
+			: { t: "error" }
+	}
 	if (Array.isArray(v)) {
 		const items = v.map(encode)
 		return items.some((i) => i.t === "error") ? { t: "error" } : { t: "list", v: items }

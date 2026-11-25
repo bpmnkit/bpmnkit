@@ -9,7 +9,7 @@
 		"z130-deployment-binding-missing": {
 			"resources": ["z130_caller.bpmn"],
 			"ok": false,
-			"since": "8.6",
+			"since": "8.8",
 			"contains": [
 				"Expected to find process with id 'z130-callee' in current deployment, but not found."
 			]

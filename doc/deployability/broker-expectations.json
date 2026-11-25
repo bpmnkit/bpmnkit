@@ -20,7 +20,11 @@
 		},
 		"deployment-binding": {
 			"always": true,
-			"match": ["Expected to find decision with id", "Expected to find form with id"]
+			"match": [
+				"Expected to find decision with id",
+				"Expected to find form with id",
+				"Expected to find process with id"
+			]
 		}
 	},
 	"reproWording": {

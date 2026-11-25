@@ -35,3 +35,19 @@ test("feel numbers round-trip as exact decimal strings", () => {
 	assert.deepEqual(ctx, { value: { t: "context", v: { a: num("0"), b: num("1.5") } } })
 	assert.deepEqual(big, { value: num("12345678901234567891.1") })
 })
+
+// Regression: the engine's DMN API returns plain JS values (`toJs`), and the oracle encoded those
+// JS numbers as empty contexts, so every numeric dmn-eval result was a nightly mismatch.
+test("dmn-eval numbers encode as decimals", () => {
+	const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="defs" name="d" namespace="n">
+  <decision id="d0" name="d0"><literalExpression><text>[1, 2.50]</text></literalExpression></decision>
+  <decision id="d1" name="d1"><literalExpression><text>10.5</text></literalExpression></decision>
+</definitions>`
+	const [list, one] = ask([
+		{ target: "dmn-eval", xml, decision: "d0", context: {} },
+		{ target: "dmn-eval", xml, decision: "d1", context: {} },
+	])
+	assert.deepEqual(list.result, { t: "list", v: [num("1"), num("2.5")] })
+	assert.deepEqual(one.result, num("10.5"))
+})
