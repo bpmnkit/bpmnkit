@@ -3,6 +3,8 @@ import { test } from "node:test"
 import {
 	classify,
 	compareMinor,
+	errorsOf,
+	knownRejection,
 	needlesOf,
 	problemText,
 	rejectionMatches,
@@ -136,4 +138,82 @@ test("problem+json and the summary", () => {
 	])
 	assert.match(md, /\| 1 \| 1 \| 0 \| 0 \|/)
 	assert.match(md, /- `b`: rejected: 'x'/)
+})
+
+// --- expected rejections (doc/deployability/broker-expectations.json) ---
+import { readFileSync } from "node:fs"
+
+const EXPECT = JSON.parse(
+	readFileSync(new URL("../doc/deployability/broker-expectations.json", import.meta.url), "utf8"),
+)
+const reject = (...errs) => ({
+	ok: false,
+	detail: `Command 'CREATE' rejected with code 'INVALID_ARGUMENT': Expected to deploy new resources, but encountered the following errors:\n'f.bpmn': ${errs
+		.map((e) => `- Element: x\n    - ERROR: ${e}`)
+		.join("\n")}\n`,
+})
+const caseItem = { key: "text/x/expected/output.bpmn", kind: "case", expect: { ok: true } }
+const AD_HOC = "Elements of type 'AdHocSubProcess' are currently not supported. Please refer"
+const COND = [
+	"Event definition of this type is not supported",
+	"Event definition must be one of: message, timer, signal, or link",
+]
+const LOOP = "Processes are not allowed to contain a straight-through processing loop: a -> b"
+
+test("reads the ERROR messages of a rejection", () => {
+	assert.deepEqual(errorsOf(reject("one", "two").detail), ["one", "two"])
+	assert.deepEqual(errorsOf("boom"), [])
+})
+
+test("a feature an older broker lacks is an expected reject there, a mismatch once supported", () => {
+	const o = reject(AD_HOC)
+	assert.equal(classify(caseItem, o, "8.7.45", EXPECT).status, "info")
+	assert.equal(classify(caseItem, o, "8.8.46", EXPECT).status, "fail")
+	assert.equal(classify(caseItem, o, "8.10.9", EXPECT).status, "fail")
+})
+
+test("conditional events need the ConditionalEventDefinition marker and an older broker", () => {
+	const o = {
+		ok: false,
+		detail: reject(...COND).detail.replace("Element: x", "Element: b_ConditionalEventDefinition"),
+	}
+	assert.equal(classify(caseItem, o, "8.8.46", EXPECT).status, "info")
+	assert.equal(classify(caseItem, o, "8.10.9", EXPECT).status, "fail")
+	// The same wording without a conditional definition is not forgiven.
+	assert.equal(classify(caseItem, reject(...COND), "8.8.46", EXPECT).status, "fail")
+})
+
+test("limits of every broker are expected on all versions", () => {
+	for (const v of ["8.6.42", "8.10.9"]) {
+		assert.equal(classify(caseItem, reject(LOOP), v, EXPECT).status, "info")
+		assert.equal(
+			classify(caseItem, reject("Expected to find decision with id 'd'"), v, EXPECT).status,
+			"info",
+		)
+	}
+})
+
+test("one unclassified error keeps the file a mismatch", () => {
+	const o = reject(LOOP, "Something else is wrong")
+	assert.equal(classify(caseItem, o, "8.6.42", EXPECT).status, "fail")
+	assert.equal(knownRejection(o.detail, "8.6.42", EXPECT), undefined)
+	assert.equal(classify(caseItem, reject(AD_HOC), "8.7.45", {}).status, "fail")
+})
+
+test("repro wording differs between broker versions (z145)", () => {
+	const item = {
+		key: "repro/z145_ebg_to_task.bpmn",
+		kind: "repro",
+		expect: {
+			ok: false,
+			errors: [
+				"g: Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events.",
+			],
+		},
+	}
+	const old = reject(
+		"Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal intermediate catch events.",
+	)
+	assert.equal(classify(item, old, "8.8.46", EXPECT).status, "pass")
+	assert.equal(classify(item, old, "8.10.9", EXPECT).status, "fail")
 })

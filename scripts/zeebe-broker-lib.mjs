@@ -61,9 +61,10 @@ export function rejectionMatches(detail, expectedErrors) {
  *   file's executionPlatformVersion
  * @param {{ ok: boolean, detail: string }} outcome  what the broker did
  * @param {string} brokerVersion
+ * @param {object} [expectations]  doc/deployability/broker-expectations.json
  * @returns {{ status: "pass" | "fail" | "skip" | "info", why: string }}
  */
-export function classify(item, outcome, brokerVersion) {
+export function classify(item, outcome, brokerVersion, expectations = {}) {
 	if (item.since && compareMinor(item.since, brokerVersion) > 0) {
 		return { status: "skip", why: `rule since ${item.since}` }
 	}
@@ -74,6 +75,8 @@ export function classify(item, outcome, brokerVersion) {
 		if (item.target && minorOf(item.target) && compareMinor(item.target, brokerVersion) > 0) {
 			return { status: "info", why: `targets ${item.target}: ${firstLine(outcome.detail)}` }
 		}
+		const known = knownRejection(outcome.detail, brokerVersion, expectations)
+		if (known) return { status: "info", why: `expected reject (${known.join(", ")})` }
 		return { status: "fail", why: `rejected: ${firstLine(outcome.detail)}` }
 	}
 	if (outcome.ok) {
@@ -89,10 +92,45 @@ export function classify(item, outcome, brokerVersion) {
 	if (!needles.every((n) => hay.includes(squash(n).toLowerCase()))) {
 		return { status: "fail", why: `rejected for another reason: ${firstLine(outcome.detail)}` }
 	}
-	if (errors.length > 0 && !rejectionMatches(outcome.detail, errors)) {
+	const worded = expectations.reproWording?.[item.key.replace(/^repro\//, "")]
+	const older = worded && compareMinor(brokerVersion, worded.before) < 0
+	if (
+		errors.length > 0 &&
+		!rejectionMatches(outcome.detail, errors) &&
+		!(older && rejectionMatches(outcome.detail, worded.errors))
+	) {
 		return { status: "fail", why: `rejection differs: ${firstLine(outcome.detail)}` }
 	}
 	return { status: "pass", why: "rejected as expected" }
+}
+
+/** The `ERROR:` messages of a broker rejection. */
+export function errorsOf(detail) {
+	const hay = squash(detail)
+	return [...hay.matchAll(/ERROR: (.*?)(?= - (?:Element|Process): |$)/g)].map((m) => m[1])
+}
+
+/**
+ * Class ids when every error of the rejection belongs to a class that applies to this broker
+ * (rejected by it as expected: an older broker lacking a feature, or a limit of every broker);
+ * undefined when any error is unclassified, so it stays a mismatch.
+ */
+export function knownRejection(detail, brokerVersion, expectations = {}) {
+	const errors = errorsOf(detail)
+	if (errors.length === 0) return undefined
+	const hay = squash(detail)
+	const applies = Object.entries(expectations.classes ?? {}).filter(
+		([, c]) =>
+			(c.always || (c.supportedSince && compareMinor(brokerVersion, c.supportedSince) < 0)) &&
+			(!c.requires || hay.includes(c.requires)),
+	)
+	const ids = new Set()
+	for (const e of errors) {
+		const hit = applies.find(([, c]) => c.match.some((m) => e.includes(m)))
+		if (!hit) return undefined
+		ids.add(hit[0])
+	}
+	return [...ids]
 }
 
 function firstLine(s) {
