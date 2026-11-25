@@ -466,6 +466,27 @@ describe("regex cache", () => {
 		}
 	})
 
+	it("steps empty regex matches over whole characters", () => {
+		expect(eval_('extract("ü😀", "")')).toEqual(["", "", ""])
+	})
+
+	it("reads a ] right after [ as a literal, as Java does", () => {
+		expect(eval_('matches("", " []")')).toBe(null)
+		expect(eval_('matches("]", "[]a]")')).toBe(true)
+		expect(eval_('matches("b", "[^]a]")')).toBe(true)
+		expect(eval_('matches("]", "[^]a]")')).toBe(false)
+	})
+
+	it("gives null for a years-months duration past i64 months", () => {
+		expect(eval_('years and months duration(@"2020-01-01", @"2024-06-15") / exp(-334.46)')).toBe(
+			null,
+		)
+	})
+
+	it("shifts a date-time far before year 1 with ISO years", () => {
+		expect(eval_('string(@"2024-01-01T10:00:00Z" - @"P1D" * 1000000)')).toBe("-714-02-03T10:00:00Z")
+	})
+
 	it("stays correct past its size bound", () => {
 		for (let i = 0; i < 300; i++) {
 			expect(eval_(`matches("x${i}y", "^x${i}y$")`)).toBe(true)
