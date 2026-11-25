@@ -1,6 +1,0 @@
-{
-  "fuzz/2": "10 ** 400: Decimal128 (Camunda 8, bpmnkit#320) holds 1E+400; the corpus records float64 overflow (null).",
-  "fuzz/7": "10 ** -29: Decimal128 holds 1E-29 exactly; the corpus records 0 (the old 28-digit underflow).",
-  "fuzz/8": "exp(-67): float64 gives 7.984904245686979E-30 (as Camunda); the corpus records 0 (the old 28-digit underflow).",
-  "fuzz/24": "ceiling/floor/round up at scale -400: Decimal128 gives 1E+400 / -1E+400; the corpus records null (out of float64 range)."
-}
