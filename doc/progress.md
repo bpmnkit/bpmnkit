@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-25 — PR CI fixes for Decimal128 (#320)
+
+Rust MSRV 1.85 → 1.94: every `fastnum` release needs ≥ 1.87 and 0.7.5 needs 1.94. `wasm/Cargo.lock` follows `bpmnkit-feel` (rust_decimal out, fastnum in); `apps/reebe` takes `url` 2.5.9 (RUSTSEC-2026-0592). `api-surface.json` records the new `@bpmnkit/feel` exports; `@crates/bpmnkit-feel` gets its changeset.
+
 ## 2026-11-25 — @bpmnkit/feel: `formatFeelValue` keeps nested numbers exact (#320)
 
 New `formatFeelValue` writes lists, contexts and ranges as indented JSON with every number printed by `FeelNumber#toString`, so `[1 / 3]` keeps 34 digits and `{a: 100 * 1.1}` shows `110.0`. The FEEL playground plugin, drop's FEEL view and the landing playground use it instead of `JSON.stringify(toJs(v))`, which rounded nested numbers to JS doubles. Tests: `packages/feel/tests/format-value.test.ts`.

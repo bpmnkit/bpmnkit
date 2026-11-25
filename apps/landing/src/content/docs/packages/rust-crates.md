@@ -144,7 +144,7 @@ Not everything is faster: DMN parsing is currently slower than TypeScript.
 
 ## Requirements
 
-- Rust 1.85 or later (MSRV). CI checks the crates on exactly that toolchain.
+- Rust 1.94 or later (MSRV). CI checks the crates on exactly that toolchain.
 - Licence: `MIT OR Apache-2.0`.
 - All crates share one version and are released together.
 

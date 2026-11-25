@@ -10,9 +10,9 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/bpmnkit/bpmnkit"
 homepage = "https://bpmnkit.com"
-# Highest MSRV among the dependencies as resolved (indexmap 2.14 / hashbrown 0.17: 1.85).
+# Highest MSRV among the dependencies as resolved (fastnum 0.7.5, bpmnkit-feel's Decimal128: 1.94).
 # `clippy::incompatible_msrv` checks our own std usage against it.
-rust-version = "1.85"
+rust-version = "1.94"
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
