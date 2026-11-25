@@ -43,20 +43,6 @@ pub enum RoundingStrategy {
     Floor,
 }
 
-impl RoundingStrategy {
-    fn mode(self) -> RoundingMode {
-        match self {
-            Self::HalfEven => RoundingMode::HalfEven,
-            Self::HalfUp => RoundingMode::HalfUp,
-            Self::HalfDown => RoundingMode::HalfDown,
-            Self::Up => RoundingMode::Up,
-            Self::Down => RoundingMode::Down,
-            Self::Ceiling => RoundingMode::Ceiling,
-            Self::Floor => RoundingMode::Floor,
-        }
-    }
-}
-
 /// Text that is not a decimal, or a value out of a decimal's (or the target type's) range.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DecimalError;
@@ -85,7 +71,7 @@ impl Decimal {
         let digits = d.digits_count();
         if digits > PRECISION {
             let scale = i32::from(d.fractional_digits_count()) - (digits - PRECISION) as i32;
-            d = d.rescale(i16::try_from(scale).ok()?);
+            d = round_to_scale(d, i16::try_from(scale).ok()?, RoundingStrategy::HalfEven);
             // 99..95 rounds up to 100..0: one digit too many, and that digit is a 0.
             if d.digits_count() > PRECISION {
                 d = d.rescale(i16::try_from(scale - 1).ok()?);
@@ -296,8 +282,7 @@ impl Decimal {
         if drop > 0 && drop >= self.0.digits_count() as i32 {
             return Some(self.round_below_unit(dp16, strategy));
         }
-        let rounded = self.0.with_rounding_mode(strategy.mode()).rescale(dp16);
-        Self::fit(rounded)
+        Self::fit(round_to_scale(self.0, dp16, strategy))
     }
 
     /// Rounding at a digit left of every digit `self` has (`|self| < 10^-dp`):
@@ -386,6 +371,42 @@ impl Decimal {
         let (_, digits, scale) = self.normalize().parts();
         (digits, i64::from(scale))
     }
+}
+
+/// Rounds `d` to `dp` digits after the point in one step, looking at every dropped digit.
+/// fastnum's `rescale` settles a half-way mode on the first dropped digit alone
+/// (`8.5001` half-even gives `8`), so it is only trusted to truncate.
+fn round_to_scale(d: D256, dp: i16, strategy: RoundingStrategy) -> D256 {
+    use RoundingStrategy::*;
+    let d = d.with_ctx(CTX);
+    let truncated = d
+        .with_rounding_mode(RoundingMode::Down)
+        .rescale(dp)
+        .with_ctx(CTX);
+    let rest = d.sub(truncated);
+    if rest.is_zero() {
+        return truncated;
+    }
+    let unit = pow10(-i64::from(dp));
+    let half = rest.abs().cmp(&unit.mul(D256::HALF));
+    let negative = d.is_sign_negative();
+    let away = match strategy {
+        Up => true,
+        Down => false,
+        Ceiling => !negative,
+        Floor => negative,
+        HalfUp => half != Ordering::Less,
+        HalfDown => half == Ordering::Greater,
+        HalfEven => match half {
+            Ordering::Greater => true,
+            Ordering::Less => false,
+            Ordering::Equal => !truncated.div(unit).rem(D256::TWO).is_zero(),
+        },
+    };
+    if !away {
+        return truncated;
+    }
+    truncated.add(if negative { unit.neg() } else { unit })
 }
 
 fn pow10(exp: i64) -> D256 {
@@ -678,6 +699,15 @@ mod tests {
         let many = "1234567890123456789012345678901234";
         assert_eq!(d(many).to_string(), many);
         assert_eq!(d(&format!("{many}5")).to_string(), format!("{many}0"));
+        // Past the tie by a later digit: up, not to even.
+        assert_eq!(
+            d(&format!("{many}50001")).to_string(),
+            "123456789012345678901234567890123500000"
+        );
+        assert_eq!(
+            (d("1") + d("0.00000000000000000000000000000000050001")).to_string(),
+            "1.000000000000000000000000000000001"
+        );
         assert_eq!(
             d("0.33333333333333333333333333333333335").to_string(),
             "0.3333333333333333333333333333333334"
@@ -748,6 +778,15 @@ mod tests {
         );
         assert_eq!(r("1.5", 2, RoundingStrategy::HalfEven), "1.50");
         assert_eq!(r("1250", -2, RoundingStrategy::HalfUp), "1300");
+        // One rounding step, not one per dropped digit (fastnum's rescale
+        // looks only at the first dropped digit; found by the differential fuzzer):
+        // 850.01 is above the 850 tie, so it goes to 900.
+        assert_eq!(r("850.01", -2, RoundingStrategy::HalfEven), "900");
+        assert_eq!(r("-850.01", -2, RoundingStrategy::HalfEven), "-900");
+        assert_eq!(r("850", -2, RoundingStrategy::HalfEven), "800");
+        assert_eq!(r("0.2501", 1, RoundingStrategy::HalfEven), "0.3");
+        assert_eq!(r("2.4501", 0, RoundingStrategy::HalfDown), "2");
+        assert_eq!(r("1249.99", -2, RoundingStrategy::HalfUp), "1200");
         assert_eq!(r("5", -30, RoundingStrategy::Down), "0");
         assert_eq!(
             r("5", -30, RoundingStrategy::Up),
