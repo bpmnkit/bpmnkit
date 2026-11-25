@@ -268,6 +268,14 @@ describe("FeelNumber", () => {
 			expect(n(0).precision()).toBe(1)
 		})
 
+		it("strips trailing zeros without changing the value", () => {
+			expect(n("1.50").stripTrailingZeros().toString()).toBe("1.5")
+			expect(n("1200").stripTrailingZeros().scale()).toBe(-2)
+			expect(n("0.000").stripTrailingZeros().toString()).toBe("0")
+			const exact = n("1.5")
+			expect(exact.stripTrailingZeros()).toBe(exact)
+		})
+
 		it("recognises instances", () => {
 			expect(isFeelNumber(n(1))).toBe(true)
 			expect(isFeelNumber(1)).toBe(false)

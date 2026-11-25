@@ -1,16 +1,17 @@
 import { describe, expect, it } from "vitest"
 import { evaluate } from "../src/evaluator.js"
 import { parseExpression } from "../src/parser.js"
-import type { FeelValue } from "../src/types.js"
+import { toJs } from "../src/types.js"
 
-function feel(input: string, vars: Record<string, FeelValue> = {}): FeelValue {
+/** Evaluates, with FEEL numbers taken out as JS numbers so results compare with plain literals. */
+function feel(input: string, vars: Record<string, unknown> = {}): unknown {
 	const { ast, errors } = parseExpression(input)
 	if (!ast || errors.length > 0) throw new Error(`cannot parse ${input}: ${errors[0]?.message}`)
-	return evaluate(ast, { vars })
+	return toJs(evaluate(ast, { vars }))
 }
 
 /** Evaluates both sides and compares, so expectations can be written as FEEL. */
-function same(input: string, expected: string, vars: Record<string, FeelValue> = {}): void {
+function same(input: string, expected: string, vars: Record<string, unknown> = {}): void {
 	expect(feel(input, vars)).toEqual(feel(expected))
 }
 
@@ -124,7 +125,7 @@ describe("Camunda built-in extensions", () => {
 		it("from json() keeps a __proto__ key as an entry", () => {
 			const value = feel('from json("{\\"__proto__\\": {\\"polluted\\": true}}")') as Record<
 				string,
-				FeelValue
+				unknown
 			>
 			expect(Object.keys(value)).toEqual(["__proto__"])
 			expect(Object.getPrototypeOf(value)).toBe(Object.prototype)

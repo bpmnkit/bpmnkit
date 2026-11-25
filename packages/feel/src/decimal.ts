@@ -323,6 +323,18 @@ export class FeelNumber {
 		return this.toNumber()
 	}
 
+	/** The same value at its smallest scale (Java's `stripTrailingZeros`): `1.50` is `1.5`, `0.0` is `0`. */
+	stripTrailingZeros(): FeelNumber {
+		if (this.coefficient === 0n) return FeelNumber.ZERO
+		let c = this.coefficient
+		let e = this.exponent
+		while (c % 10n === 0n) {
+			c /= 10n
+			e += 1
+		}
+		return c === this.coefficient ? this : new FeelNumber(c, e)
+	}
+
 	/** Number of significant digits in the coefficient (1 for zero). */
 	precision(): number {
 		return digitCount(this.coefficient)

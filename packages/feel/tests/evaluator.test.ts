@@ -2,15 +2,16 @@ import { describe, expect, it } from "vitest"
 import { evaluate, evaluateUnaryTests } from "../src/evaluator.js"
 import type { EvalContext } from "../src/evaluator.js"
 import { parseExpression, parseUnaryTests } from "../src/parser.js"
-import type { FeelValue } from "../src/types.js"
+import { toJs } from "../src/types.js"
 
-function eval_(input: string, vars: Record<string, FeelValue> = {}): FeelValue {
+/** Evaluates, with FEEL numbers taken out as JS numbers so results compare with plain literals. */
+function eval_(input: string, vars: Record<string, unknown> = {}): unknown {
 	const { ast } = parseExpression(input)
 	if (!ast) return null
-	return evaluate(ast, { vars })
+	return toJs(evaluate(ast, { vars }))
 }
 
-function evalUT(input: string, inputVal: FeelValue, vars: Record<string, FeelValue> = {}): boolean {
+function evalUT(input: string, inputVal: unknown, vars: Record<string, unknown> = {}): boolean {
 	const { ast } = parseUnaryTests(input)
 	if (!ast) return false
 	return evaluateUnaryTests(ast, inputVal, { vars, input: inputVal })
@@ -290,7 +291,7 @@ describe("evaluate", () => {
 			const { ast: fnAst } = parseExpression("function(x) x * 2")
 			if (!fnAst) throw new Error("parse failed")
 			const fnVal = evaluate(fnAst, { vars: {} })
-			expect(evaluate(ast, { vars: { double: fnVal } })).toBe(6)
+			expect(toJs(evaluate(ast, { vars: { double: fnVal } }))).toBe(6)
 		})
 	})
 })
@@ -384,7 +385,8 @@ describe("boolean input entries and shadowed built-ins", () => {
 describe("fuzz regressions", () => {
 	it("a power that is not a finite number is null", () => {
 		expect(eval_("(-8) ** (1/3)")).toBeNull()
-		expect(eval_("10 ** 400")).toBeNull()
+		// An integer power is exact in Decimal128, as in feel-scala, so 10 ** 400 is a number.
+		expect(eval_("string(10 ** 400)")).toBe(`1${"0".repeat(400)}`)
 		expect(eval_("0 ** -1")).toBeNull()
 		// The NaN no longer reaches the comparison, which sees null.
 		expect(eval_('"" = -2 ** -0.1')).toBe(false)

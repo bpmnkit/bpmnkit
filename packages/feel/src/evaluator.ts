@@ -2,6 +2,8 @@ import type { FeelNode } from "./ast.js"
 import { compareValues, getBuiltin, orderNamedArgs, parseTemporal } from "./builtins.js"
 import type { FeelContext, FeelFunction, FeelValue } from "./types.js"
 import {
+	FeelNumber,
+	fromJs,
 	getProperty,
 	isFeelContext,
 	isFeelDate,
@@ -9,18 +11,76 @@ import {
 	isFeelDayTimeDuration,
 	isFeelFunction,
 	isFeelList,
+	isFeelNumber,
 	isFeelRange,
 	isFeelTime,
 	isFeelYearsMonthsDuration,
 } from "./types.js"
 
+/**
+ * What an evaluation runs against. Variables and the input may be plain JS data: numbers (and
+ * bigints) become FEEL numbers on the way in, deeply through lists and objects (see `fromJs`).
+ */
 export interface EvalContext {
-	vars: Record<string, FeelValue>
+	vars: Record<string, unknown>
 	parent?: EvalContext
+	input?: unknown
+}
+
+/** An evaluation scope, holding FEEL values only. */
+interface Scope {
+	vars: Record<string, FeelValue>
+	parent?: Scope
 	input?: FeelValue
 }
 
-function lookupVar(ctx: EvalContext, name: string): FeelValue {
+/** Converts the caller's context into a scope, once, at the API edge. */
+function toScope(ctx: EvalContext): Scope {
+	return {
+		vars: convertVars(ctx.vars),
+		parent: ctx.parent ? toScope(ctx.parent) : undefined,
+		input: ctx.input === undefined ? undefined : fromJs(ctx.input),
+	}
+}
+
+function convertVars(vars: Record<string, unknown>): Record<string, FeelValue> {
+	let out: Record<string, FeelValue> | undefined
+	const keys = Object.keys(vars)
+	for (let i = 0; i < keys.length; i++) {
+		const key = keys[i] as string
+		const raw = vars[key]
+		// An undefined entry still binds the name; it is left as it is so lookup behaves as before.
+		const value = raw === undefined ? raw : fromJs(raw)
+		if (value !== raw && out === undefined) {
+			out = {}
+			for (let k = 0; k < i; k++) {
+				const prev = keys[k] as string
+				Object.defineProperty(out, prev, {
+					value: vars[prev],
+					enumerable: true,
+					writable: true,
+					configurable: true,
+				})
+			}
+		}
+		if (out !== undefined) {
+			Object.defineProperty(out, key, {
+				value,
+				enumerable: true,
+				writable: true,
+				configurable: true,
+			})
+		}
+	}
+	return out ?? (vars as Record<string, FeelValue>)
+}
+
+/** Evaluates an expression. Plain JS numbers in `ctx` are taken as FEEL numbers. */
+export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
+	return evalNode(node, toScope(ctx))
+}
+
+function lookupVar(ctx: Scope, name: string): FeelValue {
 	if (name === "?") return ctx.input ?? null
 	const v = ctx.vars[name]
 	if (v !== undefined) return v
@@ -29,12 +89,12 @@ function lookupVar(ctx: EvalContext, name: string): FeelValue {
 }
 
 /** Whether `name` is bound in this scope or an enclosing one, even to `null`. */
-function isBound(ctx: EvalContext, name: string): boolean {
+function isBound(ctx: Scope, name: string): boolean {
 	if (Object.hasOwn(ctx.vars, name)) return true
 	return ctx.parent ? isBound(ctx.parent, name) : false
 }
 
-function childCtx(parent: EvalContext, vars: Record<string, FeelValue> = {}): EvalContext {
+function childCtx(parent: Scope, vars: Record<string, FeelValue> = {}): Scope {
 	return { vars, parent, input: parent.input }
 }
 
@@ -44,7 +104,7 @@ function childCtx(parent: EvalContext, vars: Record<string, FeelValue> = {}): Ev
  * records filters on their fields: `[{a: 1}, {a: 2}][a >= 2]`. An entry
  * called `item` is the element's own, not the element.
  */
-function filterCtx(parent: EvalContext, item: FeelValue): EvalContext {
+function filterCtx(parent: Scope, item: FeelValue): Scope {
 	const vars: Record<string, FeelValue> = { item }
 	if (isFeelContext(item)) Object.assign(vars, item)
 	return childCtx(parent, vars)
@@ -60,13 +120,20 @@ function iterationValues(domain: FeelValue): FeelValue[] | null {
 	if (isFeelList(domain)) return domain
 	if (!isFeelRange(domain)) return [domain]
 	const { start, end } = domain
-	if (typeof start === "number" && typeof end === "number") {
-		return span(start, end).map((n) => n as FeelValue)
-	}
+	if (isFeelNumber(start) && isFeelNumber(end)) return numberSpan(start, end)
 	if (isFeelDate(start) && isFeelDate(end)) {
 		return span(dateToEpochDays(start), dateToEpochDays(end)).map((d) => epochDaysToDate(d))
 	}
 	return null
+}
+
+/** `from`, `from ± 1`, … up to `to`, in whichever direction that runs. */
+function numberSpan(from: FeelNumber, to: FeelNumber): FeelValue[] {
+	const step = from.le(to) ? FeelNumber.ONE : FeelNumber.ONE.neg()
+	const up = step.sign() > 0
+	const values: FeelValue[] = []
+	for (let v = from; up ? v.le(to) : v.ge(to); v = v.add(step)) values.push(v)
+	return values
 }
 
 /** Every integer from `from` to `to`, in whichever direction that runs. */
@@ -137,7 +204,7 @@ function shiftTime(
 }
 
 function subtractValues(a: FeelValue, b: FeelValue): FeelValue {
-	if (typeof a === "number" && typeof b === "number") return a - b
+	if (isFeelNumber(a) && isFeelNumber(b)) return a.sub(b)
 	if (isFeelTime(a) && isFeelTime(b)) {
 		// Null when one is local and the other is not: they have no common clock.
 		const diff = compareValues(a, b)
@@ -241,7 +308,7 @@ function epochSecondsToDateTime(
 // Core evaluator
 // -------------------------------------------------------------------------
 
-export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
+function evalNode(node: FeelNode, ctx: Scope): FeelValue {
 	switch (node.kind) {
 		case "null":
 			return null
@@ -263,8 +330,8 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 		}
 
 		case "unary-minus": {
-			const val = evaluate(node.operand, ctx)
-			if (typeof val === "number") return -val
+			const val = evalNode(node.operand, ctx)
+			if (isFeelNumber(val)) return val.neg()
 			if (isFeelDayTimeDuration(val)) return { type: "days-time-duration", seconds: -val.seconds }
 			if (isFeelYearsMonthsDuration(val))
 				return { type: "years-months-duration", months: -val.months }
@@ -275,7 +342,7 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 			return evalBinary(node.op, node.left, node.right, ctx)
 
 		case "list":
-			return node.items.map((item) => evaluate(item, ctx))
+			return node.items.map((item) => evalNode(item, ctx))
 
 		case "context": {
 			// Entries are evaluated in order in a scope that already holds the
@@ -286,14 +353,14 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 				// A key given twice names two different values, which is not a
 				// context at all.
 				if (entry.key in result) return null
-				result[entry.key] = evaluate(entry.value, entryCtx)
+				result[entry.key] = evalNode(entry.value, entryCtx)
 			}
 			return result
 		}
 
 		case "range": {
-			const rangeStart = evaluate(node.low, ctx)
-			const rangeEnd = evaluate(node.high, ctx)
+			const rangeStart = evalNode(node.low, ctx)
+			const rangeEnd = evalNode(node.high, ctx)
 			return {
 				type: "range",
 				start: rangeStart,
@@ -304,7 +371,7 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 		}
 
 		case "path": {
-			const base = evaluate(node.base, ctx)
+			const base = evalNode(node.base, ctx)
 			if (base === null) return null
 			// Path on a list maps over elements
 			if (isFeelList(base)) {
@@ -314,33 +381,34 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 		}
 
 		case "filter": {
-			const value = evaluate(node.base, ctx)
+			const value = evalNode(node.base, ctx)
 			if (value === null) return []
 			// A value that is not a list is filtered as a list holding just it,
 			// so `true[1]` is true and `true[0]` is null.
 			const base = isFeelList(value) ? value : [value]
 			// Numeric index filter
-			const first = evaluate(node.condition, filterCtx(ctx, base[0] ?? null))
-			if (typeof first === "number") {
-				const idx = first > 0 ? first - 1 : base.length + first
+			const first = evalNode(node.condition, filterCtx(ctx, base[0] ?? null))
+			if (isFeelNumber(first)) {
+				const n = first.toNumber()
+				const idx = n > 0 ? n - 1 : base.length + n
 				const val = base[Math.floor(idx)]
 				return val !== undefined ? val : null
 			}
-			return base.filter((item) => evaluate(node.condition, filterCtx(ctx, item)) === true)
+			return base.filter((item) => evalNode(node.condition, filterCtx(ctx, item)) === true)
 		}
 
 		case "call":
 			return evalCall(node.callee, node.args, ctx)
 
 		case "call-expr": {
-			const target = evaluate(node.target, ctx)
+			const target = evalNode(node.target, ctx)
 			if (!isFeelFunction(target)) return null
-			return target.call(node.args.map((a) => evaluate(a, ctx)))
+			return target.call(node.args.map((a) => evalNode(a, ctx)))
 		}
 
 		case "call-named": {
 			const argNames = node.args.map((a) => a.name)
-			const values = node.args.map((a) => evaluate(a.value, ctx))
+			const values = node.args.map((a) => evalNode(a.value, ctx))
 			const builtin = getBuiltin(node.callee)
 			if (builtin) {
 				const order = orderNamedArgs(node.callee, argNames)
@@ -353,8 +421,8 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 		}
 
 		case "if": {
-			const cond = evaluate(node.condition, ctx)
-			return cond === true ? evaluate(node.then, ctx) : evaluate(node.else, ctx)
+			const cond = evalNode(node.condition, ctx)
+			return cond === true ? evalNode(node.then, ctx) : evalNode(node.else, ctx)
 		}
 
 		case "for":
@@ -365,9 +433,9 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 			return evalQuantifier(node.kind, node.bindings, node.satisfies, ctx)
 
 		case "between": {
-			const val = evaluate(node.value, ctx)
-			const low = evaluate(node.low, ctx)
-			const high = evaluate(node.high, ctx)
+			const val = evalNode(node.value, ctx)
+			const low = evalNode(node.low, ctx)
+			const high = evalNode(node.high, ctx)
 			const cmpLow = compareValues(val, low)
 			const cmpHigh = compareValues(val, high)
 			if (cmpLow === null || cmpHigh === null) return null
@@ -378,10 +446,10 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 			// The right-hand side is a unary test, evaluated with the left-hand
 			// value as its implicit input. Unlike a decision table's test, this
 			// one keeps an unknown answer unknown.
-			return unaryTestValue(node.test, evaluate(node.value, ctx), ctx)
+			return unaryTestValue(node.test, evalNode(node.value, ctx), ctx)
 
 		case "instance-of": {
-			const val = evaluate(node.value, ctx)
+			const val = evalNode(node.value, ctx)
 			return checkInstanceOf(val, node.typeName)
 		}
 
@@ -394,7 +462,7 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 					for (let i = 0; i < node.params.length; i++) {
 						vars[node.params[i] ?? ""] = args[i] ?? null
 					}
-					return evaluate(node.body, childCtx(ctx, vars))
+					return evalNode(node.body, childCtx(ctx, vars))
 				},
 			} satisfies FeelFunction
 
@@ -404,8 +472,7 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 		case "unary-test-list": {
 			const input = ctx.input ?? null
 			for (const test of node.tests) {
-				const r = evaluateUnaryTest(test, input, ctx)
-				if (r) return true
+				if (unaryTestValue(test, input, ctx) === true) return true
 			}
 			return false
 		}
@@ -413,8 +480,7 @@ export function evaluate(node: FeelNode, ctx: EvalContext): FeelValue {
 		case "unary-not": {
 			const input = ctx.input ?? null
 			for (const test of node.tests) {
-				const r = evaluateUnaryTest(test, input, ctx)
-				if (r) return false
+				if (unaryTestValue(test, input, ctx) === true) return false
 			}
 			return true
 		}
@@ -425,27 +491,27 @@ function evalBinary(
 	op: import("./ast.js").BinaryOp,
 	leftNode: FeelNode,
 	rightNode: FeelNode,
-	ctx: EvalContext,
+	ctx: Scope,
 ): FeelValue {
 	// Short-circuit for and/or
 	if (op === "and") {
-		const l = evaluate(leftNode, ctx)
+		const l = evalNode(leftNode, ctx)
 		if (l === false) return false
-		const r = evaluate(rightNode, ctx)
+		const r = evalNode(rightNode, ctx)
 		if (r === false) return false
 		// Anything that is not a boolean leaves the result unknown.
 		return l === true && r === true ? true : null
 	}
 	if (op === "or") {
-		const l = evaluate(leftNode, ctx)
+		const l = evalNode(leftNode, ctx)
 		if (l === true) return true
-		const r = evaluate(rightNode, ctx)
+		const r = evalNode(rightNode, ctx)
 		if (r === true) return true
 		return l === false && r === false ? false : null
 	}
 
-	const left = evaluate(leftNode, ctx)
-	const right = evaluate(rightNode, ctx)
+	const left = evalNode(leftNode, ctx)
+	const right = evalNode(rightNode, ctx)
 
 	if (op === "=" || op === "!=") {
 		// Comparing values of different types says nothing, so it is null
@@ -461,8 +527,8 @@ function evalBinary(
 	if (left === null || right === null) return null
 
 	if (op === "+" || op === "-") {
-		if (typeof left === "number" && typeof right === "number") {
-			return op === "+" ? left + right : left - right
+		if (isFeelNumber(left) && isFeelNumber(right)) {
+			return op === "+" ? left.add(right) : left.sub(right)
 		}
 		if (typeof left === "string" && typeof right === "string" && op === "+") {
 			return left + right
@@ -471,39 +537,35 @@ function evalBinary(
 		return subtractValues(left, right)
 	}
 	if (op === "*") {
-		if (typeof left === "number" && typeof right === "number") return left * right
-		if (typeof left === "number" && isFeelDayTimeDuration(right))
-			return dayTime(left * right.seconds)
-		if (typeof left === "number" && isFeelYearsMonthsDuration(right))
-			return yearsMonths(left * right.months)
-		if (isFeelDayTimeDuration(left) && typeof right === "number")
-			return dayTime(left.seconds * right)
-		if (isFeelYearsMonthsDuration(left) && typeof right === "number")
-			return yearsMonths(left.months * right)
+		if (isFeelNumber(left) && isFeelNumber(right)) return left.mul(right)
+		if (isFeelNumber(left) && isFeelDayTimeDuration(right))
+			return dayTime(FeelNumber.from(right.seconds).mul(left))
+		if (isFeelNumber(left) && isFeelYearsMonthsDuration(right))
+			return yearsMonths(FeelNumber.from(right.months).mul(left))
+		if (isFeelDayTimeDuration(left) && isFeelNumber(right))
+			return dayTime(FeelNumber.from(left.seconds).mul(right))
+		if (isFeelYearsMonthsDuration(left) && isFeelNumber(right))
+			return yearsMonths(FeelNumber.from(left.months).mul(right))
 		return null
 	}
 	if (op === "/") {
-		if (typeof left === "number" && typeof right === "number") {
-			return right === 0 ? null : left / right
-		}
-		if (isFeelDayTimeDuration(left) && typeof right === "number")
-			return dayTime(left.seconds / right)
-		if (isFeelYearsMonthsDuration(left) && typeof right === "number")
-			return yearsMonths(left.months / right)
+		// Division by zero has no quotient, so it is null.
+		if (isFeelNumber(left) && isFeelNumber(right)) return left.div(right)
+		if (isFeelDayTimeDuration(left) && isFeelNumber(right))
+			return dayTime(FeelNumber.from(left.seconds).div(right))
+		if (isFeelYearsMonthsDuration(left) && isFeelNumber(right))
+			return yearsMonths(FeelNumber.from(left.months).div(right))
 		// How many times one duration fits in another: P1Y / P1M is 12.
 		if (isFeelDayTimeDuration(left) && isFeelDayTimeDuration(right))
-			return right.seconds === 0 ? null : left.seconds / right.seconds
+			return FeelNumber.from(left.seconds).div(FeelNumber.from(right.seconds))
 		if (isFeelYearsMonthsDuration(left) && isFeelYearsMonthsDuration(right))
-			return right.months === 0 ? null : left.months / right.months
+			return FeelNumber.from(left.months).div(FeelNumber.from(right.months))
 		return null
 	}
 	if (op === "**") {
-		if (typeof left === "number" && typeof right === "number") {
-			// FEEL numbers have no NaN or infinity: (-8) ** (1/3) and 10 ** 400 are null,
-			// as in the Rust twin, so later operators see null rather than a NaN.
-			const power = left ** right
-			return Number.isFinite(power) ? power : null
-		}
+		// An integer exponent is exact; a fractional one goes through float64, as in feel-scala.
+		// FEEL numbers have no NaN or infinity, so (-8) ** (1/3) is null.
+		if (isFeelNumber(left) && isFeelNumber(right)) return left.pow(right)
 		return null
 	}
 
@@ -518,18 +580,19 @@ function evalBinary(
 }
 
 /** A scaled duration: dividing by zero (or overflowing) has no duration, so it is null. */
-function dayTime(seconds: number): FeelValue {
-	return Number.isFinite(seconds) ? { type: "days-time-duration", seconds } : null
+function dayTime(scaled: FeelNumber | null): FeelValue {
+	const seconds = scaled?.toNumber() ?? Number.NaN
+	return Number.isFinite(seconds) ? { type: "days-time-duration", seconds: seconds || 0 } : null
 }
 
 /**
  * A scaled month count. A duration holds whole months, so a fraction rounds half away from
  * zero (P1Y2M * 0.1 is P1M), as in the Rust twin; a non-finite count is null.
  */
-function yearsMonths(months: number): FeelValue {
+function yearsMonths(scaled: FeelNumber | null): FeelValue {
+	const months = scaled?.round(0, "half-up").toNumber() ?? Number.NaN
 	if (!Number.isFinite(months)) return null
-	const whole = Math.sign(months) * Math.round(Math.abs(months))
-	return { type: "years-months-duration", months: whole === 0 ? 0 : whole }
+	return { type: "years-months-duration", months: months || 0 }
 }
 
 /**
@@ -549,15 +612,15 @@ function orderArgs(
 	})
 }
 
-function evalCall(callee: string, argNodes: FeelNode[], ctx: EvalContext): FeelValue {
+function evalCall(callee: string, argNodes: FeelNode[], ctx: Scope): FeelValue {
 	const builtin = getBuiltin(callee)
 	if (builtin) {
-		const args = argNodes.map((a) => evaluate(a, ctx))
+		const args = argNodes.map((a) => evalNode(a, ctx))
 		return builtin.call(args)
 	}
 	const fn = lookupVar(ctx, callee)
 	if (fn === null || typeof fn !== "object" || !("call" in fn)) return null
-	const args = argNodes.map((a) => evaluate(a, ctx))
+	const args = argNodes.map((a) => evalNode(a, ctx))
 	return (fn as FeelFunction).call(args)
 }
 
@@ -578,24 +641,24 @@ function mentions(node: unknown, name: string): boolean {
  * its left already in scope, so `for x in xs, y in x` works, and the body sees
  * the results produced so far as `partial`.
  */
-function evalFor(bindings: Binding[], body: FeelNode, ctx: EvalContext): FeelValue {
+function evalFor(bindings: Binding[], body: FeelNode, ctx: Scope): FeelValue {
 	const results: FeelValue[] = []
 	let failed = false
 	// Copying the results for `partial` on every iteration is quadratic, so it is bound
 	// only when the body can read it.
 	const readsPartial = mentions(body, "partial")
 
-	const iterate = (idx: number, scope: EvalContext): void => {
+	const iterate = (idx: number, scope: Scope): void => {
 		if (failed) return
 		if (idx === bindings.length) {
 			results.push(
-				evaluate(body, readsPartial ? childCtx(scope, { partial: [...results] }) : scope),
+				evalNode(body, readsPartial ? childCtx(scope, { partial: [...results] }) : scope),
 			)
 			return
 		}
 		const binding = bindings[idx]
 		if (!binding) return
-		const domain = iterationValues(evaluate(binding.domain, scope))
+		const domain = iterationValues(evalNode(binding.domain, scope))
 		if (domain === null) {
 			failed = true
 			return
@@ -618,17 +681,17 @@ function evalQuantifier(
 	kind: "some" | "every",
 	bindings: Binding[],
 	satisfies: FeelNode,
-	ctx: EvalContext,
+	ctx: Scope,
 ): FeelValue {
 	let sawTrue = false
 	let sawFalse = false
 	let sawUnknown = false
 	let failed = false
 
-	const visit = (idx: number, scope: EvalContext): void => {
+	const visit = (idx: number, scope: Scope): void => {
 		if (failed) return
 		if (idx === bindings.length) {
-			const result = asBoolean(evaluate(satisfies, scope))
+			const result = asBoolean(evalNode(satisfies, scope))
 			if (result === true) sawTrue = true
 			else if (result === false) sawFalse = true
 			else sawUnknown = true
@@ -636,7 +699,7 @@ function evalQuantifier(
 		}
 		const binding = bindings[idx]
 		if (!binding) return
-		const domain = iterationValues(evaluate(binding.domain, scope))
+		const domain = iterationValues(evalNode(binding.domain, scope))
 		if (domain === null) {
 			failed = true
 			return
@@ -670,6 +733,7 @@ function isTemporal(v: FeelValue): boolean {
 /** The FEEL type of a value, for deciding whether two values are comparable. */
 function typeTag(v: FeelValue): string {
 	if (v === null) return "null"
+	if (isFeelNumber(v)) return "number"
 	if (Array.isArray(v)) return "list"
 	const t = typeof v
 	if (t !== "object") return t
@@ -680,6 +744,7 @@ function typeTag(v: FeelValue): string {
 function deepEqual(a: FeelValue, b: FeelValue): boolean {
 	if (a === b) return true
 	if (a === null || b === null) return false
+	if (isFeelNumber(a) || isFeelNumber(b)) return isFeelNumber(a) && isFeelNumber(b) && a.eq(b)
 	if (typeof a !== typeof b) return false
 	if (Array.isArray(a) && Array.isArray(b)) {
 		if (a.length !== b.length) return false
@@ -734,7 +799,7 @@ function checkInstanceOf(val: FeelValue, typeName: string): boolean {
 	if (val === null) return typeName === "null" || typeName === "Null"
 	switch (typeName) {
 		case "number":
-			return typeof val === "number"
+			return isFeelNumber(val)
 		case "string":
 			return typeof val === "string"
 		case "boolean":
@@ -797,9 +862,9 @@ function isNode(value: unknown): value is FeelNode {
 	)
 }
 
-function unaryTestValue(node: FeelNode, input: FeelValue, ctx: EvalContext): FeelValue {
-	const withInput: EvalContext = { ...ctx, input }
-	const result = evaluate(node, withInput)
+function unaryTestValue(node: FeelNode, input: FeelValue, ctx: Scope): FeelValue {
+	const withInput: Scope = { ...ctx, input }
+	const result = evalNode(node, withInput)
 	// A boolean that does not depend on `?` (the literal `true` in a boolean input
 	// column) is a value to compare with, not the outcome of the test.
 	if (typeof result === "boolean" && typeof input === "boolean" && !readsInput(node)) {
@@ -829,11 +894,11 @@ function unaryTestValue(node: FeelNode, input: FeelValue, ctx: EvalContext): Fee
  * Evaluates a unary test against an input value. A decision table's rule
  * either matches or it does not, so an unknown answer is not a match.
  */
-export function evaluateUnaryTest(node: FeelNode, input: FeelValue, ctx: EvalContext): boolean {
-	return unaryTestValue(node, input, ctx) === true
+export function evaluateUnaryTest(node: FeelNode, input: unknown, ctx: EvalContext): boolean {
+	return unaryTestValue(node, fromJs(input), toScope(ctx)) === true
 }
 
 /** Evaluate a full unary-test node (the root returned by parseUnaryTests). */
-export function evaluateUnaryTests(node: FeelNode, input: FeelValue, ctx: EvalContext): boolean {
+export function evaluateUnaryTests(node: FeelNode, input: unknown, ctx: EvalContext): boolean {
 	return evaluateUnaryTest(node, input, ctx)
 }

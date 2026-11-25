@@ -963,15 +963,44 @@ npm install @bpmnkit/feel
 ### Evaluate an expression
 
 \`\`\`typescript
-import { parseExpression, evaluate } from "@bpmnkit/feel"
+import { parseExpression, evaluate, toJs } from "@bpmnkit/feel"
 
 const parsed = parseExpression("amount * 1.2 + fee")
 if (!parsed.errors.length) {
   // \`evaluate\` takes an EvalContext — variables live under \`vars\`.
   const result = evaluate(parsed.ast!, { vars: { amount: 100, fee: 5 } })
-  console.log(result) // 125
+  console.log(result?.toString()) // "125.0"
+  console.log(toJs(result)) // 125
 }
 \`\`\`
+
+### Numbers
+
+FEEL numbers are DMN Decimal128 values (34 significant digits, rounded half to even), the
+\`BigDecimal\` arithmetic Camunda 8 evaluates FEEL with, so \`0.1 + 0.2 = 0.3\` is \`true\`,
+\`100 * 1.1\` is \`110.0\` and \`1 / 3\` has 34 digits. A number in a result is a \`FeelNumber\`,
+never a JS \`number\`:
+
+\`\`\`typescript
+import { FeelNumber, evaluate, isFeelNumber, parseExpression, toJs } from "@bpmnkit/feel"
+
+const { ast } = parseExpression("amount * 1.1 <= 110", { names: ["amount"] })
+evaluate(ast!, { vars: { amount: 100 } }) // true (float64 would say false)
+
+const n = FeelNumber.from("0.1").add(FeelNumber.from("0.2"))
+n.toString() // "0.3"; toNumber() and toJSON() give the nearest JS number
+\`\`\`
+
+- **In**: \`vars\` and unary-test inputs may hold plain JS numbers (and bigints), deeply inside
+  arrays and objects; \`evaluate\` converts them at the edge. \`fromJs(value)\` does the same by hand.
+- **Out**: \`toJs(value)\` turns every \`FeelNumber\` back into a JS number, deeply; dates, times and
+  durations are unchanged. \`JSON.stringify\` writes a \`FeelNumber\` as a JSON number.
+- **Exact**: literals, \`+ - * /\`, comparisons, \`**\` with an integer exponent, \`sum\`, \`mean\`,
+  \`modulo\`, \`decimal\`, \`floor\`, \`ceiling\` and the other rounding functions (Java's
+  \`setScale\`, so \`decimal(1, 2)\` is \`1.00\`). \`string()\` keeps the scale: \`string(1.50)\` is
+  \`"1.50"\`.
+- **float64**: \`sqrt\`, \`exp\`, \`log\`, the square root in \`stddev\`, and \`**\` with a fractional
+  exponent, as in Camunda (\`sqrt(2)\` is \`1.4142135623730951\`). A non-finite result is \`null\`.
 
 ### Evaluate unary tests (DMN input expressions)
 
@@ -1003,6 +1032,9 @@ highlightToHtml('if x > 10 then "high" else "low"')
 | \`parseExpression(src)\` | Parse a FEEL expression → \`ParseResult\` |
 | \`parseUnaryTests(src)\` | Parse unary tests → \`ParseResult\` |
 | \`evaluate(ast, ctx)\` | Evaluate a parsed expression; \`ctx\` is \`{ vars }\` |
+| \`FeelNumber\` | Decimal128 number: \`from\`, \`add\`, \`sub\`, \`mul\`, \`div\`, \`pow\`, \`mod\`, \`round(scale, mode)\`, \`cmp\`, \`eq\`, \`toNumber\`, \`toString\` |
+| \`isFeelNumber(v)\` | Whether a value is a \`FeelNumber\` |
+| \`toJs(value)\` / \`fromJs(value)\` | Convert between FEEL values and plain JS data (numbers deeply) |
 | \`evaluateUnaryTests(ast, input, ctx)\` | Test input against unary tests |
 | \`formatFeel(node, opts?)\` | Pretty-print a **parsed node**, not source text |
 | \`highlightToHtml(src)\` | Tokens wrapped in \`<span class="feel-…">\` elements |

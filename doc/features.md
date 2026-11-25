@@ -1,5 +1,9 @@
 # Features
 
+## FEEL Decimal128 numbers (2026-11-25)
+
+`@bpmnkit/feel` computes FEEL numbers as DMN Decimal128 (`FeelNumber`, 34 digits, HALF_EVEN), like Camunda 8, so `0.1 + 0.2 = 0.3` and gateway conditions such as `amount * 1.1 <= 110` take the branch Camunda takes. `toJs` / `fromJs` convert to and from plain JS data.
+
 ## Wasm job workers (2026-11-24)
 
 Write a Camunda 8 job worker in Rust, build it to a sandboxed `wasm32-wasip2` component and run it on `bpmnkit-wasm-host`. `bpmnkit worker wasm init|check|build|test|inspect|run` (also `bpmnkit-wasm`) covers the loop; `worker.toml` sets the memory, time, HTTP allow-list and secret names the sandbox enforces. See [the guide](https://bpmnkit.com/docs/guides/wasm-workers).

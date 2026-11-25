@@ -1,4 +1,5 @@
 import type { BinaryOp, FeelNode } from "./ast.js"
+import { FeelNumber } from "./decimal.js"
 import { tokenize, unescapeString } from "./lexer.js"
 import type { FeelToken } from "./lexer.js"
 
@@ -398,7 +399,7 @@ class Parser {
 		// Number literal
 		if (tok.kind === "number") {
 			this.advance()
-			return { kind: "number", value: Number(tok.value), start: tok.start, end: tok.end }
+			return { kind: "number", value: FeelNumber.from(tok.value), start: tok.start, end: tok.end }
 		}
 
 		// String literal

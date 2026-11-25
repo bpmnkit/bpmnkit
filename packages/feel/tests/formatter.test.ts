@@ -4,6 +4,7 @@ import type { FeelNode } from "../src/ast.js"
 import { evaluate } from "../src/evaluator.js"
 import { formatFeel } from "../src/formatter.js"
 import { parseExpression, parseUnaryTests } from "../src/parser.js"
+import { toJs } from "../src/types.js"
 
 function fmt(input: string): string {
 	const { ast } = parseExpression(input)
@@ -124,8 +125,8 @@ function roundTrip(input: string): string {
 	expect(second.errors, `${input} => ${out}`).toEqual([])
 	if (!second.ast) throw new Error(`no ast for ${out}`)
 	expect(shape(second.ast), `${input} => ${out}`).toBe(shape(first.ast))
-	expect(evaluate(second.ast, { vars: { ...SCOPE } })).toEqual(
-		evaluate(first.ast, { vars: { ...SCOPE } }),
+	expect(toJs(evaluate(second.ast, { vars: { ...SCOPE } }))).toEqual(
+		toJs(evaluate(first.ast, { vars: { ...SCOPE } })),
 	)
 	return out
 }
@@ -147,9 +148,15 @@ describe("formatFeel parentheses (#291)", () => {
 			expect(roundTrip(input)).toBe(expected)
 			const { ast } = parseExpression(expected)
 			if (!ast) throw new Error("no ast")
-			expect(evaluate(ast, { vars: { ...SCOPE } })).toEqual(value)
+			expect(toJs(evaluate(ast, { vars: { ...SCOPE } }))).toEqual(value)
 		})
 	}
+
+	it("prints number literals exactly, without spelling out a far-off exponent", () => {
+		expect(fmt("1.50 + 0.1")).toBe("1.50 + 0.1")
+		expect(fmt("1e3")).toBe("1000")
+		expect(fmt("1e400")).toBe("1e400")
+	})
 
 	it("drops parentheses that are not needed", () => {
 		expect(fmt("((1)) + (2 * 3)")).toBe("1 + 2 * 3")
