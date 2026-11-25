@@ -190,6 +190,12 @@ test("limits of every broker are expected on all versions", () => {
 			classify(caseItem, reject("Expected to find decision with id 'd'"), v, EXPECT).status,
 			"info",
 		)
+		// 8.10 names a missing called process and form together (migrate/*/placeholders.bpmn).
+		const binding = reject(
+			"Expected to find form with id 'review-order' in current deployment, but not found.",
+			"Expected to find process with id 'invoice-process' in current deployment, but not found.",
+		)
+		assert.equal(classify(caseItem, binding, v, EXPECT).status, "info")
 	}
 })
 

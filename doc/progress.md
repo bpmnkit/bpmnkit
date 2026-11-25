@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-25 — Nightlies: dmn-eval fuzz numbers, Zeebe z130 and process bindings
+
+Manual runs after #323 (fuzz 45673669537, Zeebe 45673673093) still failed. `scripts/fuzz/oracle.mjs` encoded the plain JS numbers that the engine's DMN API returns (`toJs`) as empty contexts; it now encodes them as decimals (test in `scripts/fuzz/oracle.test.mjs`). The `z130-deployment-binding-missing` repro is gated `since: "8.8"`: 8.6 and 8.7 deploy a call activity whose callee is missing. The `deployment-binding` class also matches "Expected to find process with id", which 8.10 reports for `migrate/*/placeholders.bpmn` (test in `scripts/zeebe-broker-lib.test.mjs`).
+
 ## 2026-11-25 — CI: version bumps no longer race the registry
 
 After "version packages" (#322) two jobs failed because they resolved just-bumped, unpublished versions from a registry. `scripts/smoke-cli-npm.mjs` now also packs every workspace package in the CLI's `dependencies` closure and installs them all from the tarballs, so `@bpmnkit/core@^x` is never fetched from npm. `wasm/` path deps (`contract`, `host`) drop their `version = "0.7.1"` pin (the workspace is `publish = false`; the pin stopped matching the lockstep 0.8.0 and sent cargo to crates.io), and `wasm/Cargo.lock` is refreshed. `scripts/crates-version.mjs` now also runs `cargo update --workspace` for `wasm/`, so `--locked` keeps passing after a bump. `worker-e2e` and `release-cli` need no change (root/reebe locks were already synced; release-cli publishes from artifacts).
