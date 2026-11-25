@@ -1,4 +1,4 @@
-import { type FeelValue, evaluate, parseExpression } from "@bpmnkit/feel"
+import { type FeelValue, evaluate, isFeelNumber, parseExpression } from "@bpmnkit/feel"
 import type { XmlElement } from "../../../types/xml-element.js"
 import type {
 	BpmnEventDefinition,
@@ -85,7 +85,7 @@ function isSubProcessStart(entry: NodeEntry): boolean {
 function resultType(value: FeelValue): string {
 	if (value === null) return "NULL"
 	if (typeof value === "string") return "STRING"
-	if (typeof value === "number") return "NUMBER"
+	if (isFeelNumber(value)) return "NUMBER"
 	if (typeof value === "boolean") return "BOOLEAN"
 	if (Array.isArray(value)) return "ARRAY"
 	switch ((value as { type?: unknown }).type) {

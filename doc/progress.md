@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-25 — Consumers of @bpmnkit/feel adapted to Decimal128 (#320)
+
+Engine evaluates exactly inside FEEL (`amount * 1.1 <= 110` takes the conditional gateway flow) and converts with `toJs` where results become variables, DMN decision results, `feel:evaluated` events and connector response mappings; DMN `COLLECT` aggregations and `typeRef` checks work on `FeelNumber`. Core's Zeebe validator, the FEEL playground plugin, drop's FEEL view (context is now plain JSON, `100 * 1.19` shows `119.00`) and the landing playground render numbers with `FeelNumber#toString`. Regression tests: gateway repro and `0.1 + 0.2` stored as JS `0.3` (engine `semantics.test.ts`). `conformance/README.md` now states Decimal128 and lists `fuzz/2,7,8,24` as differing from `rust_decimal` limits.
+
 ## 2026-11-25 — @bpmnkit/feel: Decimal128 numbers (#320)
 
 FEEL numbers are now `FeelNumber` (DMN Decimal128: 34 significant digits, HALF_EVEN, Java `BigDecimal` semantics as in Camunda's feel-scala) instead of float64. `0.1 + 0.2 = 0.3`, `amount * 1.1 <= 110` (amount 100) and `floor(0.29 * 100) = 29` now agree with Camunda 8.10.10; `1 / 3` has 34 digits and `9007199254740993 + 1` is exact. Literals, arithmetic, comparisons, integer `**`, ranges, aggregates (`sum`, `mean`, `median`, `mode`, `product`), `modulo` and the rounding functions are exact; `sqrt`, `exp`, `log`, `stddev`'s root and fractional `**` stay float64. `string()` keeps the scale (`110.0`, `decimal(1, 2)` is `1.00`). `evaluate` still takes plain JS numbers in `vars` (converted at the edge); `toJs`/`fromJs` convert results. Breaking: results and the number AST node hold `FeelNumber`, not `number`. Conformance: 9 FEEL cases re-recorded (arithmetic 8/15/23/26/27, fuzz 2/7/8/24). DMN TCK unchanged at 1,941 / 2,053; it now matches exactly apart from the float64 functions.

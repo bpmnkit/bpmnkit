@@ -6,7 +6,7 @@ import type {
 	DmnDefinitions,
 	FormDefinition,
 } from "@bpmnkit/core"
-import { evaluate, parseExpression } from "@bpmnkit/feel"
+import { evaluate, parseExpression, toJs } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { Engine } from "../engine.js"
 import type { ProcessInstance } from "../instance.js"
@@ -222,7 +222,7 @@ export function mapConnectorResponse(
 			)
 		}
 		const scope = { response, ...(isRecord(response) ? response : {}) }
-		const mapped = evaluate(parsed.ast, { vars: scope as Record<string, FeelValue> })
+		const mapped = toJs(evaluate(parsed.ast, { vars: scope as Record<string, FeelValue> }))
 		// A null result (e.g. a path the response does not have) maps nothing rather than failing the job.
 		if (mapped === null || mapped === undefined) return out
 		if (!isRecord(mapped)) {

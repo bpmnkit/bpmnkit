@@ -36,10 +36,13 @@ One case per line:
 | `{"t":"context","v":{"k":Value}}` | context (keys sorted) |
 | `{"t":"error"}` | parse or evaluation error, a non-finite number, or an unsupported type (range, function) |
 
-Numbers: TS computes in float64, Rust (`bpmnkit-feel`) in exact decimals. The Rust runner
-counts two numbers as equal when they are equal, or equal after rounding both to 15 significant
-digits (what float64 always keeps), so `0.1 + 0.2` recorded as `0.30000000000000004` matches
-Rust's `0.3`.
+Numbers: TS computes in DMN Decimal128 (34 significant digits, half-even, as Camunda 8's
+`BigDecimal`), Rust (`bpmnkit-feel`) in `rust_decimal` (96-bit coefficient, about 28 digits, range
+about 7.9e28). The Rust runner counts two numbers as equal when they are equal, or equal after
+rounding both to 15 significant digits, so a result that Decimal128 keeps at 34 digits still
+matches Rust's 28. Cases that depend on the wider range or precision of Decimal128 differ from
+Rust's `rust_decimal` limits: `fuzz/2`, `fuzz/7`, `fuzz/8` and `fuzz/24` in `feel/fuzz.jsonl`
+(`10 ** 400` and the like) record the TS result, and Rust answers `null` or fewer digits for them.
 
 Seeded from the `@bpmnkit/feel` tests (evaluator, spec, Camunda extensions) plus hand-written
 cases for dates and durations, `**`, contexts and filters. The DMN TCK is not on disk in this
@@ -643,8 +646,8 @@ pnpm fuzz --replay target/fuzz-mismatches/feel-42.json   # both answers, after a
 
 It is looser than this suite in three documented places, all the number model rather than
 defects: FEEL numbers (and the seconds of a duration, and digits printed by `string()`) agree
-within float64 noise (relative 1e-12) instead of after 15-digit rounding; a number past
-`rust_decimal`'s range (about 7.9e28) may be `null` in Rust, and one built from a very small
+within a relative 1e-12 instead of after 15-digit rounding; a number past
+`rust_decimal`'s range (about 7.9e28) may be `null` in Rust while TS (Decimal128) keeps it exact, and one built from a very small
 intermediate keeps fewer digits there (28 fraction digits, not 28 significant ones); and the text after
 `Failed to parse form JSON: ` is each platform's JSON parser's own wording. `uuid()`, `now()`,
 `today()` and `random number()` are not generated.

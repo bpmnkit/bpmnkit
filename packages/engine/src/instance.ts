@@ -13,7 +13,7 @@ import type {
 	FormDefinition,
 } from "@bpmnkit/core"
 import { generateId } from "@bpmnkit/core"
-import { evaluate, parseExpression } from "@bpmnkit/feel"
+import { evaluate, parseExpression, toJs } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { adHocActivatableElements, describeAdHocElement } from "./ad-hoc.js"
 import { evaluateDecision } from "./dmn.js"
@@ -2048,7 +2048,8 @@ export class ProcessInstance {
 		const normalized = expr.trim().replace(/^=\s*/, "")
 		const parsed = parseExpression(normalized)
 		if (parsed.ast === null) return undefined
-		const result = evaluate(parsed.ast, { vars: vars as Record<string, FeelValue> })
+		// Exact inside the expression; variables, events and outputs are plain JSON-like data.
+		const result = toJs(evaluate(parsed.ast, { vars: vars as Record<string, FeelValue> }))
 		// The event carries a copy of every variable; skip building it when nobody listens.
 		if (emitCtx !== undefined && this.listeners.length > 0) {
 			this.emit({

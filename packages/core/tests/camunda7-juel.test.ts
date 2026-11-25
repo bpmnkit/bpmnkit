@@ -1,4 +1,4 @@
-import { type FeelValue, evaluate, parseExpression } from "@bpmnkit/feel"
+import { type FeelValue, evaluate, parseExpression, toJs } from "@bpmnkit/feel"
 import { describe, expect, it } from "vitest"
 import { translateJuelToFeel } from "../src/index.js"
 
@@ -143,7 +143,7 @@ describe("translateJuelToFeel", () => {
 			if (!result.ok) throw new Error(`${juel} did not translate: ${result.reason}`)
 			const { ast } = parseExpression(result.feel)
 			if (ast === null) throw new Error(`${result.feel} did not parse`)
-			expect(evaluate(ast, { vars }), juel).toEqual(expected)
+			expect(toJs(evaluate(ast, { vars })), juel).toEqual(expected)
 		}
 	})
 })

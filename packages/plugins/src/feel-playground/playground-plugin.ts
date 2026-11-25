@@ -3,8 +3,10 @@ import {
 	evaluate,
 	evaluateUnaryTests,
 	highlightToHtml,
+	isFeelNumber,
 	parseExpression,
 	parseUnaryTests,
+	toJs,
 } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { injectPlaygroundStyles } from "./css.js"
@@ -60,10 +62,9 @@ const EXAMPLES: Array<{
 function renderValue(v: FeelValue): { html: string; cssClass: string } {
 	if (v === null) return { html: "null", cssClass: "null-val" }
 	if (typeof v === "boolean") return { html: String(v), cssClass: v ? "bool-true" : "bool-false" }
-	if (typeof v === "number") return { html: String(v), cssClass: "number" }
+	if (isFeelNumber(v)) return { html: v.toString(), cssClass: "number" }
 	if (typeof v === "string") return { html: `"${v}"`, cssClass: "string" }
-	if (Array.isArray(v)) return { html: JSON.stringify(v, null, 2), cssClass: "" }
-	return { html: JSON.stringify(v, null, 2), cssClass: "" }
+	return { html: JSON.stringify(toJs(v), null, 2), cssClass: "" }
 }
 
 /**
