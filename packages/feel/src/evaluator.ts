@@ -173,8 +173,17 @@ function addDuration(date: FeelValue, dur: FeelValue): FeelValue {
 		return epochDaysToDate(newEpoch)
 	}
 	if (isFeelDateTime(date) && isFeelDayTimeDuration(dur)) {
-		const totalSec = dateTimeToEpochSeconds(date) + dur.seconds
-		return epochSecondsToDateTime(totalSec, date.time.offsetSeconds, date.time.timezone)
+		// Whole and fractional seconds apart: at epoch magnitude (~1.7e9 s) float64 keeps only
+		// ~1e-7 s of a fraction. The fraction is rounded to nanoseconds, java.time's resolution.
+		const { second } = date.time
+		const nanos = Math.round(((second % 1) + (dur.seconds % 1)) * 1e9)
+		const carry = Math.floor(nanos / 1e9)
+		const whole =
+			dateTimeToEpochSeconds({ ...date, time: { ...date.time, second: Math.trunc(second) } }) +
+			Math.trunc(dur.seconds) +
+			carry
+		const dt = epochSecondsToDateTime(whole, date.time.offsetSeconds, date.time.timezone)
+		return { ...dt, time: { ...dt.time, second: dt.time.second + (nanos - carry * 1e9) / 1e9 } }
 	}
 	if (isFeelDateTime(date) && isFeelYearsMonthsDuration(dur)) {
 		return { type: "date-time", date: shiftMonths(date.date, dur.months), time: date.time }
