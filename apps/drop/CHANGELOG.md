@@ -1,5 +1,16 @@
 # @bpmnkit/drop
 
+## 0.4.23
+
+### Patch Changes
+
+- Updated dependencies [5639dcd]
+- Updated dependencies [5639dcd]
+  - @bpmnkit/engine@1.5.0
+  - @bpmnkit/core@1.18.3
+  - @bpmnkit/plugins@1.4.2
+  - @bpmnkit/feel@2.0.0
+
 ## 0.4.22
 
 ### Patch Changes
