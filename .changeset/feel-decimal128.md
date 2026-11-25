@@ -11,4 +11,4 @@ Breaking changes:
 - `string()` keeps a number's scale (`string(1.50)` is `"1.50"`, `string(decimal(1, 2))` is `"1.00"`), and the rounding functions round with Java's `setScale`.
 - `10 ** 400` and rounding at scales past float64's range now give exact numbers instead of `null`.
 
-`evaluate` and `evaluateUnaryTests` still accept plain JS numbers (and bigints) in `vars` and as the input, deeply inside arrays and objects. New exports: `FeelNumber`, `isFeelNumber`, `RoundingMode`, `toJs`, `fromJs`.
+`evaluate` and `evaluateUnaryTests` still accept plain JS numbers (and bigints) in `vars` and as the input, deeply inside arrays and objects. New exports: `FeelNumber`, `isFeelNumber`, `RoundingMode`, `toJs`, `fromJs`, `formatFeelValue` (prints a value with nested numbers exact).

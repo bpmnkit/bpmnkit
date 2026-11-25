@@ -20,11 +20,10 @@
 import {
 	evaluate,
 	evaluateUnaryTests,
+	formatFeelValue,
 	highlightToHtml,
-	isFeelNumber,
 	parseExpression,
 	parseUnaryTests,
-	toJs,
 } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { shareFeelToDrop } from "./share-drop.js"
@@ -85,10 +84,7 @@ const EXAMPLES: readonly Example[] = [
 
 /** How a result is written out — the same shapes the editor's panel shows. */
 function renderValue(value: FeelValue): string {
-	if (value === null) return "null"
-	if (typeof value === "string") return `"${value}"`
-	if (typeof value === "boolean" || isFeelNumber(value)) return String(value)
-	return JSON.stringify(toJs(value), null, 2)
+	return formatFeelValue(value)
 }
 
 export function mountFeelPlayground(root: HTMLElement): void {

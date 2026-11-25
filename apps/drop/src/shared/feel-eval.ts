@@ -9,10 +9,9 @@
 import {
 	evaluate,
 	evaluateUnaryTests,
-	isFeelNumber,
+	formatFeelValue,
 	parseExpression,
 	parseUnaryTests,
-	toJs,
 } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { type FeelDocument, unaryInput } from "./feel-doc.js"
@@ -22,10 +21,7 @@ export type FeelOutcome = { ok: true; value: string } | { ok: false; message: st
 
 /** How a value is written out — the same shapes the playground and the editor show. */
 export function renderFeelValue(value: FeelValue): string {
-	if (value === null) return "null"
-	if (typeof value === "string") return `"${value}"`
-	if (typeof value === "boolean" || isFeelNumber(value)) return String(value)
-	return JSON.stringify(toJs(value), null, 2)
+	return formatFeelValue(value)
 }
 
 /** Parses and evaluates a document against its own context. Never throws. */

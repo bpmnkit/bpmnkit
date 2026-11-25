@@ -2,11 +2,11 @@ import type { CanvasPlugin } from "@bpmnkit/canvas"
 import {
 	evaluate,
 	evaluateUnaryTests,
+	formatFeelValue,
 	highlightToHtml,
 	isFeelNumber,
 	parseExpression,
 	parseUnaryTests,
-	toJs,
 } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { injectPlaygroundStyles } from "./css.js"
@@ -64,7 +64,7 @@ function renderValue(v: FeelValue): { html: string; cssClass: string } {
 	if (typeof v === "boolean") return { html: String(v), cssClass: v ? "bool-true" : "bool-false" }
 	if (isFeelNumber(v)) return { html: v.toString(), cssClass: "number" }
 	if (typeof v === "string") return { html: `"${v}"`, cssClass: "string" }
-	return { html: JSON.stringify(toJs(v), null, 2), cssClass: "" }
+	return { html: formatFeelValue(v), cssClass: "" }
 }
 
 /**

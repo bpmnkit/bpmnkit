@@ -299,6 +299,43 @@ function defineEntry(ctx: FeelContext, key: string, value: FeelValue): void {
  * Takes a FEEL value out to plain JS: every `FeelNumber` becomes the nearest JS number, deeply
  * through lists, contexts and range bounds. Dates, times, durations and functions are unchanged.
  */
+/**
+ * Writes a value the way the playgrounds show it: lists, contexts and ranges as indented JSON, with
+ * every number (nested too) printed exactly, as `FeelNumber#toString` keeps digits and scale that a
+ * JS number would lose.
+ */
+export function formatFeelValue(v: FeelValue): string {
+	if (v === null) return "null"
+	if (typeof v === "string") return `"${v}"`
+	if (typeof v === "boolean" || isFeelNumber(v)) return String(v)
+	return formatJson(v, "")
+}
+
+function formatJson(v: FeelValue, pad: string): string {
+	if (isFeelNumber(v)) return v.toString()
+	const inner = `${pad}  `
+	const block = (open: string, close: string, items: string[]) =>
+		items.length === 0
+			? open + close
+			: `${open}\n${items.map((i) => inner + i).join(",\n")}\n${pad}${close}`
+	if (Array.isArray(v))
+		return block(
+			"[",
+			"]",
+			v.map((x) => formatJson(x, inner)),
+		)
+	if (isFeelRange(v) || isFeelContext(v)) {
+		const entries = Object.entries(v) as [string, FeelValue][]
+		return block(
+			"{",
+			"}",
+			entries.map(([k, x]) => `${JSON.stringify(k)}: ${formatJson(x, inner)}`),
+		)
+	}
+	// Strings, booleans, temporals and functions have no exact digits to keep.
+	return (JSON.stringify(toJs(v), null, 2) ?? "null").replaceAll("\n", `\n${pad}`)
+}
+
 export function toJs(v: FeelValue): unknown {
 	if (v === null || typeof v !== "object") return v
 	if (isFeelNumber(v)) return v.toNumber()

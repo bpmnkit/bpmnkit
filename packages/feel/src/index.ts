@@ -16,6 +16,7 @@ export {
 	isFeelNumber,
 	fromJs,
 	toJs,
+	formatFeelValue,
 	isFeelDate,
 	isFeelTime,
 	isFeelDateTime,

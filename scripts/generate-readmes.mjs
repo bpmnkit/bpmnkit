@@ -995,6 +995,8 @@ n.toString() // "0.3"; toNumber() and toJSON() give the nearest JS number
   arrays and objects; \`evaluate\` converts them at the edge. \`fromJs(value)\` does the same by hand.
 - **Out**: \`toJs(value)\` turns every \`FeelNumber\` back into a JS number, deeply; dates, times and
   durations are unchanged. \`JSON.stringify\` writes a \`FeelNumber\` as a JSON number.
+- **Show**: \`formatFeelValue(value)\` prints a result as the playgrounds do, lists and contexts as
+  indented JSON, with every number (nested too) written exactly: \`[1 / 3]\` keeps 34 digits.
 - **Exact**: literals, \`+ - * /\`, comparisons, \`**\` with an integer exponent, \`sum\`, \`mean\`,
   \`modulo\`, \`decimal\`, \`floor\`, \`ceiling\` and the other rounding functions (Java's
   \`setScale\`, so \`decimal(1, 2)\` is \`1.00\`). \`string()\` keeps the scale: \`string(1.50)\` is
@@ -1035,6 +1037,7 @@ highlightToHtml('if x > 10 then "high" else "low"')
 | \`FeelNumber\` | Decimal128 number: \`from\`, \`add\`, \`sub\`, \`mul\`, \`div\`, \`pow\`, \`mod\`, \`round(scale, mode)\`, \`cmp\`, \`eq\`, \`toNumber\`, \`toString\` |
 | \`isFeelNumber(v)\` | Whether a value is a \`FeelNumber\` |
 | \`toJs(value)\` / \`fromJs(value)\` | Convert between FEEL values and plain JS data (numbers deeply) |
+| \`formatFeelValue(value)\` | Print a value with nested numbers exact (lists and contexts as indented JSON) |
 | \`evaluateUnaryTests(ast, input, ctx)\` | Test input against unary tests |
 | \`formatFeel(node, opts?)\` | Pretty-print a **parsed node**, not source text |
 | \`highlightToHtml(src)\` | Tokens wrapped in \`<span class="feel-…">\` elements |

@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-25 — @bpmnkit/feel: `formatFeelValue` keeps nested numbers exact (#320)
+
+New `formatFeelValue` writes lists, contexts and ranges as indented JSON with every number printed by `FeelNumber#toString`, so `[1 / 3]` keeps 34 digits and `{a: 100 * 1.1}` shows `110.0`. The FEEL playground plugin, drop's FEEL view and the landing playground use it instead of `JSON.stringify(toJs(v))`, which rounded nested numbers to JS doubles. Tests: `packages/feel/tests/format-value.test.ts`.
+
 ## 2026-11-25 — Consumers of @bpmnkit/feel adapted to Decimal128 (#320)
 
 Engine evaluates exactly inside FEEL (`amount * 1.1 <= 110` takes the conditional gateway flow) and converts with `toJs` where results become variables, DMN decision results, `feel:evaluated` events and connector response mappings; DMN `COLLECT` aggregations and `typeRef` checks work on `FeelNumber`. Core's Zeebe validator, the FEEL playground plugin, drop's FEEL view (context is now plain JSON, `100 * 1.19` shows `119.00`) and the landing playground render numbers with `FeelNumber#toString`. Regression tests: gateway repro and `0.1 + 0.2` stored as JS `0.3` (engine `semantics.test.ts`). `conformance/README.md` now states Decimal128 and lists `fuzz/2,7,8,24` as differing from `rust_decimal` limits.
