@@ -11,6 +11,7 @@ import {
 	copyFileSync,
 	mkdirSync,
 	mkdtempSync,
+	readFileSync,
 	readdirSync,
 	writeFileSync,
 } from "node:fs"
@@ -57,7 +58,38 @@ stageBinary(key, bin)
 const platDir = platformDir(key)
 
 const tarballs = mkdtempSync(join(tmpdir(), "bpmnkit-pack-"))
-for (const dir of [platDir, join(ROOT, "apps", "cli"), join(ROOT, "packages", "cli")]) {
+// `pnpm pack` turns `workspace:^` into the working-tree version, which a release commit has just
+// bumped and the registry may not serve yet. So every workspace package the CLI needs at runtime
+// is packed and installed from disk too, and the smoke never waits on a publish.
+function workspaceClosure(roots) {
+	const byName = new Map()
+	for (const base of ["packages", "apps"]) {
+		for (const d of readdirSync(join(ROOT, base), { withFileTypes: true })) {
+			if (!d.isDirectory()) continue
+			try {
+				const dir = join(ROOT, base, d.name)
+				const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"))
+				byName.set(pkg.name, { dir, pkg })
+			} catch {}
+		}
+	}
+	const seen = new Map()
+	const visit = (dir) => {
+		if (seen.has(dir)) return
+		const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"))
+		seen.set(dir, pkg.name)
+		// Optional deps are the other platforms' binaries; only this machine's is staged.
+		for (const dep of Object.keys(pkg.dependencies ?? {})) {
+			const ws = byName.get(dep)
+			if (ws) visit(ws.dir)
+		}
+	}
+	for (const r of roots) visit(r)
+	return [...seen.keys()]
+}
+
+const packDirs = workspaceClosure([join(ROOT, "apps", "cli"), join(ROOT, "packages", "cli")])
+for (const dir of [platDir, ...packDirs]) {
 	must(`pnpm pack ${dir}`, run("pnpm", ["pack", "--pack-destination", tarballs], dir))
 }
 const files = readdirSync(tarballs).map((f) => join(tarballs, f))

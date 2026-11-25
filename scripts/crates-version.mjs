@@ -59,8 +59,9 @@ function main() {
 		if (after !== before) writeFileSync(path, after)
 	}
 
-	// Lockfiles: the root workspace, and apps/reebe, which consumes the crates by path.
-	for (const manifest of ["Cargo.toml", "apps/reebe/Cargo.toml"]) {
+	// Lockfiles: the root workspace, plus apps/reebe and wasm/, which consume the crates by path.
+	// wasm/ must follow too, or `--locked` fails once the path crates move to the new version.
+	for (const manifest of ["Cargo.toml", "apps/reebe/Cargo.toml", "wasm/Cargo.toml"]) {
 		const r = spawnSync(
 			"cargo",
 			["update", "--workspace", "--manifest-path", join(ROOT, manifest)],

@@ -1,5 +1,18 @@
 # Progress
+
+## 2026-11-25 — CI: version bumps no longer race the registry
+
+After "version packages" (#322) two jobs failed because they resolved just-bumped, unpublished versions from a registry. `scripts/smoke-cli-npm.mjs` now also packs every workspace package in the CLI's `dependencies` closure and installs them all from the tarballs, so `@bpmnkit/core@^x` is never fetched from npm. `wasm/` path deps (`contract`, `host`) drop their `version = "0.7.1"` pin (the workspace is `publish = false`; the pin stopped matching the lockstep 0.8.0 and sent cargo to crates.io), and `wasm/Cargo.lock` is refreshed. `scripts/crates-version.mjs` now also runs `cargo update --workspace` for `wasm/`, so `--locked` keeps passing after a bump. `worker-e2e` and `release-cli` need no change (root/reebe locks were already synced; release-cli publishes from artifacts).
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
+
+## 2026-11-25 — Zeebe broker nightly: expected rejections classified per Zeebe version
+
+The nightly failed on all four versions at "Deploy the corpus" (run 45606802601): new corpus files (text/compact/migrate/builder outputs) use ad-hoc sub-processes, conditional events, loops and decision/form references that a single-file deployment to an older broker rejects. `doc/deployability/broker-expectations.json` now lists rejection classes (`supportedSince` a version, or `always`); `classify` reports a corpus rejection as `info` only when every `ERROR:` of it belongs to an applying class, so new files using a feature a given Zeebe lacks need no edit while unknown rejections and rejections by a version that supports the feature still fail. The z183 expectation matches order- and wording-independently, and z145 accepts the pre-conditional wording of older brokers. Tests: `scripts/zeebe-broker-lib.test.mjs`. Not verified against a live broker (no Docker); `conditional-event` `supportedSince: 8.9` is an assumption (8.9 is not in the matrix).
+
+## 2026-11-25 — Nightly fuzz (feel): oracle numbers, Decimal128 rounding, date-time fractions
+
+Run 45618369741 reported 10 FEEL mismatches with every TS number encoded as `{coefficient, exponent}`: `scripts/fuzz/oracle.mjs` still encoded/decoded JS `number`, but since #320 FEEL numbers are `FeelNumber`. It now encodes like `packages/feel/tests/conformance.test.ts` (regression test `scripts/fuzz/oracle.test.mjs`, in `pnpm test:scripts`). Fuzzing on then found a real Rust bug: `fastnum`'s `rescale` settles half-even/half-down on the first dropped digit, so `decimal(850.01, -2)` was `800` (TS and Camunda: `900`) and 34-digit arithmetic results just past a tie rounded down. `bpmnkit-feel`'s `Decimal` now truncates with `rescale` and rounds in one step from the whole remainder (`round_to_scale`). Tests: `decimal.rs` `rounding` / `rounds_to_34_digits_half_even`, conformance `fuzz/32`.
+Then a TS precision bug: `date and time + duration` added the fraction at epoch magnitude (~1.7e9 s), so `@"2023-12-31T23:59:59" + 0.001 * @"P1D"` was `…25.40000009536743`; whole and fractional seconds are now added apart, the fraction in integer nanoseconds (java.time's resolution). Tests: `evaluator.test.ts` temporal arithmetic, conformance `fuzz/33`.
 
 ## 2026-11-25 — PR CI fixes for Decimal128 (#320)
 

@@ -49,6 +49,10 @@ if (!version) {
 }
 
 const readJson = (p) => JSON.parse(readFileSync(p, "utf8"))
+const expectationsPath = join(root, "doc/deployability/broker-expectations.json")
+const expectations = existsSync(expectationsPath)
+	? JSON.parse(readFileSync(expectationsPath, "utf8"))
+	: {}
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const headers = {}
 if (process.env.ZEEBE_REST_USER) {
@@ -186,7 +190,7 @@ async function main() {
 		const outcome = await deploy(item.resources)
 		const verdict = outcome.transient
 			? { status: "fail", why: `no verdict (engine kept failing): ${outcome.detail}` }
-			: classify(item, outcome, version)
+			: classify(item, outcome, version, expectations)
 		return { key: item.key, kind: item.kind, ...verdict, detail: outcome.detail }
 	})
 

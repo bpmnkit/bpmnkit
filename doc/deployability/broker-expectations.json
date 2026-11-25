@@ -1,0 +1,34 @@
+{
+	"note": "What a real broker is expected to reject in a corpus file that is otherwise fine, so scripts/zeebe-broker-check.mjs reports it as `info` instead of failing the nightly. A corpus file is classified when EVERY error of its rejection belongs to a class that applies to the broker version: `supportedSince` (rejected by older brokers only) or `always` (rejected by every broker; a single-file deployment cannot satisfy it). Any other rejection stays a `fail`, so new corpus files using a feature an older Zeebe lacks need no edit here, and a real regression is still caught. Versions are major.minor.",
+	"classes": {
+		"ad-hoc-subprocess": {
+			"supportedSince": "8.8",
+			"match": ["Elements of type 'AdHocSubProcess' are currently not supported"]
+		},
+		"conditional-event": {
+			"supportedSince": "8.9",
+			"requires": "ConditionalEventDefinition",
+			"match": [
+				"Event definition of this type is not supported",
+				"Event definition must be one of:",
+				"Boundary events must be one of:"
+			]
+		},
+		"straight-through-loop": {
+			"always": true,
+			"match": ["Processes are not allowed to contain a straight-through processing loop"]
+		},
+		"deployment-binding": {
+			"always": true,
+			"match": ["Expected to find decision with id", "Expected to find form with id"]
+		}
+	},
+	"reproWording": {
+		"z145_ebg_to_task.bpmn": {
+			"before": "8.9",
+			"errors": [
+				"g: Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal intermediate catch events."
+			]
+		}
+	}
+}

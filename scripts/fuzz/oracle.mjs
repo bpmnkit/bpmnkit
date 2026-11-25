@@ -19,14 +19,12 @@ import { evaluateDecisionGraph } from "../../packages/engine/dist/dmn.js"
 import { parseTemporal } from "../../packages/feel/dist/builtins.js"
 import { evaluate } from "../../packages/feel/dist/evaluator.js"
 import { parseExpression } from "../../packages/feel/dist/parser.js"
+import { FeelNumber, isFeelNumber } from "../../packages/feel/dist/types.js"
 
 // FEEL value encoding: the same as packages/feel/tests/conformance.test.ts.
-function numberToDecimal(n) {
-	if (!Number.isFinite(n)) return null
-	if (n === 0) return "0"
-	const s = n.toLocaleString("en-US", { useGrouping: false, maximumFractionDigits: 20 })
-	return s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s
-}
+// Numbers are FeelNumber (Decimal128) objects, not JS numbers: without this check they fall
+// through to the context branch and encode as {coefficient, exponent}.
+const numberToDecimal = (n) => n.stripTrailingZeros().toString()
 
 function stringify(v) {
 	const { ast } = parseExpression("string(x)")
@@ -46,10 +44,7 @@ function encode(v) {
 	if (v === null || v === undefined) return { t: "null" }
 	if (typeof v === "boolean") return { t: "boolean", v }
 	if (typeof v === "string") return { t: "string", v }
-	if (typeof v === "number") {
-		const d = numberToDecimal(v)
-		return d === null ? { t: "error" } : { t: "number", v: d }
-	}
+	if (isFeelNumber(v)) return { t: "number", v: numberToDecimal(v) }
 	if (Array.isArray(v)) {
 		const items = v.map(encode)
 		return items.some((i) => i.t === "error") ? { t: "error" } : { t: "list", v: items }
@@ -79,7 +74,7 @@ function decode(v) {
 		case "string":
 			return v.v
 		case "number":
-			return Number(v.v)
+			return FeelNumber.from(v.v)
 		case "list":
 			return v.v.map(decode)
 		case "context":
