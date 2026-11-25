@@ -1,11 +1,11 @@
-//! Number functions (`builtins.ts`, "Number functions"). Numbers are exact
-//! decimals, so rounding uses the decimal's own strategies instead of the
-//! float juggling the TS twin needs.
+//! Number functions (`builtins.ts`, "Number functions"). Numbers are
+//! Decimal128, so rounding uses the decimal's own strategies instead of the
+//! float juggling the TS twin needs. `sqrt`, `log` and `exp` are irrational:
+//! Camunda computes them in float64, and so do these.
 
 use super::BuiltinFn;
 use crate::value::{DaysTimeDuration, Value, YearsMonthsDuration};
-use rust_decimal::prelude::ToPrimitive;
-use rust_decimal::{Decimal, MathematicalOps, RoundingStrategy};
+use crate::{Decimal, RoundingStrategy};
 use std::sync::atomic::{AtomicU64, Ordering};
 
 pub fn lookup(name: &str) -> Option<BuiltinFn> {
@@ -19,24 +19,13 @@ pub fn lookup(name: &str) -> Option<BuiltinFn> {
         "round half down" => |a| round_fn(a, Mode::HalfDown, false),
         "abs" => abs,
         "modulo" => modulo,
-        // rust_decimal has no root of `-0`; it is 0.
         "sqrt" => |a| {
             unary(a, |n| {
-                if n.is_zero() {
-                    Some(Decimal::ZERO)
-                } else {
-                    n.sqrt()
-                }
+                (!n.is_sign_negative()).then(|| n.map_f64(f64::sqrt))?
             })
         },
-        "log" => |a| unary(a, |n| n.checked_ln()),
-        // exp of a large negative number is below 28 fraction digits: 0, as TS rounds it.
-        "exp" => |a| {
-            unary(a, |n| {
-                n.checked_exp()
-                    .or_else(|| n.is_sign_negative().then_some(Decimal::ZERO))
-            })
-        },
+        "log" => |a| unary(a, |n| (n > Decimal::ZERO).then(|| n.map_f64(f64::ln))?),
+        "exp" => |a| unary(a, |n| n.map_f64(f64::exp)),
         "odd" => |a| unary_bool(a, |n| n.abs() % Decimal::TWO == Decimal::ONE),
         "even" => |a| unary_bool(a, |n| (n % Decimal::TWO).is_zero()),
         "random number" => |_| random_number(),
@@ -88,13 +77,13 @@ enum Mode {
 impl Mode {
     fn strategy(self) -> RoundingStrategy {
         match self {
-            Mode::HalfEven => RoundingStrategy::MidpointNearestEven,
-            Mode::Floor => RoundingStrategy::ToNegativeInfinity,
-            Mode::Ceiling => RoundingStrategy::ToPositiveInfinity,
-            Mode::Up => RoundingStrategy::AwayFromZero,
-            Mode::Down => RoundingStrategy::ToZero,
-            Mode::HalfUp => RoundingStrategy::MidpointAwayFromZero,
-            Mode::HalfDown => RoundingStrategy::MidpointTowardZero,
+            Mode::HalfEven => RoundingStrategy::HalfEven,
+            Mode::Floor => RoundingStrategy::Floor,
+            Mode::Ceiling => RoundingStrategy::Ceiling,
+            Mode::Up => RoundingStrategy::Up,
+            Mode::Down => RoundingStrategy::Down,
+            Mode::HalfUp => RoundingStrategy::HalfUp,
+            Mode::HalfDown => RoundingStrategy::HalfDown,
         }
     }
 }
@@ -110,33 +99,9 @@ fn round_fn(args: &[Value], mode: Mode, scale_required: bool) -> Value {
 }
 
 /// Rounds `n` at `scale` (digits after the point; negative rounds to tens,
-/// hundreds ...). `None` when the result does not fit a decimal.
+/// hundreds ...) and takes that scale, as `BigDecimal.setScale` does.
 fn round_at(n: Decimal, scale: i64, mode: Mode) -> Option<Decimal> {
-    if scale >= 0 {
-        // A decimal has at most 28 fraction digits, so it is already exact.
-        return Some(if i64::from(n.scale()) <= scale {
-            n
-        } else {
-            n.round_dp_with_strategy(scale as u32, mode.strategy())
-        });
-    }
-    let k = (-scale) as u32;
-    if k > 28 {
-        // |n| < 10^29 <= 10^k: the quotient is below 1, so it rounds to 0
-        // unless the mode rounds any remainder away from zero, and that
-        // result (+-10^k) is out of range. (Half modes also round the
-        // 0.5..0.79 quotients of k = 29 to 0; not worth a wider type.)
-        let away = match mode {
-            Mode::Up => !n.is_zero(),
-            Mode::Ceiling => n.is_sign_positive() && !n.is_zero(),
-            Mode::Floor => n.is_sign_negative() && !n.is_zero(),
-            _ => false,
-        };
-        return (!away).then_some(Decimal::ZERO);
-    }
-    let factor = Decimal::from_i128_with_scale(10_i128.pow(k), 0);
-    let q = (n / factor).round_dp_with_strategy(0, mode.strategy());
-    q.checked_mul(factor)
+    n.round_dp_with_strategy(i32::try_from(scale).ok()?, mode.strategy())
 }
 
 fn abs(args: &[Value]) -> Value {
@@ -226,7 +191,9 @@ mod tests {
         assert_eq!(r("round half up", "1250", Some("-2")), n("1300"));
         assert_eq!(r("floor", "1250", Some("-2")), n("1200"));
         assert_eq!(r("floor", "5", Some("-30")), n("0"));
-        assert_eq!(r("ceiling", "5", Some("-30")), Value::Null);
+        assert_eq!(r("ceiling", "5", Some("-30")), n("1e30"));
+        assert_eq!(r("ceiling", "5", Some("-6111")), n("1e6111"));
+        assert_eq!(call("decimal", &[n("1.5"), n("2")]).to_string(), "1.50");
         assert_eq!(r("floor", "1.5", Some("7000")), Value::Null);
         assert_eq!(r("floor", "1.5", Some("40")), n("1.5"));
         assert_eq!(call("floor", &[Value::from("a")]), Value::Null);
@@ -259,15 +226,17 @@ mod tests {
         assert_eq!(call("modulo", &[n("10.1"), n("4.5")]), n("1.1"));
         assert_eq!(call("modulo", &[n("1"), n("0")]), Value::Null);
         assert_eq!(call("sqrt", &[n("16")]), n("4"));
+        assert_eq!(call("sqrt", &[n("2")]).to_string(), "1.4142135623730951");
         assert_eq!(call("sqrt", &[n("-1")]), Value::Null);
         assert_eq!(call("log", &[n("0")]), Value::Null);
         assert_eq!(call("log", &[n("1")]), n("0"));
         assert_eq!(call("exp", &[n("0")]), n("1"));
         assert_eq!(call("exp", &[n("100000")]), Value::Null);
-        // Fuzz regression: underflow is 0, as TS's double rounds it.
-        assert_eq!(call("exp", &[n("-67")]), n("0"));
+        // Fuzz regression: float64 underflow is 0.
+        assert_eq!(call("exp", &[n("-67")]), n("7.984904245686979e-30"));
         assert_eq!(call("sqrt", &[n("-0")]), n("0"));
-        assert_eq!(call("exp", &[n("-665.4")]), n("0"));
+        assert_eq!(call("exp", &[n("-665.4")]), n("1.0482183100056715e-289"));
+        assert_eq!(call("exp", &[n("-800")]), n("0"));
     }
 
     #[test]

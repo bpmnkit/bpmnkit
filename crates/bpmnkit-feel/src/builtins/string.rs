@@ -11,9 +11,8 @@ use super::BuiltinFn;
 use crate::ops::number_to_string;
 use crate::temporal::{date_to_epoch_days, format_date, format_time, zone_offset_seconds};
 use crate::value::{Context, Time, Value};
+use crate::Decimal;
 use regex::{Captures, Regex, RegexBuilder};
-use rust_decimal::prelude::ToPrimitive;
-use rust_decimal::Decimal;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -709,7 +708,7 @@ impl JsonParser<'_> {
         } else {
             Decimal::from_str(text).ok()
         };
-        // Beyond a decimal's 28 digits JSON.parse would have used a float too.
+        // Out of a decimal's exponent range JSON.parse would have used a float too.
         exact
             .or_else(|| {
                 text.parse::<f64>()

@@ -1,7 +1,7 @@
 //! FEEL values. Mirrors `packages/feel/src/types.ts`; numbers are exact decimals.
 
+use crate::Decimal;
 use indexmap::IndexMap;
-use rust_decimal::Decimal;
 use std::fmt;
 use std::sync::Arc;
 
@@ -345,7 +345,10 @@ mod display_tests {
     #[test]
     fn feel_string_matches_string_builtin() {
         let v = crate::evaluate(r#"{a: "x", b: [1, "y", 2.50]}"#, &Context::new()).unwrap();
-        assert_eq!(v.to_feel_string().unwrap(), r#"{a: "x", b: [1, "y", 2.5]}"#);
+        assert_eq!(
+            v.to_feel_string().unwrap(),
+            r#"{a: "x", b: [1, "y", 2.50]}"#
+        );
         assert_eq!(Value::from("hi").to_feel_string().as_deref(), Some("hi"));
         assert_eq!(Value::Null.to_feel_string(), None);
         assert_eq!(Value::Null.to_string(), "null");

@@ -1,6 +1,10 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-25 — bpmnkit-feel: Decimal128 numbers (#320, Rust side)
+
+FEEL `number` in Rust moves from `rust_decimal` (28 digits) to DMN Decimal128 as Camunda 8 computes it: a new in-crate `Decimal` (`crates/bpmnkit-feel/src/decimal.rs`, a `fastnum::D256` wrapper) keeps 34 significant digits, rounds every result half-even, keeps `BigDecimal`'s scale (`string(amount * 1.1)` is `110.0`, `string(1.50)` is `1.50`, plain notation) and compares by value. Integer `**` is exact; `sqrt`, `exp`, `log`, `stddev`'s root and fractional powers run in float64 and convert like Scala's `BigDecimal(Double)` (`sqrt(2)` is `1.4142135623730951`). The 28-digit workarounds in `numeric.rs`, `list.rs` and `ops.rs` are gone; `modulo` is null when the quotient passes 34 digits. Tests: `tests/decimal128.rs` (the Camunda 8.10.10 table from the issue). Four shared fuzz cases recorded with float64 overflow/underflow now differ (`fuzz/2`, `fuzz/7`, `fuzz/8`, `fuzz/24`); they are listed in `crates/bpmnkit-conformance/known-divergences.json` until the corpus is re-recorded. Docs: Rust crates page, crate README.
+
 ## 2026-11-24 — bpmnkit-cli: drop stale `casen` alias text
 
 `--help`, the crate description and `doc/features.md` still called `casen` an alias after 2.0.1 dropped the bin; `self update` told Homebrew users `brew upgrade bpmnkit` (the formula is `bpmnkit-cli`). Fixed, with a patch changeset.

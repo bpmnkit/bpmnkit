@@ -177,7 +177,7 @@ fn close_text(a: &str, b: &str) -> bool {
         let mut numeric = false;
         for ch in s.chars() {
             // A number in scientific form (`string(exp(-39))`) is one part: its mantissa
-            // alone has fewer digits on Rust's side, whose decimal stops 28 places in.
+            // alone has fewer digits on Rust's side, whose Decimal128 stops at 34 digits.
             let exponent = numeric
                 && (ch == 'e' && cur.starts_with(|c: char| c.is_ascii_digit())
                     || (ch == '-' || ch == '+') && cur.ends_with('e'));
@@ -229,15 +229,15 @@ fn value_close(a: &Value, b: &Value) -> bool {
     use Value::*;
     match (a, b) {
         (Number(x), Number(y)) => close(x, y),
-        // Past rust_decimal's range only float64 has a value; Rust's null is its number model.
-        (Number(x), Null) | (Null, Number(x)) => x.parse::<f64>().is_ok_and(|f| f.abs() >= 7.9e28),
+        // Past float64's range only Decimal128 has a value; TS's null is its number model.
+        (Number(x), Null) | (Null, Number(x)) => x.parse::<f64>().is_ok_and(|f| f.is_infinite()),
         (DaysTimeDuration(x), DaysTimeDuration(y)) => {
             x == y
                 || duration_seconds(x)
                     .zip(duration_seconds(y))
                     .is_some_and(|(p, q)| close(&p.to_string(), &q.to_string()))
         }
-        // `string(2 ** 0.5)` prints every digit each side has: float64's 17 or 28 decimals.
+        // `string(1 / 3)` prints every digit each side has: float64's 17 or Decimal128's 34.
         (String(x), String(y)) | (Time(x), Time(y)) | (DateTime(x), DateTime(y)) => {
             close_text(x, y)
         }

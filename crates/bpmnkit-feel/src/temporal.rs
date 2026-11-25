@@ -6,13 +6,12 @@
 
 use crate::ops::number_to_string;
 use crate::value::{Date, DateTime, DaysTimeDuration, Time, Value, YearsMonthsDuration};
+use crate::Decimal;
 #[cfg(feature = "tz")]
 use chrono::{Offset, TimeZone};
 #[cfg(feature = "tz")]
 use chrono_tz::Tz;
 use regex::Regex;
-use rust_decimal::prelude::ToPrimitive;
-use rust_decimal::Decimal;
 #[cfg(feature = "tz")]
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -901,7 +900,8 @@ mod tests {
             format_time(&shift_time(&t, d("-3600")).unwrap()),
             "23:30:00.5"
         );
-        assert!(shift_time(&t, Decimal::MAX).is_none());
+        // The day count is past 34 digits: no remainder (Decimal128 has none either).
+        assert!(shift_time(&t, d("1e32000")).is_none());
     }
 
     #[cfg(feature = "tz")]

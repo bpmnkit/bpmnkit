@@ -3,8 +3,7 @@
 use super::BuiltinFn;
 use crate::ops::{compare, deep_equals, same_item};
 use crate::value::Value;
-use rust_decimal::prelude::*;
-use rust_decimal::MathematicalOps;
+use crate::Decimal;
 use std::cmp::Ordering;
 
 pub fn lookup(name: &str) -> Option<BuiltinFn> {
@@ -167,7 +166,10 @@ fn stddev(args: &[Value]) -> Value {
             let d = n.checked_sub(mean)?;
             s.checked_add(d.checked_mul(d)?)
         })?;
-        squares.checked_div(Decimal::from(nums.len() - 1))?.sqrt()
+        // The root is irrational: float64, like the other roots (see `sqrt`).
+        squares
+            .checked_div(Decimal::from(nums.len() - 1))?
+            .map_f64(f64::sqrt)
     })();
     result.map_or(Value::Null, Value::Number)
 }

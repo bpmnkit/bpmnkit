@@ -1,6 +1,7 @@
 # bpmnkit-feel
 
-FEEL (DMN 1.5 plus Camunda extensions): lexer, parser and evaluator with exact decimal numbers.
+FEEL (DMN 1.5 plus Camunda extensions): lexer, parser and evaluator. Numbers are DMN Decimal128 (34 significant digits, rounded
+half-even, as Camunda 8 computes them).
 
 This is the Rust twin of `@bpmnkit/feel`. The TypeScript implementation is the oracle: both are held to the same
 conformance cases, so results match.

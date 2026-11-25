@@ -10,8 +10,7 @@ use std::cmp::Ordering;
 use std::slice;
 use std::sync::Arc;
 
-use rust_decimal::prelude::ToPrimitive;
-use rust_decimal::Decimal;
+use crate::Decimal;
 
 use crate::ast::{BinaryOp, Binding, Node, NodeKind};
 use crate::value::{Context, Function, Range, Value};

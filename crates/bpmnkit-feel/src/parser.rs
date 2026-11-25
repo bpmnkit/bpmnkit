@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use std::str::FromStr;
 use std::sync::{Arc, OnceLock};
 
-use rust_decimal::Decimal;
+use crate::Decimal;
 
 use crate::ast::{BinaryOp, Binding, Node, NodeKind};
 use crate::lexer::{tokenize, unescape_string, Token, TokenKind};
@@ -1249,7 +1249,12 @@ mod tests {
 
     #[test]
     fn number_out_of_range_is_an_error() {
-        let result = parse_expression(&"9".repeat(40), &ParseOptions::default());
+        // Beyond 34 digits a literal rounds (half-even): 40 nines are 1e40.
+        assert_eq!(
+            ast(&"9".repeat(40)).kind,
+            NodeKind::Number(format!("1{}", "0".repeat(40)).parse().unwrap())
+        );
+        let result = parse_expression(&"9".repeat(40_000), &ParseOptions::default());
         assert!(result.ast.is_none());
         assert_eq!(result.errors.len(), 1);
         assert!(result.errors[0].message.contains("out of range"));
