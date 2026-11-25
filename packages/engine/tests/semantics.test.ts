@@ -1197,3 +1197,37 @@ describe("start events", () => {
 		expect(entered(events)).toEqual(["plain", "e1"])
 	})
 })
+
+// ── Decimal arithmetic (#320) ─────────────────────────────────────────────────
+
+describe("decimal FEEL numbers", () => {
+	it("an exclusive gateway on `amount * 1.1 <= 110` takes the conditional flow for amount 100", async () => {
+		const xml = `<bpmn:process id="p" isExecutable="true">
+  <bpmn:startEvent id="s"/>
+  <bpmn:exclusiveGateway id="gw" default="fDefault"/>
+  <bpmn:endEvent id="endA"/>
+  <bpmn:endEvent id="endDefault"/>
+  ${flow("f1", "s", "gw")}
+  ${flow("fA", "gw", "endA", "= amount * 1.1 &lt;= 110")}
+  ${flow("fDefault", "gw", "endDefault")}
+</bpmn:process>`
+		const { instance, events } = run(xml, "p", { amount: 100 })
+		await flush()
+		expect(instance.state).toBe("completed")
+		expect(entered(events).filter((id) => id.startsWith("end"))).toEqual(["endA"])
+	})
+
+	it("stores a variable set from `0.1 + 0.2` as the JS number 0.3", async () => {
+		const xml = `<bpmn:process id="p" isExecutable="true">
+  <bpmn:startEvent id="s"/>
+  <bpmn:scriptTask id="calc"><bpmn:extensionElements><zeebe:script expression="= 0.1 + 0.2" resultVariable="sum"/></bpmn:extensionElements></bpmn:scriptTask>
+  <bpmn:endEvent id="e"/>
+  ${flow("f1", "s", "calc")}
+  ${flow("f2", "calc", "e")}
+</bpmn:process>`
+		const { instance } = run(xml, "p")
+		await flush()
+		expect(instance.state).toBe("completed")
+		expect(instance.variables_snapshot.sum).toBe(0.3)
+	})
+})

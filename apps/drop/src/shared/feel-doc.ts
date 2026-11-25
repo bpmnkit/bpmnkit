@@ -16,7 +16,10 @@
  * browser bundles use the same code so a rejection happens before the upload
  * rather than after it.
  */
-import { type FeelContext, type FeelValue, parseExpression, parseUnaryTests } from "@bpmnkit/feel"
+import { parseExpression, parseUnaryTests } from "@bpmnkit/feel"
+
+/** The JSON a statement was written against; FEEL converts it to its own values. */
+type FeelContext = Record<string, unknown>
 
 /** How the expression is read: a value expression, or a decision-table input entry. */
 export type FeelMode = "expression" | "unary-tests"
@@ -123,7 +126,7 @@ export function feelLabel(doc: FeelDocument): string {
 }
 
 /** The value a unary test runs against: whatever the context bound to `?`. */
-export function unaryInput(doc: FeelDocument): FeelValue {
+export function unaryInput(doc: FeelDocument): unknown {
 	return doc.context["?"] ?? null
 }
 

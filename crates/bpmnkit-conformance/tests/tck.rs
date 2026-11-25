@@ -31,7 +31,7 @@ fn matches(actual: &Value, expected: &Value) -> bool {
     match (actual, expected) {
         (Value::Number(a), Value::Number(b)) => {
             let scale = a.abs().max(b.abs()).max(Decimal::ONE);
-            (a - b).abs() / scale < Decimal::new(1, 9)
+            (*a - *b).abs() / scale < Decimal::new(1, 9)
         }
         (Value::List(a), Value::List(b)) => {
             a.len() == b.len() && a.iter().zip(b).all(|(x, y)| matches(x, y))

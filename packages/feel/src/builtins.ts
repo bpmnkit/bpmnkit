@@ -1,3 +1,4 @@
+import { FeelNumber, type RoundingMode, isFeelNumber } from "./decimal.js"
 import { PARAM_SIGNATURES, VARIADIC } from "./generated/builtin-signatures.js"
 import type {
 	FeelContext,
@@ -19,6 +20,7 @@ import {
 	isFeelRange,
 	isFeelTime,
 	isFeelYearsMonthsDuration,
+	num,
 } from "./types.js"
 
 // -------------------------------------------------------------------------
@@ -253,68 +255,49 @@ function dayOfYear(d: FeelDate): number {
  * A number argument. FEEL does not coerce, so "1.5" is not a number here;
  * number() is the way to convert one.
  */
-function toNum(v: FeelValue): number | null {
-	return typeof v === "number" && Number.isFinite(v) ? v : null
+function toNum(v: FeelValue | undefined): FeelNumber | null {
+	return isFeelNumber(v) ? v : null
+}
+
+/**
+ * A number argument where a JS number is wanted: a position, a length, a date field. Null
+ * when it is not a number or lies beyond float64's range.
+ */
+function toJsNum(v: FeelValue | undefined): number | null {
+	if (!isFeelNumber(v)) return null
+	const n = v.toNumber()
+	return Number.isFinite(n) ? n : null
 }
 
 /**
  * A rounding scale: an optional integer. Absent means 0, but an explicitly
- * null or non-numeric scale is an error. Beyond float64's reach the value is
- * already exact at that scale, so it is returned unrounded.
+ * null or non-numeric scale is an error, as is one outside Decimal128's exponent range.
  */
 const MIN_SCALE = -6111
 const MAX_SCALE = 6176
-const SCALE_LIMIT = 300
 
 function toScale(v: FeelValue | undefined): number | null {
 	if (v === undefined) return 0
-	const n = toNum(v)
+	const n = toJsNum(v)
 	if (n === null) return null
 	const scale = Math.trunc(n)
 	return scale < MIN_SCALE || scale > MAX_SCALE ? null : scale
 }
 
-/** Rounds `n` at `scale` with the given rounding of a value exactly halfway. */
-function roundAt(n: number, scale: number, round: (x: number) => number): number | null {
-	// No double has a digit past 10^-300 that rounding would change, so a finer scale
-	// keeps n. A coarser one rounds to a multiple of 10^-scale, which is 0 for most n:
-	// decimal(1, -301) is 0, as in the Rust twin.
-	if (scale > SCALE_LIMIT) return n
-	if (scale < -SCALE_LIMIT) {
-		const step = 10 ** -scale
-		// |n / step| < 1 here, but it can underflow to 0 (or step overflow to Infinity),
-		// and ceiling(1, -400) must still round away from zero instead of to 0.
-		const q = n / step || Math.sign(n) * Number.MIN_VALUE
-		const units = round(q)
-		if (units === 0) return 0
-		// 10^400 has no double, so the result is out of range: null, as in the Rust twin.
-		const r = units * step
-		return Number.isFinite(r) ? r : null
+/** A rounding built-in: `n` set to `scale` digits after the point, as Java's `setScale` does. */
+function rounding(mode: RoundingMode, scaleRequired = false): BuiltinFn {
+	return (n, scale) => {
+		const value = toNum(n)
+		const sc = toScale(scale)
+		if (value === null || sc === null || (scaleRequired && scale === undefined)) return null
+		return value.round(sc, mode)
 	}
-	const factor = 10 ** scale
-	// Re-reading the scaled value through its decimal form keeps a product like
-	// 1.005 * 100 from landing just under the halfway point it should sit on.
-	const scaled = Number(`${n}e${scale}`)
-	return Number(`${round(scaled)}e${-scale}`) || round(scaled) / factor
 }
 
-/** Round half to even, the rounding DMN's decimal() uses. */
-function roundHalfEven(x: number): number {
-	const floor = Math.floor(x)
-	const diff = x - floor
-	if (diff > 0.5) return floor + 1
-	if (diff < 0.5) return floor
-	return floor % 2 === 0 ? floor : floor + 1
-}
-
-/** Round half away from zero. */
-function roundHalfUp(x: number): number {
-	return x >= 0 ? Math.floor(x + 0.5) : Math.ceil(x - 0.5)
-}
-
-/** Round half toward zero. */
-function roundHalfDown(x: number): number {
-	return x >= 0 ? Math.ceil(x - 0.5) : Math.floor(x + 0.5)
+/** A float64 function of a number, for the functions Decimal128 has no exact form of. */
+function viaFloat(n: FeelValue | undefined, fn: (x: number) => number): FeelValue {
+	const x = toJsNum(n)
+	return x === null ? null : num(fn(x))
 }
 
 function toStr(v: FeelValue): string | null {
@@ -391,8 +374,12 @@ function sameTimeKind(a: FeelTime, b: FeelTime, epochA: number, epochB: number):
 	return (offsetOf(a, epochA) === undefined) === (offsetOf(b, epochB) === undefined)
 }
 
+/**
+ * Orders two values: negative, zero or positive, or null when they cannot be ordered. Numbers
+ * give -1, 0 or 1; temporal values give their difference in seconds (or days, or months).
+ */
 function compareValues(a: FeelValue, b: FeelValue): number | null {
-	if (typeof a === "number" && typeof b === "number") return a - b
+	if (isFeelNumber(a) && isFeelNumber(b)) return a.cmp(b)
 	if (typeof a === "string" && typeof b === "string") return a < b ? -1 : a > b ? 1 : 0
 	if (isFeelDate(a) && isFeelDate(b)) return dateToEpochDays(a) - dateToEpochDays(b)
 	if (isFeelTime(a) && isFeelTime(b)) {
@@ -458,7 +445,7 @@ function stringify(v: FeelValue, nested: boolean): FeelValue {
 
 function scalarToString(v: FeelValue): FeelValue {
 	if (typeof v === "string") return v
-	if (typeof v === "number") return String(v)
+	if (isFeelNumber(v)) return v.toString()
 	if (typeof v === "boolean") return String(v)
 	if (isFeelDate(v)) return formatDate(v)
 	if (isFeelTime(v)) return formatTime(v)
@@ -491,13 +478,13 @@ function scalarToString(v: FeelValue): FeelValue {
 reg("string length", (s) => {
 	const str = toStr(s)
 	// FEEL counts characters, so an astral character counts once, not twice.
-	return str === null ? null : [...str].length
+	return str === null ? null : FeelNumber.from([...str].length)
 })
 
 reg("substring", (str, start, length) => {
 	const s = toStr(str)
 	if (s === null) return null
-	const n = toNum(start)
+	const n = toJsNum(start)
 	if (n === null) return null
 	// Camunda truncates the start position (and length) to an integer, so a start in
 	// (0, 1) is 0: past the end.
@@ -507,7 +494,7 @@ reg("substring", (str, start, length) => {
 	const chars = [...s]
 	const idx = st > 0 ? st - 1 : Math.max(0, chars.length + st)
 	if (length !== undefined && length !== null) {
-		const len = toNum(length)
+		const len = toJsNum(length)
 		if (len === null) return null
 		return chars.slice(idx, idx + Math.trunc(len)).join("")
 	}
@@ -801,7 +788,7 @@ function decodeBase64(s: string): number[] | null {
 
 reg("number", (v, groupingSeparator, decimalSeparator) => {
 	const hasSeparators = groupingSeparator !== undefined || decimalSeparator !== undefined
-	if (typeof v === "number") return hasSeparators ? null : v
+	if (isFeelNumber(v)) return hasSeparators ? null : v
 	if (typeof v !== "string") return null
 	const grouping = separatorArg(groupingSeparator, [" ", ",", "."])
 	const decimal = separatorArg(decimalSeparator, [",", "."])
@@ -810,9 +797,11 @@ reg("number", (v, groupingSeparator, decimalSeparator) => {
 	let text = v
 	if (grouping !== null) text = text.split(grouping).join("")
 	if (decimal !== null) text = text.split(decimal).join(".")
-	if (text.trim() === "") return null
-	const n = Number(text)
-	return Number.isNaN(n) ? null : n
+	try {
+		return FeelNumber.from(text)
+	} catch {
+		return null
+	}
 })
 
 /** Reads a number() separator argument: null when absent, undefined when invalid. */
@@ -822,57 +811,16 @@ function separatorArg(v: FeelValue | undefined, allowed: string[]): string | nul
 	return v
 }
 
-reg("decimal", (n, scale) => {
-	const num = toNum(n)
-	const sc = toScale(scale)
-	if (num === null || sc === null || scale === undefined) return null
-	return roundAt(num, sc, roundHalfEven)
-})
-
-reg("floor", (n, scale) => {
-	const num = toNum(n)
-	const sc = toScale(scale)
-	if (num === null || sc === null) return null
-	return roundAt(num, sc, Math.floor)
-})
-
-reg("ceiling", (n, scale) => {
-	const num = toNum(n)
-	const sc = toScale(scale)
-	if (num === null || sc === null) return null
-	return roundAt(num, sc, Math.ceil)
-})
-
-reg("round half up", (n, scale) => {
-	const num = toNum(n)
-	const sc = toScale(scale)
-	if (num === null || sc === null) return null
-	return roundAt(num, sc, roundHalfUp)
-})
-
-reg("round half down", (n, scale) => {
-	const num = toNum(n)
-	const sc = toScale(scale)
-	if (num === null || sc === null) return null
-	return roundAt(num, sc, roundHalfDown)
-})
-
-reg("round up", (n, scale) => {
-	const num = toNum(n)
-	const sc = toScale(scale)
-	if (num === null || sc === null) return null
-	return roundAt(num, sc, (x) => (x >= 0 ? Math.ceil(x) : Math.floor(x)))
-})
-
-reg("round down", (n, scale) => {
-	const num = toNum(n)
-	const sc = toScale(scale)
-	if (num === null || sc === null) return null
-	return roundAt(num, sc, Math.trunc)
-})
+reg("decimal", rounding("half-even", true))
+reg("floor", rounding("floor"))
+reg("ceiling", rounding("ceiling"))
+reg("round half up", rounding("half-up"))
+reg("round half down", rounding("half-down"))
+reg("round up", rounding("up"))
+reg("round down", rounding("down"))
 
 reg("abs", (n) => {
-	if (typeof n === "number") return Math.abs(n)
+	if (isFeelNumber(n)) return n.abs()
 	if (isFeelDayTimeDuration(n)) return { type: "days-time-duration", seconds: Math.abs(n.seconds) }
 	if (isFeelYearsMonthsDuration(n))
 		return { type: "years-months-duration", months: Math.abs(n.months) }
@@ -880,57 +828,34 @@ reg("abs", (n) => {
 })
 
 reg("modulo", (n, d) => {
-	const num = toNum(n)
-	const div = toNum(d)
-	if (num === null || div === null || div === 0) return null
-	// FEEL numbers are decimals: modulo(1000000, -0.1) is 0, but the double -0.1 is not
-	// exactly a tenth and leaves a -5.5e-12 remainder. Scaling both to integers by their
-	// written decimal places keeps such operands exact.
-	const f = 10 ** Math.max(fractionDigits(num), fractionDigits(div))
-	const a = Math.round(num * f)
-	const b = Math.round(div * f)
-	if (Number.isSafeInteger(a) && Number.isSafeInteger(b) && a / f === num && b / f === div) {
-		return (((a % b) + b) % b) / f + 0
-	}
-	return ((num % div) + div) % div
+	const dividend = toNum(n)
+	const divisor = toNum(d)
+	// Exact, with the sign of the divisor; a zero divisor is null.
+	return dividend === null || divisor === null ? null : dividend.mod(divisor)
 })
 
-/** Digits after the point in the shortest decimal form of `n` (99 when not plain). */
-function fractionDigits(n: number): number {
-	const text = String(n)
-	if (text.includes("e")) return 99
-	const dot = text.indexOf(".")
-	return dot < 0 ? 0 : text.length - dot - 1
-}
+reg("sqrt", (n) => (toNum(n)?.sign() === -1 ? null : viaFloat(n, Math.sqrt)))
 
-reg("sqrt", (n) => {
-	const num = toNum(n)
-	return num === null || num < 0 ? null : Math.sqrt(num)
-})
+reg("log", (n) => (toNum(n)?.sign() === 1 ? viaFloat(n, Math.log) : null))
 
-reg("log", (n) => {
-	const num = toNum(n)
-	return num === null || num <= 0 ? null : Math.log(num)
-})
+// Past float64's range exp is Infinity, which FEEL has no number for: null.
+reg("exp", (n) => viaFloat(n, Math.exp))
 
-reg("exp", (n) => {
-	const num = toNum(n)
-	// Past float64's range exp is Infinity, which FEEL has no number for.
-	const e = num === null ? null : Math.exp(num)
-	return e !== null && Number.isFinite(e) ? e : null
-})
+const TWO = FeelNumber.from(2)
 
 reg("odd", (n) => {
-	const num = toNum(n)
-	return num === null ? null : Math.abs(num) % 2 === 1
+	const value = toNum(n)
+	if (value === null) return null
+	return value.isInteger() && !(value.mod(TWO)?.isZero() ?? true)
 })
 
 reg("even", (n) => {
-	const num = toNum(n)
-	return num === null ? null : num % 2 === 0
+	const value = toNum(n)
+	if (value === null) return null
+	return value.isInteger() && (value.mod(TWO)?.isZero() ?? false)
 })
 
-reg("random number", () => Math.random())
+reg("random number", () => num(Math.random()))
 
 // -------------------------------------------------------------------------
 // List functions
@@ -940,12 +865,13 @@ reg("count", (...args) => {
 	// count() takes a list; a null argument is a type error, not a one-item list.
 	if (args.length === 1 && args[0] === null) return null
 	// One list argument is the list; its items are not unwrapped again (count([[1, 2]]) is 1).
-	return flattenToList(args).length
+	return FeelNumber.from(flattenToList(args).length)
 })
 
 reg("list contains", (list, item) => {
 	if (!isFeelList(list)) return null
-	return list.some((v) => v === item)
+	// Numbers by value: 1 and 1.0 are the same number, though distinct objects.
+	return list.some((v) => v === item || (isFeelNumber(v) && isFeelNumber(item) && v.eq(item)))
 })
 
 reg("min", (...args) => {
@@ -972,86 +898,82 @@ reg("max", (...args) => {
 	return m
 })
 
-reg("sum", (...args) => {
-	const list = flattenToList(args)
-	let s = 0
-	for (const v of list) {
+/** The numbers of a list argument, or null when one of them is not a number. */
+function numbersOf(args: FeelValue[]): FeelNumber[] | null {
+	const nums: FeelNumber[] = []
+	for (const v of flattenToList(args)) {
 		const n = toNum(v)
 		if (n === null) return null
-		s += n
+		nums.push(n)
 	}
-	return s
+	return nums
+}
+
+function sumOf(nums: FeelNumber[]): FeelNumber {
+	return nums.reduce((s, n) => s.add(n), FeelNumber.ZERO)
+}
+
+reg("sum", (...args) => {
+	const nums = numbersOf(args)
+	return nums === null ? null : sumOf(nums)
 })
 
 reg("product", (...args) => {
 	if (args.length === 0) return null
-	const list = flattenToList(args)
-	if (list.length === 0) return null
-	let p = 1
-	for (const v of list) {
-		const n = toNum(v)
-		if (n === null) return null
-		p *= n
-	}
-	return p
+	const nums = numbersOf(args)
+	if (nums === null || nums.length === 0) return null
+	return nums.reduce((p, n) => p.mul(n), FeelNumber.ONE)
 })
 
 reg("mean", (...args) => {
-	const list = flattenToList(args)
-	if (list.length === 0) return null
-	let s = 0
-	for (const v of list) {
-		const n = toNum(v)
-		if (n === null) return null
-		s += n
-	}
-	return s / list.length
+	const nums = numbersOf(args)
+	if (nums === null || nums.length === 0) return null
+	return sumOf(nums).div(FeelNumber.from(nums.length))
 })
 
 reg("median", (...args) => {
-	const list = flattenToList(args)
-	const nums: number[] = []
-	for (const v of list) {
-		const n = toNum(v)
-		if (n === null) return null
-		nums.push(n)
-	}
-	if (nums.length === 0) return null
-	nums.sort((a, b) => a - b)
+	const nums = numbersOf(args)
+	if (nums === null || nums.length === 0) return null
+	nums.sort((a, b) => a.cmp(b))
 	const mid = Math.floor(nums.length / 2)
-	return nums.length % 2 === 0 ? ((nums[mid - 1] ?? 0) + (nums[mid] ?? 0)) / 2 : (nums[mid] ?? 0)
+	const upper = nums[mid] as FeelNumber
+	if (nums.length % 2 === 1) return upper
+	return (nums[mid - 1] as FeelNumber).add(upper).div(TWO)
 })
 
 reg("stddev", (...args) => {
-	const list = flattenToList(args)
-	const nums: number[] = []
-	for (const v of list) {
-		const n = toNum(v)
-		if (n === null) return null
-		nums.push(n)
-	}
-	if (nums.length <= 1) return null
-	const mean = nums.reduce((a, b) => a + b, 0) / nums.length
-	const variance = nums.reduce((a, b) => a + (b - mean) ** 2, 0) / (nums.length - 1)
-	return Math.sqrt(variance)
+	const nums = numbersOf(args)
+	if (nums === null || nums.length <= 1) return null
+	// The variance is exact in Decimal128; only its square root goes through float64.
+	const mean = sumOf(nums).div(FeelNumber.from(nums.length)) as FeelNumber
+	const squares = sumOf(nums.map((n) => n.sub(mean).mul(n.sub(mean))))
+	return viaFloat(squares.div(FeelNumber.from(nums.length - 1)), Math.sqrt)
 })
+
+/** A key under which equal numbers meet: 1, 1.0 and 1.00 are one number. */
+function numberKey(n: FeelNumber): string {
+	const s = n.stripTrailingZeros()
+	return `${s.coefficient}e${s.exponent}`
+}
 
 reg("mode", (...args) => {
 	if (args.length === 0) return null
-	const list = flattenToList(args)
-	const counts = new Map<number, number>()
-	for (const v of list) {
-		const n = toNum(v)
-		if (n === null) return null
-		counts.set(n, (counts.get(n) ?? 0) + 1)
+	const nums = numbersOf(args)
+	if (nums === null) return null
+	const counts = new Map<string, { value: FeelNumber; count: number }>()
+	for (const n of nums) {
+		const key = numberKey(n)
+		const entry = counts.get(key)
+		if (entry) entry.count++
+		else counts.set(key, { value: n, count: 1 })
 	}
 	if (counts.size === 0) return []
-	const maxCount = Math.max(...counts.values())
+	const maxCount = Math.max(...[...counts.values()].map((e) => e.count))
 	// The most frequent values, in ascending order.
-	return [...counts]
-		.filter(([, count]) => count === maxCount)
-		.map(([value]) => value)
-		.sort((a, b) => a - b)
+	return [...counts.values()]
+		.filter((e) => e.count === maxCount)
+		.map((e) => e.value)
+		.sort((a, b) => a.cmp(b))
 })
 
 reg("all", (...args) => {
@@ -1080,13 +1002,13 @@ reg("any", (...args) => {
 
 reg("sublist", (list, start, length) => {
 	if (!isFeelList(list)) return null
-	const n = toNum(start)
+	const n = toJsNum(start)
 	if (n === null) return null
 	// Truncated to an integer, as substring() does: a start in (0, 1) is 0.
 	const st = Math.trunc(n)
 	const sliceIdx = st > 0 ? st - 1 : Math.max(0, list.length + st)
 	if (length !== undefined && length !== null) {
-		const len = toNum(length)
+		const len = toJsNum(length)
 		if (len === null) return null
 		return list.slice(sliceIdx, sliceIdx + Math.trunc(len))
 	}
@@ -1112,7 +1034,7 @@ reg("concatenate", (...args) => {
 
 reg("insert before", (list, pos, newItem) => {
 	if (!isFeelList(list)) return null
-	const n = toNum(pos)
+	const n = toJsNum(pos)
 	if (n === null) return null
 	// Truncated to an integer, as substring() does.
 	const p = Math.trunc(n)
@@ -1124,7 +1046,7 @@ reg("insert before", (list, pos, newItem) => {
 
 reg("remove", (list, pos) => {
 	if (!isFeelList(list)) return null
-	const n = toNum(pos)
+	const n = toJsNum(pos)
 	if (n === null) return null
 	// Truncated to an integer, as substring() does.
 	const p = Math.trunc(n)
@@ -1144,7 +1066,7 @@ reg("index of", (list, match) => {
 	const result: FeelValue[] = []
 	for (let i = 0; i < list.length; i++) {
 		// By value, like the Rust twin: dates, lists and contexts are distinct objects.
-		if (sameItem(list[i] ?? null, match ?? null)) result.push(i + 1)
+		if (sameItem(list[i] ?? null, match ?? null)) result.push(FeelNumber.from(i + 1))
 	}
 	return result
 })
@@ -1158,17 +1080,28 @@ reg("index of", (list, match) => {
  */
 function distinct(items: FeelValue[]): FeelValue[] {
 	const out: FeelValue[] = []
-	const keyed = new Set<FeelValue>()
+	const keyed = new Set<unknown>()
 	for (const item of items) {
-		if (item === null || typeof item !== "object") {
-			if (keyed.has(item)) continue
-			keyed.add(item)
+		const key = scalarKey(item)
+		if (key !== undefined) {
+			if (keyed.has(key)) continue
+			keyed.add(key)
 		} else if (out.some((o) => sameItem(o, item))) {
 			continue
 		}
 		out.push(item)
 	}
 	return out
+}
+
+/**
+ * A key for the values that are equal exactly when their keys are: null, booleans, strings and
+ * numbers (by value). Undefined for structured values, which are compared one by one.
+ */
+function scalarKey(v: FeelValue): unknown {
+	if (isFeelNumber(v)) return `\u0000${numberKey(v)}`
+	if (v === null || typeof v !== "object") return v
+	return undefined
 }
 
 reg("union", (...args) => distinct(args.flatMap((v) => (isFeelList(v) ? v : [v]))))
@@ -1184,14 +1117,14 @@ reg("duplicate values", (list) => {
 	// (dates, lists, contexts) are compared against the groups seen so far.
 	type Group = { item: FeelValue; count: number }
 	const groups: Group[] = []
-	const byKey = new Map<FeelValue, Group>()
+	const byKey = new Map<unknown, Group>()
 	for (const item of list) {
-		const keyed = item === null || typeof item !== "object"
-		let group = keyed ? byKey.get(item) : groups.find((g) => sameItem(g.item, item))
+		const key = scalarKey(item)
+		let group = key !== undefined ? byKey.get(key) : groups.find((g) => sameItem(g.item, item))
 		if (!group) {
 			group = { item, count: 0 }
 			groups.push(group)
-			if (keyed) byKey.set(item, group)
+			if (key !== undefined) byKey.set(key, group)
 		}
 		group.count++
 	}
@@ -1202,7 +1135,7 @@ reg("is empty", (list) => (isFeelList(list) ? list.length === 0 : null))
 
 reg("partition", (list, size) => {
 	if (!isFeelList(list)) return null
-	const n = toNum(size)
+	const n = toJsNum(size)
 	// A size of zero has no partition either: it would never consume the list.
 	if (n === null || !Number.isInteger(n) || n <= 0) return null
 	const parts: FeelValue[] = []
@@ -1365,9 +1298,9 @@ reg("date", (...args) => {
 		return null
 	}
 	if (args.length === 3) {
-		const y = toNum(at(args, 0))
-		const m = toNum(at(args, 1))
-		const d = toNum(at(args, 2))
+		const y = toJsNum(at(args, 0))
+		const m = toJsNum(at(args, 1))
+		const d = toJsNum(at(args, 2))
 		if (y === null || m === null || d === null) return null
 		return makeDate(y, m, d)
 	}
@@ -1385,9 +1318,9 @@ reg("time", (...args) => {
 		return null
 	}
 	if (args.length >= 3) {
-		const h = toNum(at(args, 0))
-		const m = toNum(at(args, 1))
-		const s = toNum(at(args, 2))
+		const h = toJsNum(at(args, 0))
+		const m = toJsNum(at(args, 1))
+		const s = toJsNum(at(args, 2))
 		if (h === null || m === null || s === null) return null
 		// Only the second may have a fraction: time(0, 0.1, 0) is an error, not "00:0.1:00".
 		if (!Number.isInteger(h) || !Number.isInteger(m) || !isValidTime(h, m, s)) return null
@@ -1497,9 +1430,9 @@ reg("to json", (v) => {
 
 /** A value's JSON text, or undefined for a value JSON has no form for (a function, a range). */
 function toJson(v: FeelValue): string | undefined {
-	if (v === null || typeof v === "number" || typeof v === "boolean" || typeof v === "string") {
-		return JSON.stringify(v)
-	}
+	if (v === null || typeof v === "boolean" || typeof v === "string") return JSON.stringify(v)
+	// Every digit, in plain notation, which is valid JSON: 1/3 keeps its 34 digits.
+	if (isFeelNumber(v)) return v.toString()
 	if (isFeelList(v)) {
 		const items: string[] = []
 		for (const item of v) {
@@ -1534,7 +1467,13 @@ reg("from json", (text) => {
 	if (s === null) return null
 	let parsed: unknown
 	try {
-		parsed = JSON.parse(s)
+		// Where the platform hands the reviver the source text (ES2026, Node 21+), a number
+		// keeps every digit it was written with; elsewhere it goes through float64.
+		parsed = JSON.parse(s, (_key, value: unknown, context?: { source?: string }) =>
+			typeof value === "number" && context?.source !== undefined
+				? FeelNumber.from(context.source)
+				: value,
+		)
 	} catch {
 		return null
 	}
@@ -1542,9 +1481,9 @@ reg("from json", (text) => {
 })
 
 function fromJson(v: unknown): FeelValue {
-	if (v === null || typeof v === "number" || typeof v === "boolean" || typeof v === "string") {
-		return v
-	}
+	if (v === null || typeof v === "boolean" || typeof v === "string") return v
+	if (typeof v === "number") return num(v)
+	if (isFeelNumber(v)) return v
 	if (Array.isArray(v)) return v.map(fromJson)
 	const context: FeelContext = {}
 	for (const [key, value] of Object.entries(v as Record<string, unknown>)) {
@@ -1604,7 +1543,7 @@ reg("day of year", (d) => {
 	if (isFeelDate(d)) date = d
 	else if (isFeelDateTime(d)) date = d.date
 	if (!date) return null
-	return dayOfYear(date)
+	return FeelNumber.from(dayOfYear(date))
 })
 
 reg("week of year", (d) => {
@@ -1616,9 +1555,9 @@ reg("week of year", (d) => {
 	// the year can fall in the neighbouring year's last or first week.
 	const weekday = isoWeekday(date)
 	const week = Math.floor((dayOfYear(date) - weekday + 10) / 7)
-	if (week < 1) return isoWeeksInYear(date.year - 1)
-	if (week > isoWeeksInYear(date.year)) return 1
-	return week
+	if (week < 1) return FeelNumber.from(isoWeeksInYear(date.year - 1))
+	if (week > isoWeeksInYear(date.year)) return FeelNumber.ONE
+	return FeelNumber.from(week)
 })
 
 /** Monday is 1, Sunday is 7. Epoch day 0, 1970-01-01, was a Thursday. */
@@ -1861,6 +1800,7 @@ function sameTemporal(a: FeelValue, b: FeelValue): boolean {
 /** The FEEL type of a value, for deciding whether two values are the same kind. */
 function valueType(v: FeelValue): string {
 	if (v === null) return "null"
+	if (isFeelNumber(v)) return "number"
 	if (Array.isArray(v)) return "list"
 	if (typeof v !== "object") return typeof v
 	const tagged = (v as { type?: unknown }).type
@@ -1875,6 +1815,7 @@ function sameItem(a: FeelValue, b: FeelValue): boolean {
 
 function deepEquals(a: FeelValue, b: FeelValue): boolean {
 	if (a === b) return true
+	if (isFeelNumber(a) && isFeelNumber(b)) return a.eq(b)
 	if (Array.isArray(a) && Array.isArray(b)) {
 		return a.length === b.length && a.every((x, i) => deepEquals(x, b[i] ?? null))
 	}

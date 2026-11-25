@@ -531,7 +531,7 @@ fn render_bpmn(doc: &BpmnDoc) -> String {
         out.push_str("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     }
     out.push_str("<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:foo=\"http://example.com/foo\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n");
-    let collab = doc.collaboration % 4 == 0;
+    let collab = doc.collaboration.is_multiple_of(4);
     if collab {
         out.push_str("  <bpmn:collaboration id=\"Collab_1\">\n    <bpmn:participant id=\"P_1\" name=\"Pool\" processRef=\"Process_1\" />\n  </bpmn:collaboration>\n");
     }

@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 import { evaluate } from "../src/evaluator.js"
 import { parseExpression } from "../src/parser.js"
-import type { FeelContext, FeelValue } from "../src/types.js"
+import { type FeelContext, type FeelValue, isFeelNumber } from "../src/types.js"
 
 /**
  * Runs the FEEL test cases of the DMN TCK.
@@ -194,20 +194,24 @@ const KNOWN_FAILURES: Record<string, string> = {
 }
 
 /**
- * DMN specifies decimal arithmetic to 34 significant digits, and this package
- * computes in float64, so results agree to roughly 15. The TCK also writes its
- * expected values at a precision of its own choosing (exp(4) is recorded as
- * 54.59815003). Numbers therefore compare to a relative 1e-9, which is far
- * inside that gap and far outside any real disagreement.
+ * Numbers are Decimal128 here, as DMN specifies, so arithmetic matches the TCK exactly. A few
+ * functions have no exact decimal form and go through float64 (sqrt, exp, log, stddev, `**`
+ * with a fractional exponent), and the TCK writes their expected values at a precision of its
+ * own choosing (exp(4) is recorded as 54.59815003). Numbers that are not equal therefore still
+ * compare to a relative 1e-9, which is far outside any real disagreement.
  */
-const NUMERIC_TOLERANCE = 1e-9
+const NUMERIC_TOLERANCE = Number(process.env.TCK_TOLERANCE ?? 1e-9)
 
 function matches(actual: FeelValue, expected: FeelValue): boolean {
-	if (typeof actual === "number" && typeof expected === "number") {
-		if (actual === expected) return true
-		const scale = Math.max(Math.abs(actual), Math.abs(expected), 1)
-		return Math.abs(actual - expected) / scale < NUMERIC_TOLERANCE
+	if (isFeelNumber(actual) && isFeelNumber(expected)) {
+		if (actual.eq(expected)) return true
+		const a = actual.toNumber()
+		const e = expected.toNumber()
+		const scale = Math.max(Math.abs(a), Math.abs(e), 1)
+		return Math.abs(a - e) / scale < NUMERIC_TOLERANCE
 	}
+	// The fields of dates, times and durations are JS numbers, where -0 is 0.
+	if (typeof actual === "number" && typeof expected === "number") return actual === expected
 	if (Array.isArray(actual) && Array.isArray(expected)) {
 		return (
 			actual.length === expected.length &&

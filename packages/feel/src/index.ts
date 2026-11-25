@@ -9,8 +9,14 @@ export type {
 	FeelRange,
 	FeelContext,
 	FeelFunction,
+	RoundingMode,
 } from "./types.js"
 export {
+	FeelNumber,
+	isFeelNumber,
+	fromJs,
+	toJs,
+	formatFeelValue,
 	isFeelDate,
 	isFeelTime,
 	isFeelDateTime,

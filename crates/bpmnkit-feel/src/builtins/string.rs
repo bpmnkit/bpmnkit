@@ -11,9 +11,8 @@ use super::BuiltinFn;
 use crate::ops::number_to_string;
 use crate::temporal::{date_to_epoch_days, format_date, format_time, zone_offset_seconds};
 use crate::value::{Context, Time, Value};
+use crate::Decimal;
 use regex::{Captures, Regex, RegexBuilder};
-use rust_decimal::prelude::ToPrimitive;
-use rust_decimal::Decimal;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -488,7 +487,7 @@ fn encode_base64(bytes: &[u8]) -> String {
 /// Decodes padded base64, or `None` when the text is not base64.
 fn decode_base64(s: &str) -> Option<Vec<u8>> {
     let b = s.as_bytes();
-    if b.len() % 4 != 0 {
+    if !b.len().is_multiple_of(4) {
         return None;
     }
     let pad = b.iter().rev().take_while(|&&c| c == b'=').count();
@@ -709,7 +708,7 @@ impl JsonParser<'_> {
         } else {
             Decimal::from_str(text).ok()
         };
-        // Beyond a decimal's 28 digits JSON.parse would have used a float too.
+        // Out of a decimal's exponent range JSON.parse would have used a float too.
         exact
             .or_else(|| {
                 text.parse::<f64>()

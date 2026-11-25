@@ -1,6 +1,6 @@
 [package]
 name = "bpmnkit-feel"
-description = "FEEL (DMN 1.5 + Camunda extensions) lexer, parser and evaluator with exact decimals; the Rust twin of @bpmnkit/feel"
+description = "FEEL (DMN 1.5 + Camunda extensions) lexer, parser and evaluator with Decimal128 numbers (34 digits, half-even, as Camunda 8); the Rust twin of @bpmnkit/feel"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -20,7 +20,8 @@ chrono-tz = { version = "0.10", optional = true }
 indexmap = "2"
 # The minimum for FEEL `matches()`; `full-regex` restores regex's defaults.
 regex = { version = "1", default-features = false, features = ["std", "unicode-perl", "unicode-case", "unicode-gencat"] }
-rust_decimal = { version = "1", features = ["maths"] }
+# Decimal128 arithmetic (34 digits, half-even) needs no std-only features.
+fastnum = { version = "0.7", default-features = false }
 serde_json = { workspace = true }
 
 [features]

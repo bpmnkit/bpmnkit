@@ -6,7 +6,15 @@ import type {
 	DmnOutput,
 	HitPolicy,
 } from "@bpmnkit/core"
-import { evaluate, evaluateUnaryTests, parseExpression, parseUnaryTests } from "@bpmnkit/feel"
+import {
+	FeelNumber,
+	evaluate,
+	evaluateUnaryTests,
+	isFeelNumber,
+	parseExpression,
+	parseUnaryTests,
+	toJs,
+} from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 
 /**
@@ -17,17 +25,25 @@ import type { FeelValue } from "@bpmnkit/feel"
  * conform to its input or output `typeRef` (see `conformToType`).
  */
 export function evaluateDecision(decision: DmnDecision, vars: Record<string, unknown>): unknown {
+	return toJs(evaluateDecisionFeel(decision, vars))
+}
+
+/**
+ * {@link evaluateDecision} without the conversion to plain JS: numbers stay
+ * exact `FeelNumber`s, so a decision graph feeds them on to the next decision.
+ */
+function evaluateDecisionFeel(decision: DmnDecision, vars: Record<string, unknown>): FeelValue {
 	const table = decision.decisionTable
 	if (table === undefined) return null
 
 	const hitPolicy: HitPolicy = table.hitPolicy ?? "UNIQUE"
-	const matched: { ruleId: string; output: Record<string, unknown> }[] = []
+	const matched: { ruleId: string; output: Record<string, FeelValue> }[] = []
 
 	// Input expressions do not depend on the rule, so evaluate each column once.
 	const inputValues: FeelValue[] = table.inputs.map((col) => {
 		const inputExpr = col.inputExpression.text ?? ""
 		if (inputExpr.trim() === "") return null
-		const value = evalExpression(inputExpr, vars) as FeelValue
+		const value = evalExpression(inputExpr, vars)
 		return conformToType(
 			decision.id,
 			`input '${inputExpr.trim()}'`,
@@ -38,7 +54,7 @@ export function evaluateDecision(decision: DmnDecision, vars: Record<string, unk
 
 	for (const rule of table.rules) {
 		if (ruleMatches(table.inputs, inputValues, rule.inputEntries, vars)) {
-			const output: Record<string, unknown> = {}
+			const output: Record<string, FeelValue> = {}
 			for (let i = 0; i < table.outputs.length; i++) {
 				const col = table.outputs[i]
 				const entry = rule.outputEntries[i]
@@ -47,7 +63,7 @@ export function evaluateDecision(decision: DmnDecision, vars: Record<string, unk
 				output[colName] = conformToType(
 					decision.id,
 					`output '${colName}' of rule '${rule.id}'`,
-					evalOutputEntry(entry.text, vars) as FeelValue,
+					evalOutputEntry(entry.text, vars),
 					col.typeRef,
 				)
 			}
@@ -84,19 +100,20 @@ function outputName(col: DmnOutput): string {
  */
 function orderByOutputValues(
 	outputs: DmnOutput[],
-	rows: Record<string, unknown>[],
-): Record<string, unknown>[] {
+	rows: Record<string, FeelValue>[],
+): Record<string, FeelValue>[] {
 	const columns = outputs.flatMap((col) => {
 		const allowed = col.outputValues ? evalExpression(`[${col.outputValues}]`, {}) : undefined
 		return Array.isArray(allowed) ? [{ name: outputName(col), allowed }] : []
 	})
 	if (columns.length === 0) return rows
-	const rank = (allowed: unknown[], value: unknown): number => {
+	const rank = (allowed: FeelValue[], value: FeelValue): number => {
 		const at = evalExpression("index of(allowed, value)", { allowed, value })
-		return Array.isArray(at) && typeof at[0] === "number" ? at[0] - 1 : allowed.length
+		const first = Array.isArray(at) ? at[0] : undefined
+		return isFeelNumber(first) ? first.toNumber() - 1 : allowed.length
 	}
 	return rows
-		.map((row) => ({ row, key: columns.map((c) => rank(c.allowed, row[c.name])) }))
+		.map((row) => ({ row, key: columns.map((c) => rank(c.allowed, row[c.name] ?? null)) }))
 		.sort((a, b) => {
 			for (let i = 0; i < columns.length; i++) {
 				const d = (a.key[i] as number) - (b.key[i] as number)
@@ -123,9 +140,8 @@ const TEMPORAL_CONVERSIONS: Record<string, string> = {
 function dmnTypeName(value: FeelValue): string {
 	if (value === null) return "null"
 	if (Array.isArray(value)) return "list"
+	if (isFeelNumber(value)) return "number"
 	switch (typeof value) {
-		case "number":
-			return "number"
 		case "string":
 			return "string"
 		case "boolean":
@@ -176,7 +192,7 @@ function conformToType(
 	}
 	if (isNumber ? actual === "number" : actual === typeRef) return value
 	if (temporal !== undefined && actual === "string") {
-		const converted = evalExpression(temporal, { v: value }) as FeelValue
+		const converted = evalExpression(temporal, { v: value })
 		if (converted !== null && dmnTypeName(converted) === typeRef) return converted
 	}
 	throw new Error(
@@ -204,14 +220,14 @@ function ruleMatches(
 	return true
 }
 
-function evalExpression(expr: string, vars: Record<string, unknown>): unknown {
+function evalExpression(expr: string, vars: Record<string, unknown>): FeelValue {
 	// Names in scope let FEEL read multi-word variables, such as a required decision's name.
 	const parsed = parseExpression(expr.trim(), { names: Object.keys(vars) })
-	if (parsed.ast === null) return undefined
+	if (parsed.ast === null) return null
 	return evaluate(parsed.ast, { vars: vars as Record<string, FeelValue> })
 }
 
-function evalOutputEntry(text: string, vars: Record<string, unknown>): unknown {
+function evalOutputEntry(text: string, vars: Record<string, unknown>): FeelValue {
 	if (text.trim() === "") return null
 	return evalExpression(text, vars)
 }
@@ -219,9 +235,9 @@ function evalOutputEntry(text: string, vars: Record<string, unknown>): unknown {
 function buildResult(
 	hitPolicy: HitPolicy,
 	aggregation: DmnAggregation | undefined,
-	rows: Record<string, unknown>[],
+	rows: Record<string, FeelValue>[],
 	outputCount: number,
-): unknown {
+): FeelValue {
 	if (rows.length === 0) return null
 	const singleOutput = outputCount === 1
 
@@ -244,7 +260,7 @@ function buildResult(
 				if (singleOutput) return rows.map(firstValue)
 				return rows
 			}
-			const values = rows.map(firstValue).filter((v): v is number => typeof v === "number")
+			const values = rows.map(firstValue).filter(isFeelNumber)
 			return aggregate(aggregation, values)
 		}
 		default:
@@ -252,24 +268,24 @@ function buildResult(
 	}
 }
 
-function firstValue(row: Record<string, unknown>): unknown {
+function firstValue(row: Record<string, FeelValue>): FeelValue {
 	for (const k of Object.keys(row)) {
-		return row[k]
+		return row[k] ?? null
 	}
 	return null
 }
 
-function aggregate(op: DmnAggregation, values: number[]): number | null {
+function aggregate(op: DmnAggregation, values: FeelNumber[]): FeelNumber | null {
 	if (values.length === 0) return null
 	switch (op) {
 		case "SUM":
-			return values.reduce((a, b) => a + b, 0)
+			return values.reduce((a, b) => a.add(b), FeelNumber.from(0))
 		case "MIN":
-			return Math.min(...values)
+			return values.reduce((a, b) => (b.lt(a) ? b : a))
 		case "MAX":
-			return Math.max(...values)
+			return values.reduce((a, b) => (b.gt(a) ? b : a))
 		case "COUNT":
-			return values.length
+			return FeelNumber.from(values.length)
 		default:
 			return null
 	}
@@ -308,12 +324,12 @@ export function evaluateDecisionGraph(
 	vars: Record<string, unknown>,
 ): DecisionGraphResult {
 	const byId = new Map(definitions.decisions.map((d) => [d.id, d]))
-	const done = new Map<string, unknown>()
+	const done = new Map<string, FeelValue>()
 	const visiting = new Set<string>()
 	const evaluatedDecisions: EvaluatedDecision[] = []
 
-	const visit = (id: string): unknown => {
-		if (done.has(id)) return done.get(id)
+	const visit = (id: string): FeelValue => {
+		if (done.has(id)) return done.get(id) ?? null
 		const decision = byId.get(id)
 		if (decision === undefined) throw new Error(`Decision '${id}' not found`)
 		if (visiting.has(id)) throw new Error(`Decision '${id}' requires itself`)
@@ -328,14 +344,14 @@ export function evaluateDecisionGraph(
 		visiting.delete(id)
 		const result =
 			decision.decisionTable !== undefined
-				? evaluateDecision(decision, scope)
+				? evaluateDecisionFeel(decision, scope)
 				: evaluateLiteralExpression(decision, scope)
 		done.set(id, result)
-		evaluatedDecisions.push({ decisionId: id, result })
+		evaluatedDecisions.push({ decisionId: id, result: toJs(result) })
 		return result
 	}
 
-	return { result: visit(decisionId), evaluatedDecisions }
+	return { result: toJs(visit(decisionId)), evaluatedDecisions }
 }
 
 /** The text of a decision's `<literalExpression>`. */
@@ -343,7 +359,10 @@ export function literalExpressionText(decision: DmnDecision): string | undefined
 	return decision.literalExpression?.text
 }
 
-function evaluateLiteralExpression(decision: DmnDecision, vars: Record<string, unknown>): unknown {
+function evaluateLiteralExpression(
+	decision: DmnDecision,
+	vars: Record<string, unknown>,
+): FeelValue {
 	const text = literalExpressionText(decision)
 	if (text === undefined || text.trim() === "") return null
 	return evalExpression(text, vars)

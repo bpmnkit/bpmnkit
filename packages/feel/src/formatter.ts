@@ -1,4 +1,5 @@
 import type { BinaryOp, FeelNode } from "./ast.js"
+import type { FeelNumber } from "./decimal.js"
 
 export interface FormatOptions {
 	indent?: string
@@ -66,6 +67,12 @@ const STRING_ESCAPES: Record<string, string> = {
 }
 
 /** Re-escapes a string literal's value, which the parser stores decoded. */
+/** Plain notation, unless a far-off exponent would spell out hundreds of zeros: 1e400 stays short. */
+function formatNumber(n: FeelNumber): string {
+	const plain = n.toString()
+	return plain.length <= 40 ? plain : `${n.coefficient}e${n.exponent}`
+}
+
 function escapeString(value: string): string {
 	return value.replace(/[\\"\n\r\t]/g, (c) => STRING_ESCAPES[c] ?? c)
 }
@@ -84,7 +91,7 @@ function fmt(node: FeelNode, o: Required<FormatOptions>, depth: number): Out {
 		case "boolean":
 			return atom(String(node.value))
 		case "number":
-			return atom(String(node.value))
+			return atom(formatNumber(node.value))
 		case "string":
 			return atom(`"${escapeString(node.value)}"`)
 		case "temporal":

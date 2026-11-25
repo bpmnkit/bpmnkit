@@ -9,9 +9,8 @@ use crate::temporal::{
     time_to_seconds,
 };
 use crate::value::{Context, Date, DateTime, Time, Value, YearsMonthsDuration};
+use crate::Decimal;
 use regex::Regex;
-use rust_decimal::prelude::ToPrimitive;
-use rust_decimal::Decimal;
 use std::sync::LazyLock;
 
 pub fn lookup(name: &str) -> Option<BuiltinFn> {
@@ -300,7 +299,7 @@ mod tests {
 
     #[test]
     fn string_renders_like_feel() {
-        assert_eq!(call("string", &[n("1.50")]), st("1.5"));
+        assert_eq!(call("string", &[n("1.50")]), st("1.50"));
         assert_eq!(call("string", &[Value::Boolean(true)]), st("true"));
         assert_eq!(call("string", &[Value::Null]), Value::Null);
         assert_eq!(call("string", &[st("x")]), st("x"));

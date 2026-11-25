@@ -12,8 +12,7 @@ use crate::temporal::{
     time_to_seconds, weekday,
 };
 use crate::value::{Context, DaysTimeDuration, Value, YearsMonthsDuration};
-use rust_decimal::prelude::ToPrimitive;
-use rust_decimal::{Decimal, MathematicalOps, RoundingStrategy};
+use crate::{Decimal, RoundingStrategy};
 use std::cmp::Ordering;
 
 fn dec(n: i64) -> Decimal {
@@ -22,15 +21,16 @@ fn dec(n: i64) -> Decimal {
 
 /// A number as JS `String(n)` writes it: normalized (no trailing zeros, no
 /// `-0`), and in exponent form from 1e21 up and below 1e-6 (`1e+21`, `1e-7`).
+/// For JSON text and temporal fields; FEEL's `string()` keeps the scale instead.
 pub(crate) fn number_to_string(n: Decimal) -> String {
     if n.is_zero() {
         return "0".to_owned();
     }
-    let full = n.mantissa().unsigned_abs().to_string();
-    let digits = full.trim_end_matches('0');
+    let (digits, scale) = n.normalized_parts();
+    let digits = digits.as_str();
     let k = digits.len() as i64;
     // The value is 0.<digits> * 10^point.
-    let point = full.len() as i64 - i64::from(n.scale());
+    let point = k - scale;
     let mut out = String::new();
     if n.is_sign_negative() {
         out.push('-');
@@ -176,7 +176,7 @@ fn ym_dur(months: Option<i64>) -> Value {
 /// A scaled month count; fractional months round half away from zero (TS
 /// leaves the fraction in, which no duration can write).
 fn round_months(x: Option<Decimal>) -> Option<i64> {
-    x?.round_dp_with_strategy(0, RoundingStrategy::MidpointAwayFromZero)
+    x?.round_dp_with_strategy(0, RoundingStrategy::HalfUp)?
         .to_i64()
 }
 
@@ -304,35 +304,18 @@ pub fn div(a: &Value, b: &Value) -> Value {
     }
 }
 
-/// A power too close to zero for 28 fraction digits is 0, as float64 rounds it (TS twin);
-/// only a power too large to hold is `None`.
+/// An integer exponent is exact (Decimal128, as BigDecimal's `pow`); any other
+/// is computed in float64, as Camunda does (`2 ** 0.5` is `1.4142135623730951`).
 fn pow_decimal(x: Decimal, y: Decimal) -> Option<Decimal> {
-    // `-0` is zero, not a negative base: (-0) ** 0.5 is 0.
-    let x = if x.is_zero() { Decimal::ZERO } else { x };
-    let real = !x.is_sign_negative() || y.is_integer();
-    let shrinks = (x.abs() > Decimal::ONE) == y.is_sign_negative() && x.abs() != Decimal::ONE;
-    pow_exact(x, y).or_else(|| (real && shrinks && !x.is_zero()).then_some(Decimal::ZERO))
-}
-
-fn pow_exact(x: Decimal, y: Decimal) -> Option<Decimal> {
     if y.is_integer() {
-        let n = y.to_i64()?;
-        if x.is_zero() && n < 0 {
-            return None;
-        }
-        return x.checked_powi(n);
-    }
-    if y == Decimal::new(5, 1) {
-        return x.sqrt();
-    }
-    if x.is_zero() {
-        return y.is_sign_positive().then_some(Decimal::ZERO);
+        return x.checked_powi(y.to_i64()?);
     }
     // A negative base with a fractional exponent is not a real number.
     if x.is_sign_negative() {
         return None;
     }
-    x.checked_powd(y)
+    let y = y.to_f64()?;
+    x.map_f64(|x| x.powf(y))
 }
 
 /// `**`.
@@ -435,7 +418,8 @@ fn stringify(v: &Value, nested: bool) -> Option<String> {
         }
         Value::Context(c) => Some(stringify_context(c)),
         Value::Boolean(b) => Some(b.to_string()),
-        Value::Number(n) => Some(number_to_string(*n)),
+        // As Camunda's `string()`: `BigDecimal.toPlainString`, scale kept (`110.0`).
+        Value::Number(n) => Some(n.to_string()),
         Value::Date(d) => Some(format_date(d)),
         Value::Time(t) => Some(format_time(t)),
         Value::DateTime(dt) => Some(format_date_time(dt)),
@@ -525,7 +509,7 @@ mod tests {
         assert_eq!(add(&n("1"), &Value::from("a")), Value::Null);
         assert_eq!(add(&Value::from("a"), &Value::from("b")), Value::from("ab"));
         assert_eq!(sub(&Value::from("a"), &Value::from("b")), Value::Null);
-        assert_eq!(mul(&Value::Number(Decimal::MAX), &n("2")), Value::Null);
+        assert_eq!(mul(&n("1e32000"), &n("1e32000")), Value::Null);
         assert_eq!(neg(&n("5")), n("-5"));
         assert_eq!(neg(&Value::from("a")), Value::Null);
         assert_eq!(neg(&Value::Null), Value::Null);
@@ -543,26 +527,30 @@ mod tests {
         assert_eq!(pow(&n("0"), &n("2")), n("0"));
         assert_eq!(pow(&n("4"), &n("0.5")), n("2"));
         assert_eq!(pow(&n("-8"), &n("0.3333")), Value::Null);
-        assert_eq!(pow(&n("10"), &n("1000")), Value::Null);
+        assert_eq!(pow(&n("10"), &n("1000")), n("1e1000"));
+        assert_eq!(pow(&n("10"), &n("100000")), Value::Null);
         assert_eq!(pow(&n("1"), &n("1000000000000")), n("1"));
         assert_eq!(pow(&n("10"), &n("21")), n("1000000000000000000000"));
         assert_eq!(pow(&Value::from("a"), &n("2")), Value::Null);
-        // Fuzz regressions: underflow is 0 (TS rounds the double), overflow stays null.
-        assert_eq!(pow(&n("10"), &n("-29")), n("0"));
-        assert_eq!(pow(&n("-12"), &n("-27")), n("0"));
-        assert_eq!(pow(&n("0.5"), &n("200")), n("0"));
-        assert_eq!(pow(&n("2"), &n("-100.5")), n("0"));
+        // Fuzz regressions: Decimal128 holds these (rounded to 34 digits).
+        assert_eq!(pow(&n("10"), &n("-29")), n("1e-29"));
+        assert_eq!(
+            pow(&n("-12"), &n("-27")),
+            n("-7.279580562775070413842812386513078e-30")
+        );
+        assert_eq!(
+            pow(&n("0.5"), &n("200")),
+            n("6.223015277861141707144064053780124e-61")
+        );
+        assert_eq!(pow(&n("2"), &n("-100.5")), n("5.578088954947358e-31"));
         assert_eq!(pow(&n("-0.5"), &n("0.3")), Value::Null);
-        assert_eq!(pow(&n("-4"), &n("48")), Value::Null);
+        assert_eq!(pow(&n("-4"), &n("48")), n("79228162514264337593543950336"));
+        assert_eq!(s(&pow(&n("2"), &n("0.5"))), "1.4142135623730951");
+        assert_eq!(s(&pow(&n("16"), &n("0.5"))), "4.0");
+        assert_eq!(s(&pow(&n("1.10"), &n("2"))), "1.2100");
         assert_eq!(pow(&n("-0"), &n("0.5")), n("0"));
         assert_eq!(pow(&n("-0"), &n("1.5")), n("0"));
-        match pow(&n("2"), &n("1.5")) {
-            Value::Number(x) => assert!(
-                (x - "2.8284271247461900976033774484".parse::<Decimal>().unwrap()).abs()
-                    < "1e-12".parse().unwrap()
-            ),
-            other => panic!("{other:?}"),
-        }
+        assert_eq!(pow(&n("2"), &n("1.5")), n("2.8284271247461903"));
     }
 
     #[test]
@@ -820,8 +808,9 @@ mod tests {
         assert_eq!(to_feel_string(&Value::Null), None);
         assert_eq!(s(&Value::from("a\"b")), "a\"b");
         assert_eq!(s(&Value::Boolean(true)), "true");
-        assert_eq!(s(&n("1.50")), "1.5");
-        assert_eq!(s(&n("1000000000000000000000")), "1e+21");
+        // `string()` keeps the scale and never uses an exponent (`BigDecimal.toPlainString`).
+        assert_eq!(s(&n("1.50")), "1.50");
+        assert_eq!(s(&n("1000000000000000000000")), "1000000000000000000000");
         assert_eq!(s(&t("2020-03-15")), "2020-03-15");
         assert_eq!(
             s(&t("2020-03-15T10:00:00+02:00")),
@@ -854,7 +843,7 @@ mod tests {
         assert_eq!(to_feel_string(&range), None);
         assert_eq!(s(&Value::List(vec![range])), "[null]");
         assert_eq!(format!("{}", Value::Null), "null");
-        assert_eq!(format!("{}", n("2.50")), "2.5");
+        assert_eq!(format!("{}", n("2.50")), "2.50");
     }
 
     #[cfg(feature = "tz")] // uses IANA zone names

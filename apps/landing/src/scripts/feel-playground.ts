@@ -20,6 +20,7 @@
 import {
 	evaluate,
 	evaluateUnaryTests,
+	formatFeelValue,
 	highlightToHtml,
 	parseExpression,
 	parseUnaryTests,
@@ -83,10 +84,7 @@ const EXAMPLES: readonly Example[] = [
 
 /** How a result is written out — the same shapes the editor's panel shows. */
 function renderValue(value: FeelValue): string {
-	if (value === null) return "null"
-	if (typeof value === "string") return `"${value}"`
-	if (typeof value === "boolean" || typeof value === "number") return String(value)
-	return JSON.stringify(value, null, 2)
+	return formatFeelValue(value)
 }
 
 export function mountFeelPlayground(root: HTMLElement): void {

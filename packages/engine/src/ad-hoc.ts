@@ -1,5 +1,5 @@
 import type { BpmnFlowElement } from "@bpmnkit/core"
-import { parseExpression } from "@bpmnkit/feel"
+import { parseExpression, toJs } from "@bpmnkit/feel"
 import type { FeelNode } from "@bpmnkit/feel"
 import { parseZeebeExt } from "./zeebe.js"
 
@@ -225,12 +225,13 @@ function mismatchValue(node: FeelNode): string {
 function literal(node: FeelNode): unknown {
 	switch (node.kind) {
 		case "string":
-		case "number":
 		case "boolean":
 			return node.value
+		case "number":
+			return toJs(node.value)
 		case "unary-minus":
 			// FEEL reads a negative number literal as one number.
-			if (node.operand.kind === "number") return -node.operand.value
+			if (node.operand.kind === "number") return -(toJs(node.operand.value) as number)
 			break
 		case "list":
 			return node.items.map(literal)

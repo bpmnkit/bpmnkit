@@ -5,13 +5,14 @@ import { describe, expect, it } from "vitest"
 import { parseTemporal } from "../src/builtins.js"
 import { evaluate } from "../src/evaluator.js"
 import { parseExpression } from "../src/parser.js"
-import type { FeelContext, FeelValue } from "../src/types.js"
+import { type FeelContext, FeelNumber, type FeelValue, isFeelNumber } from "../src/types.js"
 
 /**
  * Replays conformance/feel/*.jsonl against this package. The files are the
  * contract the Rust implementation is checked against (see
  * conformance/README.md); `pnpm conformance:record` rewrites the expected
- * values from this implementation, which is the oracle.
+ * values from this implementation, which is the oracle. Numbers are recorded as exact decimal
+ * strings and compared by that string, so a Decimal128 result is pinned to every digit.
  */
 
 type Value =
@@ -33,11 +34,9 @@ interface Case {
 const RECORD = process.env.CONFORMANCE_RECORD === "1"
 const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../../conformance/feel")
 
-function numberToDecimal(n: number): string | null {
-	if (!Number.isFinite(n)) return null
-	if (n === 0) return "0"
-	const s = n.toLocaleString("en-US", { useGrouping: false, maximumFractionDigits: 20 })
-	return s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s
+/** The recorded form of a number: plain notation, no trailing zeros, and zero as "0". */
+function numberToDecimal(n: FeelNumber): string {
+	return n.stripTrailingZeros().toString()
 }
 
 function stringify(v: FeelValue): string {
@@ -50,10 +49,7 @@ function encode(v: FeelValue): Value {
 	if (v === null) return { t: "null" }
 	if (typeof v === "boolean") return { t: "boolean", v }
 	if (typeof v === "string") return { t: "string", v }
-	if (typeof v === "number") {
-		const d = numberToDecimal(v)
-		return d === null ? { t: "error" } : { t: "number", v: d }
-	}
+	if (isFeelNumber(v)) return { t: "number", v: numberToDecimal(v) }
 	if (Array.isArray(v)) {
 		const items = v.map(encode)
 		return items.some((i) => i.t === "error") ? { t: "error" } : { t: "list", v: items }
@@ -92,7 +88,7 @@ function decode(v: Value): FeelValue {
 		case "boolean":
 			return v.v
 		case "number":
-			return Number(v.v)
+			return FeelNumber.from(v.v)
 		case "string":
 			return v.v
 		case "list":

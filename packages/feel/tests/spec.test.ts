@@ -3,20 +3,17 @@ import { evaluate } from "../src/evaluator.js"
 import { unescapeString } from "../src/lexer.js"
 import type { ParseOptions } from "../src/parser.js"
 import { parseExpression } from "../src/parser.js"
-import type { FeelValue } from "../src/types.js"
+import { toJs } from "../src/types.js"
 
-function eval_(
-	input: string,
-	vars: Record<string, FeelValue> = {},
-	options?: ParseOptions,
-): FeelValue {
+/** Evaluates, with FEEL numbers taken out as JS numbers so results compare with plain literals. */
+function eval_(input: string, vars: Record<string, unknown> = {}, options?: ParseOptions): unknown {
 	const { ast } = parseExpression(input, options)
 	if (!ast) return null
-	return evaluate(ast, { vars })
+	return toJs(evaluate(ast, { vars }))
 }
 
 /** Parses with the variables in scope, the way a caller with a context would. */
-function evalInScope(input: string, vars: Record<string, FeelValue>): FeelValue {
+function evalInScope(input: string, vars: Record<string, unknown>): unknown {
 	return eval_(input, vars, { names: Object.keys(vars) })
 }
 

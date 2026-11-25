@@ -1,6 +1,27 @@
 # Progress
 - Review fixes: source checks see through raw identifiers (`r#include_str!`) and nested / macro-hidden `cfg_attr(…, path = …)`; cargo runs with a cleared environment (allow-list `PATH HOME CARGO_HOME RUSTUP_HOME RUSTUP_TOOLCHAIN TMPDIR`) so profile secrets and `RUSTFLAGS` never reach a worker build. Open follow-ups: unique crate name per project (shared target race), host pool sizing vs `max_concurrent`, private work dir, per-worker secret namespaces, kill rustc process group, more NAT64/6to4 ranges, DNS timeout, curated `--locked` lockfile.
 
+## 2026-11-25 — PR CI fixes for Decimal128 (#320)
+
+Rust MSRV 1.85 → 1.94: every `fastnum` release needs ≥ 1.87 and 0.7.5 needs 1.94. `wasm/Cargo.lock` follows `bpmnkit-feel` (rust_decimal out, fastnum in); `apps/reebe` takes `url` 2.5.9 (RUSTSEC-2026-0592). `api-surface.json` records the new `@bpmnkit/feel` exports; `@crates/bpmnkit-feel` gets its changeset.
+
+## 2026-11-25 — @bpmnkit/feel: `formatFeelValue` keeps nested numbers exact (#320)
+
+New `formatFeelValue` writes lists, contexts and ranges as indented JSON with every number printed by `FeelNumber#toString`, so `[1 / 3]` keeps 34 digits and `{a: 100 * 1.1}` shows `110.0`. The FEEL playground plugin, drop's FEEL view and the landing playground use it instead of `JSON.stringify(toJs(v))`, which rounded nested numbers to JS doubles. Tests: `packages/feel/tests/format-value.test.ts`.
+
+## 2026-11-25 — Consumers of @bpmnkit/feel adapted to Decimal128 (#320)
+
+Engine evaluates exactly inside FEEL (`amount * 1.1 <= 110` takes the conditional gateway flow) and converts with `toJs` where results become variables, DMN decision results, `feel:evaluated` events and connector response mappings; DMN `COLLECT` aggregations and `typeRef` checks work on `FeelNumber`. Core's Zeebe validator, the FEEL playground plugin, drop's FEEL view (context is now plain JSON, `100 * 1.19` shows `119.00`) and the landing playground render numbers with `FeelNumber#toString`. Regression tests: gateway repro and `0.1 + 0.2` stored as JS `0.3` (engine `semantics.test.ts`). `conformance/README.md` now states Decimal128 and lists `fuzz/2,7,8,24` as differing from `rust_decimal` limits.
+
+## 2026-11-25 — @bpmnkit/feel: Decimal128 numbers (#320)
+
+FEEL numbers are now `FeelNumber` (DMN Decimal128: 34 significant digits, HALF_EVEN, Java `BigDecimal` semantics as in Camunda's feel-scala) instead of float64. `0.1 + 0.2 = 0.3`, `amount * 1.1 <= 110` (amount 100) and `floor(0.29 * 100) = 29` now agree with Camunda 8.10.10; `1 / 3` has 34 digits and `9007199254740993 + 1` is exact. Literals, arithmetic, comparisons, integer `**`, ranges, aggregates (`sum`, `mean`, `median`, `mode`, `product`), `modulo` and the rounding functions are exact; `sqrt`, `exp`, `log`, `stddev`'s root and fractional `**` stay float64. `string()` keeps the scale (`110.0`, `decimal(1, 2)` is `1.00`). `evaluate` still takes plain JS numbers in `vars` (converted at the edge); `toJs`/`fromJs` convert results. Breaking: results and the number AST node hold `FeelNumber`, not `number`. Conformance: 9 FEEL cases re-recorded (arithmetic 8/15/23/26/27, fuzz 2/7/8/24). DMN TCK unchanged at 1,941 / 2,053; it now matches exactly apart from the float64 functions.
+
+
+## 2026-11-25 — bpmnkit-feel: Decimal128 numbers (#320, Rust side)
+
+FEEL `number` in Rust moves from `rust_decimal` (28 digits) to DMN Decimal128 as Camunda 8 computes it: a new in-crate `Decimal` (`crates/bpmnkit-feel/src/decimal.rs`, a `fastnum::D256` wrapper) keeps 34 significant digits, rounds every result half-even, keeps `BigDecimal`'s scale (`string(amount * 1.1)` is `110.0`, `string(1.50)` is `1.50`, plain notation) and compares by value. Integer `**` is exact; `sqrt`, `exp`, `log`, `stddev`'s root and fractional powers run in float64 and convert like Scala's `BigDecimal(Double)` (`sqrt(2)` is `1.4142135623730951`). The 28-digit workarounds in `numeric.rs`, `list.rs` and `ops.rs` are gone; `modulo` is null when the quotient passes 34 digits. Tests: `tests/decimal128.rs` (the Camunda 8.10.10 table from the issue). Four shared fuzz cases recorded with float64 overflow/underflow now differ (`fuzz/2`, `fuzz/7`, `fuzz/8`, `fuzz/24`); the re-recorded TS corpus has the same values, so Rust matches all 404 cases. Docs: Rust crates page, crate README.
+
 ## 2026-11-24 — bpmnkit-cli: drop stale `casen` alias text
 
 `--help`, the crate description and `doc/features.md` still called `casen` an alias after 2.0.1 dropped the bin; `self update` told Homebrew users `brew upgrade bpmnkit` (the formula is `bpmnkit-cli`). Fixed, with a patch changeset.

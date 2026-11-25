@@ -1,3 +1,5 @@
+import type { FeelNumber } from "./decimal.js"
+
 export type BinaryOp =
 	| "+"
 	| "-"
@@ -17,7 +19,7 @@ export type FeelNode = { start: number; end: number } & FeelNodeKind
 
 type FeelNodeKind =
 	// Literals
-	| { kind: "number"; value: number }
+	| { kind: "number"; value: FeelNumber }
 	| { kind: "string"; value: string }
 	| { kind: "boolean"; value: boolean }
 	| { kind: "null" }

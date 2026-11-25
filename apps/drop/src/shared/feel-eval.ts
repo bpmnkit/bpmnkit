@@ -6,7 +6,13 @@
  * one of the three has a DOM. No DOM and no Worker APIs, like everything in
  * `shared/`.
  */
-import { evaluate, evaluateUnaryTests, parseExpression, parseUnaryTests } from "@bpmnkit/feel"
+import {
+	evaluate,
+	evaluateUnaryTests,
+	formatFeelValue,
+	parseExpression,
+	parseUnaryTests,
+} from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { type FeelDocument, unaryInput } from "./feel-doc.js"
 
@@ -15,15 +21,12 @@ export type FeelOutcome = { ok: true; value: string } | { ok: false; message: st
 
 /** How a value is written out — the same shapes the playground and the editor show. */
 export function renderFeelValue(value: FeelValue): string {
-	if (value === null) return "null"
-	if (typeof value === "string") return `"${value}"`
-	if (typeof value === "boolean" || typeof value === "number") return String(value)
-	return JSON.stringify(value, null, 2)
+	return formatFeelValue(value)
 }
 
 /** Parses and evaluates a document against its own context. Never throws. */
 export function evaluateFeelDocument(doc: FeelDocument): FeelOutcome {
-	const vars = doc.context as Record<string, FeelValue>
+	const vars = doc.context
 	if (doc.mode === "expression") {
 		const { ast, errors } = parseExpression(doc.expression)
 		if (errors.length > 0 || !ast) {

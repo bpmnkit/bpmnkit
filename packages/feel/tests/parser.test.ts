@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { FeelNode } from "../src/ast.js"
+import { FeelNumber } from "../src/decimal.js"
 import { parseExpression, parseUnaryTests } from "../src/parser.js"
 
 function ast(input: string): FeelNode | null {
@@ -18,12 +19,12 @@ function noErrors(input: string): void {
 describe("parseExpression", () => {
 	describe("literals", () => {
 		it("parses number", () => {
-			expect(ast("42")).toMatchObject({ kind: "number", value: 42 })
+			expect(ast("42")).toMatchObject({ kind: "number", value: FeelNumber.from(42) })
 		})
 		it("parses negative number via unary minus", () => {
 			expect(ast("-1")).toMatchObject({
 				kind: "unary-minus",
-				operand: { kind: "number", value: 1 },
+				operand: { kind: "number", value: FeelNumber.from(1) },
 			})
 		})
 		it("parses string", () => {
@@ -51,8 +52,8 @@ describe("parseExpression", () => {
 			expect(ast("1 + 2")).toMatchObject({
 				kind: "binary",
 				op: "+",
-				left: { value: 1 },
-				right: { value: 2 },
+				left: { value: FeelNumber.from(1) },
+				right: { value: FeelNumber.from(2) },
 			})
 		})
 		it("parses multiplication before addition", () => {
@@ -114,7 +115,11 @@ describe("parseExpression", () => {
 		it("parses list", () => {
 			expect(ast("[1, 2, 3]")).toMatchObject({
 				kind: "list",
-				items: [{ value: 1 }, { value: 2 }, { value: 3 }],
+				items: [
+					{ value: FeelNumber.from(1) },
+					{ value: FeelNumber.from(2) },
+					{ value: FeelNumber.from(3) },
+				],
 			})
 		})
 		it("parses empty list", () => {
@@ -134,8 +139,8 @@ describe("parseExpression", () => {
 				kind: "range",
 				startIncluded: true,
 				endIncluded: true,
-				low: { value: 1 },
-				high: { value: 5 },
+				low: { value: FeelNumber.from(1) },
+				high: { value: FeelNumber.from(5) },
 			})
 		})
 		it("parses exclusive range", () => {

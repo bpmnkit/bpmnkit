@@ -2,7 +2,7 @@ import fs from "node:fs"
 import { describe, expect, it } from "vitest"
 import { evaluate } from "../src/evaluator.js"
 import { parseExpression } from "../src/parser.js"
-import type { FeelContext, FeelValue } from "../src/types.js"
+import { type FeelContext, type FeelValue, isFeelNumber } from "../src/types.js"
 import {
 	type CamundaCase,
 	DEFAULT_CHUNKS_DIR,
@@ -47,15 +47,23 @@ const KNOWN_DIFFERENCES: Record<string, string> = {
 		"a local date and time depends on the engine's default zone",
 }
 
-/** Same tolerance, and for the same reason, as the TCK suite: float64 against decimal. */
+/**
+ * Same tolerance, and for the same reason, as the TCK suite: numbers are exact Decimal128, but
+ * the functions computed in float64 (sqrt, exp, log, …) are documented at a precision of the
+ * page's own choosing.
+ */
 const NUMERIC_TOLERANCE = 1e-9
 
 function matches(actual: FeelValue, expected: FeelValue): boolean {
-	if (typeof actual === "number" && typeof expected === "number") {
-		if (actual === expected) return true
-		const scale = Math.max(Math.abs(actual), Math.abs(expected), 1)
-		return Math.abs(actual - expected) / scale < NUMERIC_TOLERANCE
+	if (isFeelNumber(actual) && isFeelNumber(expected)) {
+		if (actual.eq(expected)) return true
+		const a = actual.toNumber()
+		const e = expected.toNumber()
+		const scale = Math.max(Math.abs(a), Math.abs(e), 1)
+		return Math.abs(a - e) / scale < NUMERIC_TOLERANCE
 	}
+	// The fields of dates, times and durations are JS numbers.
+	if (typeof actual === "number" && typeof expected === "number") return actual === expected
 	if (Array.isArray(actual) && Array.isArray(expected)) {
 		return (
 			actual.length === expected.length &&

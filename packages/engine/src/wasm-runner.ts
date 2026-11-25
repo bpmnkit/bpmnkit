@@ -384,7 +384,7 @@ function evalDmnDecisionTable(table: DmnDecisionTable, vars: Record<string, unkn
 			const expr = rule.outputEntries[0] ?? ""
 			if (expr) {
 				const parsed = feel.parseExpression(expr)
-				if (parsed.ast) collectResults.push(feel.evaluate(parsed.ast, ctx))
+				if (parsed.ast) collectResults.push(feel.toJs(feel.evaluate(parsed.ast, ctx)))
 			}
 		} else {
 			const row: Record<string, unknown> = {}
@@ -393,7 +393,7 @@ function evalDmnDecisionTable(table: DmnDecisionTable, vars: Record<string, unkn
 				const expr = rule.outputEntries[i] ?? ""
 				if (name && expr) {
 					const parsed = feel.parseExpression(expr)
-					if (parsed.ast) row[name] = feel.evaluate(parsed.ast, ctx)
+					if (parsed.ast) row[name] = feel.toJs(feel.evaluate(parsed.ast, ctx))
 				}
 			}
 			collectResults.push(row)

@@ -147,7 +147,7 @@ describe("validateFile", () => {
 
 describe("evaluateFeelDocument", () => {
 	it("evaluates an expression against its own context", () => {
-		expect(evaluateFeelDocument(parseFeelDocument(DOC))).toEqual({ ok: true, value: "119" })
+		expect(evaluateFeelDocument(parseFeelDocument(DOC))).toEqual({ ok: true, value: "119.00" })
 	})
 
 	it("evaluates unary tests against the ? the context bound", () => {
