@@ -17,6 +17,7 @@ import { evaluate, parseExpression, toJs } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { adHocActivatableElements, describeAdHocElement } from "./ad-hoc.js"
 import { evaluateDecision } from "./dmn.js"
+import { withDerivedFlowRefs } from "./flow-refs.js"
 import { resolveSecretString } from "./secrets.js"
 import type { SecretResolver } from "./secrets.js"
 import { scheduleTimer } from "./timers.js"
@@ -367,7 +368,7 @@ export class ProcessInstance {
 		const boundaries = new Map<string, BpmnBoundaryEvent[]>()
 		const eventSubProcesses: EventSubProcessDef[] = []
 
-		for (const el of elements) {
+		for (const el of withDerivedFlowRefs(elements, flows)) {
 			elemMap.set(el.id, el)
 			if (el.type === "boundaryEvent") {
 				const list = boundaries.get(el.attachedToRef) ?? []

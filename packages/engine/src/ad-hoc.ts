@@ -1,6 +1,7 @@
 import type { BpmnFlowElement } from "@bpmnkit/core"
 import { parseExpression, toJs } from "@bpmnkit/feel"
 import type { FeelNode } from "@bpmnkit/feel"
+import { withDerivedFlowRefs } from "./flow-refs.js"
 import { parseZeebeExt } from "./zeebe.js"
 
 /**
@@ -54,7 +55,7 @@ const NOT_ACTIVATABLE: ReadonlySet<BpmnFlowElement["type"]> = new Set([
 export function adHocActivatableElements(
 	adHoc: Extract<BpmnFlowElement, { type: "adHocSubProcess" }>,
 ): BpmnFlowElement[] {
-	return adHoc.flowElements.filter(
+	return withDerivedFlowRefs(adHoc.flowElements, adHoc.sequenceFlows).filter(
 		(el) =>
 			!NOT_ACTIVATABLE.has(el.type) &&
 			!(el.type === "subProcess" && el.triggeredByEvent === true) &&
