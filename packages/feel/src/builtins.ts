@@ -1030,7 +1030,8 @@ function sumOf(nums: FeelNumber[]): FeelNumber {
 
 reg("sum", (...args) => {
 	const nums = numbersOf(args)
-	return nums === null ? null : sumOf(nums)
+	// DMN 1.5 Table 75: the sum of an empty list is null, not 0.
+	return nums === null || nums.length === 0 ? null : sumOf(nums)
 })
 
 reg("product", (...args) => {

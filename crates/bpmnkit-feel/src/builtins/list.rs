@@ -109,7 +109,12 @@ fn max(args: &[Value]) -> Value {
 }
 
 fn sum(args: &[Value]) -> Value {
-    numbers(list_of(args))
+    let list = list_of(args);
+    // DMN 1.5 Table 75: the sum of an empty list is null, not 0.
+    if list.is_empty() {
+        return Value::Null;
+    }
+    numbers(list)
         .and_then(|n| sum_of(&n))
         .map_or(Value::Null, Value::Number)
 }
@@ -502,7 +507,9 @@ mod tests {
         assert_eq!(call("min", &[s("b"), s("a")]), s("a"));
         assert_eq!(call("sum", &[l(&[1, 2, 3])]), n(6));
         assert_eq!(call("sum", &[n(1), n(2)]), n(3));
-        assert_eq!(call("sum", &[l(&[])]), n(0));
+        assert_eq!(call("sum", &[l(&[])]), Value::Null);
+        assert_eq!(call("sum", &[]), Value::Null);
+        assert_eq!(call("sum", &[l(&[0])]), n(0));
         assert_eq!(call("sum", &[Value::List(vec![n(1), s("a")])]), Value::Null);
         assert_eq!(call("product", &[l(&[2, 3, 4])]), n(24));
         assert_eq!(call("product", &[l(&[])]), Value::Null);
