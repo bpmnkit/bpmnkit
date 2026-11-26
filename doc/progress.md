@@ -11,6 +11,14 @@ Fixes found on the way, each with regression tests:
 - reebe `POST /v2/element-instances/search` honours `type` (alias of `elementType`) and `elementId`; results carry `type`.
 - `bpmnkit-wasm-host`: outbound HTTPS also trusts the PEM certificates in `SSL_CERT_FILE` (it trusted only the web PKI roots, so `worker-http` workers failed with `TlsCertificateError` behind a TLS-intercepting egress proxy).
 
+## 2026-11-26 — FEEL: `sum([])` is null (#327)
+
+`sum` of an empty list (or no arguments) now returns null, as DMN 1.5 Table 75 and Camunda 8 do; it returned 0, so `sum(items) > 100` on an empty list silently took a branch. TS and the Rust twin both changed. Regression tests (vitest, Rust unit) and conformance `lists/61`–`lists/64`.
+
+## 2026-11-26 — @bpmnkit/feel: `list contains` by value (fuzz)
+
+Nightly fuzz run 45770517923 found `list contains(b, (0)[""])` with `b = [[]]` was `false` in TS and `true` in Rust: TS compared items by identity, so equal lists, contexts and dates never matched. It now uses the same `sameItem` as `index of`. Tests: `evaluator.test.ts` fuzz regressions, conformance `fuzz/38`.
+
 ## 2026-11-26 — FEEL fuzz: invalid regex repetitions, exact duration seconds
 
 Nightly fuzz (seed 45763151012) found two Rust-vs-TS mismatches. TS `toJsRegExp` now rejects a `{` that is not `{n}`, `{n,}` or `{n,m}` (JavaScript read `{}` as literal text; Java and Rust's regex reject it) and strips the whitespace Rust allows inside the braces; counts above u32 are rejected too. Days-time duration seconds are split (`string`, `.seconds`), added and subtracted in `FeelNumber` (`exactSeconds`), as are time/date-time differences and time shifts, so `76.542 * @"PT36H"` prints `43.2S` rather than `43.19999999925494S`. Regression tests (TS, Rust) and conformance `fuzz/36`–`fuzz/37`.
