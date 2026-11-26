@@ -818,6 +818,24 @@ describe("multi-instance", () => {
 		expect(instance.variables_snapshot).toMatchObject({ results: [null, "found", null] })
 	})
 
+	it("a non-boolean completionCondition fails the instance (#337)", async () => {
+		const { instance } = run(
+			miXml(
+				'isSequential="true"',
+				collect,
+				"<bpmn:completionCondition>= missing</bpmn:completionCondition>",
+			),
+			"p",
+			{ items: [1, 2] },
+			(engine) => {
+				engine.registerJobWorker("w", (j) => j.complete({ result: j.variables.item }))
+			},
+		)
+		await flush()
+		expect(instance.state).toBe("failed")
+		expect(instance.error).toMatch(/completion condition .* must evaluate to BOOLEAN, but was NULL/)
+	})
+
 	it("an empty input collection skips the activity with an empty output collection", async () => {
 		let calls = 0
 		const { instance } = run(miXml("", collect), "p", { items: [] }, (engine) => {

@@ -1531,9 +1531,9 @@ export class ProcessInstance {
 									property: "outputElement",
 								}) ?? null
 						}
-						const done =
-							completion !== "" &&
-							this.evalCondition(
+						let done = false
+						if (completion !== "") {
+							const value = this.evalFeel(
 								completion,
 								scopeId,
 								{ elementId: el.id, property: "completionCondition" },
@@ -1544,6 +1544,16 @@ export class ProcessInstance {
 									numberOfTerminatedInstances: terminated,
 								},
 							)
+							if (typeof value === "boolean") done = value
+							else {
+								// Camunda 8 raises an incident; done = true stops the remaining iterations.
+								this.failElement(
+									el.id,
+									`The completion condition of "${el.id}" must evaluate to BOOLEAN, but was ${feelTypeName(value)}`,
+								)
+								done = true
+							}
+						}
 						this.scopes.delete(scopeId)
 						this.variables.removeScope(scopeId)
 						resolve(done)
@@ -2094,32 +2104,11 @@ export class ProcessInstance {
 			property: `flow:${flow.id}`,
 		})
 		if (typeof result === "boolean") return result
-		const actual =
-			result === null || result === undefined
-				? "NULL"
-				: Array.isArray(result)
-					? "LIST"
-					: typeof result === "object"
-						? "CONTEXT"
-						: typeof result === "number"
-							? "NUMBER"
-							: typeof result === "string"
-								? "STRING"
-								: String(typeof result).toUpperCase()
 		this.failElement(
 			gatewayId,
-			`Condition of flow "${flow.id}" at gateway "${gatewayId}" must evaluate to BOOLEAN, but was ${actual}`,
+			`Condition of flow "${flow.id}" at gateway "${gatewayId}" must evaluate to BOOLEAN, but was ${feelTypeName(result)}`,
 		)
 		return undefined
-	}
-
-	private evalCondition(
-		expr: string,
-		scopeId: string,
-		emitCtx?: { elementId: string; property: string },
-		extraVars?: Vars,
-	): boolean {
-		return this.evalFeel(expr, scopeId, emitCtx, extraVars) === true
 	}
 
 	// ── Emit ───────────────────────────────────────────────────────────────────
@@ -2127,4 +2116,12 @@ export class ProcessInstance {
 	private emit(event: ProcessEvent): void {
 		for (const listener of this.listeners) listener(event)
 	}
+}
+
+/** Camunda's type name for a FEEL result, as its incident messages print it. */
+function feelTypeName(value: unknown): string {
+	if (value === null || value === undefined) return "NULL"
+	if (Array.isArray(value)) return "LIST"
+	if (typeof value === "object") return "CONTEXT"
+	return String(typeof value).toUpperCase()
 }
