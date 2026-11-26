@@ -277,6 +277,24 @@ describe("evaluate", () => {
 				"2024-01-01T00:01:00.1+01:00",
 			)
 		})
+
+		// Regression (nightly fuzz): float `% 60` of 9919843.2 s gave 43.19999999925494 S.
+		it("splits a scaled duration's seconds exactly", () => {
+			expect(eval_('string(76.542 * @"PT36H")')).toBe("P114DT19H30M43.2S")
+			expect(eval_('string(@"PT0.1S" + @"PT0.2S")')).toBe("PT0.3S")
+			expect(eval_('string(@"PT0.3S" - @"PT0.1S")')).toBe("PT0.2S")
+			expect(eval_('string(@"PT0.0000001S")')).toBe("PT0.0000001S")
+			expect(eval_('string(-@"PT1M0.5S")')).toBe("-PT1M0.5S")
+			expect(String(eval_('(@"P1DT2H3M4.3S" * 3).seconds'))).toBe("12.9")
+			expect(String(eval_('(-1.1 * @"PT1M0.1S").seconds'))).toBe("-6.11")
+		})
+
+		it("keeps fractional seconds exact in time and date-time differences", () => {
+			expect(eval_('string(@"2020-01-01T00:00:00.3" - @"2020-01-01T00:00:00.1")')).toBe("PT0.2S")
+			expect(eval_('string(@"00:00:00.3" - @"23:00:00.1")')).toBe("-PT22H59M59.8S")
+			expect(eval_('string(@"10:00:00.1" + @"PT0.2S")')).toBe("10:00:00.3")
+			expect(eval_('string(@"10:00:00.1" - @"PT240H0.2S")')).toBe("09:59:59.9")
+		})
 	})
 
 	describe("instance of", () => {
@@ -496,6 +514,26 @@ describe("regex cache", () => {
 		expect(eval_('matches("]", "[]a]")')).toBe(true)
 		expect(eval_('matches("b", "[^]a]")')).toBe(true)
 		expect(eval_('matches("]", "[^]a]")')).toBe(false)
+	})
+
+	// Regression (nightly fuzz): JavaScript reads `{}` as literal text; Java and Rust reject a
+	// `{` that does not start a counted repetition.
+	it("rejects a { that is not a counted repetition, as Rust and Java do", () => {
+		expect(eval_('matches("", " {}")')).toBe(null)
+		expect(eval_('matches("a", "a{,2}")')).toBe(null)
+		expect(eval_('matches("a{a}", "a{a}")')).toBe(null)
+		expect(eval_('matches("a{2", "a{2")')).toBe(null)
+		expect(eval_('replace("a{}", "{}", "x")')).toBe(null)
+		// split falls back to a literal delimiter when the pattern is invalid, in both engines.
+		expect(eval_('split("a{}b", "{}")')).toEqual(["a", "b"])
+		expect(eval_('extract("a{}", "{}")')).toBe(null)
+		expect(eval_('matches("x", "x{4294967296}")')).toBe(null)
+		expect(eval_('matches("aa", "^a{ 2 , 3 }$")')).toBe(true)
+		expect(eval_('replace("aaa", "a{2}", "b")')).toBe("ba")
+		expect(eval_('matches("a}", "a}")')).toBe(true)
+		expect(eval_('matches("{", "[{]")')).toBe(true)
+		expect(eval_('matches("{", "\\{")')).toBe(true)
+		expect(eval_('matches("{}", "{}", "q")')).toBe(true)
 	})
 
 	it("gives null for a years-months duration past i64 months", () => {

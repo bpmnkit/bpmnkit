@@ -1,5 +1,11 @@
 import type { FeelNode } from "./ast.js"
-import { compareValues, getBuiltin, orderNamedArgs, parseTemporal } from "./builtins.js"
+import {
+	compareValues,
+	exactSeconds,
+	getBuiltin,
+	orderNamedArgs,
+	parseTemporal,
+} from "./builtins.js"
 import type { FeelContext, FeelFunction, FeelValue } from "./types.js"
 import {
 	FeelNumber,
@@ -206,7 +212,7 @@ function addDuration(date: FeelValue, dur: FeelValue): FeelValue {
 	}
 	if (isFeelTime(date) && isFeelDayTimeDuration(dur)) return shiftTime(date, dur.seconds)
 	if (isFeelDayTimeDuration(date) && isFeelDayTimeDuration(dur)) {
-		return { type: "days-time-duration", seconds: date.seconds + dur.seconds }
+		return { type: "days-time-duration", seconds: exactSeconds(date.seconds, dur.seconds) }
 	}
 	if (isFeelYearsMonthsDuration(date) && isFeelYearsMonthsDuration(dur)) {
 		return { type: "years-months-duration", months: date.months + dur.months }
@@ -219,12 +225,18 @@ function shiftTime(
 	t: import("./types.js").FeelTime,
 	seconds: number,
 ): import("./types.js").FeelTime {
-	const total = (((t.hour * 3600 + t.minute * 60 + t.second + seconds) % 86400) + 86400) % 86400
+	// Exact, so 10:00:00.1 + PT0.2S is 10:00:00.3, not 10:00:00.29999999998835847.
+	const day = FeelNumber.from(86400)
+	const total = (
+		FeelNumber.from(exactSeconds(t.hour * 3600 + t.minute * 60, t.second, seconds)).mod(day) ??
+		FeelNumber.from(0)
+	).stripTrailingZeros()
+	const whole = total.floor().toNumber()
 	return {
 		...t,
-		hour: Math.floor(total / 3600),
-		minute: Math.floor((total % 3600) / 60),
-		second: total % 60,
+		hour: Math.floor(whole / 3600),
+		minute: Math.floor((whole % 3600) / 60),
+		second: (total.mod(FeelNumber.from(60)) ?? FeelNumber.from(0)).toNumber(),
 	}
 }
 
@@ -247,7 +259,9 @@ function subtractValues(a: FeelValue, b: FeelValue): FeelValue {
 		return addDuration(a, { type: "years-months-duration", months: -b.months })
 	}
 	if (isFeelDateTime(a) && isFeelDateTime(b)) {
-		const diff = dateTimeToEpochSeconds(a) - dateTimeToEpochSeconds(b)
+		const whole = (dt: import("./types.js").FeelDateTime) =>
+			dateTimeToEpochSeconds({ ...dt, time: { ...dt.time, second: 0 } })
+		const diff = exactSeconds(whole(a), a.time.second, -whole(b), -b.time.second)
 		return { type: "days-time-duration", seconds: diff }
 	}
 	if (isFeelDateTime(a) && isFeelDayTimeDuration(b)) {
@@ -257,7 +271,7 @@ function subtractValues(a: FeelValue, b: FeelValue): FeelValue {
 		return addDuration(a, { type: "years-months-duration", months: -b.months })
 	}
 	if (isFeelDayTimeDuration(a) && isFeelDayTimeDuration(b)) {
-		return { type: "days-time-duration", seconds: a.seconds - b.seconds }
+		return { type: "days-time-duration", seconds: exactSeconds(a.seconds, -b.seconds) }
 	}
 	if (isFeelYearsMonthsDuration(a) && isFeelYearsMonthsDuration(b)) {
 		return { type: "years-months-duration", months: a.months - b.months }
