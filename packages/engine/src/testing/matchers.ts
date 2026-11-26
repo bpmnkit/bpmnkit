@@ -15,6 +15,8 @@ export interface RunSnapshot {
 	readonly completedElements: readonly string[]
 	/** Elements holding a token right now. */
 	readonly activeElements: readonly string[]
+	/** Parallel joins holding some, not all, of their tokens; they keep the run active. */
+	readonly waitingJoins?: readonly string[]
 }
 
 /**
@@ -85,7 +87,7 @@ function list(ids: readonly string[]): string {
 
 function where(run: RunSnapshot): string {
 	const state = run.error !== undefined ? `${run.state}: ${run.error}` : run.state
-	return `process "${run.processId}" is ${state}; waiting at ${list(run.activeElements)}; completed ${list(run.completedElements)}`
+	return `process "${run.processId}" is ${state}; waiting at ${list([...run.activeElements, ...(run.waitingJoins ?? [])])}; completed ${list(run.completedElements)}`
 }
 
 function toArray(ids: string | readonly string[]): readonly string[] {

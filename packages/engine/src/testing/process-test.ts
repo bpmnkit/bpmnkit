@@ -89,6 +89,8 @@ export interface ProcessRun extends RunSnapshot {
 	readonly id: string
 	/** Elements entered, in order (repeats included). */
 	readonly enteredElements: readonly string[]
+	/** Parallel joins that got some, not all, of their tokens: the run stays `active` while any wait. */
+	readonly waitingJoins: readonly string[]
 	/** Jobs waiting for {@link ProcessRun.completeJob} — job types without a mock. */
 	readonly jobs: readonly TestJob[]
 	/**
@@ -594,6 +596,10 @@ class SimulatorRun implements ProcessRun {
 
 	get activeElements(): readonly string[] {
 		return this.instance.activeElements
+	}
+
+	get waitingJoins(): readonly string[] {
+		return this.instance.waitingJoins
 	}
 
 	get jobs(): readonly TestJob[] {

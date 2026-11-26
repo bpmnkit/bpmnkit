@@ -1022,6 +1022,93 @@ describe("scope completion", () => {
 		expect(called).toBe(true)
 		expect(entered(events)).toContain("e2")
 	})
+
+	// #335: a join still waiting for a token holds the scope open, as in Camunda 8.
+	const deadlock = (extraEnd = "", extraFlow = "") => `<bpmn:process id="p" isExecutable="true">
+  <bpmn:startEvent id="start"/>
+  <bpmn:parallelGateway id="fork"/>
+  <bpmn:exclusiveGateway id="xor" default="toEnd"/>
+  <bpmn:parallelGateway id="join"/>
+  <bpmn:endEvent id="endJoined"/>
+  <bpmn:endEvent id="endOther"${extraEnd}
+  ${flow("f1", "start", "fork")}
+  ${flow("f2", "fork", "join")}
+  ${flow("f3", "fork", "xor")}
+  ${flow("toJoin", "xor", "join", "= x &gt; 100")}
+  ${flow("toEnd", "xor", "endOther")}
+  ${flow("f4", "join", "endJoined")}${extraFlow}
+</bpmn:process>`
+
+	it("a join that never gets all its tokens keeps the instance active", async () => {
+		const { instance, events } = run(deadlock("/>"), "p", { x: 1 })
+		await flush()
+		expect(entered(events)).toEqual(["start", "fork", "xor", "endOther"])
+		expect(instance.state).toBe("active")
+		expect(instance.waitingJoins).toEqual(["join"])
+		expect(events.some((e) => e.type === "process:completed")).toBe(false)
+	})
+
+	it("a join that gets all its tokens completes and stops waiting", async () => {
+		const { instance } = run(deadlock("/>"), "p", { x: 500 })
+		await flush()
+		expect(instance.state).toBe("completed")
+		expect(instance.waitingJoins).toEqual([])
+	})
+
+	it("a terminate end event ends an instance with a waiting join", async () => {
+		const { instance } = run(deadlock("><bpmn:terminateEventDefinition/></bpmn:endEvent>"), "p", {
+			x: 1,
+		})
+		await flush()
+		expect(instance.state).toBe("completed")
+		expect(instance.waitingJoins).toEqual([])
+	})
+
+	it("cancel clears a waiting join", async () => {
+		const { instance } = run(deadlock("/>"), "p", { x: 1 })
+		await flush()
+		instance.cancel()
+		expect(instance.state).toBe("terminated")
+		expect(instance.waitingJoins).toEqual([])
+	})
+
+	it("an interrupting event sub-process clears the waiting join of its scope", async () => {
+		const xml = deadlock(
+			'><bpmn:errorEventDefinition errorRef="Err"/></bpmn:endEvent>',
+			`
+  <bpmn:subProcess id="esp" triggeredByEvent="true">
+    <bpmn:startEvent id="espStart"><bpmn:errorEventDefinition errorRef="Err"/></bpmn:startEvent>
+    <bpmn:endEvent id="espEnd"/>
+    ${flow("e1", "espStart", "espEnd")}
+  </bpmn:subProcess>`,
+		).replace("<bpmn:process", '<bpmn:error id="Err" errorCode="E"/>\n<bpmn:process')
+		const { instance, events } = run(xml, "p", { x: 1 })
+		await flush()
+		expect(entered(events)).toContain("espEnd")
+		expect(instance.waitingJoins).toEqual([])
+		expect(instance.state).toBe("completed")
+	})
+
+	it("a waiting join inside a sub-process keeps the sub-process open", async () => {
+		const inner = deadlock("/>")
+			.replace('<bpmn:process id="p" isExecutable="true">', "")
+			.replace("</bpmn:process>", "")
+			.replaceAll('id="start"', 'id="subStart"')
+			.replaceAll('"start"', '"subStart"')
+		const xml = `<bpmn:process id="outer" isExecutable="true">
+  <bpmn:startEvent id="os"/>
+  <bpmn:subProcess id="sub">${inner}</bpmn:subProcess>
+  <bpmn:endEvent id="oe"/>
+  ${flow("o1", "os", "sub")}
+  ${flow("o2", "sub", "oe")}
+</bpmn:process>`
+		const { instance, events } = run(xml, "outer", { x: 1 })
+		await flush()
+		expect(entered(events)).not.toContain("oe")
+		expect(instance.state).toBe("active")
+		expect(instance.activeElements).toEqual(["sub"])
+		expect(instance.waitingJoins).toEqual(["join"])
+	})
 })
 
 describe("controlled mode (beforeComplete)", () => {
