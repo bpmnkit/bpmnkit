@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.3.2",
+	"version": "1.3.3",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -1304,7 +1304,7 @@
 		{
 			"id": "cli.wasm",
 			"file": "chunks/cli.wasm.md",
-			"tokens": 196,
+			"tokens": 228,
 			"tags": [
 				"cli",
 				"wasm"
@@ -1373,7 +1373,7 @@
 		{
 			"id": "cli.wasm.samples.json",
 			"file": "chunks/cli.wasm.samples.json.md",
-			"tokens": 141,
+			"tokens": 214,
 			"tags": [
 				"cli",
 				"wasm",
@@ -1398,7 +1398,7 @@
 		{
 			"id": "cli.wasm.bpmnkit-wasm-host",
 			"file": "chunks/cli.wasm.bpmnkit-wasm-host.md",
-			"tokens": 201,
+			"tokens": 351,
 			"tags": [
 				"cli",
 				"wasm",
@@ -1407,6 +1407,23 @@
 			"entities": [
 				"worker.toml",
 				"worker.wasm"
+			]
+		},
+		{
+			"id": "cli.wasm.bpmnkit-wasm-builder",
+			"file": "chunks/cli.wasm.bpmnkit-wasm-builder.md",
+			"tokens": 812,
+			"tags": [
+				"cli",
+				"wasm",
+				"bpmnkit-wasm-builder"
+			],
+			"entities": [
+				"Cargo.lock",
+				"key.hex",
+				"pub.hex",
+				"BuildRequest",
+				"submit.sh"
 			]
 		},
 		{
@@ -5629,18 +5646,36 @@
 		{
 			"id": "guides.wasm-workers.running-the-host",
 			"file": "chunks/guides.wasm-workers.running-the-host.md",
-			"tokens": 221,
+			"tokens": 521,
 			"tags": [
 				"guides",
 				"wasm-workers",
 				"running",
 				"host",
-				"not",
-				"yet"
+				"builder",
+				"signed",
+				"registry",
+				"hot-load"
 			],
 			"entities": [
 				"worker.toml",
 				"worker.wasm"
+			]
+		},
+		{
+			"id": "guides.wasm-workers.blueprint",
+			"file": "chunks/guides.wasm-workers.blueprint.md",
+			"tokens": 238,
+			"tags": [
+				"guides",
+				"wasm-workers",
+				"blueprint",
+				"not",
+				"yet"
+			],
+			"entities": [
+				"wasm/examples/order-fulfilment",
+				"submit.sh"
 			]
 		},
 		{
@@ -7646,7 +7681,7 @@
 		{
 			"id": "packages.feel.camunda-parity",
 			"file": "chunks/packages.feel.camunda-parity.md",
-			"tokens": 583,
+			"tokens": 737,
 			"tags": [
 				"packages",
 				"feel",
@@ -8066,28 +8101,31 @@
 		{
 			"id": "packages.rust-crates.numbers",
 			"file": "chunks/packages.rust-crates.numbers.md",
-			"tokens": 226,
+			"tokens": 247,
 			"tags": [
 				"packages",
 				"rust-crates",
-				"numbers",
-				"differential",
-				"fuzzing"
+				"numbers"
 			],
 			"entities": [
-				"crates/bpmnkit-fuzz"
+				"java.math.BigDecimal",
+				"MathContext.DECIMAL128",
+				"BigDecimal"
 			]
 		},
 		{
-			"id": "packages.rust-crates.versioning",
-			"file": "chunks/packages.rust-crates.versioning.md",
-			"tokens": 60,
+			"id": "packages.rust-crates.differential-fuzzing",
+			"file": "chunks/packages.rust-crates.differential-fuzzing.md",
+			"tokens": 174,
 			"tags": [
 				"packages",
 				"rust-crates",
+				"differential",
+				"fuzzing",
 				"versioning"
 			],
 			"entities": [
+				"crates/bpmnkit-fuzz",
 				"@bpmnkit/core",
 				"@bpmnkit/feel"
 			]

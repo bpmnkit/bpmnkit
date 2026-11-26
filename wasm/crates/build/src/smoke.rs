@@ -1,25 +1,25 @@
 //! Runs the built component in Wasmtime with its manifest's limits against the agent's sample
-//! jobs. Secrets are fake; the network is a recording stub that resolves nothing, so no packet
-//! leaves the machine and a worker that calls out fails inside the sandbox, visibly.
+//! jobs. Secrets are fake; outbound HTTP the manifest allows is answered from the sample's
+//! `http` stubs and nothing resolves, so no packet leaves the machine and a request without a
+//! stub fails inside the sandbox, visibly.
 
 use std::io;
 use std::net::SocketAddr;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use std::time::Instant;
 
 use bpmnkit_wasm_contract::{ExpectedOutcome, SampleJob, TestResult};
 use bpmnkit_wasm_host::{
-    run_job_blocking, Engine, EngineOptions, Job, MapSecrets, NetPolicy, Outcome, Resolver,
+    run_job_stubbed_blocking, Engine, EngineOptions, HttpStubs, Job, MapSecrets, NetPolicy,
+    Outcome, Resolver,
 };
 
 use crate::cargo::Built;
 
-/// Records every host a worker tried to reach and refuses to resolve it.
-#[derive(Default)]
-struct Recording(Mutex<Vec<String>>);
-impl Resolver for Recording {
-    fn resolve(&self, host: &str, port: u16) -> io::Result<Vec<SocketAddr>> {
-        self.0.lock().expect("lock").push(format!("{host}:{port}"));
+/// Defence in depth: stubs answer before any lookup, and this one resolves nothing.
+struct NoNetwork;
+impl Resolver for NoNetwork {
+    fn resolve(&self, _: &str, _: u16) -> io::Result<Vec<SocketAddr>> {
         Err(io::Error::other("no network in smoke tests"))
     }
 }
@@ -60,12 +60,11 @@ pub fn smoke_test(b: &Built, samples: &[SampleJob]) -> Vec<TestResult> {
             t0,
         )];
     }
-    let recording = Arc::new(Recording::default());
     let engine = match Engine::new(EngineOptions {
         // On-demand allocation: no up-front virtual memory for a one-shot run.
         pool_slots: None,
         net: NetPolicy {
-            resolver: Arc::clone(&recording) as Arc<dyn Resolver>,
+            resolver: Arc::new(NoNetwork),
             ..NetPolicy::default()
         },
     }) {
@@ -119,14 +118,14 @@ pub fn smoke_test(b: &Built, samples: &[SampleJob]) -> Vec<TestResult> {
                     .map(|(k, v)| (k.clone(), v.clone()))
                     .collect(),
             };
-            let before = recording.0.lock().expect("lock").len();
-            let outcome = run_job_blocking(&loaded, job, &secrets);
+            let stubs = Arc::new(HttpStubs::new(s.http.clone()));
+            let outcome = run_job_stubbed_blocking(&loaded, job, &secrets, Arc::clone(&stubs));
             let expect = s.expect.unwrap_or(ExpectedOutcome::Complete);
             let passed = kind(&outcome) == expect;
             let mut message = describe(&outcome);
-            let reached: Vec<_> = recording.0.lock().expect("lock")[before..].to_vec();
-            if !reached.is_empty() {
-                message.push_str(&format!(" (blocked network: {})", reached.join(", ")));
+            let unmatched = stubs.unmatched();
+            if !unmatched.is_empty() {
+                message.push_str(&format!(" (no HTTP stub for: {})", unmatched.join(", ")));
             }
             result(&s.name, passed, Some(message), t)
         })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { evaluate, evaluateUnaryTests } from "../src/evaluator.js"
+import { MAX_ITERATIONS, evaluate, evaluateUnaryTests } from "../src/evaluator.js"
 import type { EvalContext } from "../src/evaluator.js"
 import { parseExpression, parseUnaryTests } from "../src/parser.js"
 import { toJs } from "../src/types.js"
@@ -277,6 +277,24 @@ describe("evaluate", () => {
 				"2024-01-01T00:01:00.1+01:00",
 			)
 		})
+
+		// Regression (nightly fuzz): float `% 60` of 9919843.2 s gave 43.19999999925494 S.
+		it("splits a scaled duration's seconds exactly", () => {
+			expect(eval_('string(76.542 * @"PT36H")')).toBe("P114DT19H30M43.2S")
+			expect(eval_('string(@"PT0.1S" + @"PT0.2S")')).toBe("PT0.3S")
+			expect(eval_('string(@"PT0.3S" - @"PT0.1S")')).toBe("PT0.2S")
+			expect(eval_('string(@"PT0.0000001S")')).toBe("PT0.0000001S")
+			expect(eval_('string(-@"PT1M0.5S")')).toBe("-PT1M0.5S")
+			expect(String(eval_('(@"P1DT2H3M4.3S" * 3).seconds'))).toBe("12.9")
+			expect(String(eval_('(-1.1 * @"PT1M0.1S").seconds'))).toBe("-6.11")
+		})
+
+		it("keeps fractional seconds exact in time and date-time differences", () => {
+			expect(eval_('string(@"2020-01-01T00:00:00.3" - @"2020-01-01T00:00:00.1")')).toBe("PT0.2S")
+			expect(eval_('string(@"00:00:00.3" - @"23:00:00.1")')).toBe("-PT22H59M59.8S")
+			expect(eval_('string(@"10:00:00.1" + @"PT0.2S")')).toBe("10:00:00.3")
+			expect(eval_('string(@"10:00:00.1" - @"PT240H0.2S")')).toBe("09:59:59.9")
+		})
 	})
 
 	describe("instance of", () => {
@@ -426,6 +444,27 @@ describe("fuzz regressions", () => {
 		expect(eval_("union([{a: 1}], [{a: 1}], [1, 1])")).toEqual([{ a: 1 }, 1])
 	})
 
+	it("stops at MAX_ITERATIONS: a bigger range or for/some/every is null (fuzz 45751539260)", () => {
+		expect(MAX_ITERATIONS).toBe(1_000_000)
+		// Up to the limit, and combinations that only pass it while iterating, do ~1M steps:
+		// no wall-clock bound, as shared CI runners are an order of magnitude slower.
+		expect(eval_("count(for x in 1..1000000 return x)")).toBe(1000000)
+		expect(eval_("count(for x in 1..1000, y in 1..1000 return 1)")).toBe(1000000)
+		expect(eval_("for x in 1..1000, y in 1..1001 return 1")).toBeNull()
+		expect(eval_("every x in 1..1001, y in 1..1000 satisfies x > 0")).toBeNull()
+	}, 60_000)
+
+	it("refuses a range past MAX_ITERATIONS before stepping through it", () => {
+		const start = Date.now()
+		expect(eval_("for x in 1..1000001 return x")).toBeNull()
+		expect(eval_("for x in 0..-1000000 return x")).toBeNull()
+		expect(eval_('for x in (-16..-332.36 ** 3) return ctx.a + " " + string(82)')).toBeNull()
+		expect(eval_("some x in 1..2000000 satisfies x > 5")).toBeNull()
+		expect(eval_('for d in @"2000-01-01"..@"5000-01-01" return d')).toBeNull()
+		// Each is refused from the span alone (a few ms here); stepping would take minutes.
+		expect(Date.now() - start).toBeLessThan(5000)
+	})
+
 	it("a long for is linear: partial is bound only when the body reads it", () => {
 		const start = Date.now()
 		expect(eval_("count(for x in 1..200000 return x)")).toBe(200000)
@@ -464,6 +503,47 @@ describe("regex cache", () => {
 			expect(eval_('replace("a-b-c", "-", "+")')).toBe("a+b+c")
 			expect(eval_('extract("a1b22", "[0-9]+")')).toEqual(["1", "22"])
 		}
+	})
+
+	it("steps empty regex matches over whole characters", () => {
+		expect(eval_('extract("ü😀", "")')).toEqual(["", "", ""])
+	})
+
+	it("reads a ] right after [ as a literal, as Java does", () => {
+		expect(eval_('matches("", " []")')).toBe(null)
+		expect(eval_('matches("]", "[]a]")')).toBe(true)
+		expect(eval_('matches("b", "[^]a]")')).toBe(true)
+		expect(eval_('matches("]", "[^]a]")')).toBe(false)
+	})
+
+	// Regression (nightly fuzz): JavaScript reads `{}` as literal text; Java and Rust reject a
+	// `{` that does not start a counted repetition.
+	it("rejects a { that is not a counted repetition, as Rust and Java do", () => {
+		expect(eval_('matches("", " {}")')).toBe(null)
+		expect(eval_('matches("a", "a{,2}")')).toBe(null)
+		expect(eval_('matches("a{a}", "a{a}")')).toBe(null)
+		expect(eval_('matches("a{2", "a{2")')).toBe(null)
+		expect(eval_('replace("a{}", "{}", "x")')).toBe(null)
+		// split falls back to a literal delimiter when the pattern is invalid, in both engines.
+		expect(eval_('split("a{}b", "{}")')).toEqual(["a", "b"])
+		expect(eval_('extract("a{}", "{}")')).toBe(null)
+		expect(eval_('matches("x", "x{4294967296}")')).toBe(null)
+		expect(eval_('matches("aa", "^a{ 2 , 3 }$")')).toBe(true)
+		expect(eval_('replace("aaa", "a{2}", "b")')).toBe("ba")
+		expect(eval_('matches("a}", "a}")')).toBe(true)
+		expect(eval_('matches("{", "[{]")')).toBe(true)
+		expect(eval_('matches("{", "\\{")')).toBe(true)
+		expect(eval_('matches("{}", "{}", "q")')).toBe(true)
+	})
+
+	it("gives null for a years-months duration past i64 months", () => {
+		expect(eval_('years and months duration(@"2020-01-01", @"2024-06-15") / exp(-334.46)')).toBe(
+			null,
+		)
+	})
+
+	it("shifts a date-time far before year 1 with ISO years", () => {
+		expect(eval_('string(@"2024-01-01T10:00:00Z" - @"P1D" * 1000000)')).toBe("-714-02-03T10:00:00Z")
 	})
 
 	it("stays correct past its size bound", () => {

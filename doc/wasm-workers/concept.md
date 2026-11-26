@@ -418,6 +418,19 @@ Each layer assumes the one before it can fail.
 - **3. `worker-builder` service.** Sandbox, warm pool, signing, registry. The host hot-loads from the registry.
 - **4. Slack agent tool.** Generate the appliance, run the fix loop, post the manifest for approval, deploy the BPMN and the workers.
 
+## As built: M3-lite (2026-11-26)
+
+What shipped, against the sections above:
+
+- **Signing:** ed25519 over the component digest and the manifest's canonical JSON (`bpmnkit-wasm-contract`, feature `signing`). Keys are 32-byte raw seeds and public keys in hex files. KMS and Sigstore are not used.
+- **Registry:** a directory, `<name>/<digest>/{worker.wasm,worker.toml,metadata.json,worker.sig}` and an atomically renamed `<name>/CURRENT`, behind the `RegistryStore` trait so OCI can be a second implementation.
+- **Builder:** `bpmnkit-wasm-builder`, an HTTP API (`POST /check`, `POST /builds`, `GET /builds/{id}`, NDJSON events) with bearer-token auth, a per-caller rate limit and a cargo semaphore. It runs cargo in `bwrap` (no network, read-only root; work dir, target dir and cargo home are bound writable, the latter two shared between builds) when available, else under `prlimit` with a warning. This is not gVisor or nsjail. Waiting builds are capped by `--max-queued` (default 16), then `503` with `Retry-After`. Caveats: the registry has no per-name ownership (any token holder can publish any name; use one trusted submitter or a builder per team) and no rollback protection (whoever can write the registry can point `CURRENT` at an older signed digest). `publish` stages into a temp dir and renames; an existing digest with a different manifest or signature is refused.
+- **Hot-load:** the host verifies digest, signature, inspect and verify, and checks that job types are unchanged, then swaps the handler. Running jobs keep their version. Workers that appear after start-up need a restart.
+- **HTTP stubs:** `samples.json` entries may carry `http` answers. The smoke test answers matching requests from them, after the manifest allow-list check, so `test` needs no network.
+- **Blueprint:** `wasm/examples/order-fulfilment`, with the walkthrough in its README.
+
+Out of scope for M3-lite (see `plan-m3.md`): gVisor or nsjail, OCI push, KMS or Sigstore, the Slack agent (M4), WASI 0.3, and a wider dependency allow-list.
+
 ## Open questions
 
 - **Who uses it:** the team only, or customers? This decides tenancy in the host (one host per tenant or shared), who may approve a deploy, and whether Wasm isolation is enough.

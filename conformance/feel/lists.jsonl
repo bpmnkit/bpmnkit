@@ -52,3 +52,9 @@
 {"id":"lists/52","expr":"for i in 0..4 return if i = 0 then 1 else i * partial[-1]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"6"},{"t":"number","v":"24"}]}}
 {"id":"lists/53","expr":"count(for i in @\"1980-01-01\"..@\"1980-01-03\" return i)","context":{},"expected":{"t":"number","v":"3"}}
 {"id":"lists/54","expr":"for i in \"a\"..\"z\" return i","context":{},"expected":{"t":"null"}}
+{"id":"lists/55","expr":"count(for x in 1..1000000 return x)","context":{},"expected":{"t":"number","v":"1000000"}}
+{"id":"lists/56","expr":"for x in 1..1000001 return x","context":{},"expected":{"t":"null"}}
+{"id":"lists/57","expr":"for x in (-16..-332.36 ** 3) return ctx.a + \" \" + string(82)","context":{},"expected":{"t":"null"}}
+{"id":"lists/58","expr":"for x in 1..1000, y in 1..1001 return 1","context":{},"expected":{"t":"null"}}
+{"id":"lists/59","expr":"some x in 1..2000000 satisfies x > 5","context":{},"expected":{"t":"null"}}
+{"id":"lists/60","expr":"for d in @\"2000-01-01\"..@\"5000-01-01\" return d","context":{},"expected":{"t":"null"}}

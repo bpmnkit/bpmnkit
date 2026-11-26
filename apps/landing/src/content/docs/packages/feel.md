@@ -151,6 +151,20 @@ One difference is in how errors surface, not in which expressions are errors. Ca
 the evaluation: `assert(x, x > 0)` with `x = -1` stops with an error. This package follows DMN
 and returns `null` for an evaluation error.
 
+### Iteration limit
+
+A range or a `for` / `some` / `every` stops at **1,000,000 items** (`MAX_ITERATIONS`). A range
+that would expand to more elements, or bindings whose combinations go past it, make the whole
+expression `null`. The Rust `bpmnkit-feel` crate uses the same limit and also reports a
+`ITERATION_LIMIT_EXCEEDED` warning from `evaluate_with_diagnostics`. Camunda has no such bound:
+it runs the loop to the end, however long that takes.
+
+```typescript
+run('count(for x in 1..1000000 return x)');   // 1000000
+run('for x in 1..1000001 return x');          // null
+run('for x in 1..1000, y in 1..1001 return 1'); // null (1,001,000 combinations)
+```
+
 ## Formatting and highlighting
 
 `formatFeel` pretty-prints — note that it takes a **parsed node**, not source text:

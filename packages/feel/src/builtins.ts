@@ -369,6 +369,22 @@ function timeToSeconds(t: FeelTime, epochDays = 0): number {
 	return t.hour * 3600 + t.minute * 60 + t.second - (offsetOf(t, epochDays) ?? 0)
 }
 
+/** Whole seconds into the day, apart from `t.second`, at the time's offset. */
+function timeToWholeSeconds(t: FeelTime, epochDays = 0): number {
+	return t.hour * 3600 + t.minute * 60 - (offsetOf(t, epochDays) ?? 0)
+}
+
+/**
+ * The exact sum of second counts, as Rust's Decimal computes it. Float64 drifts once a
+ * fraction (0.1 s) meets a large whole part (epoch seconds, or 9919843.2 s split by `% 60`).
+ */
+export function exactSeconds(...terms: number[]): number {
+	if (terms.every(Number.isInteger)) return terms.reduce((a, b) => a + b, 0)
+	let sum = FeelNumber.from(0)
+	for (const t of terms) sum = sum.add(FeelNumber.from(t))
+	return sum.toNumber() || 0
+}
+
 /** True when both times are local, or both say which UTC they mean. */
 function sameTimeKind(a: FeelTime, b: FeelTime, epochA: number, epochB: number): boolean {
 	return (offsetOf(a, epochA) === undefined) === (offsetOf(b, epochB) === undefined)
@@ -386,15 +402,22 @@ function compareValues(a: FeelValue, b: FeelValue): number | null {
 		// A local time and one at a known offset name different things and
 		// cannot be ordered against each other.
 		if (!sameTimeKind(a, b, 0, 0)) return null
-		return timeToSeconds(a) - timeToSeconds(b)
+		return exactSeconds(timeToWholeSeconds(a), a.second, -timeToWholeSeconds(b), -b.second)
 	}
 	if (isFeelDateTime(a) && isFeelDateTime(b)) {
 		const epochA = dateToEpochDays(a.date)
 		const epochB = dateToEpochDays(b.date)
 		if (!sameTimeKind(a.time, b.time, epochA, epochB)) return null
-		return dateTimeToSeconds(a) - dateTimeToSeconds(b)
+		return exactSeconds(
+			(epochA - epochB) * 86400,
+			timeToWholeSeconds(a.time, epochA),
+			a.time.second,
+			-timeToWholeSeconds(b.time, epochB),
+			-b.time.second,
+		)
 	}
-	if (isFeelDayTimeDuration(a) && isFeelDayTimeDuration(b)) return a.seconds - b.seconds
+	if (isFeelDayTimeDuration(a) && isFeelDayTimeDuration(b))
+		return exactSeconds(a.seconds, -b.seconds)
 	if (isFeelYearsMonthsDuration(a) && isFeelYearsMonthsDuration(b)) return a.months - b.months
 	return null
 }
@@ -451,11 +474,14 @@ function scalarToString(v: FeelValue): FeelValue {
 	if (isFeelTime(v)) return formatTime(v)
 	if (isFeelDateTime(v)) return `${formatDate(v.date)}T${formatTime(v.time)}`
 	if (isFeelDayTimeDuration(v)) {
-		const s = Math.abs(v.seconds)
-		const d = Math.floor(s / 86400)
-		const h = Math.floor((s % 86400) / 3600)
-		const m = Math.floor((s % 3600) / 60)
-		const sec = s % 60
+		// The seconds split off exactly: float `% 60` of 9919843.2 is 43.19999999925494.
+		const s = FeelNumber.from(Math.abs(v.seconds))
+		const whole = s.floor().toNumber()
+		const d = Math.floor(whole / 86400)
+		const h = Math.floor((whole % 86400) / 3600)
+		const m = Math.floor((whole % 3600) / 60)
+		const secs = s.mod(FeelNumber.from(60)) ?? FeelNumber.from(0)
+		const sec = secs.isZero() ? "" : secs.stripTrailingZeros().toString()
 		let r = v.seconds < 0 ? "-P" : "P"
 		if (d) r += `${d}D`
 		if (h || m || sec) r += `T${h ? `${h}H` : ""}${m ? `${m}M` : ""}${sec ? `${sec}S` : ""}`
@@ -576,10 +602,89 @@ function toJsRegExp(pattern: string, flags: string): RegExp | null {
 		source = stripPatternWhitespace(pattern)
 	}
 	try {
-		return new RegExp(source, jsFlags)
+		const normalised = normaliseCountedRepetitions(escapeLeadingClassBracket(source))
+		return normalised === null ? null : new RegExp(normalised, jsFlags)
 	} catch {
 		return null
 	}
+}
+
+/**
+ * Java (and Rust's regex) read a `]` right after `[` or `[^` as a literal, so
+ * `[]a]` is a class and `[]` is unclosed; JavaScript reads `[]` as an empty
+ * class instead. Escaping that `]` gives JavaScript the same meaning.
+ */
+function escapeLeadingClassBracket(pattern: string): string {
+	let out = ""
+	let inClass = false
+	for (let i = 0; i < pattern.length; i++) {
+		const c = pattern[i] as string
+		if (c === "\\" && i + 1 < pattern.length) {
+			out += c + pattern[i + 1]
+			i++
+			continue
+		}
+		out += c
+		if (inClass) {
+			if (c === "]") inClass = false
+			continue
+		}
+		if (c !== "[") continue
+		inClass = true
+		if (pattern[i + 1] === "^") {
+			out += "^"
+			i++
+		}
+		if (pattern[i + 1] === "]") {
+			out += "\\]"
+			i++
+		}
+	}
+	return out
+}
+
+const COUNTED_REPETITION = /^\{\s*(\d+)\s*(?:(,)\s*(\d*)\s*)?\}/
+const MAX_REPETITION_COUNT = 2 ** 32 - 1
+
+/**
+ * Rust's regex (like Java) reads every `{` outside a class as a counted repetition and rejects
+ * one that is not `{n}`, `{n,}` or `{n,m}` (`{}`, `{,3}`, `{a: 1}`); JavaScript's non-unicode
+ * mode reads those as literal text. Rust also allows whitespace inside the braces, which
+ * JavaScript would again take literally, so a valid repetition is rewritten without it. Null
+ * when the pattern has an invalid repetition.
+ */
+function normaliseCountedRepetitions(pattern: string): string | null {
+	let out = ""
+	let inClass = false
+	for (let i = 0; i < pattern.length; i++) {
+		const c = pattern[i] as string
+		if (c === "\\" && i + 1 < pattern.length) {
+			out += c + pattern[i + 1]
+			i++
+			continue
+		}
+		if (inClass) {
+			if (c === "]") inClass = false
+			out += c
+			continue
+		}
+		if (c === "[") {
+			inClass = true
+			out += c
+			continue
+		}
+		if (c !== "{") {
+			out += c
+			continue
+		}
+		const m = COUNTED_REPETITION.exec(pattern.slice(i))
+		if (!m) return null
+		const [whole, min, comma, max] = m as unknown as [string, string, string?, string?]
+		if (Number(min) > MAX_REPETITION_COUNT || Number(max ?? 0) > MAX_REPETITION_COUNT) return null
+		out += `{${min}${comma ?? ""}${max ?? ""}}`
+		i += whole.length - 1
+	}
+	return out
 }
 
 /** Removes the whitespace an "x"-flagged pattern ignores, keeping character classes intact. */
@@ -683,8 +788,18 @@ reg("extract", (str, pattern) => {
 	if (s === null || p === null) return null
 	const re = cachedRegExp(p, "g")
 	if (re === null) return null
-	return [...s.matchAll(re)].map((m) => m[0])
+	// Without the "u" flag an empty match also lands between the halves of a
+	// surrogate pair; FEEL (and Java) step over whole characters.
+	return [...s.matchAll(re)]
+		.filter((m) => m[0] !== "" || !splitsSurrogatePair(s, m.index))
+		.map((m) => m[0])
 })
+
+function splitsSurrogatePair(s: string, index: number): boolean {
+	const before = s.charCodeAt(index - 1)
+	const after = s.charCodeAt(index)
+	return before >= 0xd800 && before <= 0xdbff && after >= 0xdc00 && after <= 0xdfff
+}
 
 reg("uuid", () => {
 	const platform = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto

@@ -1,8 +1,16 @@
 # Features
 
+## FEEL iteration limit (2026-11-26)
+
+`@bpmnkit/feel` and `bpmnkit-feel` cap ranges and `for` / `some` / `every` at 1,000,000 items (`MAX_ITERATIONS`); past it the expression is null (Rust adds an `ITERATION_LIMIT_EXCEEDED` warning). Camunda runs such loops to the end.
+
 ## FEEL Decimal128 numbers (2026-11-25)
 
 `@bpmnkit/feel` computes FEEL numbers as DMN Decimal128 (`FeelNumber`, 34 digits, HALF_EVEN), like Camunda 8, so `0.1 + 0.2 = 0.3` and gateway conditions such as `amount * 1.1 <= 110` take the branch Camunda takes. `toJs` / `fromJs` convert to and from plain JS data; `formatFeelValue` prints a result with every nested number exact.
+
+## Wasm workers M3-lite: builder, signed registry, hot-load (2026-11-26)
+
+`bpmnkit-wasm-builder` (`serve` / `keygen`) takes a worker's manifest, source and samples over an authenticated HTTP API, builds it in a sandbox (`bwrap` without network, else `prlimit`), signs the component digest and manifest with ed25519 and publishes it to a directory registry. `bpmnkit-wasm-host run --registry <dir> --trusted-key <hex>` verifies each `CURRENT` version and hot-swaps it on the next poll; a bad version keeps the previous one serving. `samples.json` takes canned `http` answers, so `bpmnkit-wasm test` runs HTTP paths offline. The order-fulfilment blueprint (`wasm/examples/order-fulfilment`) runs end to end: builder, registry, host, reebe.
 
 ## Wasm job workers (2026-11-24)
 

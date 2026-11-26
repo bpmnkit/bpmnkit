@@ -12,6 +12,7 @@ Two binaries come from the `wasm/` workspace (Rust, `cargo install --path wasm/c
 |--------|-------|-----|
 | `bpmnkit-wasm` | `bpmnkit-wasm-build` | Scaffold, check, build, test and inspect a worker; `run` starts the host |
 | `bpmnkit-wasm-host` | `bpmnkit-wasm-host` | Load built workers and serve their job types against a cluster |
+| `bpmnkit-wasm-builder` | `bpmnkit-wasm-builder` | Build service: `serve` runs the HTTP API, `keygen` makes the ed25519 signing key pair |
 
 ---
 Source: https://bpmnkit.com/docs/cli/wasm

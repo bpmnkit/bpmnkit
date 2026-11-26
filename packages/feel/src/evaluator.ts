@@ -1,5 +1,11 @@
 import type { FeelNode } from "./ast.js"
-import { compareValues, getBuiltin, orderNamedArgs, parseTemporal } from "./builtins.js"
+import {
+	compareValues,
+	exactSeconds,
+	getBuiltin,
+	orderNamedArgs,
+	parseTemporal,
+} from "./builtins.js"
 import type { FeelContext, FeelFunction, FeelValue } from "./types.js"
 import {
 	FeelNumber,
@@ -111,6 +117,14 @@ function filterCtx(parent: Scope, item: FeelValue): Scope {
 }
 
 /**
+ * Most elements a range expands to, and most binding combinations one
+ * `for`/`some`/`every` visits. Beyond it the expression is null instead of
+ * running for minutes or exhausting memory; Camunda has no such bound. The
+ * Rust `bpmnkit-feel` uses the same number so both evaluators agree.
+ */
+export const MAX_ITERATIONS = 1_000_000
+
+/**
  * Expands the domain of a `for`/`some`/`every` binding into the values to
  * iterate. A numeric or date range yields its whole span, counting down when
  * it runs backwards; anything else iterates as a single-element list. A range
@@ -122,22 +136,30 @@ function iterationValues(domain: FeelValue): FeelValue[] | null {
 	const { start, end } = domain
 	if (isFeelNumber(start) && isFeelNumber(end)) return numberSpan(start, end)
 	if (isFeelDate(start) && isFeelDate(end)) {
-		return span(dateToEpochDays(start), dateToEpochDays(end)).map((d) => epochDaysToDate(d))
+		const days = span(dateToEpochDays(start), dateToEpochDays(end))
+		return days?.map((d) => epochDaysToDate(d)) ?? null
 	}
 	return null
 }
 
 /** `from`, `from ± 1`, … up to `to`, in whichever direction that runs. */
-function numberSpan(from: FeelNumber, to: FeelNumber): FeelValue[] {
+function numberSpan(from: FeelNumber, to: FeelNumber): FeelValue[] | null {
+	// A span past the limit is refused before stepping through it; the cap in the loop
+	// still catches steps lost to rounding.
+	if (to.sub(from).abs().ge(FeelNumber.from(MAX_ITERATIONS))) return null
 	const step = from.le(to) ? FeelNumber.ONE : FeelNumber.ONE.neg()
 	const up = step.sign() > 0
 	const values: FeelValue[] = []
-	for (let v = from; up ? v.le(to) : v.ge(to); v = v.add(step)) values.push(v)
+	for (let v = from; up ? v.le(to) : v.ge(to); v = v.add(step)) {
+		if (values.length >= MAX_ITERATIONS) return null
+		values.push(v)
+	}
 	return values
 }
 
 /** Every integer from `from` to `to`, in whichever direction that runs. */
-function span(from: number, to: number): number[] {
+function span(from: number, to: number): number[] | null {
+	if (Math.abs(to - from) >= MAX_ITERATIONS) return null
 	const step = from <= to ? 1 : -1
 	const values: number[] = []
 	for (let v = from; step > 0 ? v <= to : v >= to; v += step) values.push(v)
@@ -190,7 +212,7 @@ function addDuration(date: FeelValue, dur: FeelValue): FeelValue {
 	}
 	if (isFeelTime(date) && isFeelDayTimeDuration(dur)) return shiftTime(date, dur.seconds)
 	if (isFeelDayTimeDuration(date) && isFeelDayTimeDuration(dur)) {
-		return { type: "days-time-duration", seconds: date.seconds + dur.seconds }
+		return { type: "days-time-duration", seconds: exactSeconds(date.seconds, dur.seconds) }
 	}
 	if (isFeelYearsMonthsDuration(date) && isFeelYearsMonthsDuration(dur)) {
 		return { type: "years-months-duration", months: date.months + dur.months }
@@ -203,12 +225,18 @@ function shiftTime(
 	t: import("./types.js").FeelTime,
 	seconds: number,
 ): import("./types.js").FeelTime {
-	const total = (((t.hour * 3600 + t.minute * 60 + t.second + seconds) % 86400) + 86400) % 86400
+	// Exact, so 10:00:00.1 + PT0.2S is 10:00:00.3, not 10:00:00.29999999998835847.
+	const day = FeelNumber.from(86400)
+	const total = (
+		FeelNumber.from(exactSeconds(t.hour * 3600 + t.minute * 60, t.second, seconds)).mod(day) ??
+		FeelNumber.from(0)
+	).stripTrailingZeros()
+	const whole = total.floor().toNumber()
 	return {
 		...t,
-		hour: Math.floor(total / 3600),
-		minute: Math.floor((total % 3600) / 60),
-		second: total % 60,
+		hour: Math.floor(whole / 3600),
+		minute: Math.floor((whole % 3600) / 60),
+		second: (total.mod(FeelNumber.from(60)) ?? FeelNumber.from(0)).toNumber(),
 	}
 }
 
@@ -231,7 +259,9 @@ function subtractValues(a: FeelValue, b: FeelValue): FeelValue {
 		return addDuration(a, { type: "years-months-duration", months: -b.months })
 	}
 	if (isFeelDateTime(a) && isFeelDateTime(b)) {
-		const diff = dateTimeToEpochSeconds(a) - dateTimeToEpochSeconds(b)
+		const whole = (dt: import("./types.js").FeelDateTime) =>
+			dateTimeToEpochSeconds({ ...dt, time: { ...dt.time, second: 0 } })
+		const diff = exactSeconds(whole(a), a.time.second, -whole(b), -b.time.second)
 		return { type: "days-time-duration", seconds: diff }
 	}
 	if (isFeelDateTime(a) && isFeelDayTimeDuration(b)) {
@@ -241,7 +271,7 @@ function subtractValues(a: FeelValue, b: FeelValue): FeelValue {
 		return addDuration(a, { type: "years-months-duration", months: -b.months })
 	}
 	if (isFeelDayTimeDuration(a) && isFeelDayTimeDuration(b)) {
-		return { type: "days-time-duration", seconds: a.seconds - b.seconds }
+		return { type: "days-time-duration", seconds: exactSeconds(a.seconds, -b.seconds) }
 	}
 	if (isFeelYearsMonthsDuration(a) && isFeelYearsMonthsDuration(b)) {
 		return { type: "years-months-duration", months: a.months - b.months }
@@ -266,7 +296,9 @@ function dateToEpochDays(d: import("./types.js").FeelDate): number {
 function epochDaysToDate(days: number): import("./types.js").FeelDate {
 	let remaining = days + 719162
 	const year400 = Math.floor(remaining / 146097)
-	remaining %= 146097
+	// Floored, not %: a day before year 1 must still leave a remainder in
+	// [0, 146097), or the year count comes out 400 years early.
+	remaining -= year400 * 146097
 	const year100 = Math.min(Math.floor(remaining / 36524), 3)
 	remaining -= year100 * 36524
 	const year4 = Math.floor(remaining / 1461)
@@ -600,7 +632,9 @@ function dayTime(scaled: FeelNumber | null): FeelValue {
  */
 function yearsMonths(scaled: FeelNumber | null): FeelValue {
 	const months = scaled?.round(0, "half-up").toNumber() ?? Number.NaN
-	if (!Number.isFinite(months)) return null
+	// The Rust evaluator (and feel-scala's long month count) overflow past
+	// i64; anything that large has no duration, only null.
+	if (!Number.isFinite(months) || Math.abs(months) >= 2 ** 63) return null
 	return { type: "years-months-duration", months: months || 0 }
 }
 
@@ -660,6 +694,10 @@ function evalFor(bindings: Binding[], body: FeelNode, ctx: Scope): FeelValue {
 	const iterate = (idx: number, scope: Scope): void => {
 		if (failed) return
 		if (idx === bindings.length) {
+			if (results.length >= MAX_ITERATIONS) {
+				failed = true
+				return
+			}
 			results.push(
 				evalNode(body, readsPartial ? childCtx(scope, { partial: [...results] }) : scope),
 			)
@@ -696,10 +734,16 @@ function evalQuantifier(
 	let sawFalse = false
 	let sawUnknown = false
 	let failed = false
+	let visited = 0
 
 	const visit = (idx: number, scope: Scope): void => {
 		if (failed) return
 		if (idx === bindings.length) {
+			if (visited >= MAX_ITERATIONS) {
+				failed = true
+				return
+			}
+			visited++
 			const result = asBoolean(evalNode(satisfies, scope))
 			if (result === true) sawTrue = true
 			else if (result === false) sawFalse = true

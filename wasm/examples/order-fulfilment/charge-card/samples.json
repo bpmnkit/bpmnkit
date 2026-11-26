@@ -1,0 +1,37 @@
+[
+	{
+		"name": "charged",
+		"job_type": "charge-card",
+		"variables": { "customerId": "c-1", "amountCents": 2500 },
+		"http": [
+			{
+				"method": "POST",
+				"url": "https://api.payments.example/v1/charges",
+				"status": 200,
+				"body": "{\"id\":\"ch_1\"}"
+			}
+		],
+		"expect": "complete"
+	},
+	{
+		"name": "declined",
+		"job_type": "charge-card",
+		"variables": { "customerId": "c-2", "amountCents": 2500 },
+		"http": [
+			{
+				"method": "POST",
+				"url": "https://api.payments.example/v1/charges",
+				"status": 402,
+				"body": "{\"error\":\"declined\"}"
+			}
+		],
+		"expect": "throw-error"
+	},
+	{
+		"name": "api down",
+		"job_type": "charge-card",
+		"variables": { "customerId": "c-3", "amountCents": 2500 },
+		"http": [{ "method": "POST", "url": "https://api.payments.example/v1/charges", "status": 503 }],
+		"expect": "fail"
+	}
+]

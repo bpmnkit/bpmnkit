@@ -1281,6 +1281,7 @@
 			"FeelYearsMonthsDuration": "type",
 			"FormatOptions": "type",
 			"HighlightKind": "type",
+			"MAX_ITERATIONS": "value",
 			"ParseError": "type",
 			"ParseOptions": "type",
 			"ParseResult": "type",

@@ -1,0 +1,4 @@
+[worker]
+name = "check-stock"
+version = "0.1.0"
+job_types = ["check-stock"]

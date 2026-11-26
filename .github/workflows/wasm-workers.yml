@@ -52,7 +52,9 @@ jobs:
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
         working-directory: wasm
 
-      # The e2e test (crates/host/tests/reebe_e2e.rs) completes a job of a real `echo`
+      # The e2e tests need reebe: crates/host/tests/reebe_e2e.rs (a real `echo` job) and
+      # crates/builder/tests/blueprint_e2e.rs (order-fulfilment: build, hot-load, happy + declined).
+      # The first completes a job of a real `echo`
       # component on a reebe server; reebe is its own workspace, cached separately.
       - uses: Swatinem/rust-cache@v2
         with:
