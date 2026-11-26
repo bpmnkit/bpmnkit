@@ -42,7 +42,7 @@ export { parseExpression, parseUnaryTests } from "./parser.js"
 export type { ParseResult, ParseError, ParseOptions } from "./parser.js"
 
 // Evaluator
-export { evaluate, evaluateUnaryTests, evaluateUnaryTest } from "./evaluator.js"
+export { evaluate, evaluateUnaryTests, evaluateUnaryTest, MAX_ITERATIONS } from "./evaluator.js"
 export type { EvalContext } from "./evaluator.js"
 
 // Formatter

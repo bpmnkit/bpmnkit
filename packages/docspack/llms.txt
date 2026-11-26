@@ -516,7 +516,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/feel — Overview](.llms/chunks/packages.feel.overview.md) — 230 tokens
 - [@bpmnkit/feel — Installation](.llms/chunks/packages.feel.installation.md) — 264 tokens
 - [@bpmnkit/feel — Unary tests](.llms/chunks/packages.feel.unary-tests.md) — 434 tokens
-- [@bpmnkit/feel — Camunda parity](.llms/chunks/packages.feel.camunda-parity.md) — 583 tokens
+- [@bpmnkit/feel — Camunda parity](.llms/chunks/packages.feel.camunda-parity.md) — 737 tokens
 - [@bpmnkit/feel — Formatting and highlighting](.llms/chunks/packages.feel.formatting-and-highlighting.md) — 151 tokens
 - [@bpmnkit/feel — API Reference](.llms/chunks/packages.feel.api-reference.md) — 356 tokens
 - [@bpmnkit/feel — Stability](.llms/chunks/packages.feel.stability.md) — 39 tokens
