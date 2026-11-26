@@ -1137,12 +1137,9 @@ export class ProcessInstance {
 		for (const flow of outflows) {
 			if (flow.id === defaultFlowId) continue
 			if (flow.conditionExpression === undefined) continue
-			if (
-				this.evalCondition(flow.conditionExpression.text, ctx.scopeId, {
-					elementId: el.id,
-					property: `flow:${flow.id}`,
-				})
-			) {
+			const hit = this.evalGatewayCondition(el.id, flow, ctx)
+			if (hit === undefined) return
+			if (hit) {
 				taken = flow
 				break
 			}
@@ -1189,21 +1186,31 @@ export class ProcessInstance {
 		const outflows = ctx.outgoing.get(el.id) ?? []
 		const defaultFlowId = el.default
 
-		const matching = outflows.filter((f) => {
-			if (f.id === defaultFlowId) return false
-			if (f.conditionExpression === undefined) return true
-			return this.evalCondition(f.conditionExpression.text, ctx.scopeId, {
-				elementId: el.id,
-				property: `flow:${f.id}`,
-			})
-		})
+		const matching: BpmnSequenceFlow[] = []
+		for (const f of outflows) {
+			if (f.id === defaultFlowId) continue
+			if (f.conditionExpression === undefined) {
+				matching.push(f)
+				continue
+			}
+			const hit = this.evalGatewayCondition(el.id, f, ctx)
+			if (hit === undefined) return
+			if (hit) matching.push(f)
+		}
 
-		const flows =
-			matching.length > 0
-				? matching
-				: defaultFlowId !== undefined
-					? [ctx.flows.get(defaultFlowId)].filter((f): f is BpmnSequenceFlow => f !== undefined)
-					: []
+		const fallback = defaultFlowId !== undefined ? ctx.flows.get(defaultFlowId) : undefined
+		const flows = matching.length > 0 ? matching : fallback !== undefined ? [fallback] : []
+
+		// Same failure as the exclusive gateway (BPMN 2.0.2 Table 13.3; Camunda 8 raises an incident).
+		if (flows.length === 0) {
+			this.failElement(
+				el.id,
+				outflows.length === 0
+					? `Gateway "${el.id}" has no outgoing flows`
+					: `No condition matched at gateway "${el.id}" — add conditions to flows or mark one as the default`,
+			)
+			return
+		}
 
 		await this.complete(token, ctx, flows)
 	}
@@ -2062,6 +2069,39 @@ export class ProcessInstance {
 			})
 		}
 		return result
+	}
+
+	/**
+	 * Evaluate a gateway flow condition. A non-boolean result fails the instance (Camunda 8
+	 * raises an incident) instead of silently counting as false; returns undefined then.
+	 */
+	private evalGatewayCondition(
+		gatewayId: string,
+		flow: BpmnSequenceFlow,
+		ctx: ScopeCtx,
+	): boolean | undefined {
+		const result = this.evalFeel(flow.conditionExpression?.text ?? "", ctx.scopeId, {
+			elementId: gatewayId,
+			property: `flow:${flow.id}`,
+		})
+		if (typeof result === "boolean") return result
+		const actual =
+			result === null || result === undefined
+				? "NULL"
+				: Array.isArray(result)
+					? "LIST"
+					: typeof result === "object"
+						? "CONTEXT"
+						: typeof result === "number"
+							? "NUMBER"
+							: typeof result === "string"
+								? "STRING"
+								: String(typeof result).toUpperCase()
+		this.failElement(
+			gatewayId,
+			`Condition of flow "${flow.id}" at gateway "${gatewayId}" must evaluate to BOOLEAN, but was ${actual}`,
+		)
+		return undefined
 	}
 
 	private evalCondition(
