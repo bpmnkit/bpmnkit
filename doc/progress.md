@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-26 — FEEL fuzz: invalid regex repetitions, exact duration seconds
+
+Nightly fuzz (seed 45763151012) found two Rust-vs-TS mismatches. TS `toJsRegExp` now rejects a `{` that is not `{n}`, `{n,}` or `{n,m}` (JavaScript read `{}` as literal text; Java and Rust's regex reject it) and strips the whitespace Rust allows inside the braces; counts above u32 are rejected too. Days-time duration seconds are split (`string`, `.seconds`), added and subtracted in `FeelNumber` (`exactSeconds`), as are time/date-time differences and time shifts, so `76.542 * @"PT36H"` prints `43.2S` rather than `43.19999999925494S`. Regression tests (TS, Rust) and conformance `fuzz/36`–`fuzz/37`.
+
 ## 2026-11-26 — wasm host e2e: match the instance key
 
 `reebe_e2e.rs` now shares a reebe with `blueprint_e2e.rs` in CI. reebe's search can ignore the filter, so the test matched the blueprint's completed instance and read variables too early. It now matches `processInstanceKey` in the results and polls variables for up to 5 s.
