@@ -1019,3 +1019,80 @@ fn undefined_variable_suggests_a_typo_fix() {
         Some(&["orderTotal".to_owned()][..])
     );
 }
+
+#[test]
+fn static_input_sources_are_not_variables() {
+    let defs = make_defs(
+        make_process(
+            "proc",
+            vec![
+                start_el("s"),
+                task_el(
+                    "t1",
+                    &["f1"],
+                    &["f2"],
+                    vec![
+                        task_def_ext("io.camunda:http-json:1"),
+                        io_ext(&[("GET", "method"), ("noAuth", "authentication.type")], &[]),
+                    ],
+                ),
+                end_el("e", &["f2"]),
+            ],
+            vec![flow("f1", "s", "t1"), flow("f2", "t1", "e")],
+        ),
+        vec![],
+    );
+    let r = optimize(&defs, &only(&[Category::DataFlow]));
+    assert!(find(&r, "data-flow/undefined-variable:GET").is_none());
+    assert!(find(&r, "data-flow/undefined-variable:noAuth").is_none());
+}
+
+#[test]
+fn connector_and_script_results_are_produced() {
+    let script = json!({"name": "zeebe:script", "attributes": {"expression": "=1", "resultVariable": "alert"}, "children": []});
+    let defs = make_defs(
+        make_process(
+            "proc",
+            vec![
+                start_el("s"),
+                task_el(
+                    "t1",
+                    &["f1"],
+                    &["f2"],
+                    vec![
+                        task_def_ext("io.camunda:http-json:1"),
+                        header_ext(&[
+                            ("resultExpression", "={tomorrowMin: response.body.min}"),
+                            ("resultVariable", "raw"),
+                        ]),
+                    ],
+                ),
+                task_el("t2", &["f2"], &["f3"], vec![script]),
+                task_el(
+                    "t3",
+                    &["f3"],
+                    &["f4"],
+                    vec![
+                        task_def_ext("b"),
+                        io_ext(&[("=tomorrowMin + count(raw) + alert", "x")], &[]),
+                    ],
+                ),
+                end_el("e", &["f4"]),
+            ],
+            vec![
+                flow("f1", "s", "t1"),
+                flow("f2", "t1", "t2"),
+                flow("f3", "t2", "t3"),
+                flow("f4", "t3", "e"),
+            ],
+        ),
+        vec![],
+    );
+    let r = optimize(&defs, &only(&[Category::DataFlow]));
+    for v in ["tomorrowMin", "raw", "alert"] {
+        assert!(
+            find(&r, &format!("data-flow/undefined-variable:{v}")).is_none(),
+            "{v} flagged"
+        );
+    }
+}

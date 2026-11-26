@@ -14,8 +14,8 @@
   ],
   "counts": {
     "error": 4,
-    "info": 44,
-    "warning": 29
+    "info": 50,
+    "warning": 24
   },
   "diagnostics": [
     {
@@ -257,37 +257,11 @@
         "sanctionsScreening"
       ],
       "fixable": false,
-      "id": "data-flow/undefined-variable:bearer",
-      "message": "Variable \"bearer\" is referenced but never set in this process.",
-      "processId": "KycOnboarding",
-      "severity": "warning",
-      "suggestion": "\"bearer\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "verifyDocument",
-        "sanctionsScreening"
-      ],
-      "fixable": false,
       "id": "data-flow/undefined-variable:secrets",
       "message": "Variable \"secrets\" is referenced but never set in this process.",
       "processId": "KycOnboarding",
       "severity": "warning",
       "suggestion": "\"secrets\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "verifyDocument",
-        "sanctionsScreening"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:POST",
-      "message": "Variable \"POST\" is referenced but never set in this process.",
-      "processId": "KycOnboarding",
-      "severity": "warning",
-      "suggestion": "\"POST\" is never set on any path through this process."
     },
     {
       "category": "data-flow",
@@ -340,42 +314,6 @@
       "processId": "KycOnboarding",
       "severity": "warning",
       "suggestion": "\"ddResult\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "qualityGateway"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:ocrResponse",
-      "message": "Variable \"ocrResponse\" is referenced but never set in this process.",
-      "processId": "KycOnboarding",
-      "severity": "warning",
-      "suggestion": "\"ocrResponse\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "retryGateway"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:retryCount",
-      "message": "Variable \"retryCount\" is referenced but never set in this process.",
-      "processId": "KycOnboarding",
-      "severity": "warning",
-      "suggestion": "\"retryCount\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "dueDiligenceGateway"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:screeningResponse",
-      "message": "Variable \"screeningResponse\" is referenced but never set in this process.",
-      "processId": "KycOnboarding",
-      "severity": "warning",
-      "suggestion": "\"screeningResponse\" is never set on any path through this process."
     },
     {
       "category": "data-flow",
@@ -483,6 +421,30 @@
     {
       "category": "data-flow",
       "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:verified",
+      "message": "Variable \"verified\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"verified\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:quality",
+      "message": "Variable \"quality\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"quality\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
         "sendVerificationRejection",
         "sendKycRejection"
       ],
@@ -492,6 +454,42 @@
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": "Remove the output mapping for \"to\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:riskLevel",
+      "message": "Variable \"riskLevel\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"riskLevel\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:isPep",
+      "message": "Variable \"isPep\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"isPep\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:hits",
+      "message": "Variable \"hits\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"hits\" or add a task that consumes it."
     },
     {
       "category": "data-flow",
@@ -526,7 +524,19 @@
       ],
       "fixable": false,
       "id": "data-flow/role:verifyDocument",
-      "message": "Element \"verifyDocument\" produces: authentication.type, authentication.token, method, url, body, connectionTimeoutInSeconds, readTimeoutInSeconds; consumes: bearer, secrets, POST, ocrServiceUrl.",
+      "message": "Element \"verifyDocument\" produces: authentication.type, authentication.token, method, url, body, connectionTimeoutInSeconds, readTimeoutInSeconds, ocrResponse, verified, quality; consumes: secrets, ocrServiceUrl.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "incrementRetry"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:incrementRetry",
+      "message": "Element \"incrementRetry\" produces: retryCount.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -550,7 +560,7 @@
       ],
       "fixable": false,
       "id": "data-flow/role:sanctionsScreening",
-      "message": "Element \"sanctionsScreening\" produces: authentication.type, authentication.token, method, url, body, connectionTimeoutInSeconds, readTimeoutInSeconds; consumes: bearer, secrets, POST, screeningServiceUrl.",
+      "message": "Element \"sanctionsScreening\" produces: authentication.type, authentication.token, method, url, body, connectionTimeoutInSeconds, readTimeoutInSeconds, screeningResponse, riskLevel, isPep, hits; consumes: secrets, screeningServiceUrl.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -658,7 +668,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_jFSBMYJb",
-      "message": "Variables in scope at flow \"Flow_jFSBMYJb\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_jFSBMYJb\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -670,7 +680,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_1TTrGjjw",
-      "message": "Variables in scope at flow \"Flow_1TTrGjjw\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_1TTrGjjw\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -682,7 +692,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_0LEUQOxJ",
-      "message": "Variables in scope at flow \"Flow_0LEUQOxJ\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_0LEUQOxJ\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -694,7 +704,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_mYkhul6F",
-      "message": "Variables in scope at flow \"Flow_mYkhul6F\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_mYkhul6F\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -706,7 +716,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_S3pkDgDT",
-      "message": "Variables in scope at flow \"Flow_S3pkDgDT\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_S3pkDgDT\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -718,7 +728,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_rlKvyhN6",
-      "message": "Variables in scope at flow \"Flow_rlKvyhN6\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_rlKvyhN6\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -730,7 +740,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_uHPpRk4d",
-      "message": "Variables in scope at flow \"Flow_uHPpRk4d\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_uHPpRk4d\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -742,7 +752,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_tODzlPDa",
-      "message": "Variables in scope at flow \"Flow_tODzlPDa\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, to, url.",
+      "message": "Variables in scope at flow \"Flow_tODzlPDa\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, to, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -754,7 +764,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_IRsmpnbh",
-      "message": "Variables in scope at flow \"Flow_IRsmpnbh\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_IRsmpnbh\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -766,7 +776,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_8vSOCU50",
-      "message": "Variables in scope at flow \"Flow_8vSOCU50\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_8vSOCU50\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -778,7 +788,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_K56CWSVL",
-      "message": "Variables in scope at flow \"Flow_K56CWSVL\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_K56CWSVL\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -790,7 +800,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_P4BQYrEw",
-      "message": "Variables in scope at flow \"Flow_P4BQYrEw\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_P4BQYrEw\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -802,7 +812,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_01TCJkY6",
-      "message": "Variables in scope at flow \"Flow_01TCJkY6\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_01TCJkY6\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -814,7 +824,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_afmDHVqD",
-      "message": "Variables in scope at flow \"Flow_afmDHVqD\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_afmDHVqD\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -826,7 +836,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_nsEpR6Kw",
-      "message": "Variables in scope at flow \"Flow_nsEpR6Kw\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_nsEpR6Kw\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -838,7 +848,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_hyA4P19S",
-      "message": "Variables in scope at flow \"Flow_hyA4P19S\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_hyA4P19S\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -850,7 +860,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_NgrHE8n7",
-      "message": "Variables in scope at flow \"Flow_NgrHE8n7\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_NgrHE8n7\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -862,7 +872,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_jEsjEcCl",
-      "message": "Variables in scope at flow \"Flow_jEsjEcCl\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_jEsjEcCl\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -874,7 +884,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_RGXncTod",
-      "message": "Variables in scope at flow \"Flow_RGXncTod\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_RGXncTod\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -886,7 +896,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_LtOjKgN2",
-      "message": "Variables in scope at flow \"Flow_LtOjKgN2\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, to, url.",
+      "message": "Variables in scope at flow \"Flow_LtOjKgN2\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, to, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -898,7 +908,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_5Xnykddu",
-      "message": "Variables in scope at flow \"Flow_5Xnykddu\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, method, readTimeoutInSeconds, url.",
+      "message": "Variables in scope at flow \"Flow_5Xnykddu\": applicantId, authentication.token, authentication.type, body, connectionTimeoutInSeconds, dueDiligenceResult, hits, isPep, method, ocrResponse, quality, readTimeoutInSeconds, retryCount, riskLevel, screeningResponse, url, verified.",
       "processId": "KycOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -969,5 +979,5 @@
     "name": "Camunda Cloud",
     "version": "8.9.0"
   },
-  "total": 77
+  "total": 78
 }

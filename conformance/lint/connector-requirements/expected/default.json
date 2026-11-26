@@ -14,7 +14,7 @@
   ],
   "counts": {
     "error": 0,
-    "info": 11,
+    "info": 12,
     "warning": 9
   },
   "diagnostics": [
@@ -118,7 +118,7 @@
       "message": "Variable \"a\" is referenced but never set in this process.",
       "processId": "proc",
       "severity": "warning",
-      "suggestion": "\"a\" is never set on any path through this process."
+      "suggestion": "\"a\" is never set. Did you mean \"v\"?"
     },
     {
       "category": "data-flow",
@@ -130,7 +130,7 @@
       "message": "Variable \"r\" is referenced but never set in this process.",
       "processId": "proc",
       "severity": "warning",
-      "suggestion": "\"r\" is never set. Did you mean \"url\"?"
+      "suggestion": "\"r\" is never set. Did you mean \"v\"?"
     },
     {
       "category": "data-flow",
@@ -142,7 +142,7 @@
       "message": "Variable \"m\" is referenced but never set in this process.",
       "processId": "proc",
       "severity": "warning",
-      "suggestion": "\"m\" is never set on any path through this process."
+      "suggestion": "\"m\" is never set. Did you mean \"v\"?"
     },
     {
       "category": "data-flow",
@@ -184,6 +184,18 @@
     {
       "category": "data-flow",
       "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:v",
+      "message": "Variable \"v\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"v\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
         "c1"
       ],
       "fixable": false,
@@ -200,7 +212,7 @@
       ],
       "fixable": false,
       "id": "data-flow/role:c2",
-      "message": "Element \"c2\" produces: url, method; consumes: a, m.",
+      "message": "Element \"c2\" produces: url, method, v; consumes: a, m.",
       "processId": "proc",
       "severity": "info",
       "suggestion": ""
@@ -224,7 +236,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:f3",
-      "message": "Variables in scope at flow \"f3\": method, result, url.",
+      "message": "Variables in scope at flow \"f3\": method, result, url, v.",
       "processId": "proc",
       "severity": "info",
       "suggestion": ""
@@ -236,7 +248,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:f4",
-      "message": "Variables in scope at flow \"f4\": method, result, url.",
+      "message": "Variables in scope at flow \"f4\": method, result, url, v.",
       "processId": "proc",
       "severity": "info",
       "suggestion": ""
@@ -248,7 +260,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:f5",
-      "message": "Variables in scope at flow \"f5\": method, result, url.",
+      "message": "Variables in scope at flow \"f5\": method, result, url, v.",
       "processId": "proc",
       "severity": "info",
       "suggestion": ""
@@ -260,7 +272,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:f6",
-      "message": "Variables in scope at flow \"f6\": method, result, url.",
+      "message": "Variables in scope at flow \"f6\": method, result, url, v.",
       "processId": "proc",
       "severity": "info",
       "suggestion": ""
@@ -271,5 +283,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 20
+  "total": 21
 }

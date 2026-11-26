@@ -131,7 +131,7 @@ describe("analyzeVariableFlow — undefined variable", () => {
 		const task = makeTask("Task_1", [ioMapping([], [{ source: "result", target: "result" }])])
 		// downstream task reads 'unknownVar' which is never produced
 		const consumer = makeTask("Task_2", [
-			ioMapping([{ source: "unknownVar", target: "localVar" }], []),
+			ioMapping([{ source: "=unknownVar", target: "localVar" }], []),
 		])
 		const p = makeProcess([task, consumer])
 		const findings = analyzeVariableFlow(p)
@@ -145,7 +145,7 @@ describe("analyzeVariableFlow — undefined variable", () => {
 	it("suggests a typo correction when edit distance ≤ 2", () => {
 		// Produces 'orderId', consumes 'ordrId' (1 edit away)
 		const producer = makeTask("Task_1", [ioMapping([], [{ source: "=result", target: "orderId" }])])
-		const consumer = makeTask("Task_2", [ioMapping([{ source: "ordrId", target: "local" }], [])])
+		const consumer = makeTask("Task_2", [ioMapping([{ source: "=ordrId", target: "local" }], [])])
 		const p = makeProcess([producer, consumer])
 		const findings = analyzeVariableFlow(p)
 
@@ -157,7 +157,7 @@ describe("analyzeVariableFlow — undefined variable", () => {
 	it("does not flag a variable that is both produced and consumed", () => {
 		const producer = makeTask("Task_1", [ioMapping([], [{ source: "=42", target: "price" }])])
 		const consumer = makeTask("Task_2", [
-			ioMapping([{ source: "price", target: "localPrice" }], []),
+			ioMapping([{ source: "=price", target: "localPrice" }], []),
 		])
 		const p = makeProcess([producer, consumer])
 		const findings = analyzeVariableFlow(p)
@@ -185,7 +185,7 @@ describe("analyzeVariableFlow — dead output", () => {
 
 	it("does not flag a variable that is consumed downstream", () => {
 		const producer = makeTask("Task_1", [ioMapping([], [{ source: "=result", target: "data" }])])
-		const consumer = makeTask("Task_2", [ioMapping([{ source: "data", target: "local" }], [])])
+		const consumer = makeTask("Task_2", [ioMapping([{ source: "=data", target: "local" }], [])])
 		const p = makeProcess([producer, consumer])
 		const findings = analyzeVariableFlow(p)
 
@@ -228,7 +228,7 @@ describe("analyzeVariableFlow — role findings", () => {
 	})
 
 	it("includes consumed variables in role finding", () => {
-		const task = makeTask("Task_1", [ioMapping([{ source: "inputVar", target: "local" }], [])])
+		const task = makeTask("Task_1", [ioMapping([{ source: "=inputVar", target: "local" }], [])])
 		const p = makeProcess([task])
 		const findings = analyzeVariableFlow(p)
 
@@ -344,5 +344,55 @@ describe("analyzeVariableFlow — multi-instance sub-process inner scopes", () =
 
 		const scope = findings.find((f) => f.id === "data-flow/edge-scope:InnerFlow_noelement")
 		expect(scope).toBeUndefined()
+	})
+})
+
+// ---------------------------------------------------------------------------
+// analyzeVariableFlow — Zeebe static values and connector results
+// ---------------------------------------------------------------------------
+
+describe("analyzeVariableFlow — static values and connector results", () => {
+	it("reads an input source without = as a static value, not a variable", () => {
+		const task = makeTask("Task_1", [
+			ioMapping([
+				{ source: "GET", target: "method" },
+				{ source: "noAuth", target: "authentication.type" },
+			]),
+		])
+		const findings = analyzeVariableFlow(makeProcess([task]))
+		const undef = findings.filter((f) => f.id.startsWith("data-flow/undefined-variable:"))
+		expect(undef).toEqual([])
+	})
+
+	it("counts resultExpression context keys and resultVariable headers as produced", () => {
+		const call: XmlElement = {
+			name: "zeebe:taskHeaders",
+			attributes: {},
+			children: [
+				{
+					name: "zeebe:header",
+					attributes: { key: "resultExpression", value: "={tomorrowMin: response.body.min}" },
+					children: [],
+				},
+				{
+					name: "zeebe:header",
+					attributes: { key: "resultVariable", value: "raw" },
+					children: [],
+				},
+			],
+		}
+		const script: XmlElement = {
+			name: "zeebe:script",
+			attributes: { expression: "=1", resultVariable: "alert" },
+			children: [],
+		}
+		const consumer = makeTask("Task_3", [
+			ioMapping([{ source: "=tomorrowMin + count(raw) + alert", target: "x" }]),
+		])
+		const findings = analyzeVariableFlow(
+			makeProcess([makeTask("Task_1", [call]), makeTask("Task_2", [script]), consumer]),
+		)
+		const undef = findings.filter((f) => f.id.startsWith("data-flow/undefined-variable:"))
+		expect(undef).toEqual([])
 	})
 })

@@ -138,21 +138,6 @@
     {
       "category": "data-flow",
       "consumes": [
-        "noAuth"
-      ],
-      "elementIds": [
-        "Task_CreditScoreCheck"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:noAuth",
-      "message": "Variable \"noAuth\" is referenced but never set in this process.",
-      "processId": "loan-approval-process",
-      "severity": "warning",
-      "suggestion": "\"noAuth\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "consumes": [
         "response"
       ],
       "elementIds": [
@@ -228,6 +213,21 @@
     {
       "category": "data-flow",
       "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:creditResponse",
+      "message": "Variable \"creditResponse\" is set but never read by any downstream element.",
+      "processId": "loan-approval-process",
+      "produces": [
+        "creditResponse"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"creditResponse\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
         "Task_RiskScoring"
       ],
       "fixable": false,
@@ -244,7 +244,6 @@
       "category": "data-flow",
       "consumes": [
         "applicantId",
-        "noAuth",
         "response"
       ],
       "elementIds": [
@@ -252,13 +251,14 @@
       ],
       "fixable": false,
       "id": "data-flow/role:Task_CreditScoreCheck",
-      "message": "Element \"Task_CreditScoreCheck\" produces: method, url, authentication.type, creditScore; consumes: applicantId, noAuth, response.",
+      "message": "Element \"Task_CreditScoreCheck\" produces: method, url, authentication.type, creditScore, creditResponse; consumes: applicantId, response.",
       "processId": "loan-approval-process",
       "produces": [
         "method",
         "url",
         "authentication.type",
-        "creditScore"
+        "creditScore",
+        "creditResponse"
       ],
       "severity": "info",
       "suggestion": ""
@@ -315,10 +315,11 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_ToPreScreen",
-      "message": "Variables in scope at flow \"Flow_ToPreScreen\": authentication.type, creditScore, method, url.",
+      "message": "Variables in scope at flow \"Flow_ToPreScreen\": authentication.type, creditResponse, creditScore, method, url.",
       "processId": "loan-approval-process",
       "produces": [
         "authentication.type",
+        "creditResponse",
         "creditScore",
         "method",
         "url"
@@ -333,10 +334,11 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_RejectLowScore",
-      "message": "Variables in scope at flow \"Flow_RejectLowScore\": authentication.type, creditScore, method, url.",
+      "message": "Variables in scope at flow \"Flow_RejectLowScore\": authentication.type, creditResponse, creditScore, method, url.",
       "processId": "loan-approval-process",
       "produces": [
         "authentication.type",
+        "creditResponse",
         "creditScore",
         "method",
         "url"
@@ -351,10 +353,11 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_PassPreScreen",
-      "message": "Variables in scope at flow \"Flow_PassPreScreen\": authentication.type, creditScore, method, url.",
+      "message": "Variables in scope at flow \"Flow_PassPreScreen\": authentication.type, creditResponse, creditScore, method, url.",
       "processId": "loan-approval-process",
       "produces": [
         "authentication.type",
+        "creditResponse",
         "creditScore",
         "method",
         "url"
@@ -369,10 +372,11 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_ToUnderwriter",
-      "message": "Variables in scope at flow \"Flow_ToUnderwriter\": authentication.type, creditScore, method, riskResult, url.",
+      "message": "Variables in scope at flow \"Flow_ToUnderwriter\": authentication.type, creditResponse, creditScore, method, riskResult, url.",
       "processId": "loan-approval-process",
       "produces": [
         "authentication.type",
+        "creditResponse",
         "creditScore",
         "method",
         "riskResult",
@@ -388,10 +392,11 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_ToDecisionGateway",
-      "message": "Variables in scope at flow \"Flow_ToDecisionGateway\": authentication.type, creditScore, method, riskResult, url.",
+      "message": "Variables in scope at flow \"Flow_ToDecisionGateway\": authentication.type, creditResponse, creditScore, method, riskResult, url.",
       "processId": "loan-approval-process",
       "produces": [
         "authentication.type",
+        "creditResponse",
         "creditScore",
         "method",
         "riskResult",
@@ -407,10 +412,11 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_Approved",
-      "message": "Variables in scope at flow \"Flow_Approved\": authentication.type, creditScore, method, riskResult, url.",
+      "message": "Variables in scope at flow \"Flow_Approved\": authentication.type, creditResponse, creditScore, method, riskResult, url.",
       "processId": "loan-approval-process",
       "produces": [
         "authentication.type",
+        "creditResponse",
         "creditScore",
         "method",
         "riskResult",
@@ -426,10 +432,11 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_Rejected",
-      "message": "Variables in scope at flow \"Flow_Rejected\": authentication.type, creditScore, method, riskResult, url.",
+      "message": "Variables in scope at flow \"Flow_Rejected\": authentication.type, creditResponse, creditScore, method, riskResult, url.",
       "processId": "loan-approval-process",
       "produces": [
         "authentication.type",
+        "creditResponse",
         "creditScore",
         "method",
         "riskResult",
@@ -475,8 +482,8 @@
     },
     "bySeverity": {
       "error": 2,
-      "info": 17,
-      "warning": 10
+      "info": 18,
+      "warning": 9
     },
     "total": 29
   }

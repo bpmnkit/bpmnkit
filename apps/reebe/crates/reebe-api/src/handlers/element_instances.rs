@@ -51,6 +51,9 @@ pub async fn search(
         repo.get_by_process_instance(pi_key)
             .await
             .map_err(|e| ApiError::InternalError(e.to_string()))?
+            .into_iter()
+            .filter(|ei| filter.matches(ei))
+            .collect()
     } else {
         vec![]
     };

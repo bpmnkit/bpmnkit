@@ -1,8 +1,14 @@
 import type { FeelNode } from "@bpmnkit/feel"
 import { builtinNames, parseExpression } from "@bpmnkit/feel"
+import type { XmlElement } from "../../types/xml-element.js"
 import type { BpmnProcess, BpmnSequenceFlow, BpmnSubProcess } from "../bpmn-model.js"
 import type { OptimizationFinding } from "./types.js"
-import { buildFlowIndex, readZeebeIoMapping, readZeebeTaskType } from "./utils.js"
+import {
+	buildFlowIndex,
+	readZeebeIoMapping,
+	readZeebeTaskHeaders,
+	readZeebeTaskType,
+} from "./utils.js"
 
 // ---------------------------------------------------------------------------
 // FEEL built-in names (excluded from variable references)
@@ -246,6 +252,33 @@ function readResultVariable(
 	return null
 }
 
+/** A mapping source without a leading "=" is a Zeebe static value, so it reads no variables. */
+function sourceIdentifiers(source: string): string[] {
+	return source.trim().startsWith("=") ? extractFeelIdentifiers(source) : []
+}
+
+/**
+ * Variables a task writes besides its output mappings: a script's `resultVariable`, and a
+ * connector's `resultVariable` header and the top-level keys of a context `resultExpression`.
+ */
+function resultVariables(ext: XmlElement[]): string[] {
+	const out: string[] = []
+	for (const el of ext) {
+		if (el.name === "zeebe:script" && el.attributes.resultVariable) {
+			out.push(el.attributes.resultVariable)
+		}
+	}
+	for (const h of readZeebeTaskHeaders(ext)?.headers ?? []) {
+		if (h.key === "resultVariable" && h.value.trim() !== "") out.push(h.value.trim())
+		if (h.key === "resultExpression") {
+			const expr = h.value.trim().replace(/^=/, "").trim()
+			const ast = expr === "" ? null : parseExpression(expr).ast
+			if (ast?.kind === "context") for (const e of ast.entries) out.push(e.key)
+		}
+	}
+	return out
+}
+
 // ---------------------------------------------------------------------------
 // Scope propagation
 // ---------------------------------------------------------------------------
@@ -349,14 +382,14 @@ export function analyzeVariableFlow(p: BpmnProcess): OptimizationFinding[] {
 			for (const inp of io.inputs) {
 				if (inp.target.trim() !== "") addProducer(inp.target.trim(), el.id)
 				// The source expression may consume variables from the process scope
-				for (const name of extractFeelIdentifiers(inp.source)) {
+				for (const name of sourceIdentifiers(inp.source)) {
 					addConsumer(name, el.id)
 				}
 			}
 			for (const out of io.outputs) {
 				if (out.target.trim() !== "") addProducer(out.target.trim(), el.id)
 				// The source expression may consume local variables
-				for (const name of extractFeelIdentifiers(out.source)) {
+				for (const name of sourceIdentifiers(out.source)) {
 					addConsumer(name, el.id)
 				}
 			}
@@ -373,6 +406,7 @@ export function analyzeVariableFlow(p: BpmnProcess): OptimizationFinding[] {
 		if (resultVar !== null) {
 			addProducer(resultVar, el.id)
 		}
+		for (const v of resultVariables(el.extensionElements)) addProducer(v, el.id)
 	}
 
 	// ── Scan sequence flow conditions ────────────────────────────────────────

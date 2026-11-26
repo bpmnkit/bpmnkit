@@ -15,7 +15,7 @@
   "counts": {
     "error": 4,
     "info": 32,
-    "warning": 23
+    "warning": 19
   },
   "diagnostics": [
     {
@@ -300,48 +300,6 @@
         "SendTask_SendRejection"
       ],
       "fixable": false,
-      "id": "data-flow/undefined-variable:demo",
-      "message": "Variable \"demo\" is referenced but never set in this process.",
-      "plane": "Collaboration_CustomerOnboarding",
-      "processId": "customer_onboarding_en",
-      "severity": "warning",
-      "suggestion": "\"demo\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "SendTask_SendPolicy",
-        "SendTask_SendRejection"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:d",
-      "message": "Variable \"d\" is referenced but never set in this process.",
-      "plane": "Collaboration_CustomerOnboarding",
-      "processId": "customer_onboarding_en",
-      "severity": "warning",
-      "suggestion": "\"d\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "SendTask_SendPolicy",
-        "SendTask_SendRejection"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:secrets",
-      "message": "Variable \"secrets\" is referenced but never set in this process.",
-      "plane": "Collaboration_CustomerOnboarding",
-      "processId": "customer_onboarding_en",
-      "severity": "warning",
-      "suggestion": "\"secrets\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "SendTask_SendPolicy",
-        "SendTask_SendRejection"
-      ],
-      "fixable": false,
       "id": "data-flow/undefined-variable:corporation",
       "message": "Variable \"corporation\" is referenced but never set in this process.",
       "plane": "Collaboration_CustomerOnboarding",
@@ -375,19 +333,6 @@
       "processId": "customer_onboarding_en",
       "severity": "warning",
       "suggestion": "\"applicationNumber\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "SendTask_SendRejection"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:aa6a58aaded54a83884518433ac2dd56",
-      "message": "Variable \"aa6a58aaded54a83884518433ac2dd56\" is referenced but never set in this process.",
-      "plane": "Collaboration_CustomerOnboarding",
-      "processId": "customer_onboarding_en",
-      "severity": "warning",
-      "suggestion": "\"aa6a58aaded54a83884518433ac2dd56\" is never set on any path through this process."
     },
     {
       "category": "data-flow",
@@ -559,7 +504,7 @@
       ],
       "fixable": false,
       "id": "data-flow/role:SendTask_SendPolicy",
-      "message": "Element \"SendTask_SendPolicy\" produces: from.email, template.id, apiKey, from.name, to.name, to.email, template.data; consumes: demo, d, secrets, corporation, applicant, applicationNumber.",
+      "message": "Element \"SendTask_SendPolicy\" produces: from.email, template.id, apiKey, from.name, to.name, to.email, template.data; consumes: corporation, applicant, applicationNumber.",
       "plane": "Collaboration_CustomerOnboarding",
       "processId": "customer_onboarding_en",
       "severity": "info",
@@ -572,7 +517,7 @@
       ],
       "fixable": false,
       "id": "data-flow/role:SendTask_SendRejection",
-      "message": "Element \"SendTask_SendRejection\" produces: apiKey, from.email, template.id, template.data, to.email, to.name, from.name; consumes: secrets, demo, d, aa6a58aaded54a83884518433ac2dd56, applicant, corporation.",
+      "message": "Element \"SendTask_SendRejection\" produces: apiKey, from.email, template.id, template.data, to.email, to.name, from.name; consumes: applicant, corporation.",
       "plane": "Collaboration_CustomerOnboarding",
       "processId": "customer_onboarding_en",
       "severity": "info",
@@ -805,5 +750,5 @@
     "name": "Camunda Cloud",
     "version": "8.1.0"
   },
-  "total": 59
+  "total": 55
 }

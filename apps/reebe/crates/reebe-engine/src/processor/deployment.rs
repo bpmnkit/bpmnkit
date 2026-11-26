@@ -168,12 +168,21 @@ impl RecordProcessor for DeploymentProcessor {
                         processes: std::sync::Arc::new(cached_processes),
                     });
 
+                // Flat fields feed the gRPC gateway and older clients; Camunda 8 REST
+                // clients read the nested `processDefinition`.
                 deployed_processes.push(serde_json::json!({
                     "processDefinitionKey": pd_key.to_string(),
                     "bpmnProcessId": process.id,
                     "version": version,
                     "resourceName": resource_name,
                     "tenantId": tenant_id,
+                    "processDefinition": {
+                        "processDefinitionKey": pd_key.to_string(),
+                        "processDefinitionId": process.id,
+                        "processDefinitionVersion": version,
+                        "resourceName": resource_name,
+                        "tenantId": tenant_id,
+                    },
                 }));
             }
         }

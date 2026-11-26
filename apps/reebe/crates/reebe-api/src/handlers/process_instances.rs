@@ -92,8 +92,17 @@ pub async fn search_process_instances(
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = ProcessInstanceRepository::new(pool);
-    let instances = repo
-        .search(
+    let instance_key = filter.instance_key().map_err(ApiError::InvalidRequest)?;
+    let instances = if let Some(key) = instance_key {
+        // A missing key is an empty page, not a 404.
+        repo.get_by_key(key)
+            .await
+            .ok()
+            .filter(|pi| filter.matches(pi) && after_key.is_none_or(|a| pi.key > a))
+            .into_iter()
+            .collect()
+    } else {
+        repo.search(
             filter.state.as_deref(),
             filter.bpmn_process_id.as_deref(),
             filter.tenant_id.as_deref(),
@@ -101,7 +110,8 @@ pub async fn search_process_instances(
             after_key,
         )
         .await
-        .map_err(|e| ApiError::InternalError(e.to_string()))?;
+        .map_err(|e| ApiError::InternalError(e.to_string()))?
+    };
 
     let first_key = instances.first().map(|i| i.key);
     let last_key = instances.last().map(|i| i.key);

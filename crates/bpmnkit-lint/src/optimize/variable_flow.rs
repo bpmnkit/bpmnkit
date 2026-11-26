@@ -252,6 +252,44 @@ fn read_result_variable(ext: &[XmlElement]) -> Option<&str> {
         .find_map(|e| e.attr("resultVariable").filter(|v| !v.is_empty()))
 }
 
+/// A mapping source without a leading `=` is a Zeebe static value, so it reads no variables.
+fn source_identifiers(source: &str) -> Vec<String> {
+    if js_trim(source).starts_with('=') {
+        extract_feel_identifiers(source)
+    } else {
+        vec![]
+    }
+}
+
+/// Variables a task writes besides its output mappings: a script's `resultVariable`, and a
+/// connector's `resultVariable` header and the top-level keys of a context `resultExpression`.
+fn result_variables(ext: &[XmlElement]) -> Vec<String> {
+    let mut out: Vec<String> = ext
+        .iter()
+        .filter(|e| e.name == "zeebe:script")
+        .filter_map(|e| e.attr("resultVariable").filter(|v| !v.is_empty()))
+        .map(str::to_owned)
+        .collect();
+    for h in read_zeebe_task_headers(ext)
+        .map(|h| h.headers)
+        .unwrap_or_default()
+    {
+        let value = js_trim(&h.value);
+        if h.key == "resultVariable" && !value.is_empty() {
+            out.push(value.to_owned());
+        }
+        if h.key == "resultExpression" {
+            let expr = js_trim(value.strip_prefix('=').unwrap_or(value));
+            let parsed = bpmnkit_feel::parse_partial(expr, &bpmnkit_feel::ParseOptions::default());
+            if let Some(NodeKind::Context(entries)) = parsed.parsed.as_ref().map(|e| &e.ast().kind)
+            {
+                out.extend(entries.iter().map(|(k, _)| k.clone()));
+            }
+        }
+    }
+    out
+}
+
 /// For every node in the flows, the variables produced by it or by any node with a
 /// path to it: a worklist fixed point, so cycles cost no more than a DAG.
 fn reaching_produces<'a>(
@@ -363,13 +401,16 @@ pub fn analyze_variable_flow(p: &BpmnProcess) -> Vec<Finding> {
                 if !target.is_empty() {
                     produced.add(target, &base.id);
                 }
-                for name in extract_feel_identifiers(&entry.source) {
+                for name in source_identifiers(&entry.source) {
                     consumed.add(&name, &base.id);
                 }
             }
         }
         if let Some(v) = read_result_variable(ext) {
             produced.add(v, &base.id);
+        }
+        for v in result_variables(ext) {
+            produced.add(&v, &base.id);
         }
     }
 
