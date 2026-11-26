@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-26 — FEEL: `sum([])` is null (#327)
+
+`sum` of an empty list (or no arguments) now returns null, as DMN 1.5 Table 75 and Camunda 8 do; it returned 0, so `sum(items) > 100` on an empty list silently took a branch. TS and the Rust twin both changed. Regression tests (vitest, Rust unit) and conformance `lists/61`–`lists/64`.
+
 ## 2026-11-26 — FEEL fuzz: invalid regex repetitions, exact duration seconds
 
 Nightly fuzz (seed 45763151012) found two Rust-vs-TS mismatches. TS `toJsRegExp` now rejects a `{` that is not `{n}`, `{n,}` or `{n,m}` (JavaScript read `{}` as literal text; Java and Rust's regex reject it) and strips the whitespace Rust allows inside the braces; counts above u32 are rejected too. Days-time duration seconds are split (`string`, `.seconds`), added and subtracted in `FeelNumber` (`exactSeconds`), as are time/date-time differences and time shifts, so `76.542 * @"PT36H"` prints `43.2S` rather than `43.19999999925494S`. Regression tests (TS, Rust) and conformance `fuzz/36`–`fuzz/37`.
