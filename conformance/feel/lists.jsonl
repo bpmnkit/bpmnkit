@@ -58,3 +58,7 @@
 {"id":"lists/58","expr":"for x in 1..1000, y in 1..1001 return 1","context":{},"expected":{"t":"null"}}
 {"id":"lists/59","expr":"some x in 1..2000000 satisfies x > 5","context":{},"expected":{"t":"null"}}
 {"id":"lists/60","expr":"for d in @\"2000-01-01\"..@\"5000-01-01\" return d","context":{},"expected":{"t":"null"}}
+{"id":"lists/61","expr":"sum([])","context":{},"expected":{"t":"null"}}
+{"id":"lists/62","expr":"sum(items)","context":{"items":{"t":"list","v":[]}},"expected":{"t":"null"}}
+{"id":"lists/63","expr":"sum([]) >= 0","context":{},"expected":{"t":"null"}}
+{"id":"lists/64","expr":"sum([0])","context":{},"expected":{"t":"number","v":"0"}}
