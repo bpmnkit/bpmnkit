@@ -135,9 +135,10 @@ describe("conformance/feel", () => {
 		}
 		describe(f, () => {
 			for (const c of cases) {
+				// Boundary cases run MAX_ITERATIONS (1M) steps; a loaded CI runner needs more than 5 s.
 				it(c.id, () => {
 					expect(run(c)).toEqual(c.expected)
-				})
+				}, 30_000)
 			}
 		})
 	}
