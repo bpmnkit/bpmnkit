@@ -8,7 +8,8 @@ own appliance; `submit.sh` shows how to send a worker to the builder.
 
 [`wasm/examples/playground`](https://github.com/bpmnkit/bpmnkit/tree/main/wasm/examples/playground)
 has smaller cases against public APIs with no keys. `frost-alert` uses only the REST connector
-(`bpmnkit connector run`). `fx-invoice` adds a Wasm worker with no HTTP access. Each case has HTTP
+(`bpmnkit connector run`). `fx-invoice` adds a Wasm worker with no HTTP access. `country-check` is a
+Wasm worker that calls one allowed host itself. Each case has HTTP
 stubs for an offline test and the commands for a live run on reebe.
 
 ---

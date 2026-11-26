@@ -11,6 +11,7 @@ fn blueprint_workers_pass_their_samples() {
         "order-fulfilment/check-stock",
         "order-fulfilment/charge-card",
         "playground/fx-invoice/convert-invoice",
+        "playground/country-check/check-country",
     ] {
         let out = Command::new(env!("CARGO"))
             .args([

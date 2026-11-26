@@ -1,0 +1,8 @@
+{
+	"known country": "complete {\"capital\":\"Berlin\",\"countryName\":\"Germany\",\"incomeLevel\":\"High income\",\"iso3\":\"DEU\",\"region\":\"Europe & Central Asia\"}",
+	"unknown code: error body on 200": "throw-error UNKNOWN_COUNTRY: World Bank does not know XX",
+	"unknown code: 404": "throw-error UNKNOWN_COUNTRY: World Bank does not know QQ",
+	"aggregate is not a country": "throw-error UNKNOWN_COUNTRY: EUU is an aggregate (European Union), not a country",
+	"malformed code is rejected without a request": "throw-error UNKNOWN_COUNTRY: not an ISO 3166 alpha-2 or alpha-3 code: d e/../x",
+	"api down": "fail: World Bank API returned 503"
+}

@@ -7,8 +7,9 @@ Small, runnable processes that call public APIs with no keys, to try the publish
 |---|---|
 | [`frost-alert/`](frost-alert/) | REST connector only (`io.camunda:http-json:1`, run by `bpmnkit connector run`): Open-Meteo forecast, `resultExpression`, `errorExpression` → boundary, exclusive gateway |
 | [`fx-invoice/`](fx-invoice/) | REST connector (Frankfurter rates) + a Wasm worker in the `worker` world (no HTTP) that converts and rounds line items; `UNSUPPORTED_CURRENCY` boundary |
+| [`country-check/`](country-check/) | Wasm worker in the `worker-http` world calling the World Bank API itself (allow-list: that host only); `UNKNOWN_COUNTRY` on an unknown code |
 
-Each folder has the BPMN, `samples.json` (HTTP stubs), `run.sh` (offline checks) and a README with
+Each folder has the BPMN, HTTP stubs (`samples.json`, or `connector-samples.json` for the connector task), `run.sh` (offline checks) and a README with
 the exact live-run commands and recorded outputs.
 
 Shared helpers:
@@ -34,6 +35,7 @@ Tools: `python3`, `curl`, `jq`.
 - `bpmnkit reebe start` (used by the order-fulfilment README) fails: "`reebe` is not ported to the
   native CLI yet and the legacy CLI (@bpmnkit/cli-legacy) was not found". Run `reebe-server`
   directly (commands in `frost-alert/README.md`).
+- `bpmnkit deploy` has the same problem; the READMEs deploy with `POST /v2/deployments` (curl).
 - `bpmnkit worker wasm …` needs `bpmnkit-wasm`, which `cargo install` cannot fetch
   (`publish = false`). The error says how to build it from a checkout.
 - `bpmnkit lint` reports false positives on every REST connector task: static input values (`GET`,
@@ -44,3 +46,6 @@ Tools: `python3`, `curl`, `jq`.
 - `samples.json` can only assert the outcome kind, not the variables, so `fx-invoice` keeps
   expected outputs in `expected.json` and compares them in `run.sh`.
 - `bpmnkit render` crops a label that sits below the lowest shape.
+- `bpmnkit-wasm-host` trusted only the built-in web PKI roots, so a `worker-http` worker failed with
+  `TlsCertificateError` behind a TLS-intercepting egress proxy. Fixed in the repository: the host
+  also trusts the PEM certificates in `SSL_CERT_FILE`.

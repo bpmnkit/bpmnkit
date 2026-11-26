@@ -1398,7 +1398,7 @@
 		{
 			"id": "cli.wasm.bpmnkit-wasm-host",
 			"file": "chunks/cli.wasm.bpmnkit-wasm-host.md",
-			"tokens": 351,
+			"tokens": 392,
 			"tags": [
 				"cli",
 				"wasm",
@@ -5618,7 +5618,7 @@
 		{
 			"id": "guides.wasm-workers.worker.toml",
 			"file": "chunks/guides.wasm-workers.worker.toml.md",
-			"tokens": 385,
+			"tokens": 425,
 			"tags": [
 				"guides",
 				"wasm-workers",
@@ -5665,7 +5665,7 @@
 		{
 			"id": "guides.wasm-workers.blueprint",
 			"file": "chunks/guides.wasm-workers.blueprint.md",
-			"tokens": 178,
+			"tokens": 194,
 			"tags": [
 				"guides",
 				"wasm-workers",

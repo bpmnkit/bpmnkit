@@ -107,6 +107,7 @@ handles, and a worker job type that no service task uses.
 | Store | A fresh store per job: no state survives between jobs. |
 | HTTP | `https` only, exact `host:port` allow-list, default port 443. Calls outside it fail the job at run time. A worker with no `[network]` allow-list cannot call HTTP at all. |
 | HTTP addresses | The host resolves the name itself. Private, loopback, link-local, ULA and CGNAT addresses are refused. |
+| HTTP TLS | The built-in web PKI roots, plus the PEM certificates in `SSL_CERT_FILE` when it is set (a private CA or a TLS-intercepting egress proxy). |
 | HTTP body | Responses over 16 MiB are refused. |
 | Secrets | Only names in `[secrets] names` resolve. The host reads `BPMNKIT_WASM_SECRET_<NAME>` or a secrets directory. |
 | Source | No `build.rs`, proc macros, `include!`/`#[path]` tricks, or `unsafe`. Only `bpmnkit_wasm_sdk`, `serde` and `serde_json` may be used. |
@@ -179,7 +180,8 @@ own appliance; `submit.sh` shows how to send a worker to the builder.
 
 [`wasm/examples/playground`](https://github.com/bpmnkit/bpmnkit/tree/main/wasm/examples/playground)
 has smaller cases against public APIs with no keys. `frost-alert` uses only the REST connector
-(`bpmnkit connector run`). `fx-invoice` adds a Wasm worker with no HTTP access. Each case has HTTP
+(`bpmnkit connector run`). `fx-invoice` adds a Wasm worker with no HTTP access. `country-check` is a
+Wasm worker that calls one allowed host itself. Each case has HTTP
 stubs for an offline test and the commands for a live run on reebe.
 
 ## Not yet

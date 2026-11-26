@@ -9,6 +9,8 @@ Each `--dir` is a worker (a folder with `worker.toml` and `worker.wasm`, e.g. `d
 of workers. The host prints `loaded <name> <version> (<world>, <digest>)` per worker, registers one
 handler per job type with `max_concurrent` as the active-job limit, and runs until SIGINT or
 SIGTERM, then drains running jobs. Exit `0` on a clean stop, `1` on any startup error.
+Outbound HTTPS trusts the built-in web PKI roots and, when `SSL_CERT_FILE` names a PEM file, its
+certificates too. An unreadable file or one with no certificate is logged and ignored.
 
 | Flag | Meaning |
 |------|---------|
