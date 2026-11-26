@@ -194,3 +194,18 @@ fn wit_exposed() {
     assert!(WIT.contains("package bpmnkit:worker@0.1.0;"));
     assert!(WIT.contains("world worker-http"));
 }
+
+#[test]
+fn sample_job_http_defaults_empty_and_round_trips() {
+    let s: SampleJob = serde_json::from_str(r#"{"name":"n","job_type":"t"}"#).unwrap();
+    assert!(s.http.is_empty());
+    assert!(!serde_json::to_string(&s).unwrap().contains("http"));
+    let s: SampleJob = serde_json::from_str(
+        r#"{"name":"n","job_type":"t","http":[{"method":"POST","url":"https://a.example/x","status":402}]}"#,
+    )
+    .unwrap();
+    assert_eq!(s.http[0].status, 402);
+    assert_eq!(s.http[0].body, "");
+    let back: SampleJob = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
+    assert_eq!(back, s);
+}

@@ -1090,7 +1090,9 @@ not code.
 - [ ] Vendored or pre-warmed dependencies (cold `check` is 18 s)
 - [ ] Source tarball stored in the artifact
 - [ ] Wider dependency allow-list than SDK, serde and serde_json
-- [ ] Canned-response HTTP stub for smoke tests
-- [ ] M3: `worker-builder` service (sandboxed rustc, warm pool)
-- [ ] Signing and OCI distribution; host hot-loads from the registry
+- [x] Canned-response HTTP stub for smoke tests
+- [x] M3-lite: `bpmnkit-wasm-builder` service (HTTP API, sandboxed cargo, signed publish)
+- [ ] M3: warm pool of builder sandboxes, source tarball by digest
+- [x] M3-lite: ed25519 signing, directory registry, host hot-loads `CURRENT`
+- [ ] OCI distribution; KMS or Sigstore signing keys
 - [ ] M4: Slack agent tool (generate, fix loop, manifest approval, deploy)

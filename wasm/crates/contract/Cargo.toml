@@ -12,10 +12,15 @@ publish.workspace = true
 [features]
 # Component inspection (wasmparser); the guest SDK does not need it.
 inspect = ["dep:wasmparser"]
+# ed25519 signing of (component digest, manifest).
+signing = ["dep:ed25519-dalek"]
+# Directory registry of signed artifacts.
+registry = ["signing"]
 
 [dependencies]
 bpmnkit-bpmn = { path = "../../../crates/bpmnkit-bpmn" }
 bpmnkit-jobspec = { path = "../../../crates/bpmnkit-jobspec" }
+ed25519-dalek = { version = "2", optional = true }
 semver = { version = "1", features = ["serde"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
@@ -25,4 +30,4 @@ wasmparser = { version = "0.263", optional = true }
 
 [dev-dependencies]
 wat = "1"
-bpmnkit-wasm-contract = { path = ".", features = ["inspect"] }
+bpmnkit-wasm-contract = { path = ".", features = ["inspect", "signing", "registry"] }

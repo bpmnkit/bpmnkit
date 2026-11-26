@@ -6,7 +6,9 @@ use std::future::Future;
 use std::io;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, ToSocketAddrs};
 use std::pin::Pin;
-use std::sync::{Arc, LazyLock};
+use std::sync::{Arc, LazyLock, Mutex};
+
+use bpmnkit_wasm_contract::HttpStub;
 
 use http::uri::Scheme;
 use http_body_util::BodyExt;
@@ -134,10 +136,84 @@ fn forbidden_v4(ip: Ipv4Addr) -> bool {
         || a >= 240 // reserved
 }
 
-/// The per-store `wasi:http` hooks: the manifest's allow-list plus the host's net policy.
+/// Canned responses for a test run: requests the allow-list permits are answered from here and
+/// never reach the network; one with no matching stub fails and is recorded.
+#[derive(Debug, Default)]
+pub struct HttpStubs {
+    stubs: Vec<HttpStub>,
+    unmatched: Mutex<Vec<String>>,
+}
+
+impl HttpStubs {
+    pub fn new(stubs: Vec<HttpStub>) -> Self {
+        Self {
+            stubs,
+            unmatched: Mutex::default(),
+        }
+    }
+
+    /// `METHOD url` of every request no stub answered, in order.
+    pub fn unmatched(&self) -> Vec<String> {
+        self.unmatched
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .clone()
+    }
+
+    /// Method case-insensitively; URL by scheme, host (case-insensitive), effective port and
+    /// path with query, so `https://H:443/p` matches `https://h/p`.
+    pub fn find(&self, method: &str, uri: &http::Uri) -> Option<&HttpStub> {
+        let want = uri_key(uri)?;
+        self.stubs.iter().find(|s| {
+            s.method.eq_ignore_ascii_case(method)
+                && s.url
+                    .parse::<http::Uri>()
+                    .ok()
+                    .and_then(|u| uri_key(&u))
+                    .as_ref()
+                    == Some(&want)
+        })
+    }
+
+    fn respond(&self, method: &str, uri: &http::Uri) -> Result<http::Response<WasiBody>, Error> {
+        let Some(s) = self.find(method, uri) else {
+            let what = format!("{method} {uri}");
+            self.unmatched
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .push(what.clone());
+            return Err(Error::InternalError(Some(format!(
+                "no HTTP stub for {what}"
+            ))));
+        };
+        let mut b = http::Response::builder().status(s.status);
+        for (k, v) in &s.headers {
+            b = b.header(k, v);
+        }
+        b.body(
+            http_body_util::Full::new(hyper::body::Bytes::from(s.body.clone()))
+                .map_err(|never| match never {})
+                .boxed_unsync(),
+        )
+        .map_err(|e| Error::InternalError(Some(format!("bad HTTP stub for {method} {uri}: {e}"))))
+    }
+}
+
+fn uri_key(u: &http::Uri) -> Option<(String, String, u16, String)> {
+    let scheme = u.scheme_str()?.to_ascii_lowercase();
+    let port = u
+        .port_u16()
+        .unwrap_or(if scheme == "https" { 443 } else { 80 });
+    let path = u.path_and_query().map_or("/", |p| p.as_str()).to_owned();
+    Some((scheme, u.host()?.to_ascii_lowercase(), port, path))
+}
+
+/// The per-store `wasi:http` hooks: the manifest's allow-list plus the host's net policy, and
+/// stubs in place of the network for a test run.
 pub(crate) struct Hooks {
     pub allow: Arc<[String]>,
     pub policy: NetPolicy,
+    pub stubs: Option<Arc<HttpStubs>>,
 }
 
 type IoFuture = Box<dyn Future<Output = Result<(), Error>> + Send>;
@@ -153,10 +229,20 @@ impl WasiHttpHooks for Hooks {
     ) -> SendFuture {
         let allow = Arc::clone(&self.allow);
         let policy = self.policy.clone();
+        let stubs = self.stubs.clone();
         Box::new(async move {
             let (host, port) = check_target(request.uri(), &allow, &policy).inspect_err(|_| {
                 tracing::warn!(uri = %request.uri(), "outgoing request denied by the allow-list");
             })?;
+            if let Some(stubs) = stubs {
+                // Drain the request body first: answering while the guest is still writing
+                // closes its stream mid-write (`StreamError::Closed`).
+                let (parts, body) = request.into_parts();
+                let _ = body.collect().await;
+                let res = stubs.respond(parts.method.as_str(), &parts.uri)?;
+                let io: IoFuture = Box::new(async { Ok(()) });
+                return Ok((res, io));
+            }
             let https = request.uri().scheme() == Some(&Scheme::HTTPS);
             let p = policy.clone();
             let h = host.clone();
@@ -272,6 +358,111 @@ mod tests {
                 "{bad} must be denied"
             );
         }
+    }
+
+    fn stub(method: &str, url: &str, status: u16) -> HttpStub {
+        HttpStub {
+            method: method.into(),
+            url: url.into(),
+            status,
+            headers: [("x-a".to_string(), "1".to_string())].into(),
+            body: "{\"id\":1}".into(),
+        }
+    }
+
+    async fn send_with(stubs: &Arc<HttpStubs>, method: &str, url: &str) -> Result<(), Error> {
+        let mut hooks = Hooks {
+            allow: Arc::from(allow()),
+            // A resolver that panics: the stub path must never look a name up.
+            policy: NetPolicy {
+                resolver: Arc::new(Panics),
+                ..NetPolicy::default()
+            },
+            stubs: Some(Arc::clone(stubs)),
+        };
+        let req = http::Request::builder()
+            .method(method)
+            .uri(url)
+            .body(
+                http_body_util::Empty::<hyper::body::Bytes>::new()
+                    .map_err(|never| match never {})
+                    .boxed_unsync(),
+            )
+            .unwrap();
+        let (res, io) =
+            Pin::from(hooks.send_request(req, None, Box::new(async { Ok(()) }))).await?;
+        // The stub's status reaches the guest unchanged.
+        assert!(res.status().as_u16() >= 200);
+        Pin::from(io).await?;
+        assert_eq!(res.headers()["x-a"], "1");
+        let body = res.into_body().collect().await?.to_bytes();
+        assert_eq!(&body[..], b"{\"id\":1}");
+        Ok(())
+    }
+
+    struct Panics;
+    impl Resolver for Panics {
+        fn resolve(&self, h: &str, _: u16) -> io::Result<Vec<SocketAddr>> {
+            panic!("resolved {h}")
+        }
+    }
+
+    #[tokio::test]
+    async fn stubs_answer_matching_requests() {
+        let s = Arc::new(HttpStubs::new(vec![
+            stub("GET", "https://api.example.com/x", 404),
+            stub("post", "https://API.example.com:443/v1?a=1", 402),
+        ]));
+        assert_eq!(
+            s.find("POST", &"https://api.example.com/v1?a=1".parse().unwrap())
+                .map(|s| s.status),
+            Some(402)
+        );
+        assert!(send_with(&s, "POST", "https://api.example.com/v1?a=1")
+            .await
+            .is_ok());
+        assert!(s.unmatched().is_empty());
+    }
+
+    #[tokio::test]
+    async fn unmatched_request_names_the_url() {
+        let s = Arc::new(HttpStubs::new(vec![stub(
+            "GET",
+            "https://api.example.com/x",
+            200,
+        )]));
+        let e = send_with(&s, "POST", "https://api.example.com/x")
+            .await
+            .unwrap_err();
+        assert!(
+            e.to_string().contains("POST https://api.example.com/x"),
+            "{e}"
+        );
+        assert!(send_with(&s, "GET", "https://api.example.com/y")
+            .await
+            .is_err());
+        assert_eq!(
+            s.unmatched(),
+            [
+                "POST https://api.example.com/x",
+                "GET https://api.example.com/y"
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn allow_list_applies_before_stubs() {
+        let s = Arc::new(HttpStubs::new(vec![stub(
+            "GET",
+            "https://evil.example.com/",
+            200,
+        )]));
+        assert!(matches!(
+            send_with(&s, "GET", "https://evil.example.com/").await,
+            Err(Error::HttpRequestDenied)
+        ));
+        // Denied before matching, so it is not reported as a missing stub either.
+        assert!(s.unmatched().is_empty());
     }
 
     #[test]

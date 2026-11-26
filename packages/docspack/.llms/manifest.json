@@ -1304,7 +1304,7 @@
 		{
 			"id": "cli.wasm",
 			"file": "chunks/cli.wasm.md",
-			"tokens": 196,
+			"tokens": 228,
 			"tags": [
 				"cli",
 				"wasm"
@@ -1373,7 +1373,7 @@
 		{
 			"id": "cli.wasm.samples.json",
 			"file": "chunks/cli.wasm.samples.json.md",
-			"tokens": 141,
+			"tokens": 214,
 			"tags": [
 				"cli",
 				"wasm",
@@ -1398,7 +1398,7 @@
 		{
 			"id": "cli.wasm.bpmnkit-wasm-host",
 			"file": "chunks/cli.wasm.bpmnkit-wasm-host.md",
-			"tokens": 201,
+			"tokens": 351,
 			"tags": [
 				"cli",
 				"wasm",
@@ -1407,6 +1407,23 @@
 			"entities": [
 				"worker.toml",
 				"worker.wasm"
+			]
+		},
+		{
+			"id": "cli.wasm.bpmnkit-wasm-builder",
+			"file": "chunks/cli.wasm.bpmnkit-wasm-builder.md",
+			"tokens": 812,
+			"tags": [
+				"cli",
+				"wasm",
+				"bpmnkit-wasm-builder"
+			],
+			"entities": [
+				"Cargo.lock",
+				"key.hex",
+				"pub.hex",
+				"BuildRequest",
+				"submit.sh"
 			]
 		},
 		{
@@ -5629,18 +5646,36 @@
 		{
 			"id": "guides.wasm-workers.running-the-host",
 			"file": "chunks/guides.wasm-workers.running-the-host.md",
-			"tokens": 221,
+			"tokens": 521,
 			"tags": [
 				"guides",
 				"wasm-workers",
 				"running",
 				"host",
-				"not",
-				"yet"
+				"builder",
+				"signed",
+				"registry",
+				"hot-load"
 			],
 			"entities": [
 				"worker.toml",
 				"worker.wasm"
+			]
+		},
+		{
+			"id": "guides.wasm-workers.blueprint",
+			"file": "chunks/guides.wasm-workers.blueprint.md",
+			"tokens": 238,
+			"tags": [
+				"guides",
+				"wasm-workers",
+				"blueprint",
+				"not",
+				"yet"
+			],
+			"entities": [
+				"wasm/examples/order-fulfilment",
+				"submit.sh"
 			]
 		},
 		{

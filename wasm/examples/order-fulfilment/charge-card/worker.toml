@@ -1,0 +1,15 @@
+[worker]
+name = "charge-card"
+version = "0.1.0"
+job_types = ["charge-card"]
+
+[limits]
+memory_mb = 64
+timeout_ms = 10_000
+max_concurrent = 8
+
+[network]
+allow = ["api.payments.example:443"]
+
+[secrets]
+names = ["PAYMENT_API_KEY"]

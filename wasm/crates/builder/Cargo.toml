@@ -1,0 +1,32 @@
+[package]
+name = "bpmnkit-wasm-builder"
+description = "BPMN Kit Wasm worker build service: HTTP API, sandboxed cargo, ed25519 signing, registry publish"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "bpmnkit-wasm-builder"
+path = "src/main.rs"
+
+[dependencies]
+axum = { version = "0.8", default-features = false, features = ["http1", "json", "tokio"] }
+bpmnkit-wasm-build = { path = "../build" }
+bpmnkit-wasm-contract = { path = "../contract", features = ["registry"] }
+futures-util = { version = "0.3", default-features = false }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "signal"] }
+
+[dev-dependencies]
+bpmnkit-wasm-test-support = { path = "../test-support" }
+toml = "0.8"
+bpmnkit-wasm-host = { path = "../host" }
+bpmnkit-worker = { path = "../../../crates/bpmnkit-worker" }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+tokio = { version = "1", features = ["time"] }
+tower = { version = "0.5", features = ["util"] }

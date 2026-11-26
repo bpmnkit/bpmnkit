@@ -102,6 +102,21 @@ pub struct SampleJob {
     pub custom_headers: BTreeMap<String, String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expect: Option<ExpectedOutcome>,
+    /// Canned answers for outbound HTTP during a smoke test.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub http: Vec<HttpStub>,
+}
+
+/// A canned HTTP response. The manifest allow-list still applies before a stub is matched.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct HttpStub {
+    pub method: String,
+    pub url: String,
+    pub status: u16,
+    #[serde(default)]
+    pub headers: BTreeMap<String, String>,
+    #[serde(default)]
+    pub body: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

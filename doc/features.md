@@ -8,6 +8,10 @@
 
 `@bpmnkit/feel` computes FEEL numbers as DMN Decimal128 (`FeelNumber`, 34 digits, HALF_EVEN), like Camunda 8, so `0.1 + 0.2 = 0.3` and gateway conditions such as `amount * 1.1 <= 110` take the branch Camunda takes. `toJs` / `fromJs` convert to and from plain JS data; `formatFeelValue` prints a result with every nested number exact.
 
+## Wasm workers M3-lite: builder, signed registry, hot-load (2026-11-26)
+
+`bpmnkit-wasm-builder` (`serve` / `keygen`) takes a worker's manifest, source and samples over an authenticated HTTP API, builds it in a sandbox (`bwrap` without network, else `prlimit`), signs the component digest and manifest with ed25519 and publishes it to a directory registry. `bpmnkit-wasm-host run --registry <dir> --trusted-key <hex>` verifies each `CURRENT` version and hot-swaps it on the next poll; a bad version keeps the previous one serving. `samples.json` takes canned `http` answers, so `bpmnkit-wasm test` runs HTTP paths offline. The order-fulfilment blueprint (`wasm/examples/order-fulfilment`) runs end to end: builder, registry, host, reebe.
+
 ## Wasm job workers (2026-11-24)
 
 Write a Camunda 8 job worker in Rust, build it to a sandboxed `wasm32-wasip2` component and run it on `bpmnkit-wasm-host`. `bpmnkit worker wasm init|check|build|test|inspect|run` (also `bpmnkit-wasm`) covers the loop; `worker.toml` sets the memory, time, HTTP allow-list and secret names the sandbox enforces. See [the guide](https://bpmnkit.com/docs/guides/wasm-workers).

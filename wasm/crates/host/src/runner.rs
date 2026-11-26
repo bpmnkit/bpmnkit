@@ -10,7 +10,7 @@ use wasmtime_wasi_http::WasiHttpCtx;
 
 use crate::bindings::Worker;
 use crate::engine::Loaded;
-use crate::http::Hooks;
+use crate::http::{Hooks, HttpStubs};
 use crate::secrets::{scoped, SecretSource};
 use crate::state::{Limiter, MemoryLimit, State};
 use crate::{Failure, Job, Outcome};
@@ -18,10 +18,30 @@ use crate::{Failure, Job, Outcome};
 /// Runs `job` under the manifest's limits. Never errors: a trap, a timeout or an instantiation
 /// failure becomes `Outcome::Fail` with a message that says which.
 pub async fn run_job(loaded: &Loaded, job: Job, secrets: &dyn SecretSource) -> Outcome {
+    run(loaded, job, secrets, None).await
+}
+
+/// [`run_job`] with outbound HTTP answered by `stubs` instead of the network (the allow-list
+/// still applies first).
+pub async fn run_job_stubbed(
+    loaded: &Loaded,
+    job: Job,
+    secrets: &dyn SecretSource,
+    stubs: Arc<HttpStubs>,
+) -> Outcome {
+    run(loaded, job, secrets, Some(stubs)).await
+}
+
+async fn run(
+    loaded: &Loaded,
+    job: Job,
+    secrets: &dyn SecretSource,
+    stubs: Option<Arc<HttpStubs>>,
+) -> Outcome {
     let limits = loaded.manifest.limits;
     let timeout = Duration::from_millis(limits.timeout_ms);
     let secrets = scoped(&loaded.manifest, secrets);
-    match tokio::time::timeout(timeout, call(loaded, job, secrets)).await {
+    match tokio::time::timeout(timeout, call(loaded, job, secrets, stubs)).await {
         Ok(Ok(o)) => o,
         Ok(Err(e)) => fail(describe(&e, limits.memory_mb)),
         Err(_) => fail(format!(
@@ -33,11 +53,25 @@ pub async fn run_job(loaded: &Loaded, job: Job, secrets: &dyn SecretSource) -> O
 
 /// [`run_job`] for callers without a Tokio runtime (one is created for the call).
 pub fn run_job_blocking(loaded: &Loaded, job: Job, secrets: &dyn SecretSource) -> Outcome {
+    block_on(run(loaded, job, secrets, None))
+}
+
+/// [`run_job_stubbed`] for callers without a Tokio runtime.
+pub fn run_job_stubbed_blocking(
+    loaded: &Loaded,
+    job: Job,
+    secrets: &dyn SecretSource,
+    stubs: Arc<HttpStubs>,
+) -> Outcome {
+    block_on(run(loaded, job, secrets, Some(stubs)))
+}
+
+fn block_on(f: impl std::future::Future<Output = Outcome>) -> Outcome {
     match tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
     {
-        Ok(rt) => rt.block_on(run_job(loaded, job, secrets)),
+        Ok(rt) => rt.block_on(f),
         Err(e) => fail(format!("cannot start a runtime: {e}")),
     }
 }
@@ -46,6 +80,7 @@ async fn call(
     loaded: &Loaded,
     job: Job,
     secrets: std::collections::HashMap<String, String>,
+    stubs: Option<Arc<HttpStubs>>,
 ) -> wasmtime::Result<Outcome> {
     let inner = &loaded.engine.0;
     let m = &loaded.manifest;
@@ -62,6 +97,7 @@ async fn call(
         hooks: Hooks {
             allow: Arc::from(m.network.allow.as_slice()),
             policy: inner.net.clone(),
+            stubs,
         },
         secrets,
         limiter: Limiter::new(m.limits.memory_mb),
