@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-11-26 — wasm playground: open-API use cases; lint and reebe fixes
+
+`wasm/examples/playground/`: `frost-alert` (REST connector only: Open-Meteo, `resultExpression`, `errorExpression` → `BAD_LOCATION` boundary, frost gateway) and `fx-invoice` (Frankfurter rates via REST connector + `convert-invoice` Wasm worker in the `worker` world; `UNSUPPORTED_CURRENCY` / `RATES_UNAVAILABLE` boundaries). Each has HTTP stubs, `run.sh` (lint, `connector-test.py` → published `bpmnkit connector test` against a local stub, `bpmnkit worker wasm test`, expected outputs) and a README with live outputs from reebe + the real APIs on every path. The wasm CI smoke test (`test-support/tests/blueprint.rs`) now also builds and tests `convert-invoice`. Tried with the published `bpmnkit-cli` 0.9.0; its friction is listed in the playground README. The planned `country-check` case is not added yet: restcountries.com now needs an API key (v3.1 redirects to a deprecation notice).
+
+Fixes found on the way, each with regression tests:
+- Lint `data-flow` (TS `variable-flow.ts` and Rust `variable_flow.rs`): an input/output mapping source without `=` is a Zeebe static value and reads no variable (no more `undefined-variable:GET` on connector tasks); `zeebe:script` `resultVariable`, the `resultVariable` task header and the top-level keys of a context `resultExpression` count as produced.
+- reebe `POST /v2/deployments`: each process also carries the Camunda 8 `processDefinition {processDefinitionId, processDefinitionKey, processDefinitionVersion, resourceName, tenantId}` (flat fields kept for gRPC and older clients).
+- reebe `POST /v2/process-instances/search` honours `processInstanceKey` and accepts `processDefinitionId`; results carry `processDefinitionId`.
+- reebe `POST /v2/element-instances/search` honours `type` (alias of `elementType`) and `elementId`; results carry `type`.
+
 ## 2026-11-26 — FEEL fuzz: invalid regex repetitions, exact duration seconds
 
 Nightly fuzz (seed 45763151012) found two Rust-vs-TS mismatches. TS `toJsRegExp` now rejects a `{` that is not `{n}`, `{n,}` or `{n,m}` (JavaScript read `{}` as literal text; Java and Rust's regex reject it) and strips the whitespace Rust allows inside the braces; counts above u32 are rejected too. Days-time duration seconds are split (`string`, `.seconds`), added and subtracted in `FeelNumber` (`exactSeconds`), as are time/date-time differences and time shifts, so `76.542 * @"PT36H"` prints `43.2S` rather than `43.19999999925494S`. Regression tests (TS, Rust) and conformance `fuzz/36`–`fuzz/37`.

@@ -177,6 +177,11 @@ error that cancels the order) with two Wasm workers. Its README walks through th
 builder, the registry and the host, and running the process on reebe. Start there when you build your
 own appliance; `submit.sh` shows how to send a worker to the builder.
 
+[`wasm/examples/playground`](https://github.com/bpmnkit/bpmnkit/tree/main/wasm/examples/playground)
+has smaller cases against public APIs with no keys. `frost-alert` uses only the REST connector
+(`bpmnkit connector run`). `fx-invoice` adds a Wasm worker with no HTTP access. Each case has HTTP
+stubs for an offline test and the commands for a live run on reebe.
+
 ## Not yet
 
 - OCI distribution, KMS or Sigstore signing keys, and a gVisor or nsjail sandbox for the builder.

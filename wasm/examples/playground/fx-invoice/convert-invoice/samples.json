@@ -52,5 +52,10 @@
 		},
 		"expect": "fail"
 	},
-	{ "name": "bad input", "job_type": "convert-invoice", "variables": { "lines": "nope" }, "expect": "fail" }
+	{
+		"name": "bad input",
+		"job_type": "convert-invoice",
+		"variables": { "lines": "nope" },
+		"expect": "fail"
+	}
 ]

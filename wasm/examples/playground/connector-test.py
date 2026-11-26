@@ -7,7 +7,8 @@ Each sample names a service task (`element`). The task's own zeebe:input mapping
 headers become a one-off element template, a local server answers with the sample's `http` stub,
 and the published CLI runs it: `bpmnkit connector test`. The stub's address is passed in the
 variable named by `baseVar`, which the task's url mapping prefers over the real host.
-`expect` is compared with the command JSON the CLI prints (`complete` compares variables).
+`expect` is compared with the command JSON the CLI prints: `complete` compares the variables,
+`throwError` / `fail` the fields given.
 """
 import http.server, json, subprocess, sys, tempfile, threading, urllib.parse, pathlib
 import xml.etree.ElementTree as ET
@@ -74,6 +75,8 @@ def main() -> int:
                     problems.append(f"want {kind}, got {json.dumps(got)}")
                 elif kind == "complete" and got[kind].get("variables") != want[kind]["variables"]:
                     problems.append(f"variables {json.dumps(got[kind].get('variables'))}")
+                elif kind != "complete" and any(got[kind].get(k) != v for k, v in want[kind].items()):
+                    problems.append(f"want {json.dumps(want)}, got {json.dumps(got)}")
             m, path = s["http"]["method"], s["http"]["path"]
             if not seen or seen[0][:2] != (m, path):
                 problems.append(f"want {m} {path}, server saw {seen}")

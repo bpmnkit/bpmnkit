@@ -12,7 +12,31 @@
 		},
 		"expect": {
 			"complete": {
-				"variables": { "rates": { "GBP": 0.8373, "JPY": 168.42, "USD": 1.0935 }, "rateDate": "2026-11-25" }
+				"variables": {
+					"rates": {
+						"GBP": 0.8373,
+						"JPY": 168.42,
+						"USD": 1.0935
+					},
+					"rateDate": "2026-11-25"
+				}
+			}
+		}
+	},
+	{
+		"name": "404 is the BPMN error RATES_UNAVAILABLE",
+		"element": "rates",
+		"baseVar": "fxBase",
+		"variables": {},
+		"http": {
+			"method": "GET",
+			"path": "/v1/latest",
+			"status": 404,
+			"body": "{\"message\":\"not found\"}"
+		},
+		"expect": {
+			"throwError": {
+				"errorCode": "RATES_UNAVAILABLE"
 			}
 		}
 	},
@@ -21,7 +45,14 @@
 		"element": "rates",
 		"baseVar": "fxBase",
 		"variables": {},
-		"http": { "method": "GET", "path": "/v1/latest", "status": 503, "body": "" },
-		"expect": { "fail": {} }
+		"http": {
+			"method": "GET",
+			"path": "/v1/latest",
+			"status": 503,
+			"body": ""
+		},
+		"expect": {
+			"fail": {}
+		}
 	}
 ]

@@ -1,4 +1,5 @@
-//! Builds and smoke-tests the blueprint workers in `wasm/examples/order-fulfilment`.
+//! Builds and smoke-tests the example workers: the `wasm/examples/order-fulfilment` blueprint
+//! and the playground's Wasm workers.
 use std::path::Path;
 use std::process::Command;
 
@@ -6,7 +7,11 @@ use std::process::Command;
 #[ignore = "needs wasm32-wasip2 (and the HTTP stub runtime for charge-card)"]
 fn blueprint_workers_pass_their_samples() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-    for w in ["check-stock", "charge-card"] {
+    for w in [
+        "order-fulfilment/check-stock",
+        "order-fulfilment/charge-card",
+        "playground/fx-invoice/convert-invoice",
+    ] {
         let out = Command::new(env!("CARGO"))
             .args([
                 "run",
@@ -19,7 +24,7 @@ fn blueprint_workers_pass_their_samples() {
                 "--",
                 "test",
             ])
-            .arg(root.join("examples/order-fulfilment").join(w))
+            .arg(root.join("examples").join(w))
             .current_dir(&root)
             .output()
             .expect("run bpmnkit-wasm");

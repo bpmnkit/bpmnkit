@@ -5665,18 +5665,29 @@
 		{
 			"id": "guides.wasm-workers.blueprint",
 			"file": "chunks/guides.wasm-workers.blueprint.md",
-			"tokens": 238,
+			"tokens": 178,
 			"tags": [
 				"guides",
 				"wasm-workers",
-				"blueprint",
-				"not",
-				"yet"
+				"blueprint"
 			],
 			"entities": [
 				"wasm/examples/order-fulfilment",
-				"submit.sh"
+				"submit.sh",
+				"wasm/examples/playground"
 			]
+		},
+		{
+			"id": "guides.wasm-workers.not-yet",
+			"file": "chunks/guides.wasm-workers.not-yet.md",
+			"tokens": 142,
+			"tags": [
+				"guides",
+				"wasm-workers",
+				"not",
+				"yet"
+			],
+			"entities": []
 		},
 		{
 			"id": "guides.workers-standalone",
