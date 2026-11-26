@@ -254,10 +254,32 @@ impl WasiHttpHooks for Hooks {
     }
 }
 
-static TLS: LazyLock<Arc<rustls::ClientConfig>> = LazyLock::new(|| {
-    let roots = rustls::RootCertStore {
+/// The Mozilla roots, plus every certificate in `extra` (a PEM file). The extra file is how an
+/// operator trusts a private CA or a TLS-intercepting egress proxy; it never replaces the roots.
+fn root_store(extra: Option<&std::path::Path>) -> Result<rustls::RootCertStore, String> {
+    use rustls::pki_types::{pem::PemObject, CertificateDer};
+    let mut roots = rustls::RootCertStore {
         roots: webpki_roots::TLS_SERVER_ROOTS.into(),
     };
+    let Some(path) = extra else {
+        return Ok(roots);
+    };
+    let certs = CertificateDer::pem_file_iter(path)
+        .and_then(|it| it.collect::<Result<Vec<_>, _>>())
+        .map_err(|e| format!("{}: {e}", path.display()))?;
+    let (added, _) = roots.add_parsable_certificates(certs);
+    if added == 0 {
+        return Err(format!("{}: no certificates", path.display()));
+    }
+    Ok(roots)
+}
+
+static TLS: LazyLock<Arc<rustls::ClientConfig>> = LazyLock::new(|| {
+    let extra = std::env::var_os("SSL_CERT_FILE").map(std::path::PathBuf::from);
+    let roots = root_store(extra.as_deref()).unwrap_or_else(|e| {
+        eprintln!("bpmnkit-wasm-host: SSL_CERT_FILE ignored: {e}");
+        root_store(None).expect("built-in roots")
+    });
     Arc::new(
         rustls::ClientConfig::builder_with_provider(Arc::new(
             rustls::crypto::ring::default_provider(),
@@ -316,6 +338,23 @@ async fn send(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn extra_roots_come_from_a_pem_file() {
+        let dir = std::env::temp_dir().join(format!("bpmnkit-roots-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let pem = dir.join("ca.pem");
+        std::fs::write(&pem, include_str!("testdata/isrg-root-x1.pem")).unwrap();
+        let base = webpki_roots::TLS_SERVER_ROOTS.len();
+        assert_eq!(super::root_store(None).unwrap().len(), base);
+        assert_eq!(super::root_store(Some(&pem)).unwrap().len(), base + 1);
+
+        let empty = dir.join("empty.pem");
+        std::fs::write(&empty, "not a certificate").unwrap();
+        assert!(super::root_store(Some(&empty)).is_err());
+        assert!(super::root_store(Some(&dir.join("missing.pem"))).is_err());
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
+
     use super::*;
 
     struct Fixed(Vec<IpAddr>);
