@@ -8,7 +8,8 @@ use serde_json::{Map, Value};
 use tokio::sync::Semaphore;
 
 use crate::engine::Loaded;
-use crate::runner::run_job;
+use crate::http::HttpStubs;
+use crate::runner::{run_job, run_job_stubbed};
 use crate::secrets::SecretSource;
 use crate::{Job, Outcome};
 
@@ -20,6 +21,7 @@ pub struct WasmHandler {
     loaded: Arc<RwLock<Arc<Loaded>>>,
     secrets: Arc<dyn SecretSource>,
     permits: Arc<Semaphore>,
+    stubs: Option<Arc<HttpStubs>>,
 }
 
 impl WasmHandler {
@@ -29,7 +31,16 @@ impl WasmHandler {
             loaded: Arc::new(RwLock::new(Arc::new(loaded))),
             secrets,
             permits: Arc::new(Semaphore::new(n.max(1))),
+            stubs: None,
         }
+    }
+
+    /// Answers this handle's outbound HTTP from `stubs` instead of the network, so live runs
+    /// (e2e tests) of a worker that calls an external API stay offline. Not used in production.
+    #[must_use]
+    pub fn with_http_stubs(mut self, stubs: Arc<HttpStubs>) -> Self {
+        self.stubs = Some(stubs);
+        self
     }
 
     pub fn loaded(&self) -> Arc<Loaded> {
@@ -51,7 +62,12 @@ impl Handler for WasmHandler {
             .await
             .map_err(|_| JobError::fail("worker host is shutting down"))?;
         let loaded = self.loaded();
-        to_result(run_job(&loaded, to_wit(&job), self.secrets.as_ref()).await)
+        let (job, secrets) = (to_wit(&job), self.secrets.as_ref());
+        let outcome = match &self.stubs {
+            Some(s) => run_job_stubbed(&loaded, job, secrets, Arc::clone(s)).await,
+            None => run_job(&loaded, job, secrets).await,
+        };
+        to_result(outcome)
     }
 }
 

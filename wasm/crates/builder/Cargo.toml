@@ -25,4 +25,8 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync",
 [dev-dependencies]
 bpmnkit-wasm-test-support = { path = "../test-support" }
 toml = "0.8"
+bpmnkit-wasm-host = { path = "../host" }
+bpmnkit-worker = { path = "../../../crates/bpmnkit-worker" }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+tokio = { version = "1", features = ["time"] }
 tower = { version = "0.5", features = ["util"] }
