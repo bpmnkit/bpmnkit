@@ -20,7 +20,7 @@ pub enum Stage {
 }
 
 impl Stage {
-    fn name(self) -> &'static str {
+    pub fn name(self) -> &'static str {
         match self {
             Self::Render => "render",
             Self::Check => "check",
@@ -32,31 +32,46 @@ impl Stage {
     }
 }
 
+/// Progress of a run, for callers that stream it (the builder service).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StageEvent {
+    Started(Stage),
+    Finished { stage: Stage, ok: bool, ms: u64 },
+}
+
 pub struct Pipeline {
     pub report: BuildReport,
     pub artifact: Option<Artifact>,
 }
 
-struct Run {
+struct Run<'a> {
     report: BuildReport,
     last: Stage,
     failed: bool,
+    on: &'a mut dyn FnMut(StageEvent),
 }
 
-impl Run {
+impl Run<'_> {
     /// Runs `f` unless an earlier stage failed or `s` is past the last requested stage; `None`
     /// from `f` marks the run failed. Time is recorded either way.
     fn stage<T>(&mut self, s: Stage, f: impl FnOnce(&mut BuildReport) -> Option<T>) -> Option<T> {
         if self.failed || s > self.last {
             return None;
         }
+        (self.on)(StageEvent::Started(s));
         let t = Instant::now();
         let out = f(&mut self.report);
+        let ms = t.elapsed().as_millis() as u64;
         self.report.timings.push(StageTiming {
             stage: s.name().into(),
-            ms: t.elapsed().as_millis() as u64,
+            ms,
         });
         self.failed = out.is_none();
+        (self.on)(StageEvent::Finished {
+            stage: s,
+            ok: !self.failed,
+            ms,
+        });
         out
     }
 }
@@ -68,6 +83,17 @@ pub fn run_pipeline_until(
     ex: &dyn Executor,
     last: Stage,
 ) -> Pipeline {
+    run_pipeline_observed(input, tc, ex, last, &mut |_| {})
+}
+
+/// [`run_pipeline_until`], reporting each stage as it starts and finishes.
+pub fn run_pipeline_observed(
+    input: &BuildInput,
+    tc: &Toolchain,
+    ex: &dyn Executor,
+    last: Stage,
+    on: &mut dyn FnMut(StageEvent),
+) -> Pipeline {
     let mut r = Run {
         report: BuildReport {
             ok: false,
@@ -78,6 +104,7 @@ pub fn run_pipeline_until(
         },
         last,
         failed: false,
+        on,
     };
     let project = r.stage(Stage::Render, |rep| {
         render(input, tc).map_err(|d| rep.diagnostics = d).ok()

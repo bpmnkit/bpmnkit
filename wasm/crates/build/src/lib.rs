@@ -14,7 +14,9 @@ pub mod toolchain;
 pub use cargo::{build, check, verify_built, BuildFailure, Built, CheckReport};
 pub use exec::{Cmd, ExecError, ExecLimits, ExecOutput, Executor, LocalExecutor};
 pub use package::{package, Artifact};
-pub use pipeline::{run_pipeline, run_pipeline_until, Pipeline, Stage};
+pub use pipeline::{
+    run_pipeline, run_pipeline_observed, run_pipeline_until, Pipeline, Stage, StageEvent,
+};
 pub use render::{render, BuildInput, Project};
 pub use smoke::smoke_test;
 pub use source::check_source;
