@@ -985,8 +985,9 @@ reg("count", (...args) => {
 
 reg("list contains", (list, item) => {
 	if (!isFeelList(list)) return null
-	// Numbers by value: 1 and 1.0 are the same number, though distinct objects.
-	return list.some((v) => v === item || (isFeelNumber(v) && isFeelNumber(item) && v.eq(item)))
+	// By value, like `index of` and the Rust twin: numbers, dates, lists and contexts are
+	// distinct objects even when equal.
+	return list.some((v) => sameItem(v ?? null, item ?? null))
 })
 
 reg("min", (...args) => {

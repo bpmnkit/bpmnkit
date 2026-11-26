@@ -412,6 +412,15 @@ describe("boolean input entries and shadowed built-ins", () => {
 
 // Found by differential fuzzing against bpmnkit-feel (crates/bpmnkit-fuzz).
 describe("fuzz regressions", () => {
+	it("list contains compares lists and contexts by value, like index of (fuzz 45770517923)", () => {
+		expect(eval_('list contains([[]], (0)[""])')).toBe(true)
+		expect(eval_("list contains([[1]], [1])")).toBe(true)
+		expect(eval_("list contains([{a: 1}], {a: 1})")).toBe(true)
+		expect(eval_('list contains([@"2024-01-01"], date("2024-01-01"))')).toBe(true)
+		expect(eval_("list contains([[1]], [2])")).toBe(false)
+		expect(eval_("list contains([1.0], 1)")).toBe(true)
+	})
+
 	it("a power that is not a finite number is null", () => {
 		expect(eval_("(-8) ** (1/3)")).toBeNull()
 		// An integer power is exact in Decimal128, as in feel-scala, so 10 ** 400 is a number.
