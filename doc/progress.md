@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-26 — wasm host e2e: match the instance key
+
+`reebe_e2e.rs` now shares a reebe with `blueprint_e2e.rs` in CI. reebe's search can ignore the filter, so the test matched the blueprint's completed instance and read variables too early. It now matches `processInstanceKey` in the results and polls variables for up to 5 s.
+
 ## 2026-11-26 — Wasm workers M3-lite: review fixes
 Also: the stub path drains the request body before answering (a `charge-card` sample flaked with `StreamError::Closed` when the guest was still writing).
 

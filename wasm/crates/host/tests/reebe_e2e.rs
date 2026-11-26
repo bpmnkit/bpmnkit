@@ -92,7 +92,7 @@ async fn echo_component_completes_a_job() {
             // Until the instance has completed, at most 20 s.
             let deadline = tokio::time::Instant::now() + Duration::from_secs(20);
             while tokio::time::Instant::now() < deadline {
-                if completed(&http, &process).await {
+                if completed(&http, &process, &instance).await {
                     break;
                 }
                 tokio::time::sleep(Duration::from_millis(100)).await;
@@ -101,26 +101,40 @@ async fn echo_component_completes_a_job() {
         .await;
     assert!(report.abandoned.is_empty());
 
-    let vars: Value = http
-        .post(format!("{}/v2/variables/search", base()))
-        .json(&json!({ "filter": { "processInstanceKey": instance } }))
-        .send()
-        .await
-        .unwrap()
-        .json()
-        .await
-        .unwrap();
+    // Variables can lag the instance state.
+    let mut vars = Value::Null;
+    for _ in 0..50 {
+        vars = http
+            .post(format!("{}/v2/variables/search", base()))
+            .json(&json!({ "filter": { "processInstanceKey": instance } }))
+            .send()
+            .await
+            .unwrap()
+            .json()
+            .await
+            .unwrap();
+        let has_output = vars["items"].as_array().is_some_and(|i| {
+            i.iter()
+                .any(|v| v["name"] == "job_key" && v["processInstanceKey"] == instance)
+        });
+        if has_output {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(100)).await;
+    }
     let names: Vec<&str> = vars["items"]
         .as_array()
         .unwrap()
         .iter()
+        .filter(|v| v["processInstanceKey"] == instance)
         .filter_map(|v| v["name"].as_str())
         .collect();
     assert!(names.contains(&"job_key"), "echo output missing: {vars}");
     assert!(names.contains(&"amount"), "{vars}");
 }
 
-async fn completed(http: &reqwest::Client, process: &str) -> bool {
+// reebe's search may ignore the filter, so match the instance key in the results.
+async fn completed(http: &reqwest::Client, process: &str, instance: &Value) -> bool {
     let r: Value = http
         .post(format!("{}/v2/process-instances/search", base()))
         .json(&json!({ "filter": { "processDefinitionId": process } }))
@@ -130,7 +144,8 @@ async fn completed(http: &reqwest::Client, process: &str) -> bool {
         .json()
         .await
         .unwrap();
-    r["items"]
-        .as_array()
-        .is_some_and(|i| i.iter().any(|p| p["state"] == "COMPLETED"))
+    r["items"].as_array().is_some_and(|i| {
+        i.iter()
+            .any(|p| p["processInstanceKey"] == *instance && p["state"] == "COMPLETED")
+    })
 }
