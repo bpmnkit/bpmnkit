@@ -402,3 +402,20 @@ fn builtin_calls() {
     assert_eq!(ev_with("count([1, 2])", &v), Value::from(2));
     assert!(matches!(ev("count"), Value::Function(_)));
 }
+
+/// Nightly fuzz (TS twin): a `{` that does not start a counted repetition is invalid, and a
+/// scaled duration's seconds split off exactly.
+#[test]
+fn fuzz_invalid_repetition_and_exact_duration_seconds() {
+    check(&[
+        ("matches(\"\", \" {}\")", "null"),
+        ("matches(\"a\", \"a{,2}\")", "null"),
+        ("matches(\"a{a}\", \"a{a}\")", "null"),
+        ("matches(\"aa\", \"^a{ 2 , 3 }$\")", "true"),
+        ("matches(\"a}\", \"a}\")", "true"),
+        ("split(\"a{}b\", \"{}\")", "[\"a\", \"b\"]"),
+        ("string(76.542 * @\"PT36H\")", "\"P114DT19H30M43.2S\""),
+        ("string(@\"10:00:00.1\" + @\"PT0.2S\")", "\"10:00:00.3\""),
+        ("(@\"P1DT2H3M4.3S\" * 3).seconds", "12.9"),
+    ]);
+}

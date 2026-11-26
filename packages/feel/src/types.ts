@@ -173,7 +173,11 @@ export function getProperty(v: FeelValue, key: string): FeelValue {
 		if (key === "days") return num(Math.trunc(total / 86400))
 		if (key === "hours") return num(Math.trunc((total % 86400) / 3600))
 		if (key === "minutes") return num(Math.trunc((total % 3600) / 60))
-		if (key === "seconds") return num(total % 60)
+		if (key === "seconds") {
+			// Split off exactly, truncating like Rust's Decimal `%`: float `% 60` drifts on large totals.
+			const secs = FeelNumber.from(Math.abs(total)).mod(FeelNumber.from(60))
+			return total < 0 ? (secs?.neg() ?? null) : secs
+		}
 		return null
 	}
 	if (isFeelYearsMonthsDuration(v)) {
