@@ -266,7 +266,9 @@ function dateToEpochDays(d: import("./types.js").FeelDate): number {
 function epochDaysToDate(days: number): import("./types.js").FeelDate {
 	let remaining = days + 719162
 	const year400 = Math.floor(remaining / 146097)
-	remaining %= 146097
+	// Floored, not %: a day before year 1 must still leave a remainder in
+	// [0, 146097), or the year count comes out 400 years early.
+	remaining -= year400 * 146097
 	const year100 = Math.min(Math.floor(remaining / 36524), 3)
 	remaining -= year100 * 36524
 	const year4 = Math.floor(remaining / 1461)
@@ -600,7 +602,9 @@ function dayTime(scaled: FeelNumber | null): FeelValue {
  */
 function yearsMonths(scaled: FeelNumber | null): FeelValue {
 	const months = scaled?.round(0, "half-up").toNumber() ?? Number.NaN
-	if (!Number.isFinite(months)) return null
+	// The Rust evaluator (and feel-scala's long month count) overflow past
+	// i64; anything that large has no duration, only null.
+	if (!Number.isFinite(months) || Math.abs(months) >= 2 ** 63) return null
 	return { type: "years-months-duration", months: months || 0 }
 }
 

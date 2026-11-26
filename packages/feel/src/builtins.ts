@@ -576,10 +576,44 @@ function toJsRegExp(pattern: string, flags: string): RegExp | null {
 		source = stripPatternWhitespace(pattern)
 	}
 	try {
-		return new RegExp(source, jsFlags)
+		return new RegExp(escapeLeadingClassBracket(source), jsFlags)
 	} catch {
 		return null
 	}
+}
+
+/**
+ * Java (and Rust's regex) read a `]` right after `[` or `[^` as a literal, so
+ * `[]a]` is a class and `[]` is unclosed; JavaScript reads `[]` as an empty
+ * class instead. Escaping that `]` gives JavaScript the same meaning.
+ */
+function escapeLeadingClassBracket(pattern: string): string {
+	let out = ""
+	let inClass = false
+	for (let i = 0; i < pattern.length; i++) {
+		const c = pattern[i] as string
+		if (c === "\\" && i + 1 < pattern.length) {
+			out += c + pattern[i + 1]
+			i++
+			continue
+		}
+		out += c
+		if (inClass) {
+			if (c === "]") inClass = false
+			continue
+		}
+		if (c !== "[") continue
+		inClass = true
+		if (pattern[i + 1] === "^") {
+			out += "^"
+			i++
+		}
+		if (pattern[i + 1] === "]") {
+			out += "\\]"
+			i++
+		}
+	}
+	return out
 }
 
 /** Removes the whitespace an "x"-flagged pattern ignores, keeping character classes intact. */
@@ -683,8 +717,18 @@ reg("extract", (str, pattern) => {
 	if (s === null || p === null) return null
 	const re = cachedRegExp(p, "g")
 	if (re === null) return null
-	return [...s.matchAll(re)].map((m) => m[0])
+	// Without the "u" flag an empty match also lands between the halves of a
+	// surrogate pair; FEEL (and Java) step over whole characters.
+	return [...s.matchAll(re)]
+		.filter((m) => m[0] !== "" || !splitsSurrogatePair(s, m.index))
+		.map((m) => m[0])
 })
+
+function splitsSurrogatePair(s: string, index: number): boolean {
+	const before = s.charCodeAt(index - 1)
+	const after = s.charCodeAt(index)
+	return before >= 0xd800 && before <= 0xdbff && after >= 0xdc00 && after <= 0xdfff
+}
 
 reg("uuid", () => {
 	const platform = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto
