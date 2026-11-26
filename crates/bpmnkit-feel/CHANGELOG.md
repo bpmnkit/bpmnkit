@@ -1,5 +1,15 @@
 # @crates/bpmnkit-feel
 
+## 0.9.0
+
+### Minor Changes
+
+- d9376af: Ranges and `for` / `some` / `every` stop at 1,000,000 items (`MAX_ITERATIONS`); past it the expression is null instead of running for minutes. Rust reports a new `WarningKind::IterationLimitExceeded` (`ITERATION_LIMIT_EXCEEDED`). Camunda has no such bound.
+
+### Patch Changes
+
+- 159cc21: Rounding looks at every dropped digit, as `BigDecimal` does: `decimal(850.01, -2)` is `900` (was `800`), `decimal(0.2501, 1)` is `0.3`, `round half down(8.5001, 0)` is `9`, and a 34-digit result just past a tie rounds up (`1 + 0.00000000000000000000000000000000050001`). `fastnum`'s `rescale` decided half-even/half-down from the first dropped digit alone; it now only truncates.
+
 ## 0.8.0
 
 ### Minor Changes

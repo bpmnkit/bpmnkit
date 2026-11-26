@@ -1,5 +1,14 @@
 # @bpmnkit/landing
 
+## 0.0.74
+
+### Patch Changes
+
+- Updated dependencies [159cc21]
+- Updated dependencies [2622741]
+- Updated dependencies [d9376af]
+  - @bpmnkit/feel@2.1.0
+
 ## 0.0.73
 
 ### Patch Changes
