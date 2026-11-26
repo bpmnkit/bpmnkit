@@ -188,6 +188,31 @@ fn long_for_is_linear() {
     );
 }
 
+/// Fuzz regression (nightly 45751539260): a 36.8M-item range ran for minutes.
+#[test]
+fn iteration_limit() {
+    let start = std::time::Instant::now();
+    check(&[
+        ("count(for x in 1..1000000 return x)", "1000000"),
+        ("for x in 1..1000001 return x", "null"),
+        ("for x in 0..-1000000 return x", "null"),
+        (
+            r#"for x in (-16..-332.36 ** 3) return ctx.a + " " + string(82)"#,
+            "null",
+        ),
+        ("count(for x in 1..1000, y in 1..1000 return 1)", "1000000"),
+        ("for x in 1..1000, y in 1..1001 return 1", "null"),
+        ("some x in 1..2000000 satisfies x > 5", "null"),
+        ("every x in 1..1001, y in 1..1000 satisfies x > 0", "null"),
+        (r#"for d in @"2000-01-01"..@"5000-01-01" return d"#, "null"),
+    ]);
+    assert!(
+        start.elapsed() < std::time::Duration::from_secs(20),
+        "{:?}",
+        start.elapsed()
+    );
+}
+
 #[test]
 fn for_some_every() {
     check(&[

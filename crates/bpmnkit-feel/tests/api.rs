@@ -198,3 +198,15 @@ fn unary_test_diagnostics() {
     assert!(!ok);
     assert_eq!(warnings[0].kind, bpmnkit_feel::WarningKind::NotComparable);
 }
+
+#[test]
+fn iteration_limit_warns() {
+    let e = bpmnkit_feel::parse("for x in 1..1000001 return x", &ParseOptions::default()).unwrap();
+    let out = e.evaluate_with_diagnostics(&Context::new());
+    assert_eq!(out.value, Value::Null);
+    assert_eq!(
+        out.warnings[0].kind,
+        bpmnkit_feel::WarningKind::IterationLimitExceeded
+    );
+    assert_eq!(bpmnkit_feel::MAX_ITERATIONS, 1_000_000);
+}

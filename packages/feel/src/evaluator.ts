@@ -111,6 +111,14 @@ function filterCtx(parent: Scope, item: FeelValue): Scope {
 }
 
 /**
+ * Most elements a range expands to, and most binding combinations one
+ * `for`/`some`/`every` visits. Beyond it the expression is null instead of
+ * running for minutes or exhausting memory; Camunda has no such bound. The
+ * Rust `bpmnkit-feel` uses the same number so both evaluators agree.
+ */
+export const MAX_ITERATIONS = 1_000_000
+
+/**
  * Expands the domain of a `for`/`some`/`every` binding into the values to
  * iterate. A numeric or date range yields its whole span, counting down when
  * it runs backwards; anything else iterates as a single-element list. A range
@@ -122,22 +130,30 @@ function iterationValues(domain: FeelValue): FeelValue[] | null {
 	const { start, end } = domain
 	if (isFeelNumber(start) && isFeelNumber(end)) return numberSpan(start, end)
 	if (isFeelDate(start) && isFeelDate(end)) {
-		return span(dateToEpochDays(start), dateToEpochDays(end)).map((d) => epochDaysToDate(d))
+		const days = span(dateToEpochDays(start), dateToEpochDays(end))
+		return days?.map((d) => epochDaysToDate(d)) ?? null
 	}
 	return null
 }
 
 /** `from`, `from ± 1`, … up to `to`, in whichever direction that runs. */
-function numberSpan(from: FeelNumber, to: FeelNumber): FeelValue[] {
+function numberSpan(from: FeelNumber, to: FeelNumber): FeelValue[] | null {
+	// A span past the limit is refused before stepping through it; the cap in the loop
+	// still catches steps lost to rounding.
+	if (to.sub(from).abs().ge(FeelNumber.from(MAX_ITERATIONS))) return null
 	const step = from.le(to) ? FeelNumber.ONE : FeelNumber.ONE.neg()
 	const up = step.sign() > 0
 	const values: FeelValue[] = []
-	for (let v = from; up ? v.le(to) : v.ge(to); v = v.add(step)) values.push(v)
+	for (let v = from; up ? v.le(to) : v.ge(to); v = v.add(step)) {
+		if (values.length >= MAX_ITERATIONS) return null
+		values.push(v)
+	}
 	return values
 }
 
 /** Every integer from `from` to `to`, in whichever direction that runs. */
-function span(from: number, to: number): number[] {
+function span(from: number, to: number): number[] | null {
+	if (Math.abs(to - from) >= MAX_ITERATIONS) return null
 	const step = from <= to ? 1 : -1
 	const values: number[] = []
 	for (let v = from; step > 0 ? v <= to : v >= to; v += step) values.push(v)
@@ -664,6 +680,10 @@ function evalFor(bindings: Binding[], body: FeelNode, ctx: Scope): FeelValue {
 	const iterate = (idx: number, scope: Scope): void => {
 		if (failed) return
 		if (idx === bindings.length) {
+			if (results.length >= MAX_ITERATIONS) {
+				failed = true
+				return
+			}
 			results.push(
 				evalNode(body, readsPartial ? childCtx(scope, { partial: [...results] }) : scope),
 			)
@@ -700,10 +720,16 @@ function evalQuantifier(
 	let sawFalse = false
 	let sawUnknown = false
 	let failed = false
+	let visited = 0
 
 	const visit = (idx: number, scope: Scope): void => {
 		if (failed) return
 		if (idx === bindings.length) {
+			if (visited >= MAX_ITERATIONS) {
+				failed = true
+				return
+			}
+			visited++
 			const result = asBoolean(evalNode(satisfies, scope))
 			if (result === true) sawTrue = true
 			else if (result === false) sawFalse = true

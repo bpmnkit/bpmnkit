@@ -19,6 +19,7 @@ pub mod ast;
 mod builtins;
 mod decimal;
 mod evaluator;
+pub use evaluator::MAX_ITERATIONS;
 mod format;
 mod lexer;
 mod ops;
@@ -68,6 +69,9 @@ pub enum WarningKind {
     FunctionInvocationFailure,
     NotComparable,
     InvalidType,
+    /// A range or `for`/`some`/`every` went past `MAX_ITERATIONS`. bpmnkit's
+    /// own bound; FEEL-Scala has no counterpart.
+    IterationLimitExceeded,
 }
 
 impl WarningKind {
@@ -79,6 +83,7 @@ impl WarningKind {
             WarningKind::FunctionInvocationFailure => "FUNCTION_INVOCATION_FAILURE",
             WarningKind::NotComparable => "NOT_COMPARABLE",
             WarningKind::InvalidType => "INVALID_TYPE",
+            WarningKind::IterationLimitExceeded => "ITERATION_LIMIT_EXCEEDED",
         }
     }
 }
