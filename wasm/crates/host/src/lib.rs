@@ -14,6 +14,7 @@ mod bindings {
 pub mod config;
 pub mod engine;
 pub mod handler;
+pub mod hotload;
 pub mod http;
 pub mod runner;
 pub mod secrets;
@@ -22,6 +23,7 @@ mod state;
 pub use bindings::bpmnkit::worker::types::{BpmnError, Failure, Job, Outcome};
 pub use engine::{load, Engine, EngineOptions, LoadError, Loaded};
 pub use handler::WasmHandler;
-pub use http::{NetPolicy, Resolver, SystemResolver};
-pub use runner::{run_job, run_job_blocking};
+pub use hotload::{load_signed, registry_workers, Event, HotLoadError, Watcher};
+pub use http::{HttpStubs, NetPolicy, Resolver, SystemResolver};
+pub use runner::{run_job, run_job_blocking, run_job_stubbed, run_job_stubbed_blocking};
 pub use secrets::{EnvSecrets, FileSecrets, MapSecrets, SecretSource};

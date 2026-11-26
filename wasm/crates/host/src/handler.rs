@@ -1,6 +1,6 @@
 //! A loaded worker as a `bpmnkit_worker::Handler`.
 
-use std::sync::Arc;
+use std::sync::{Arc, RwLock};
 use std::time::Duration;
 
 use bpmnkit_worker::{ActivatedJob, Complete, Handler, JobError};
@@ -13,10 +13,11 @@ use crate::secrets::SecretSource;
 use crate::{Job, Outcome};
 
 /// Serves every job type of one worker; at most `limits.max_concurrent` jobs run at once,
-/// across job types.
+/// across job types (the first version's limit: the permits are not resized on a swap).
 #[derive(Clone)]
 pub struct WasmHandler {
-    loaded: Arc<Loaded>,
+    // Each job takes the `Arc` current when it starts, so a swap never interrupts a running job.
+    loaded: Arc<RwLock<Arc<Loaded>>>,
     secrets: Arc<dyn SecretSource>,
     permits: Arc<Semaphore>,
 }
@@ -25,14 +26,20 @@ impl WasmHandler {
     pub fn new(loaded: Loaded, secrets: Arc<dyn SecretSource>) -> Self {
         let n = loaded.manifest.limits.max_concurrent as usize;
         Self {
-            loaded: Arc::new(loaded),
+            loaded: Arc::new(RwLock::new(Arc::new(loaded))),
             secrets,
             permits: Arc::new(Semaphore::new(n.max(1))),
         }
     }
 
-    pub fn loaded(&self) -> &Loaded {
-        &self.loaded
+    pub fn loaded(&self) -> Arc<Loaded> {
+        Arc::clone(&self.loaded.read().unwrap_or_else(|e| e.into_inner()))
+    }
+
+    /// Serves later jobs with `next`; returns the version it replaced.
+    pub fn swap(&self, next: Loaded) -> Arc<Loaded> {
+        let mut g = self.loaded.write().unwrap_or_else(|e| e.into_inner());
+        std::mem::replace(&mut *g, Arc::new(next))
     }
 }
 
@@ -43,7 +50,8 @@ impl Handler for WasmHandler {
             .acquire()
             .await
             .map_err(|_| JobError::fail("worker host is shutting down"))?;
-        to_result(run_job(&self.loaded, to_wit(&job), self.secrets.as_ref()).await)
+        let loaded = self.loaded();
+        to_result(run_job(&loaded, to_wit(&job), self.secrets.as_ref()).await)
     }
 }
 
