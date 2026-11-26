@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-26 — Wasm workers WP9: order-fulfilment blueprint
+
+`wasm/examples/order-fulfilment/` (not a workspace member): `order.bpmn` (check stock → charge card, `PAYMENT_DECLINED` boundary → notify script task → end; passes `validateDeployableXml`), workers `check-stock` and `charge-card` (secret `PAYMENT_API_KEY`, host `api.payments.example`), per-worker `samples.json` (charge-card with `http` stubs per plan decision 3), `run.sh`, README. `bpmnkit-wasm test` passes `check-stock`; `charge-card` fails until WP6/WP8 land the `SampleJob.http` field and stub runtime (it is rejected as no-network today). Ignored test `blueprint_workers_pass_their_samples` in `wasm/crates/test-support/tests/blueprint.rs`. The plan's `bpmnkit worker wasm test` is the `bpmnkit-wasm test` binary here.
+
 ## 2026-11-25 — Nightlies: dmn-eval fuzz numbers, Zeebe z130 and process bindings
 
 Manual runs after #323 (fuzz 45673669537, Zeebe 45673673093) still failed. `scripts/fuzz/oracle.mjs` encoded the plain JS numbers that the engine's DMN API returns (`toJs`) as empty contexts; it now encodes them as decimals (test in `scripts/fuzz/oracle.test.mjs`). The `z130-deployment-binding-missing` repro is gated `since: "8.8"`: 8.6 and 8.7 deploy a call activity whose callee is missing. The `deployment-binding` class also matches "Expected to find process with id", which 8.10 reports for `migrate/*/placeholders.bpmn` (test in `scripts/zeebe-broker-lib.test.mjs`).
