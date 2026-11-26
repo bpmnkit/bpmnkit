@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-26 — Wasm workers M3-lite WP6: signing, registry and HTTP stubs in the contract
+
+`bpmnkit-wasm-contract` gains feature `signing` (ed25519-dalek 2: `sign`, `verify_signature`, `signing_payload` = digest hex + `\n` + manifest JSON, hex key helpers) and feature `registry` (`RegistryStore` trait, `DirRegistry` with `<name>/<digest>/{worker.wasm,worker.toml,metadata.json,worker.sig}` and atomic `CURRENT`). `SampleJob.http: Vec<HttpStub>` (serde default empty) carries canned HTTP answers for smoke tests. Tests: sign/verify round trip, tampered digest/manifest/key, registry publish/current/list/load, unsafe names, `HttpStub` serde default. In this sandbox the `bpmnkit-wasm-build` e2e and the ignored host tests fail on the untouched baseline too (fixtures cannot be built here).
+
 ## 2026-11-25 — Nightlies: dmn-eval fuzz numbers, Zeebe z130 and process bindings
 
 Manual runs after #323 (fuzz 45673669537, Zeebe 45673673093) still failed. `scripts/fuzz/oracle.mjs` encoded the plain JS numbers that the engine's DMN API returns (`toJs`) as empty contexts; it now encodes them as decimals (test in `scripts/fuzz/oracle.test.mjs`). The `z130-deployment-binding-missing` repro is gated `since: "8.8"`: 8.6 and 8.7 deploy a call activity whose callee is missing. The `deployment-binding` class also matches "Expected to find process with id", which 8.10 reports for `migrate/*/placeholders.bpmn` (test in `scripts/zeebe-broker-lib.test.mjs`).
