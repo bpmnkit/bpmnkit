@@ -119,6 +119,11 @@ interface ScopeCtx {
 	 * sibling branches are entered.
 	 */
 	pending: number
+	/**
+	 * Parallel joins still waiting: joinId → incoming flows received. A waiting
+	 * join holds the scope open like a token (BPMN 13.2, Camunda 8 keeps it active).
+	 */
+	readonly joins: Map<string, Set<string>>
 	/** Token of the activity this scope runs inside; undefined for the process scope. */
 	readonly hostToken: Token | undefined
 	/** activityId → the handler associated with its compensation boundary event. */
@@ -256,6 +261,11 @@ export class ProcessInstance {
 
 	get activeElements(): string[] {
 		return [...this.allTokens.values()].map((t) => t.elementId)
+	}
+
+	/** Parallel joins that received some, not all, of their tokens — they keep the instance active. */
+	get waitingJoins(): string[] {
+		return [...this.scopes.values()].flatMap((ctx) => [...ctx.joins.keys()])
 	}
 
 	get variables_snapshot(): Record<string, unknown> {
@@ -406,6 +416,7 @@ export class ProcessInstance {
 			boundaries,
 			tokens: new Set(),
 			pending: 0,
+			joins: new Map(),
 			hostToken,
 			compensationHandlers,
 			eventSubProcesses,
@@ -464,6 +475,7 @@ export class ProcessInstance {
 			else this.removeToken(token)
 		}
 		for (const ctx of this.scopes.values()) {
+			ctx.joins.clear()
 			for (const cleanup of ctx.cleanups.splice(0)) cleanup()
 		}
 	}
@@ -520,11 +532,6 @@ export class ProcessInstance {
 		})
 	}
 
-	// ── Parallel join tracking ─────────────────────────────────────────────────
-
-	/** scope/elementId → set of incomingFlowIds received */
-	private readonly joins = new Map<string, Set<string>>()
-
 	// ── Activation ─────────────────────────────────────────────────────────────
 
 	private async enter(
@@ -559,14 +566,14 @@ export class ProcessInstance {
 
 		// ── Parallel gateway join ──────────────────────────────────────────────
 		if (el.type === "parallelGateway" && el.incoming.length > 1) {
-			const seen = this.joins.get(key) ?? new Set<string>()
+			const seen = ctx.joins.get(elementId) ?? new Set<string>()
 			if (incomingFlowId !== undefined) seen.add(incomingFlowId)
-			this.joins.set(key, seen)
+			ctx.joins.set(elementId, seen)
 			if (seen.size < el.incoming.length) {
 				release()
 				return
 			}
-			this.joins.delete(key)
+			ctx.joins.delete(elementId)
 		}
 
 		this.emit({ type: "element:entering", elementId, elementName: el.name, elementType: el.type })
@@ -1656,6 +1663,7 @@ export class ProcessInstance {
 				const token = this.allTokens.get(id)
 				if (token !== undefined) this.terminateToken(token)
 			}
+			ctx.joins.clear()
 			for (const cleanup of ctx.cleanups.splice(0)) cleanup()
 		}
 		this.setVariables(vars, ctx.scopeId)
@@ -1980,7 +1988,7 @@ export class ProcessInstance {
 		const flows = forcedFlows ?? this.getOutgoingFlows(el.id, ctx)
 
 		if (flows.length === 0) {
-			if (ctx.tokens.size === 0 && ctx.pending === 0) this.scopeDone(ctx)
+			if (ctx.tokens.size === 0 && ctx.pending === 0 && ctx.joins.size === 0) this.scopeDone(ctx)
 			return
 		}
 

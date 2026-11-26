@@ -368,3 +368,42 @@ describe("bpmnMatchers — messages and Jest-style use", () => {
 		expect(() => expect(null).toHaveCompleted()).toThrow(/expect a run returned by/)
 	})
 })
+
+// #335: the issue's repro. A deadlocked join must not read as `completed`.
+describe("createProcessTest — a join that never fires", () => {
+	const JOIN_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="d" targetNamespace="x">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:parallelGateway id="fork"><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing><bpmn:outgoing>f3</bpmn:outgoing></bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="xor" default="toEnd"><bpmn:incoming>f3</bpmn:incoming><bpmn:outgoing>toJoin</bpmn:outgoing><bpmn:outgoing>toEnd</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:parallelGateway id="join"><bpmn:incoming>f2</bpmn:incoming><bpmn:incoming>toJoin</bpmn:incoming><bpmn:outgoing>f4</bpmn:outgoing></bpmn:parallelGateway>
+    <bpmn:endEvent id="endJoined"><bpmn:incoming>f4</bpmn:incoming></bpmn:endEvent>
+    <bpmn:endEvent id="endOther"><bpmn:incoming>toEnd</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="fork"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="fork" targetRef="join"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="fork" targetRef="xor"/>
+    <bpmn:sequenceFlow id="toJoin" sourceRef="xor" targetRef="join"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= x &gt; 100</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="toEnd" sourceRef="xor" targetRef="endOther"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="join" targetRef="endJoined"/>
+  </bpmn:process>
+</bpmn:definitions>`
+
+	it("stays active, names the waiting join and fails toHaveCompleted", async () => {
+		const jt = await createProcessTest({ bpmn: JOIN_XML })
+		const run = await jt.start("p", { x: 1 })
+		expect(run.enteredElements).toEqual(["start", "fork", "xor", "endOther"])
+		expect(run.state).toBe("active")
+		expect(run.waitingJoins).toEqual(["join"])
+		expect(() => expect(run).toHaveCompleted()).toThrow(/is active; waiting at \[join\]/)
+		jt.dispose()
+	})
+
+	it("completes when every incoming flow arrives", async () => {
+		const jt = await createProcessTest({ bpmn: JOIN_XML })
+		const run = await jt.start("p", { x: 500 })
+		expect(run.state).toBe("completed")
+		expect(run.waitingJoins).toEqual([])
+		jt.dispose()
+	})
+})
