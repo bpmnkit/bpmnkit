@@ -1,5 +1,9 @@
 # Features
 
+## FEEL iteration limit (2026-11-26)
+
+`@bpmnkit/feel` and `bpmnkit-feel` cap ranges and `for` / `some` / `every` at 1,000,000 items (`MAX_ITERATIONS`); past it the expression is null (Rust adds an `ITERATION_LIMIT_EXCEEDED` warning). Camunda runs such loops to the end.
+
 ## FEEL Decimal128 numbers (2026-11-25)
 
 `@bpmnkit/feel` computes FEEL numbers as DMN Decimal128 (`FeelNumber`, 34 digits, HALF_EVEN), like Camunda 8, so `0.1 + 0.2 = 0.3` and gateway conditions such as `amount * 1.1 <= 110` take the branch Camunda takes. `toJs` / `fromJs` convert to and from plain JS data; `formatFeelValue` prints a result with every nested number exact.

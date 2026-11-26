@@ -18,9 +18,11 @@ use crate::{builtins, ops, temporal, Warning, WarningKind};
 
 static NULL: Value = Value::Null;
 
-/// Most elements a numeric or date range expands to; beyond it the iteration
-/// is treated as failed instead of exhausting memory.
-const MAX_SPAN: usize = 10_000_000;
+/// Most elements a range expands to, and most binding combinations one
+/// `for`/`some`/`every` visits. Beyond it the expression is null with a
+/// warning instead of running for minutes or exhausting memory; Camunda has no
+/// such bound. `@bpmnkit/feel` uses the same number so both evaluators agree.
+pub const MAX_ITERATIONS: usize = 1_000_000;
 
 enum Frame<'a> {
     Empty,
@@ -320,7 +322,7 @@ fn eval<'a>(node: &Node, scope: &'a Scope<'a>) -> Value {
             // Copying the results for `partial` on every iteration is quadratic, so it is
             // bound only when the body can read it.
             let reads_partial = mentions(body, "partial");
-            let ok = walk(bindings, 0, scope, &mut |inner| {
+            let ok = walk(bindings, scope, &mut |inner| {
                 let v = if reads_partial {
                     // The body sees the results produced so far as `partial`.
                     let partial = Value::List(results.clone());
@@ -535,17 +537,26 @@ fn order_args(params: Option<&[String]>, arg_names: &[&str], values: Vec<Value>)
 /// iterate. A numeric or date range yields its whole span, counting down when
 /// it runs backwards; anything else iterates as a single-element list. A range
 /// over values that cannot be stepped through has no iteration (`None`).
-fn iteration_values(domain: Value) -> Option<Vec<Value>> {
+fn iteration_values(domain: Value, scope: &Scope<'_>) -> Option<Vec<Value>> {
     match domain {
         Value::List(items) => Some(items),
         Value::Range(r) => match (&r.start, &r.end) {
             (Value::Number(a), Value::Number(b)) => {
+                // A span past the limit is refused before stepping through it; the
+                // cap in the loop still catches steps lost to rounding.
+                if b.checked_sub(*a)
+                    .is_none_or(|d| d.abs() >= Decimal::from(MAX_ITERATIONS))
+                {
+                    warn_iteration_limit(scope);
+                    return None;
+                }
                 let up = a <= b;
                 let step = if up { Decimal::ONE } else { -Decimal::ONE };
                 let mut out = Vec::new();
                 let mut v = *a;
                 while if up { v <= *b } else { v >= *b } {
-                    if out.len() >= MAX_SPAN {
+                    if out.len() >= MAX_ITERATIONS {
+                        warn_iteration_limit(scope);
                         return None;
                     }
                     out.push(Value::Number(v));
@@ -558,7 +569,8 @@ fn iteration_values(domain: Value) -> Option<Vec<Value>> {
                     temporal::date_to_epoch_days(a),
                     temporal::date_to_epoch_days(b),
                 );
-                if from.abs_diff(to) >= MAX_SPAN as u64 {
+                if from.abs_diff(to) >= MAX_ITERATIONS as u64 {
+                    warn_iteration_limit(scope);
                     return None;
                 }
                 let days: Vec<i64> = if from <= to {
@@ -576,25 +588,46 @@ fn iteration_values(domain: Value) -> Option<Vec<Value>> {
     }
 }
 
+fn warn_iteration_limit(scope: &Scope<'_>) {
+    scope.warn(WarningKind::IterationLimitExceeded, || {
+        format!("Iteration exceeds the limit of {MAX_ITERATIONS} items")
+    });
+}
+
 /// Visits every combination of the bindings. Each domain is evaluated with the
 /// bindings to its left in scope, so `for x in xs, y in x` works. `false`
-/// when some domain cannot be iterated.
+/// when some domain cannot be iterated or the combinations exceed
+/// [`MAX_ITERATIONS`].
 fn walk<'a>(
     bindings: &'a [Binding],
-    idx: usize,
     scope: &'a Scope<'a>,
     leaf: &mut impl FnMut(&Scope<'_>),
 ) -> bool {
+    walk_from(bindings, 0, scope, &mut 0, leaf)
+}
+
+fn walk_from<'a>(
+    bindings: &'a [Binding],
+    idx: usize,
+    scope: &'a Scope<'a>,
+    visited: &mut usize,
+    leaf: &mut impl FnMut(&Scope<'_>),
+) -> bool {
     let Some(binding) = bindings.get(idx) else {
+        if *visited >= MAX_ITERATIONS {
+            warn_iteration_limit(scope);
+            return false;
+        }
+        *visited += 1;
         leaf(scope);
         return true;
     };
-    let Some(domain) = iteration_values(eval(&binding.domain, scope)) else {
+    let Some(domain) = iteration_values(eval(&binding.domain, scope), scope) else {
         return false;
     };
     for value in domain {
         let inner = scope.child(Frame::One(&binding.name, value));
-        if !walk(bindings, idx + 1, &inner, leaf) {
+        if !walk_from(bindings, idx + 1, &inner, visited, leaf) {
             return false;
         }
     }
@@ -611,16 +644,11 @@ fn eval_quantifier<'a>(
     scope: &'a Scope<'a>,
 ) -> Value {
     let (mut saw_true, mut saw_false, mut saw_unknown) = (false, false, false);
-    let ok = walk(
-        bindings,
-        0,
-        scope,
-        &mut |inner| match eval(satisfies, inner) {
-            Value::Boolean(true) => saw_true = true,
-            Value::Boolean(false) => saw_false = true,
-            _ => saw_unknown = true,
-        },
-    );
+    let ok = walk(bindings, scope, &mut |inner| match eval(satisfies, inner) {
+        Value::Boolean(true) => saw_true = true,
+        Value::Boolean(false) => saw_false = true,
+        _ => saw_unknown = true,
+    });
     if !ok {
         return Value::Null;
     }
