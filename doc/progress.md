@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-26 — FEEL: `sum([])` is null (#327)
+
+`sum` of an empty list (or no arguments) now returns null, as DMN 1.5 Table 75 and Camunda 8 do; it returned 0, so `sum(items) > 100` on an empty list silently took a branch. TS and the Rust twin both changed. Regression tests (vitest, Rust unit) and conformance `lists/61`–`lists/64`.
+
 ## 2026-11-26 — @bpmnkit/feel: `list contains` by value (fuzz)
 
 Nightly fuzz run 45770517923 found `list contains(b, (0)[""])` with `b = [[]]` was `false` in TS and `true` in Rust: TS compared items by identity, so equal lists, contexts and dates never matched. It now uses the same `sameItem` as `index of`. Tests: `evaluator.test.ts` fuzz regressions, conformance `fuzz/38`.

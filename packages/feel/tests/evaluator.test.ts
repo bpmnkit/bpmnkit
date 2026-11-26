@@ -489,6 +489,12 @@ describe("fuzz regressions", () => {
 		expect(eval_("mean([[1, 2]])")).toBeNull()
 		expect(eval_("sum([1, 2])")).toBe(3)
 		expect(eval_("sum(1, 2)")).toBe(3)
+		// Regression for #327: DMN 1.5 Table 75, empty sum is null (Camunda 8 agrees).
+		expect(eval_("sum([])")).toBeNull()
+		expect(eval_("sum()")).toBeNull()
+		expect(eval_("sum(items)", { items: [] })).toBeNull()
+		expect(eval_("sum([]) >= 0")).toBeNull()
+		expect(eval_("sum([0])")).toBe(0)
 	})
 
 	it("a list never equals a context", () => {
