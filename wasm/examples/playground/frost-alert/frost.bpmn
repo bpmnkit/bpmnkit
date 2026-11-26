@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_frost" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="frost-alert" name="Frost alert" isExecutable="true">
+    <bpmn:startEvent id="start" name="Check requested">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="forecast" name="Get forecast">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" retries="3" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="GET" target="method" />
+          <zeebe:input source="=(if meteoBase = null then &quot;https://api.open-meteo.com&quot; else meteoBase) + &quot;/v1/forecast&quot;" target="url" />
+          <zeebe:input source="={latitude: string(latitude), longitude: string(longitude), daily: &quot;temperature_2m_min&quot;, forecast_days: &quot;2&quot;, timezone: &quot;auto&quot;}" target="queryParameters" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultExpression" value="={tomorrowMin: response.body.daily.temperature_2m_min[2], forecastDate: response.body.daily.time[2]}" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="frost" name="Frost tomorrow?" default="f4">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="warn" name="Issue frost warning">
+      <bpmn:extensionElements><zeebe:script expression="=&quot;FROST WARNING &quot; + location + &quot; &quot; + forecastDate + &quot;: min &quot; + string(tomorrowMin) + &quot; °C&quot;" resultVariable="alert" /></bpmn:extensionElements>
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="ok" name="All clear">
+      <bpmn:extensionElements><zeebe:script expression="=&quot;ok &quot; + location + &quot; &quot; + forecastDate + &quot;: min &quot; + string(tomorrowMin) + &quot; °C&quot;" resultVariable="alert" /></bpmn:extensionElements>
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f6</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="warned" name="Warning issued">
+      <bpmn:incoming>f5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="clear" name="No frost">
+      <bpmn:incoming>f6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="forecast" />
+    <bpmn:sequenceFlow id="f2" sourceRef="forecast" targetRef="frost" />
+    <bpmn:sequenceFlow id="f3" name="below 0 °C" sourceRef="frost" targetRef="warn">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">=tomorrowMin &lt; 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f4" sourceRef="frost" targetRef="ok" />
+    <bpmn:sequenceFlow id="f5" sourceRef="warn" targetRef="warned" />
+    <bpmn:sequenceFlow id="f6" sourceRef="ok" targetRef="clear" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_frost">
+    <bpmndi:BPMNPlane id="Plane_frost" bpmnElement="frost-alert">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="152" y="102" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="128" y="145" width="84" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="forecast_di" bpmnElement="forecast"><dc:Bounds x="240" y="80" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="frost_di" bpmnElement="frost" isMarkerVisible="true"><dc:Bounds x="395" y="95" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="380" y="65" width="80" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="warn_di" bpmnElement="warn"><dc:Bounds x="500" y="80" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ok_di" bpmnElement="ok"><dc:Bounds x="500" y="200" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="warned_di" bpmnElement="warned"><dc:Bounds x="652" y="102" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="632" y="145" width="76" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="clear_di" bpmnElement="clear"><dc:Bounds x="652" y="222" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="648" y="265" width="44" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="188" y="120" /><di:waypoint x="240" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2"><di:waypoint x="340" y="120" /><di:waypoint x="395" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3"><di:waypoint x="445" y="120" /><di:waypoint x="500" y="120" /><bpmndi:BPMNLabel><dc:Bounds x="446" y="102" width="54" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4"><di:waypoint x="420" y="145" /><di:waypoint x="420" y="240" /><di:waypoint x="500" y="240" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5"><di:waypoint x="600" y="120" /><di:waypoint x="652" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6"><di:waypoint x="600" y="240" /><di:waypoint x="652" y="240" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
