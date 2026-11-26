@@ -427,19 +427,25 @@ describe("fuzz regressions", () => {
 	})
 
 	it("stops at MAX_ITERATIONS: a bigger range or for/some/every is null (fuzz 45751539260)", () => {
-		const start = Date.now()
 		expect(MAX_ITERATIONS).toBe(1_000_000)
+		// Up to the limit, and combinations that only pass it while iterating, do ~1M steps:
+		// no wall-clock bound, as shared CI runners are an order of magnitude slower.
 		expect(eval_("count(for x in 1..1000000 return x)")).toBe(1000000)
+		expect(eval_("count(for x in 1..1000, y in 1..1000 return 1)")).toBe(1000000)
+		expect(eval_("for x in 1..1000, y in 1..1001 return 1")).toBeNull()
+		expect(eval_("every x in 1..1001, y in 1..1000 satisfies x > 0")).toBeNull()
+	}, 60_000)
+
+	it("refuses a range past MAX_ITERATIONS before stepping through it", () => {
+		const start = Date.now()
 		expect(eval_("for x in 1..1000001 return x")).toBeNull()
 		expect(eval_("for x in 0..-1000000 return x")).toBeNull()
 		expect(eval_('for x in (-16..-332.36 ** 3) return ctx.a + " " + string(82)')).toBeNull()
-		expect(eval_("count(for x in 1..1000, y in 1..1000 return 1)")).toBe(1000000)
-		expect(eval_("for x in 1..1000, y in 1..1001 return 1")).toBeNull()
 		expect(eval_("some x in 1..2000000 satisfies x > 5")).toBeNull()
-		expect(eval_("every x in 1..1001, y in 1..1000 satisfies x > 0")).toBeNull()
 		expect(eval_('for d in @"2000-01-01"..@"5000-01-01" return d')).toBeNull()
-		expect(Date.now() - start).toBeLessThan(20000)
-	}, 30000)
+		// Each is refused from the span alone (a few ms here); stepping would take minutes.
+		expect(Date.now() - start).toBeLessThan(5000)
+	})
 
 	it("a long for is linear: partial is bound only when the body reads it", () => {
 		const start = Date.now()
