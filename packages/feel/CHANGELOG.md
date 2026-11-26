@@ -1,5 +1,16 @@
 # @bpmnkit/feel
 
+## 2.1.0
+
+### Minor Changes
+
+- d9376af: Ranges and `for` / `some` / `every` stop at 1,000,000 items (`MAX_ITERATIONS`); past it the expression is null instead of running for minutes. Rust reports a new `WarningKind::IterationLimitExceeded` (`ITERATION_LIMIT_EXCEEDED`). Camunda has no such bound.
+
+### Patch Changes
+
+- 159cc21: `date and time + duration` keeps fractional seconds exact: `@"2023-12-31T23:59:59" + 0.001 * @"P1D"` is `2024-01-01T00:01:25.4`, not `…25.40000009536743`. The fraction was added at epoch magnitude, where float64 keeps only about 1e-7 s; it is now added apart and rounded to nanoseconds.
+- 2622741: `extract` with an empty match no longer splits a surrogate pair; a `]` right after `[` or `[^` is a literal (so `[]` is an invalid pattern, as in Java); a scaled years-months duration past i64 months is null; dates and date-times before year 1 no longer come out 400 years early.
+
 ## 2.0.0
 
 ### Major Changes

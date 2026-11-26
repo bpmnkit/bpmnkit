@@ -16,7 +16,7 @@ exclude = ["tests/"]
 # WASM-safe: no tokio, no I/O (enforced by tests/no_tokio.rs).
 [dependencies]
 bpmnkit-bpmn = { workspace = true }
-bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.8.0", default-features = false }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.9.0", default-features = false }
 serde = { workspace = true }
 serde_json = { workspace = true }
 sha2 = "0.10"
