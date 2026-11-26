@@ -140,13 +140,43 @@ The host loads each directory with `worker.toml` and `worker.wasm`, checks the i
 the manifest, and starts one handler per component. It shuts down on SIGINT or SIGTERM and finishes
 running jobs first.
 
+## Builder, signed registry and hot-load
+
+For a shared host, workers are built by a service, not on the developer's machine:
+
+```sh
+bpmnkit-wasm-builder keygen --key key.hex --pub pub.hex          # ed25519; pub.hex goes to hosts
+BPMNKIT_BUILDER_TOKEN=<16+ chars> bpmnkit-wasm-builder serve --registry ./registry --signing-key key.hex
+bpmnkit-wasm-host run --registry ./registry --trusted-key pub.hex --poll-ms 2000
+```
+
+- The builder takes a worker's manifest, source and samples over HTTP (`POST /builds`), runs the same
+  pipeline as `bpmnkit-wasm build` in a sandbox (`bwrap` with no network, else `prlimit`), signs the
+  component digest and manifest, and publishes to the registry. Build status and stage events are
+  polled or streamed from `/builds/{id}`.
+- The registry is a directory: `<name>/<digest>/` holds the component, manifest, metadata and
+  signature, and `<name>/CURRENT` names the live version. A second registry backend can follow the same trait.
+- The host verifies each `CURRENT` (digest, signature by the trusted key, inspect, job types) and swaps
+  the handler when it moves. A version that fails verification is logged and the previous one keeps
+  serving. Running jobs finish on the version they started with.
+- Workers that appear after start-up need a host restart. A new version of a running worker is a hot-load.
+
+The builder and host flags are in the [CLI reference](/docs/cli/wasm).
+
+## Blueprint
+
+[`wasm/examples/order-fulfilment`](https://github.com/bpmnkit/bpmnkit/tree/main/wasm/examples/order-fulfilment)
+is an end-to-end appliance: an order process (check stock, charge card, a `PAYMENT_DECLINED` boundary
+error that cancels the order) with two Wasm workers. Its README walks through the local loop, the
+builder, the registry and the host, and running the process on reebe. Start there when you build your
+own appliance; `submit.sh` shows how to send a worker to the builder.
+
 ## Not yet
 
-- The builder service (sandboxed rustc, warm pool), signing, OCI distribution and registry hot-load.
-  The host loads a directory today.
-- The Slack agent that generates a worker and asks for approval of its manifest.
+- OCI distribution, KMS or Sigstore signing keys, and a gVisor or nsjail sandbox for the builder.
+  The registry is a directory and the signing key is a file.
 - WASI 0.3 async. Worker code is blocking.
 - Vendored or pre-warmed dependencies. The first build compiles the SDK into the shared target.
-- A canned-response HTTP stub for `test`. The smoke test refuses every network name, so a worker
-  that calls HTTP needs its HTTP path tested against a live host.
 - Wider dependency allow-list than the SDK, serde and serde_json.
+- A warm pool of builder sandboxes, and a source tarball stored by digest.
+- A Slack agent that generates a worker and asks for approval of its manifest.

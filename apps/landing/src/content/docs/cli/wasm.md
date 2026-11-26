@@ -17,6 +17,7 @@ Two binaries come from the `wasm/` workspace (Rust, `cargo install --path wasm/c
 |--------|-------|-----|
 | `bpmnkit-wasm` | `bpmnkit-wasm-build` | Scaffold, check, build, test and inspect a worker; `run` starts the host |
 | `bpmnkit-wasm-host` | `bpmnkit-wasm-host` | Load built workers and serve their job types against a cluster |
+| `bpmnkit-wasm-builder` | `bpmnkit-wasm-builder` | Build service: `serve` runs the HTTP API, `keygen` makes the ed25519 signing key pair |
 
 ## Commands
 
@@ -106,6 +107,7 @@ An array of jobs that `test` (and `build`) run in the sandbox. `init` writes one
 | `variables` | Job variables (JSON). |
 | `custom_headers` | Task headers, string map. |
 | `expect` | `complete`, `fail` or `throw-error`. Omit to accept any outcome. |
+| `http` | Canned HTTP answers: `[{ "method", "url", "status", "headers"?, "body"? }]`. The smoke test answers a matching request from the first stub with that method and URL; the `[network] allow` list is still checked first; an unmatched request fails the job and names the URL. |
 
 ## JSON output
 
@@ -132,12 +134,62 @@ indented `hint:`), one `ok` / `FAIL` line per sample, and a final `ok|failed —
 
 ```sh
 bpmnkit-wasm-host run --dir <worker-dir>... [--secrets-dir <dir>]
+bpmnkit-wasm-host run --registry <dir> --trusted-key <hex-file> [--poll-ms 2000] [--secrets-dir <dir>]
 ```
 
 Each `--dir` is a worker (a folder with `worker.toml` and `worker.wasm`, e.g. `dist`) or a folder
 of workers. The host prints `loaded <name> <version> (<world>, <digest>)` per worker, registers one
 handler per job type with `max_concurrent` as the active-job limit, and runs until SIGINT or
 SIGTERM, then drains running jobs. Exit `0` on a clean stop, `1` on any startup error.
+
+| Flag | Meaning |
+|------|---------|
+| `--dir <dir>...` | One or more worker directories (or folders of them). Loaded unsigned, never reloaded. |
+| `--registry <dir>` | Directory registry (`<name>/CURRENT`). Serves every worker with a `CURRENT` at start-up and polls it. Needs `--trusted-key`. |
+| `--trusted-key <hex-file>` | Ed25519 public key (32 bytes, hex) from `bpmnkit-wasm-builder keygen --pub`. A version is used only if its signature, digest, manifest and job types check out. |
+| `--poll-ms <ms>` | Registry poll interval, default `2000`, must be positive. Needs `--registry`. |
+| `--secrets-dir <dir>` | One file per secret, `<dir>/<NAME>`. Without it, secrets come from `BPMNKIT_WASM_SECRET_<NAME>`. |
+
+`--dir` and `--registry` may be combined. A bad registry version is logged and the previous one keeps serving.
+
+## `bpmnkit-wasm-builder`
+
+```text
+bpmnkit-wasm-builder serve --registry DIR --signing-key FILE [options]
+bpmnkit-wasm-builder keygen [--key FILE] [--pub FILE]
+```
+
+| Option | Default | Meaning |
+|--------|---------|---------|
+| `--registry DIR` | required | Registry root the builder publishes to (created if missing). |
+| `--signing-key FILE` | required | Ed25519 private key (hex) from `keygen`. |
+| `--listen ADDR` | `127.0.0.1:8787` | Listen address. |
+| `--max-builds N` | `2` | Concurrent cargo runs (checks and builds share the limit). |
+| `--rate-burst N` / `--rate-per-min N` | `10` / `30` | Token bucket per caller; over the limit returns `429` with `Retry-After`. |
+| `--warm` | off | Compile the SDK dependency set into the shared target dir before serving. |
+| `--sdk PATH` | env `BPMNKIT_WASM_SDK` | `bpmnkit-wasm-sdk` crate. Found automatically inside the repo. |
+| `--target-dir PATH`, `--work-dir PATH`, `--lockfile PATH` | cache dir, system temp, built-in | Shared cargo target, rendered projects, curated `Cargo.lock`. |
+| `--offline` | off | `cargo --offline`. Always on under `bwrap`. |
+
+`keygen` writes `key.hex` (mode 0600) and `pub.hex` by default, and refuses to overwrite existing files.
+
+Auth: `BPMNKIT_BUILDER_TOKEN` holds one token, or `caller=token` pairs separated by commas. Each token
+is at least 16 characters; send it as `Authorization: Bearer <token>`. A caller sees only its own builds.
+
+| Endpoint | Body / result |
+|----------|---------------|
+| `POST /check` | `BuildRequest` → build report (diagnostics, stops after `cargo check`). |
+| `POST /builds` | `BuildRequest` → `202 {"id"}`. |
+| `GET /builds/{id}` | `{id, state: queued\|running\|succeeded\|failed, events, report?, published? {name, digest}, error?}`. |
+| `GET /builds/{id}/events` | NDJSON stage events from the start, following until the build is done. |
+| `GET /healthz` | `ok`. |
+
+`BuildRequest` is `{"manifest": <worker.toml as JSON>, "source": "<src/lib.rs>", "samples": [<samples.json>]}`.
+The [order-fulfilment blueprint](https://github.com/bpmnkit/bpmnkit/tree/main/wasm/examples/order-fulfilment/submit.sh)
+has a `submit.sh` that builds it from a worker directory.
+
+The sandbox is `bwrap` (no network, read-only root, writable work and target dirs only) when it works on
+the host; otherwise builds run under `prlimit` caps with a warning at start-up.
 
 The cluster comes from `CAMUNDA_*` variables (`CAMUNDA_REST_ADDRESS`, `CAMUNDA_AUTH_STRATEGY`,
 `CAMUNDA_CLIENT_ID`, …). When `CAMUNDA_REST_ADDRESS` is unset, the active
