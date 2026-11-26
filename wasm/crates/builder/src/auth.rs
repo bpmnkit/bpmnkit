@@ -24,13 +24,17 @@ impl Tokens {
             .filter(|e| !e.is_empty())
             .enumerate()
         {
-            let (caller, token) = match e.split_once('=') {
-                Some((c, t)) => (c.trim().to_owned(), t.trim().to_owned()),
-                None => (format!("caller-{}", i + 1), e.to_owned()),
-            };
-            if caller.is_empty() {
-                return Err(format!("entry {}: empty caller name", i + 1));
-            }
+            // A bare token may itself contain `=` (base64 padding), so only a plausible
+            // `name=` prefix in front of a long enough token makes it a named entry.
+            let named = e.split_once('=').and_then(|(c, t)| {
+                let (c, t) = (c.trim(), t.trim());
+                let name_ok = !c.is_empty()
+                    && c.bytes()
+                        .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'_' | b'.' | b'-'));
+                (name_ok && t.len() >= MIN_TOKEN_LEN).then(|| (c.to_owned(), t.to_owned()))
+            });
+            let (caller, token) =
+                named.unwrap_or_else(|| (format!("caller-{}", i + 1), e.to_owned()));
             if token.len() < MIN_TOKEN_LEN {
                 return Err(format!(
                     "token for `{caller}` is shorter than {MIN_TOKEN_LEN} characters"
@@ -84,7 +88,19 @@ mod tests {
         assert!(Tokens::parse("").is_err());
         assert!(Tokens::parse("short").is_err());
         assert!(Tokens::parse(&format!("x={A},x={B}")).is_err());
-        assert!(Tokens::parse(&format!("={A}")).is_err());
+    }
+
+    #[test]
+    fn bare_token_with_equals_is_not_split() {
+        let tok = "abc+def/ghi+jkl/mno==";
+        let t = Tokens::parse(tok).unwrap();
+        assert_eq!(t.caller(Some(&format!("Bearer {tok}"))), Some("caller-1"));
+        // A leading `=` or a non-name prefix is part of the token, not a caller.
+        let t = Tokens::parse(&format!("={A}")).unwrap();
+        assert_eq!(t.caller(Some(&format!("Bearer ={A}"))), Some("caller-1"));
+        // Too short a token part: whole entry is a (too short) bare token, text never echoed.
+        let err = Tokens::parse("ci=secret").unwrap_err();
+        assert!(!err.contains("secret"), "{err}");
     }
 
     #[test]

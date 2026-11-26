@@ -1,5 +1,15 @@
 [
-  { "name": "in stock", "job_type": "check-stock", "variables": { "sku": "widget", "quantity": 2 }, "expect": "complete" },
-  { "name": "out of stock", "job_type": "check-stock", "variables": { "sku": "gizmo", "quantity": 1 }, "expect": "throw-error" },
-  { "name": "bad input", "job_type": "check-stock", "variables": { "sku": 7 }, "expect": "fail" }
+	{
+		"name": "in stock",
+		"job_type": "check-stock",
+		"variables": { "sku": "widget", "quantity": 2 },
+		"expect": "complete"
+	},
+	{
+		"name": "out of stock",
+		"job_type": "check-stock",
+		"variables": { "sku": "gizmo", "quantity": 1 },
+		"expect": "throw-error"
+	},
+	{ "name": "bad input", "job_type": "check-stock", "variables": { "sku": 7 }, "expect": "fail" }
 ]

@@ -47,6 +47,10 @@ fn tmp(tag: &str) -> std::path::PathBuf {
 }
 
 fn app(fake: Arc<Fake>, rate: RateConfig, max_builds: usize) -> Router {
+    app_q(fake, rate, max_builds, 16)
+}
+
+fn app_q(fake: Arc<Fake>, rate: RateConfig, max_builds: usize, max_queued: usize) -> Router {
     let mut tc = Toolchain::local("/sdk");
     tc.work_root = tmp("work");
     let b = Builder::new(
@@ -54,6 +58,7 @@ fn app(fake: Arc<Fake>, rate: RateConfig, max_builds: usize) -> Router {
             tokens: Tokens::parse(&format!("me={TOKEN},you={OTHER}")).unwrap(),
             rate,
             max_builds,
+            max_queued,
             toolchain: tc,
         },
         DirRegistry::new(tmp("reg")),
@@ -247,4 +252,34 @@ async fn semaphore_caps_concurrent_builds() {
         wait_final(&app, id, TOKEN).await;
     }
     assert_eq!(fake.peak.load(Ordering::SeqCst), 1);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn full_queue_is_a_503_with_retry_after() {
+    let fake = Arc::new(Fake {
+        delay: Duration::from_millis(200),
+        ..Default::default()
+    });
+    // One running, one waiting; the third has nowhere to go.
+    let app = app_q(fake, RateConfig::default(), 1, 1);
+    let mut ids = vec![];
+    let mut refused = None;
+    for _ in 0..3 {
+        let (s, h, body) = call(&app, req("POST", "/builds", Some(TOKEN), REQ)).await;
+        if s == StatusCode::ACCEPTED {
+            ids.push(serde_json::from_str::<Submitted>(&body).unwrap().id);
+        } else {
+            refused = Some((s, h));
+        }
+        tokio::time::sleep(Duration::from_millis(20)).await;
+    }
+    let (s, h) = refused.expect("one build refused");
+    assert_eq!(s, StatusCode::SERVICE_UNAVAILABLE);
+    assert!(h.contains_key(header::RETRY_AFTER));
+    for id in &ids {
+        wait_final(&app, id, TOKEN).await;
+    }
+    // Slots are released: a new build is accepted again.
+    let (s, _, _) = call(&app, req("POST", "/builds", Some(TOKEN), REQ)).await;
+    assert_eq!(s, StatusCode::ACCEPTED);
 }

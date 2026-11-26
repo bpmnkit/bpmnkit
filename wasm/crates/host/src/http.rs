@@ -235,7 +235,11 @@ impl WasiHttpHooks for Hooks {
                 tracing::warn!(uri = %request.uri(), "outgoing request denied by the allow-list");
             })?;
             if let Some(stubs) = stubs {
-                let res = stubs.respond(request.method().as_str(), request.uri())?;
+                // Drain the request body first: answering while the guest is still writing
+                // closes its stream mid-write (`StreamError::Closed`).
+                let (parts, body) = request.into_parts();
+                let _ = body.collect().await;
+                let res = stubs.respond(parts.method.as_str(), &parts.uri)?;
                 let io: IoFuture = Box::new(async { Ok(()) });
                 return Ok((res, io));
             }

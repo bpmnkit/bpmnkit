@@ -18,6 +18,7 @@ bpmnkit-wasm-builder <command> [options]
                                             comma-separated `caller=token` or `token`, >= 16 chars)
       --listen ADDR        default 127.0.0.1:8787
       --max-builds N       concurrent cargo runs, default 2
+      --max-queued N       builds waiting for a slot before 503, default 16
       --rate-burst N       per caller, default 10      --rate-per-min N   refill, default 30
       --warm               pre-build the dependency set into the shared target dir at start
       --sdk PATH           (env BPMNKIT_WASM_SDK)       --target-dir PATH  shared target dir
@@ -56,6 +57,7 @@ const VALUED: &[&str] = &[
     "--signing-key",
     "--listen",
     "--max-builds",
+    "--max-queued",
     "--rate-burst",
     "--rate-per-min",
     "--sdk",
@@ -195,6 +197,7 @@ async fn serve(o: &Opts) -> Result<(), String> {
             tokens,
             rate,
             max_builds: o.num("--max-builds", 2)?,
+            max_queued: o.num("--max-queued", 16)?,
             toolchain: tc,
         },
         DirRegistry::new(registry),

@@ -108,3 +108,36 @@ fn registry_rejects_unsafe_name_and_digest_mismatch() {
     assert!(matches!(reg.publish(&e), Err(RegistryError::Corrupt(_))));
     let _ = std::fs::remove_dir_all(&tmp);
 }
+
+#[test]
+fn republish_is_idempotent_but_never_overwrites_a_different_manifest() {
+    let tmp = std::env::temp_dir().join(format!("reg-repub-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&tmp);
+    let reg = DirRegistry::new(&tmp);
+    let k = key(3);
+    let e1 = entry(b"one", "0.1.0", &k);
+    let d1 = reg.publish(&e1).unwrap();
+    let d2 = reg.publish(&entry(b"two", "0.2.0", &k)).unwrap();
+    // Same wasm, new manifest: the digest covers wasm only, so this must be refused.
+    let changed = entry(b"one", "0.9.0", &k);
+    assert!(matches!(
+        reg.publish(&changed),
+        Err(RegistryError::Conflict(_))
+    ));
+    assert_eq!(reg.load("w", &d1).unwrap(), e1, "stored entry untouched");
+    assert_eq!(reg.current("w").unwrap(), Some(d2));
+    // Identical republish keeps the entry and moves CURRENT back.
+    assert_eq!(reg.publish(&e1).unwrap(), d1);
+    assert_eq!(reg.current("w").unwrap(), Some(d1.clone()));
+    assert_eq!(reg.load("w", &d1).unwrap(), e1);
+    // No temp dirs or files left behind.
+    let names: Vec<_> = std::fs::read_dir(tmp.join("w"))
+        .unwrap()
+        .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
+        .collect();
+    assert!(
+        names.iter().all(|n| n == "CURRENT" || n.len() == 64),
+        "{names:?}"
+    );
+    std::fs::remove_dir_all(&tmp).unwrap();
+}

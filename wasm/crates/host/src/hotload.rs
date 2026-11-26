@@ -205,7 +205,6 @@ impl<R: RegistryStore> Watcher<R> {
                     continue;
                 }
             };
-            w.tried = d.clone();
             let running = w.handler.loaded();
             let next =
                 load_signed(&self.engine, &self.store, &self.key, &w.name, &d).and_then(|l| {
@@ -218,6 +217,12 @@ impl<R: RegistryStore> Watcher<R> {
                         })
                     }
                 });
+            // A failed read may be a half-synced registry; retry it next poll. Verification
+            // failures are final for that digest and logged once.
+            let transient = matches!(&next, Err(HotLoadError::Registry(RegistryError::Io(_))));
+            if !transient {
+                w.tried = d.clone();
+            }
             match next {
                 Ok(l) => {
                     let from = w.handler.swap(l).digest.clone();

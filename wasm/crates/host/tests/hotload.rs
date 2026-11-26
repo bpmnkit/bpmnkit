@@ -193,3 +193,42 @@ fn start_skips_unverifiable_workers() {
     );
     let _ = std::fs::remove_dir_all(&r);
 }
+
+#[tokio::test]
+async fn transient_io_error_is_retried_but_verification_failure_is_not() {
+    let r = root("transient");
+    let reg = DirRegistry::new(&r);
+    reg.publish(&entry(ECHO, "", &key(1))).unwrap();
+    let (mut w, _) = start(&r);
+
+    let v2 = reg.publish(&entry(THROW, "", &key(1))).unwrap();
+    // A directory where the file belongs reads as an IO error, not as a missing entry.
+    let wasm = r.join("t").join(v2.as_hex()).join("worker.wasm");
+    let saved = wasm.with_extension("saved");
+    std::fs::rename(&wasm, &saved).unwrap();
+    std::fs::create_dir(&wasm).unwrap();
+    let ev = w.poll();
+    assert!(
+        matches!(
+            &ev[..],
+            [Event::Rejected {
+                error: HotLoadError::Registry(_),
+                ..
+            }]
+        ),
+        "{ev:?}"
+    );
+    std::fs::remove_dir(&wasm).unwrap();
+    std::fs::rename(&saved, &wasm).unwrap();
+    let ev = w.poll();
+    assert!(
+        matches!(&ev[..], [Event::Swapped { to, .. }] if *to == v2),
+        "retried after the transient error: {ev:?}"
+    );
+
+    // Signed by the wrong key: rejected once, then quiet.
+    reg.publish(&entry(FAIL, "", &key(9))).unwrap();
+    assert_eq!(w.poll().len(), 1);
+    assert!(w.poll().is_empty());
+    let _ = std::fs::remove_dir_all(&r);
+}

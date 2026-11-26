@@ -226,6 +226,7 @@ async fn blueprint_happy_and_declined_paths() {
             tokens: Tokens::parse(TOKEN).unwrap(),
             rate: RateConfig::default(),
             max_builds: 1,
+            max_queued: 16,
             toolchain: tc,
         },
         DirRegistry::new(&reg_dir),

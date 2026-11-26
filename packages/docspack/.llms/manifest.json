@@ -1412,7 +1412,7 @@
 		{
 			"id": "cli.wasm.bpmnkit-wasm-builder",
 			"file": "chunks/cli.wasm.bpmnkit-wasm-builder.md",
-			"tokens": 653,
+			"tokens": 812,
 			"tags": [
 				"cli",
 				"wasm",
@@ -5646,7 +5646,7 @@
 		{
 			"id": "guides.wasm-workers.running-the-host",
 			"file": "chunks/guides.wasm-workers.running-the-host.md",
-			"tokens": 387,
+			"tokens": 521,
 			"tags": [
 				"guides",
 				"wasm-workers",

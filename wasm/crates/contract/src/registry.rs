@@ -4,7 +4,9 @@
 
 use std::fs;
 use std::io;
+use std::io::Write as _;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use crate::api::{ArtifactMetadata, Digest};
 use crate::manifest::ValidManifest;
@@ -18,6 +20,8 @@ pub enum RegistryError {
     NotFound(String),
     /// Stored files do not parse or disagree with the digest.
     Corrupt(String),
+    /// The digest is already filed with a different manifest, metadata or signature.
+    Conflict(String),
 }
 impl std::fmt::Display for RegistryError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -26,6 +30,7 @@ impl std::fmt::Display for RegistryError {
             Self::BadName(n) => write!(f, "bad worker name `{n}`"),
             Self::NotFound(n) => write!(f, "not found: {n}"),
             Self::Corrupt(m) => write!(f, "corrupt registry entry: {m}"),
+            Self::Conflict(m) => write!(f, "{m}"),
         }
     }
 }
@@ -74,6 +79,23 @@ fn corrupt(e: impl std::fmt::Display) -> RegistryError {
     RegistryError::Corrupt(e.to_string())
 }
 
+fn unique() -> u64 {
+    static N: AtomicU64 = AtomicU64::new(0);
+    N.fetch_add(1, Ordering::Relaxed)
+}
+
+fn stage(dir: &Path, e: &RegistryEntry) -> Result<(), RegistryError> {
+    fs::create_dir(dir)?;
+    fs::write(dir.join("worker.wasm"), &e.wasm)?;
+    fs::write(dir.join("worker.toml"), e.manifest.to_toml())?;
+    fs::write(
+        dir.join("metadata.json"),
+        serde_json::to_vec_pretty(&e.metadata).map_err(corrupt)?,
+    )?;
+    fs::write(dir.join("worker.sig"), encode_hex(&e.signature.to_bytes()))?;
+    Ok(())
+}
+
 impl DirRegistry {
     pub fn new(root: impl Into<PathBuf>) -> Self {
         Self { root: root.into() }
@@ -92,18 +114,49 @@ impl RegistryStore for DirRegistry {
         }
         let wdir = self.root.join(name);
         let dir = wdir.join(digest.as_hex());
-        fs::create_dir_all(&dir)?;
-        fs::write(dir.join("worker.wasm"), &e.wasm)?;
-        fs::write(dir.join("worker.toml"), e.manifest.to_toml())?;
-        fs::write(
-            dir.join("metadata.json"),
-            serde_json::to_vec_pretty(&e.metadata).map_err(corrupt)?,
-        )?;
-        fs::write(dir.join("worker.sig"), encode_hex(&e.signature.to_bytes()))?;
+        fs::create_dir_all(&wdir)?;
+        // The digest covers the wasm only, so an existing entry must match in everything else;
+        // the host never re-reads a digest it already loaded.
+        let same = |existing: &RegistryEntry| {
+            if existing == e {
+                Ok(())
+            } else {
+                Err(RegistryError::Conflict(format!(
+                    "entry exists with different manifest/sig: {name}/{digest}"
+                )))
+            }
+        };
+        if dir.exists() {
+            same(&self.load(name, &digest)?)?;
+        } else {
+            // Staged beside the target and renamed in, so readers never see a partial entry.
+            let tmp = wdir.join(format!(".tmp-{}-{}", std::process::id(), unique()));
+            if let Err(err) = stage(&tmp, e) {
+                let _ = fs::remove_dir_all(&tmp);
+                return Err(err);
+            }
+            if let Err(err) = fs::rename(&tmp, &dir) {
+                let _ = fs::remove_dir_all(&tmp);
+                // Lost a race with another publisher of the same digest.
+                if dir.exists() {
+                    same(&self.load(name, &digest)?)?;
+                } else {
+                    return Err(err.into());
+                }
+            }
+        }
         // Readers see the old or the new digest, never a partial file.
-        let tmp = wdir.join("CURRENT.tmp");
-        fs::write(&tmp, digest.as_hex())?;
-        fs::rename(&tmp, wdir.join("CURRENT"))?;
+        let tmp = wdir.join(format!("CURRENT.tmp-{}-{}", std::process::id(), unique()));
+        let written = (|| -> io::Result<()> {
+            let mut f = fs::File::create(&tmp)?;
+            f.write_all(digest.as_hex().as_bytes())?;
+            f.sync_all()?;
+            fs::rename(&tmp, wdir.join("CURRENT"))
+        })();
+        if let Err(err) = written {
+            let _ = fs::remove_file(&tmp);
+            return Err(err.into());
+        }
         Ok(digest)
     }
 

@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-26 — Wasm workers M3-lite: review fixes
+Also: the stub path drains the request body before answering (a `charge-card` sample flaked with `StreamError::Closed` when the guest was still writing).
+
+Registry `publish` stages the entry in a temp dir and renames it in; an existing digest with a different manifest/metadata/signature is a `Conflict` error (identical republish is idempotent and still moves `CURRENT`), and `CURRENT` uses a unique fsynced temp file. Builder: `--max-queued` (default 16) bounds waiting builds, 503 + `Retry-After` beyond it; a bare token containing `=` is no longer split (named only if `[A-Za-z0-9_.-]+=` and token >= 16 chars) and errors never echo token text. Host hot-load retries a digest after a transient registry IO error. Docs: bwrap writable shared cargo home, no per-name ownership, no rollback protection. Regression tests added for each.
+
 ## 2026-11-26 — Wasm workers M3-lite WP10: docs, blueprint walkthrough
 
 Order-fulfilment README sections 2 and 3 now give the real flow: keygen, builder `serve`, `submit.sh` (BuildRequest from worker.toml, src/lib.rs, samples.json), host `run --registry --trusted-key`, reebe deploy and happy/declined instances. `run.sh submit` calls `submit.sh`. Guide, CLI reference, features, roadmap and concept are updated for M3-lite. reebe e2e builds + hot-loads both blueprint workers and runs happy and declined paths (e2e test added separately).

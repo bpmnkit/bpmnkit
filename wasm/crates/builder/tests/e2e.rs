@@ -35,6 +35,7 @@ async fn echo_fixture_builds_signs_and_publishes() {
             tokens: Tokens::parse(TOKEN).unwrap(),
             rate: RateConfig::default(),
             max_builds: 1,
+            max_queued: 16,
             toolchain: tc,
         },
         DirRegistry::new(&reg_dir),

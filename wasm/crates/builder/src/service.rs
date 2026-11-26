@@ -2,6 +2,7 @@
 
 use std::collections::{HashMap, VecDeque};
 use std::convert::Infallible;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
@@ -96,6 +97,8 @@ pub struct Config {
     pub rate: RateConfig,
     /// Builds and checks running cargo at the same time.
     pub max_builds: usize,
+    /// Builds allowed to wait for a permit; more are answered 503.
+    pub max_queued: usize,
     pub toolchain: Toolchain,
 }
 
@@ -147,6 +150,9 @@ pub struct Builder {
     tokens: Tokens,
     limiter: Mutex<RateLimiter>,
     permits: Semaphore,
+    /// Waiting builds, capped by `max_queued`.
+    queued: AtomicUsize,
+    max_queued: usize,
     jobs: Mutex<Jobs>,
     registry: Box<dyn RegistryStore + Send + Sync>,
     key: SigningKey,
@@ -181,6 +187,8 @@ impl Builder {
             tokens: cfg.tokens,
             limiter: Mutex::new(RateLimiter::new(cfg.rate)),
             permits: Semaphore::new(cfg.max_builds.max(1)),
+            queued: AtomicUsize::new(0),
+            max_queued: cfg.max_queued,
             jobs: Mutex::default(),
             registry: Box::new(registry),
             key,
@@ -381,6 +389,13 @@ async fn submit(
     body: Bytes,
 ) -> Reply<(StatusCode, Json<Submitted>)> {
     let (owner, input) = b.admit(&h, &body)?;
+    // Reserve a queue slot; it is released once a permit is held.
+    if b.queued.fetch_add(1, Ordering::SeqCst) >= b.max_queued {
+        b.queued.fetch_sub(1, Ordering::SeqCst);
+        let mut r = error(StatusCode::SERVICE_UNAVAILABLE, "build queue is full");
+        r.0.headers_mut().insert(header::RETRY_AFTER, 30.into());
+        return Err(r);
+    }
     let id = new_id();
     let job = Arc::new(Job {
         owner,
@@ -397,6 +412,7 @@ async fn submit(
     b.insert(&id, Arc::clone(&job));
     tokio::spawn(async move {
         let _permit = b.permits.acquire().await.expect("never closed");
+        b.queued.fetch_sub(1, Ordering::SeqCst);
         job.update(|s| s.state = BuildState::Running);
         let (b2, j2) = (Arc::clone(&b), Arc::clone(&job));
         let r = tokio::task::spawn_blocking(move || b2.build_blocking(&j2, &input)).await;

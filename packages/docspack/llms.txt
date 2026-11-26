@@ -115,7 +115,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [bpmnkit worker wasm — `samples.json`](.llms/chunks/cli.wasm.samples.json.md) — 214 tokens
 - [bpmnkit worker wasm — JSON output](.llms/chunks/cli.wasm.json-output.md) — 239 tokens
 - [bpmnkit worker wasm — `bpmnkit-wasm-host`](.llms/chunks/cli.wasm.bpmnkit-wasm-host.md) — 351 tokens
-- [bpmnkit worker wasm — `bpmnkit-wasm-builder`](.llms/chunks/cli.wasm.bpmnkit-wasm-builder.md) — 653 tokens
+- [bpmnkit worker wasm — `bpmnkit-wasm-builder`](.llms/chunks/cli.wasm.bpmnkit-wasm-builder.md) — 812 tokens
 
 ## getting-started
 
@@ -395,7 +395,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Wasm Job Workers — The worker](.llms/chunks/guides.wasm-workers.the-worker.md) — 239 tokens
 - [Wasm Job Workers — `worker.toml`](.llms/chunks/guides.wasm-workers.worker.toml.md) — 385 tokens
 - [Wasm Job Workers — Build stage timing](.llms/chunks/guides.wasm-workers.build-stage-timing.md) — 215 tokens
-- [Wasm Job Workers — Running the host](.llms/chunks/guides.wasm-workers.running-the-host.md) — 387 tokens
+- [Wasm Job Workers — Running the host](.llms/chunks/guides.wasm-workers.running-the-host.md) — 521 tokens
 - [Wasm Job Workers — Blueprint](.llms/chunks/guides.wasm-workers.blueprint.md) — 238 tokens
 - [Standalone Workers](.llms/chunks/guides.workers-standalone.md) — 184 tokens
 - [Standalone Workers — Anatomy of a worker](.llms/chunks/guides.workers-standalone.anatomy-of-a-worker.md) — 212 tokens

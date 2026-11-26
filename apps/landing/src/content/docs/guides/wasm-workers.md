@@ -156,6 +156,12 @@ bpmnkit-wasm-host run --registry ./registry --trusted-key pub.hex --poll-ms 2000
   polled or streamed from `/builds/{id}`.
 - The registry is a directory: `<name>/<digest>/` holds the component, manifest, metadata and
   signature, and `<name>/CURRENT` names the live version. A second registry backend can follow the same trait.
+- Limits to know: the registry has no per-name ownership, so any token holder can publish any worker name
+  (deploy with one trusted submitter, or one builder per team). There is no rollback protection: whoever
+  can write the registry can point `CURRENT` at an older signed digest. The `bwrap` sandbox has no
+  network and a read-only root, but the cargo home is bound writable and shared between builds. The
+  builder queues at most `--max-queued` waiting builds (default 16) and answers `503` with `Retry-After`
+  beyond that. Republishing a digest with a different manifest or signature is refused.
 - The host verifies each `CURRENT` (digest, signature by the trusted key, inspect, job types) and swaps
   the handler when it moves. A version that fails verification is logged and the previous one keeps
   serving. Running jobs finish on the version they started with.
