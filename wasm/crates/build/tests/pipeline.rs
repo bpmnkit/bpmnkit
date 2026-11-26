@@ -129,3 +129,28 @@ fn offline_and_locked_follow_the_toolchain() {
         "{args}"
     );
 }
+
+#[test]
+fn observer_sees_each_stage_start_and_finish() {
+    let ex = fake(Ok(ExecOutput {
+        code: Some(101),
+        stdout: ERR.into(),
+        stderr: String::new(),
+    }));
+    let mut seen = Vec::new();
+    run_pipeline_observed(&input("fn f() {}"), &tc(), &ex, Stage::Package, &mut |e| {
+        seen.push(match e {
+            StageEvent::Started(s) => (s, None),
+            StageEvent::Finished { stage, ok, .. } => (stage, Some(ok)),
+        })
+    });
+    assert_eq!(
+        seen,
+        [
+            (Stage::Render, None),
+            (Stage::Render, Some(true)),
+            (Stage::Check, None),
+            (Stage::Check, Some(false)),
+        ]
+    );
+}
