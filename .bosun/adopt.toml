@@ -1,6 +1,8 @@
 # Written by `bosun adopt`; `bosun uninstall` reads it. Edit by hand only to drop a file from adopt's care.
 bosun_version = "0.25.0"
+labels = ["bosun:halt", "bosun:registry", "bosun:state/planned", "bosun:state/ready", "bosun:state/claimed", "bosun:state/building", "bosun:state/review", "bosun:state/fixing", "bosun:state/queued", "bosun:state/merged", "bosun:state/blocked", "bosun:state/needs-human"]
 dirs = [".bosun", "governance"]
+registry_issue = 341
 
 [[file]]
 path = ".bosun/approvers.toml"
