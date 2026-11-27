@@ -59,3 +59,16 @@ describe("gateway conditions", () => {
 		})
 	}
 })
+
+describe("lenientConditions", () => {
+	it.each(GATEWAYS)("%s reads a non-boolean condition as false", async (gateway) => {
+		const t = await createProcessTest({
+			bpmn: Bpmn.parse(xml(gateway, ["= amount > 100"], true)),
+			lenientConditions: true,
+		})
+		const run = await t.start("p", {})
+		expect(run.state).toBe("completed")
+		expect(run.enteredElements).toContain("endD")
+		t.dispose()
+	})
+})

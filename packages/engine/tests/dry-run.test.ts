@@ -114,9 +114,6 @@ pay > wait[catch:message Payment confirmed | key=orderId] > done[end Done]`)
 check >(Yes: amount > 1000) big[end Big]
 check >(No: default) small[end Small]`)
 		expect((await dryRun(defs, { variables: { amount: 5000 } })).path).toContain("big")
-		// An unset variable makes the condition NULL, which fails like a Camunda 8 incident.
-		const unset = await dryRun(defs)
-		expect(unset.state).toBe("failed")
-		expect(unset.error).toMatch(/must evaluate to BOOLEAN, but was NULL/)
+		expect((await dryRun(defs)).path).toContain("small")
 	})
 })

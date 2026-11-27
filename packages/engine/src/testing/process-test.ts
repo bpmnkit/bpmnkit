@@ -40,6 +40,8 @@ export interface ProcessTestOptions {
 	 * created; set it when a timer uses an absolute `timeDate`.
 	 */
 	startTime?: Date | string | number
+	/** Read non-boolean conditions as false instead of failing; see `EngineOptions.lenientConditions`. */
+	lenientConditions?: boolean
 }
 
 /** A job as a mock or a test sees it. */
@@ -300,7 +302,7 @@ interface RunHost {
  * fixture one test file works against. Create it with {@link createProcessTest}.
  */
 export class ProcessTest {
-	private readonly engine = new Engine()
+	private readonly engine: Engine
 	private readonly clock: VirtualClock
 	private readonly coverageIndex: CoverageIndex
 	private readonly messageIds = new Map<string, string>()
@@ -322,7 +324,9 @@ export class ProcessTest {
 		dmn: readonly DmnDefinitions[],
 		forms: readonly FormDefinition[],
 		startTime: number,
+		lenientConditions: boolean,
 	) {
+		this.engine = new Engine({ lenientConditions })
 		this.engine.deploy({ bpmn: [...bpmn], decisions: [...dmn], forms: [...forms] })
 		const processes = bpmn.flatMap((d) => d.processes)
 		this.processIds = processes.map((p) => p.id)
@@ -357,7 +361,13 @@ export class ProcessTest {
 		if (bpmn.length === 0) throw new Error("createProcessTest: `bpmn` must name at least one model")
 		const dmn = await load(toList(options.dmn), "DMN", (xml) => Dmn.parse(xml))
 		const forms = await load(toList(options.forms), "form", (json) => Form.parse(json))
-		return new ProcessTest(bpmn, dmn, forms, parseStartTime(options.startTime))
+		return new ProcessTest(
+			bpmn,
+			dmn,
+			forms,
+			parseStartTime(options.startTime),
+			options.lenientConditions === true,
+		)
 	}
 
 	/**

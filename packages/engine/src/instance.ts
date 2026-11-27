@@ -42,6 +42,8 @@ export interface EventRefs {
 export interface InstanceHost {
 	readonly processes: ReadonlyMap<string, BpmnProcess>
 	readonly refs: EventRefs
+	/** See `EngineOptions.lenientConditions`. */
+	lenientConditions: boolean
 	broadcastSignal(name: string, variables: Record<string, unknown> | undefined): void
 	startChild(
 		process: BpmnProcess,
@@ -1545,7 +1547,7 @@ export class ProcessInstance {
 								},
 							)
 							if (typeof value === "boolean") done = value
-							else {
+							else if (this.host?.lenientConditions !== true) {
 								// Camunda 8 raises an incident; done = true stops the remaining iterations.
 								this.failElement(
 									el.id,
@@ -2104,6 +2106,7 @@ export class ProcessInstance {
 			property: `flow:${flow.id}`,
 		})
 		if (typeof result === "boolean") return result
+		if (this.host?.lenientConditions === true) return false
 		this.failElement(
 			gatewayId,
 			`Condition of flow "${flow.id}" at gateway "${gatewayId}" must evaluate to BOOLEAN, but was ${feelTypeName(result)}`,
