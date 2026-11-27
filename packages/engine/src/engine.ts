@@ -24,6 +24,11 @@ export interface StartOptions {
 export interface EngineOptions {
 	/** Resolver for `{{secrets.NAME}}` placeholders in connector configurations. */
 	secretResolver?: SecretResolver
+	/**
+	 * Read a gateway or completion condition that is not a boolean as false instead of
+	 * failing the instance, as Camunda 8 does. For runs with made-up variables, such as `dryRun`.
+	 */
+	lenientConditions?: boolean
 }
 
 export class Engine {
@@ -44,6 +49,7 @@ export class Engine {
 	private readonly host: InstanceHost = {
 		processes: this.processes,
 		refs: this.refs,
+		lenientConditions: false,
 		broadcastSignal: (name, variables) => {
 			this.broadcastSignal(name, variables)
 		},
@@ -53,6 +59,7 @@ export class Engine {
 
 	constructor(options?: EngineOptions) {
 		this.secretResolver = options?.secretResolver
+		this.host.lenientConditions = options?.lenientConditions === true
 	}
 
 	/**

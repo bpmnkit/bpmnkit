@@ -17,6 +17,7 @@ import { evaluate, parseExpression, toJs } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 import { adHocActivatableElements, describeAdHocElement } from "./ad-hoc.js"
 import { evaluateDecision } from "./dmn.js"
+import { withDerivedFlowRefs } from "./flow-refs.js"
 import { resolveSecretString } from "./secrets.js"
 import type { SecretResolver } from "./secrets.js"
 import { scheduleTimer } from "./timers.js"
@@ -41,6 +42,8 @@ export interface EventRefs {
 export interface InstanceHost {
 	readonly processes: ReadonlyMap<string, BpmnProcess>
 	readonly refs: EventRefs
+	/** See `EngineOptions.lenientConditions`. */
+	lenientConditions: boolean
 	broadcastSignal(name: string, variables: Record<string, unknown> | undefined): void
 	startChild(
 		process: BpmnProcess,
@@ -119,6 +122,11 @@ interface ScopeCtx {
 	 * sibling branches are entered.
 	 */
 	pending: number
+	/**
+	 * Parallel joins still waiting: joinId → incoming flows received. A waiting
+	 * join holds the scope open like a token (BPMN 13.2, Camunda 8 keeps it active).
+	 */
+	readonly joins: Map<string, Set<string>>
 	/** Token of the activity this scope runs inside; undefined for the process scope. */
 	readonly hostToken: Token | undefined
 	/** activityId → the handler associated with its compensation boundary event. */
@@ -258,6 +266,11 @@ export class ProcessInstance {
 		return [...this.allTokens.values()].map((t) => t.elementId)
 	}
 
+	/** Parallel joins that received some, not all, of their tokens — they keep the instance active. */
+	get waitingJoins(): string[] {
+		return [...this.scopes.values()].flatMap((ctx) => [...ctx.joins.keys()])
+	}
+
 	get variables_snapshot(): Record<string, unknown> {
 		return this.variables.getAll(this.rootScopeId)
 	}
@@ -367,7 +380,7 @@ export class ProcessInstance {
 		const boundaries = new Map<string, BpmnBoundaryEvent[]>()
 		const eventSubProcesses: EventSubProcessDef[] = []
 
-		for (const el of elements) {
+		for (const el of withDerivedFlowRefs(elements, flows)) {
 			elemMap.set(el.id, el)
 			if (el.type === "boundaryEvent") {
 				const list = boundaries.get(el.attachedToRef) ?? []
@@ -406,6 +419,7 @@ export class ProcessInstance {
 			boundaries,
 			tokens: new Set(),
 			pending: 0,
+			joins: new Map(),
 			hostToken,
 			compensationHandlers,
 			eventSubProcesses,
@@ -464,6 +478,7 @@ export class ProcessInstance {
 			else this.removeToken(token)
 		}
 		for (const ctx of this.scopes.values()) {
+			ctx.joins.clear()
 			for (const cleanup of ctx.cleanups.splice(0)) cleanup()
 		}
 	}
@@ -520,11 +535,6 @@ export class ProcessInstance {
 		})
 	}
 
-	// ── Parallel join tracking ─────────────────────────────────────────────────
-
-	/** scope/elementId → set of incomingFlowIds received */
-	private readonly joins = new Map<string, Set<string>>()
-
 	// ── Activation ─────────────────────────────────────────────────────────────
 
 	private async enter(
@@ -559,14 +569,14 @@ export class ProcessInstance {
 
 		// ── Parallel gateway join ──────────────────────────────────────────────
 		if (el.type === "parallelGateway" && el.incoming.length > 1) {
-			const seen = this.joins.get(key) ?? new Set<string>()
+			const seen = ctx.joins.get(elementId) ?? new Set<string>()
 			if (incomingFlowId !== undefined) seen.add(incomingFlowId)
-			this.joins.set(key, seen)
+			ctx.joins.set(elementId, seen)
 			if (seen.size < el.incoming.length) {
 				release()
 				return
 			}
-			this.joins.delete(key)
+			ctx.joins.delete(elementId)
 		}
 
 		this.emit({ type: "element:entering", elementId, elementName: el.name, elementType: el.type })
@@ -1137,12 +1147,9 @@ export class ProcessInstance {
 		for (const flow of outflows) {
 			if (flow.id === defaultFlowId) continue
 			if (flow.conditionExpression === undefined) continue
-			if (
-				this.evalCondition(flow.conditionExpression.text, ctx.scopeId, {
-					elementId: el.id,
-					property: `flow:${flow.id}`,
-				})
-			) {
+			const hit = this.evalGatewayCondition(el.id, flow, ctx)
+			if (hit === undefined) return
+			if (hit) {
 				taken = flow
 				break
 			}
@@ -1189,21 +1196,31 @@ export class ProcessInstance {
 		const outflows = ctx.outgoing.get(el.id) ?? []
 		const defaultFlowId = el.default
 
-		const matching = outflows.filter((f) => {
-			if (f.id === defaultFlowId) return false
-			if (f.conditionExpression === undefined) return true
-			return this.evalCondition(f.conditionExpression.text, ctx.scopeId, {
-				elementId: el.id,
-				property: `flow:${f.id}`,
-			})
-		})
+		const matching: BpmnSequenceFlow[] = []
+		for (const f of outflows) {
+			if (f.id === defaultFlowId) continue
+			if (f.conditionExpression === undefined) {
+				matching.push(f)
+				continue
+			}
+			const hit = this.evalGatewayCondition(el.id, f, ctx)
+			if (hit === undefined) return
+			if (hit) matching.push(f)
+		}
 
-		const flows =
-			matching.length > 0
-				? matching
-				: defaultFlowId !== undefined
-					? [ctx.flows.get(defaultFlowId)].filter((f): f is BpmnSequenceFlow => f !== undefined)
-					: []
+		const fallback = defaultFlowId !== undefined ? ctx.flows.get(defaultFlowId) : undefined
+		const flows = matching.length > 0 ? matching : fallback !== undefined ? [fallback] : []
+
+		// Same failure as the exclusive gateway (BPMN 2.0.2 Table 13.3; Camunda 8 raises an incident).
+		if (flows.length === 0) {
+			this.failElement(
+				el.id,
+				outflows.length === 0
+					? `Gateway "${el.id}" has no outgoing flows`
+					: `No condition matched at gateway "${el.id}" — add conditions to flows or mark one as the default`,
+			)
+			return
+		}
 
 		await this.complete(token, ctx, flows)
 	}
@@ -1516,9 +1533,9 @@ export class ProcessInstance {
 									property: "outputElement",
 								}) ?? null
 						}
-						const done =
-							completion !== "" &&
-							this.evalCondition(
+						let done = false
+						if (completion !== "") {
+							const value = this.evalFeel(
 								completion,
 								scopeId,
 								{ elementId: el.id, property: "completionCondition" },
@@ -1529,6 +1546,16 @@ export class ProcessInstance {
 									numberOfTerminatedInstances: terminated,
 								},
 							)
+							if (typeof value === "boolean") done = value
+							else if (this.host?.lenientConditions !== true) {
+								// Camunda 8 raises an incident; done = true stops the remaining iterations.
+								this.failElement(
+									el.id,
+									`The completion condition of "${el.id}" must evaluate to BOOLEAN, but was ${feelTypeName(value)}`,
+								)
+								done = true
+							}
+						}
 						this.scopes.delete(scopeId)
 						this.variables.removeScope(scopeId)
 						resolve(done)
@@ -1649,6 +1676,7 @@ export class ProcessInstance {
 				const token = this.allTokens.get(id)
 				if (token !== undefined) this.terminateToken(token)
 			}
+			ctx.joins.clear()
 			for (const cleanup of ctx.cleanups.splice(0)) cleanup()
 		}
 		this.setVariables(vars, ctx.scopeId)
@@ -1973,7 +2001,7 @@ export class ProcessInstance {
 		const flows = forcedFlows ?? this.getOutgoingFlows(el.id, ctx)
 
 		if (flows.length === 0) {
-			if (ctx.tokens.size === 0 && ctx.pending === 0) this.scopeDone(ctx)
+			if (ctx.tokens.size === 0 && ctx.pending === 0 && ctx.joins.size === 0) this.scopeDone(ctx)
 			return
 		}
 
@@ -2064,13 +2092,26 @@ export class ProcessInstance {
 		return result
 	}
 
-	private evalCondition(
-		expr: string,
-		scopeId: string,
-		emitCtx?: { elementId: string; property: string },
-		extraVars?: Vars,
-	): boolean {
-		return this.evalFeel(expr, scopeId, emitCtx, extraVars) === true
+	/**
+	 * Evaluate a gateway flow condition. A non-boolean result fails the instance (Camunda 8
+	 * raises an incident) instead of silently counting as false; returns undefined then.
+	 */
+	private evalGatewayCondition(
+		gatewayId: string,
+		flow: BpmnSequenceFlow,
+		ctx: ScopeCtx,
+	): boolean | undefined {
+		const result = this.evalFeel(flow.conditionExpression?.text ?? "", ctx.scopeId, {
+			elementId: gatewayId,
+			property: `flow:${flow.id}`,
+		})
+		if (typeof result === "boolean") return result
+		if (this.host?.lenientConditions === true) return false
+		this.failElement(
+			gatewayId,
+			`Condition of flow "${flow.id}" at gateway "${gatewayId}" must evaluate to BOOLEAN, but was ${feelTypeName(result)}`,
+		)
+		return undefined
 	}
 
 	// ── Emit ───────────────────────────────────────────────────────────────────
@@ -2078,4 +2119,12 @@ export class ProcessInstance {
 	private emit(event: ProcessEvent): void {
 		for (const listener of this.listeners) listener(event)
 	}
+}
+
+/** Camunda's type name for a FEEL result, as its incident messages print it. */
+function feelTypeName(value: unknown): string {
+	if (value === null || value === undefined) return "NULL"
+	if (Array.isArray(value)) return "LIST"
+	if (typeof value === "object") return "CONTEXT"
+	return String(typeof value).toUpperCase()
 }
