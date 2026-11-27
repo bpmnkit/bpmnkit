@@ -112,7 +112,7 @@
       "message": "Variable \"a\" is referenced but never set in this process.",
       "processId": "proc",
       "severity": "warning",
-      "suggestion": "\"a\" is never set. Did you mean \"o\"?"
+      "suggestion": "\"a\" is never set. Did you mean \"r\"?"
     },
     {
       "category": "data-flow",
@@ -142,7 +142,22 @@
       "message": "Variable \"x\" is referenced but never set in this process.",
       "processId": "proc",
       "severity": "warning",
-      "suggestion": "\"x\" is never set. Did you mean \"o\"?"
+      "suggestion": "\"x\" is never set. Did you mean \"r\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "scr"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:r",
+      "message": "Variable \"r\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "r"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"r\" or add a task that consumes it."
     },
     {
       "category": "data-flow",
@@ -206,6 +221,21 @@
     },
     {
       "category": "data-flow",
+      "elementIds": [
+        "scr"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:scr",
+      "message": "Element \"scr\" produces: r.",
+      "processId": "proc",
+      "produces": [
+        "r"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
       "consumes": [
         "a",
         "ok"
@@ -238,6 +268,21 @@
       "id": "data-flow/role:gw",
       "message": "Element \"gw\" consumes: x.",
       "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f5"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f5",
+      "message": "Variables in scope at flow \"f5\": r.",
+      "processId": "proc",
+      "produces": [
+        "r"
+      ],
       "severity": "info",
       "suggestion": ""
     },
@@ -301,7 +346,7 @@
     "byCategory": {
       "agentic": 0,
       "connector": 0,
-      "data-flow": 10,
+      "data-flow": 13,
       "deploy": 3,
       "extract": 0,
       "feel": 0,
@@ -313,9 +358,9 @@
     },
     "bySeverity": {
       "error": 5,
-      "info": 7,
+      "info": 10,
       "warning": 9
     },
-    "total": 21
+    "total": 24
   }
 }

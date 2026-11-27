@@ -1,0 +1,84 @@
+[
+	{
+		"name": "known country",
+		"job_type": "check-country",
+		"variables": { "countryCode": "de" },
+		"http": [
+			{
+				"method": "GET",
+				"url": "https://api.worldbank.org/v2/country/DE?format=json",
+				"status": 200,
+				"body": "[{\"page\":1,\"pages\":1,\"per_page\":\"50\",\"total\":1},[{\"id\":\"DEU\",\"iso2Code\":\"DE\",\"name\":\"Germany\",\"region\":{\"id\":\"ECS\",\"iso2code\":\"Z7\",\"value\":\"Europe & Central Asia \"},\"adminregion\":{\"id\":\"\",\"iso2code\":\"\",\"value\":\"\"},\"incomeLevel\":{\"id\":\"HIC\",\"iso2code\":\"XD\",\"value\":\"High income\"},\"lendingType\":{\"id\":\"LNX\",\"iso2code\":\"XX\",\"value\":\"Not classified\"},\"capitalCity\":\"Berlin\",\"longitude\":\"13.4115\",\"latitude\":\"52.5235\"}]]"
+			}
+		],
+		"expect": "complete"
+	},
+	{
+		"name": "unknown code: error body on 200",
+		"job_type": "check-country",
+		"variables": { "countryCode": "XX" },
+		"http": [
+			{
+				"method": "GET",
+				"url": "https://api.worldbank.org/v2/country/XX?format=json",
+				"status": 200,
+				"body": "[{\"message\":[{\"id\":\"120\",\"key\":\"Invalid value\",\"value\":\"The provided parameter value is not valid\"}]}]"
+			}
+		],
+		"expect": "throw-error"
+	},
+	{
+		"name": "unknown code: 404",
+		"job_type": "check-country",
+		"variables": { "countryCode": "QQ" },
+		"http": [
+			{
+				"method": "GET",
+				"url": "https://api.worldbank.org/v2/country/QQ?format=json",
+				"status": 404,
+				"body": ""
+			}
+		],
+		"expect": "throw-error"
+	},
+	{
+		"name": "aggregate is not a country",
+		"job_type": "check-country",
+		"variables": { "countryCode": "EUU" },
+		"http": [
+			{
+				"method": "GET",
+				"url": "https://api.worldbank.org/v2/country/EUU?format=json",
+				"status": 200,
+				"body": "[{\"page\":1,\"pages\":1,\"per_page\":\"50\",\"total\":1},[{\"id\":\"EUU\",\"iso2Code\":\"EU\",\"name\":\"European Union\",\"region\":{\"id\":\"NA\",\"iso2code\":\"NA\",\"value\":\"Aggregates\"},\"incomeLevel\":{\"id\":\"NA\",\"iso2code\":\"NA\",\"value\":\"Aggregates\"},\"capitalCity\":\"\"}]]"
+			}
+		],
+		"expect": "throw-error"
+	},
+	{
+		"name": "malformed code is rejected without a request",
+		"job_type": "check-country",
+		"variables": { "countryCode": "d e/../x" },
+		"expect": "throw-error"
+	},
+	{
+		"name": "api down",
+		"job_type": "check-country",
+		"variables": { "countryCode": "FR" },
+		"http": [
+			{
+				"method": "GET",
+				"url": "https://api.worldbank.org/v2/country/FR?format=json",
+				"status": 503,
+				"body": ""
+			}
+		],
+		"expect": "fail"
+	},
+	{
+		"name": "bad input",
+		"job_type": "check-country",
+		"variables": { "countryCode": 49 },
+		"expect": "fail"
+	}
+]

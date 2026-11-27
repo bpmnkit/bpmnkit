@@ -1,5 +1,16 @@
 # Progress
 
+## 2026-11-26 — wasm playground: open-API use cases; lint, reebe and host fixes
+
+`wasm/examples/playground/`: `frost-alert` (REST connector only: Open-Meteo, `resultExpression`, `errorExpression` → `BAD_LOCATION` boundary, frost gateway) and `fx-invoice` (Frankfurter rates via REST connector + `convert-invoice` Wasm worker in the `worker` world; `UNSUPPORTED_CURRENCY` / `RATES_UNAVAILABLE` boundaries). Each has HTTP stubs, `run.sh` (lint, `connector-test.py` → published `bpmnkit connector test` against a local stub, `bpmnkit worker wasm test`, expected outputs) and a README with live outputs from reebe + the real APIs on every path. The wasm CI smoke test (`test-support/tests/blueprint.rs`) now also builds and tests `convert-invoice` and `check-country`. Tried with the published `bpmnkit-cli` 0.9.0; its friction is listed in the playground README. `country-check`: a `worker-http` Wasm worker calling the World Bank country API (allow-list `api.worldbank.org:443`), `UNKNOWN_COUNTRY` for malformed codes, the API's 200 error body, 404 and aggregates; planned against restcountries.com, which now needs a key. The order-fulfilment README starts reebe with `reebe-server` (the published 0.9.0 cannot run `bpmnkit reebe start`).
+
+Fixes found on the way, each with regression tests:
+- Lint `data-flow` (TS `variable-flow.ts` and Rust `variable_flow.rs`): an input/output mapping source without `=` is a Zeebe static value and reads no variable (no more `undefined-variable:GET` on connector tasks); `zeebe:script` `resultVariable`, the `resultVariable` task header and the top-level keys of a context `resultExpression` count as produced.
+- reebe `POST /v2/deployments`: each process also carries the Camunda 8 `processDefinition {processDefinitionId, processDefinitionKey, processDefinitionVersion, resourceName, tenantId}` (flat fields kept for gRPC and older clients).
+- reebe `POST /v2/process-instances/search` honours `processInstanceKey` and accepts `processDefinitionId`; results carry `processDefinitionId`.
+- reebe `POST /v2/element-instances/search` honours `type` (alias of `elementType`) and `elementId`; results carry `type`.
+- `bpmnkit-wasm-host`: outbound HTTPS also trusts the PEM certificates in `SSL_CERT_FILE` (it trusted only the web PKI roots, so `worker-http` workers failed with `TlsCertificateError` behind a TLS-intercepting egress proxy).
+
 ## 2026-11-26 — Engine: gateway and join semantics (#334–#337)
 
 Camunda 8 parity in `@bpmnkit/engine`. Inclusive and complex gateways fail like exclusive ones when no condition is true and there is no default flow (#334). A gateway condition that is not boolean (null, unset variable, string, number) fails the instance: `Condition of flow "f" at gateway "gw" must evaluate to BOOLEAN, but was NULL` (#337). A non-boolean multi-instance `completionCondition` fails the same way; `lenientConditions` (engine and `createProcessTest` option, used by `dryRun`) reads them as false. A parallel join holding only some tokens keeps its scope open, so the instance stays `active`; `waitingJoins` on `ProcessInstance`/`ProcessRun`, and `toHaveCompleted` names the waiting join (#335). Missing `incoming`/`outgoing` are derived from sequence flows in the engine's element table, leaving the parsed model untouched (#336). Regression tests for each.

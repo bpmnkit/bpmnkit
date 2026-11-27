@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_country" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="country-check" name="Country check" isExecutable="true">
+    <bpmn:startEvent id="start" name="Customer address entered">
+      <bpmn:documentation>Input: countryCode (ISO 3166 alpha-2 or alpha-3, e.g. "de" or "DEU").</bpmn:documentation>
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="lookup" name="Look up country">
+      <bpmn:extensionElements><zeebe:taskDefinition type="check-country" retries="3" /></bpmn:extensionElements>
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="unknown" name="Unknown country" attachedToRef="lookup">
+      <bpmn:outgoing>f4</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="unknown-def" errorRef="error-unknown" />
+    </bpmn:boundaryEvent>
+    <bpmn:scriptTask id="profile" name="Build country profile">
+      <bpmn:extensionElements><zeebe:script expression="=countryName + &quot; (&quot; + iso3 + &quot;), &quot; + region + &quot;, &quot; + incomeLevel + &quot;, capital &quot; + capital" resultVariable="countryProfile" /></bpmn:extensionElements>
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="checked" name="Country checked">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:scriptTask id="reject" name="Ask for a valid country">
+      <bpmn:extensionElements><zeebe:script expression="=&quot;unknown country code: &quot; + countryCode" resultVariable="countryProfile" /></bpmn:extensionElements>
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="rejected" name="Address rejected">
+      <bpmn:incoming>f5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="lookup" />
+    <bpmn:sequenceFlow id="f2" sourceRef="lookup" targetRef="profile" />
+    <bpmn:sequenceFlow id="f3" sourceRef="profile" targetRef="checked" />
+    <bpmn:sequenceFlow id="f4" sourceRef="unknown" targetRef="reject" />
+    <bpmn:sequenceFlow id="f5" sourceRef="reject" targetRef="rejected" />
+  </bpmn:process>
+  <bpmn:error id="error-unknown" name="Unknown country" errorCode="UNKNOWN_COUNTRY" />
+  <bpmndi:BPMNDiagram id="Diagram_country">
+    <bpmndi:BPMNPlane id="Plane_country" bpmnElement="country-check">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="152" y="102" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="126" y="145" width="88" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lookup_di" bpmnElement="lookup"><dc:Bounds x="240" y="80" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="profile_di" bpmnElement="profile"><dc:Bounds x="390" y="80" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="checked_di" bpmnElement="checked"><dc:Bounds x="542" y="102" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="518" y="145" width="84" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="unknown_di" bpmnElement="unknown"><dc:Bounds x="272" y="142" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="314" y="175" width="54" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="240" y="220" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="rejected_di" bpmnElement="rejected"><dc:Bounds x="152" y="242" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="128" y="285" width="84" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="188" y="120" /><di:waypoint x="240" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2"><di:waypoint x="340" y="120" /><di:waypoint x="390" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3"><di:waypoint x="490" y="120" /><di:waypoint x="542" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4"><di:waypoint x="290" y="178" /><di:waypoint x="290" y="220" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5"><di:waypoint x="240" y="260" /><di:waypoint x="188" y="260" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

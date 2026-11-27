@@ -11,7 +11,7 @@
   ],
   "counts": {
     "error": 2,
-    "info": 13,
+    "info": 15,
     "warning": 5
   },
   "diagnostics": [
@@ -174,6 +174,18 @@
     {
       "category": "data-flow",
       "elementIds": [
+        "Task_script"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:highRisk",
+      "message": "Variable \"highRisk\" is set but never read by any downstream element.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"highRisk\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
         "Task_service"
       ],
       "fixable": false,
@@ -191,6 +203,18 @@
       "fixable": false,
       "id": "data-flow/role:Task_decide",
       "message": "Element \"Task_decide\" produces: risk.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_script"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Task_script",
+      "message": "Element \"Task_script\" produces: highRisk.",
       "processId": "Process_zeebe",
       "severity": "info",
       "suggestion": ""
@@ -250,7 +274,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_z6",
-      "message": "Variables in scope at flow \"Flow_z6\": amount, apiResult, customerId, risk.",
+      "message": "Variables in scope at flow \"Flow_z6\": amount, apiResult, customerId, highRisk, risk.",
       "processId": "Process_zeebe",
       "severity": "info",
       "suggestion": ""
@@ -259,5 +283,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 20
+  "total": 22
 }

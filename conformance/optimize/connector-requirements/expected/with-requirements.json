@@ -103,7 +103,7 @@
       "message": "Variable \"a\" is referenced but never set in this process.",
       "processId": "proc",
       "severity": "warning",
-      "suggestion": "\"a\" is never set on any path through this process."
+      "suggestion": "\"a\" is never set. Did you mean \"v\"?"
     },
     {
       "category": "data-flow",
@@ -118,7 +118,7 @@
       "message": "Variable \"r\" is referenced but never set in this process.",
       "processId": "proc",
       "severity": "warning",
-      "suggestion": "\"r\" is never set. Did you mean \"url\"?"
+      "suggestion": "\"r\" is never set. Did you mean \"v\"?"
     },
     {
       "category": "data-flow",
@@ -133,7 +133,7 @@
       "message": "Variable \"m\" is referenced but never set in this process.",
       "processId": "proc",
       "severity": "warning",
-      "suggestion": "\"m\" is never set on any path through this process."
+      "suggestion": "\"m\" is never set. Did you mean \"v\"?"
     },
     {
       "category": "data-flow",
@@ -183,6 +183,21 @@
     },
     {
       "category": "data-flow",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:v",
+      "message": "Variable \"v\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "v"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"v\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
       "consumes": [
         "a",
         "r"
@@ -212,11 +227,12 @@
       ],
       "fixable": false,
       "id": "data-flow/role:c2",
-      "message": "Element \"c2\" produces: url, method; consumes: a, m.",
+      "message": "Element \"c2\" produces: url, method, v; consumes: a, m.",
       "processId": "proc",
       "produces": [
         "url",
-        "method"
+        "method",
+        "v"
       ],
       "severity": "info",
       "suggestion": ""
@@ -244,12 +260,13 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:f3",
-      "message": "Variables in scope at flow \"f3\": method, result, url.",
+      "message": "Variables in scope at flow \"f3\": method, result, url, v.",
       "processId": "proc",
       "produces": [
         "method",
         "result",
-        "url"
+        "url",
+        "v"
       ],
       "severity": "info",
       "suggestion": ""
@@ -261,12 +278,13 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:f4",
-      "message": "Variables in scope at flow \"f4\": method, result, url.",
+      "message": "Variables in scope at flow \"f4\": method, result, url, v.",
       "processId": "proc",
       "produces": [
         "method",
         "result",
-        "url"
+        "url",
+        "v"
       ],
       "severity": "info",
       "suggestion": ""
@@ -278,12 +296,13 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:f5",
-      "message": "Variables in scope at flow \"f5\": method, result, url.",
+      "message": "Variables in scope at flow \"f5\": method, result, url, v.",
       "processId": "proc",
       "produces": [
         "method",
         "result",
-        "url"
+        "url",
+        "v"
       ],
       "severity": "info",
       "suggestion": ""
@@ -295,12 +314,13 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:f6",
-      "message": "Variables in scope at flow \"f6\": method, result, url.",
+      "message": "Variables in scope at flow \"f6\": method, result, url, v.",
       "processId": "proc",
       "produces": [
         "method",
         "result",
-        "url"
+        "url",
+        "v"
       ],
       "severity": "info",
       "suggestion": ""
@@ -379,7 +399,7 @@
     "byCategory": {
       "agentic": 0,
       "connector": 5,
-      "data-flow": 13,
+      "data-flow": 14,
       "deploy": 0,
       "extract": 0,
       "feel": 0,
@@ -391,9 +411,9 @@
     },
     "bySeverity": {
       "error": 5,
-      "info": 11,
+      "info": 12,
       "warning": 9
     },
-    "total": 25
+    "total": 26
   }
 }

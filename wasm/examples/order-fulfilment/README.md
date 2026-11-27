@@ -86,21 +86,24 @@ combined. A secret named in `worker.toml` is read from `--secrets-dir/<NAME>` or
 
 ## 3. Against reebe
 
-Reebe listens on `:8080` (`bpmnkit reebe start --port 8080`); its gRPC gateway is on `:26500`.
-Run the host from section 2 (step 4) against it, then deploy and start instances from a second shell.
+Reebe listens on `:8080`; its gRPC gateway is on `:26500`. Start the embedded (SQLite) server from the
+repository root and leave it running:
 
 ```sh
-bpmnkit reebe start                                   # second shell, leave running
-ZEEBE_ADDRESS=http://localhost:8080 bpmnkit deploy deploy order.bpmn
+cargo run --release --manifest-path apps/reebe/Cargo.toml -p reebe-server \
+  --no-default-features --features embedded -- --port 8080
 ```
 
-`bpmnkit deploy` reads `ZEEBE_ADDRESS` (its default is `http://localhost:26500`, the gRPC port, so set
-it explicitly for Reebe's REST API). It posts to `POST /v2/deployments` as `resources[]`, so the
-equivalent is:
+The published `bpmnkit` 0.9.0 cannot run `bpmnkit reebe start` or `bpmnkit deploy` without the legacy
+Node CLI, so start the server directly and deploy with `POST /v2/deployments`. Run the host from
+section 2 (step 4) against it, then deploy and start instances from a second shell:
 
 ```sh
 curl -sS -X POST http://localhost:8080/v2/deployments -F 'resources[]=@order.bpmn'
 ```
+
+With the legacy CLI installed, `ZEEBE_ADDRESS=http://localhost:8080 bpmnkit deploy deploy order.bpmn`
+does the same (its default `ZEEBE_ADDRESS` is the gRPC port, so set it for reebe's REST API).
 
 Start instances with `POST /v2/process-instances`. The body takes `processDefinitionId` (the BPMN
 process id, `order-fulfilment`) and `variables`:

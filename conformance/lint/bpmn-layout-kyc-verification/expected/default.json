@@ -11,8 +11,8 @@
   ],
   "counts": {
     "error": 6,
-    "info": 12,
-    "warning": 22
+    "info": 26,
+    "warning": 20
   },
   "diagnostics": [
     {
@@ -351,18 +351,6 @@
         "documentQuality"
       ],
       "fixable": false,
-      "id": "data-flow/undefined-variable:ocrResponse",
-      "message": "Variable \"ocrResponse\" is referenced but never set in this process.",
-      "processId": "KYCOnboarding",
-      "severity": "warning",
-      "suggestion": "\"ocrResponse\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
-        "documentQuality"
-      ],
-      "fixable": false,
       "id": "data-flow/undefined-variable:uploadRetries",
       "message": "Variable \"uploadRetries\" is referenced but never set in this process.",
       "processId": "KYCOnboarding",
@@ -372,14 +360,50 @@
     {
       "category": "data-flow",
       "elementIds": [
-        "riskRouting"
+        "standardDueDiligence"
       ],
       "fixable": false,
-      "id": "data-flow/undefined-variable:screeningResponse",
-      "message": "Variable \"screeningResponse\" is referenced but never set in this process.",
+      "id": "data-flow/dead-output:sddResponse",
+      "message": "Variable \"sddResponse\" is set but never read by any downstream element.",
       "processId": "KYCOnboarding",
-      "severity": "warning",
-      "suggestion": "\"screeningResponse\" is never set on any path through this process."
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"sddResponse\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:verifyDocument",
+      "message": "Element \"verifyDocument\" produces: ocrResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:sanctionsScreening",
+      "message": "Element \"sanctionsScreening\" produces: screeningResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:standardDueDiligence",
+      "message": "Element \"standardDueDiligence\" produces: sddResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
     },
     {
       "category": "data-flow",
@@ -432,11 +456,131 @@
     {
       "category": "data-flow",
       "elementIds": [
+        "Flow_compact_2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_2",
+      "message": "Variables in scope at flow \"Flow_compact_2\": ocrResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_3"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_3",
+      "message": "Variables in scope at flow \"Flow_compact_3\": ocrResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_4"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_4",
+      "message": "Variables in scope at flow \"Flow_compact_4\": ocrResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_5"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_5",
+      "message": "Variables in scope at flow \"Flow_compact_5\": ocrResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_6",
+      "message": "Variables in scope at flow \"Flow_compact_6\": ocrResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_7"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_7",
+      "message": "Variables in scope at flow \"Flow_compact_7\": ocrResponse, screeningResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_8"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_8",
+      "message": "Variables in scope at flow \"Flow_compact_8\": ocrResponse, screeningResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_9"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_9",
+      "message": "Variables in scope at flow \"Flow_compact_9\": ocrResponse, screeningResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_10"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_10",
+      "message": "Variables in scope at flow \"Flow_compact_10\": ocrResponse, screeningResponse, sddResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_11"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_11",
+      "message": "Variables in scope at flow \"Flow_compact_11\": ocrResponse, screeningResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
         "Flow_compact_12"
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_compact_12",
-      "message": "Variables in scope at flow \"Flow_compact_12\": riskClassification.",
+      "message": "Variables in scope at flow \"Flow_compact_12\": ocrResponse, riskClassification, screeningResponse, sddResponse.",
       "processId": "KYCOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -448,7 +592,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_compact_13",
-      "message": "Variables in scope at flow \"Flow_compact_13\": riskClassification.",
+      "message": "Variables in scope at flow \"Flow_compact_13\": ocrResponse, riskClassification, screeningResponse, sddResponse.",
       "processId": "KYCOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -460,7 +604,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_compact_14",
-      "message": "Variables in scope at flow \"Flow_compact_14\": riskClassification.",
+      "message": "Variables in scope at flow \"Flow_compact_14\": ocrResponse, riskClassification, screeningResponse, sddResponse.",
       "processId": "KYCOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -472,7 +616,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_compact_15",
-      "message": "Variables in scope at flow \"Flow_compact_15\": riskClassification.",
+      "message": "Variables in scope at flow \"Flow_compact_15\": ocrResponse, riskClassification, screeningResponse, sddResponse.",
       "processId": "KYCOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -484,7 +628,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_compact_16",
-      "message": "Variables in scope at flow \"Flow_compact_16\": riskClassification.",
+      "message": "Variables in scope at flow \"Flow_compact_16\": ocrResponse, riskClassification, screeningResponse, sddResponse.",
       "processId": "KYCOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -496,7 +640,7 @@
       ],
       "fixable": false,
       "id": "data-flow/edge-scope:Flow_compact_17",
-      "message": "Variables in scope at flow \"Flow_compact_17\": riskClassification.",
+      "message": "Variables in scope at flow \"Flow_compact_17\": ocrResponse, riskClassification, screeningResponse, sddResponse.",
       "processId": "KYCOnboarding",
       "severity": "info",
       "suggestion": ""
@@ -505,5 +649,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 40
+  "total": 52
 }

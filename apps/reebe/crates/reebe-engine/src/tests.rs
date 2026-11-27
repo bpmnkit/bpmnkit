@@ -456,6 +456,15 @@ mod tests {
                 .unwrap_or(false),
             "BPMN deploy should return non-empty deployments: {deploy_resp}"
         );
+        // Camunda 8 REST nests each process under `processDefinition`.
+        let pd = &deploy_resp["deployments"][0]["processDefinition"];
+        assert_eq!(
+            pd["processDefinitionId"], "validation-proc",
+            "{deploy_resp}"
+        );
+        assert_eq!(pd["processDefinitionVersion"], 1, "{deploy_resp}");
+        assert_eq!(pd["resourceName"], "process.bpmn", "{deploy_resp}");
+        assert!(pd["processDefinitionKey"].is_string(), "{deploy_resp}");
 
         // Create process instance with a missing 'name' variable (triggers required rule)
         submit_and_drain(

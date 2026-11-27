@@ -63,51 +63,6 @@
     {
       "category": "data-flow",
       "consumes": [
-        "openai"
-      ],
-      "elementIds": [
-        "AI_Agent"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:openai",
-      "message": "Variable \"openai\" is referenced but never set in this process.",
-      "processId": "ai-agent-chat-with-tools",
-      "severity": "warning",
-      "suggestion": "\"openai\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "consumes": [
-        "responses"
-      ],
-      "elementIds": [
-        "AI_Agent"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:responses",
-      "message": "Variable \"responses\" is referenced but never set in this process.",
-      "processId": "ai-agent-chat-with-tools",
-      "severity": "warning",
-      "suggestion": "\"responses\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "consumes": [
-        "custom"
-      ],
-      "elementIds": [
-        "AI_Agent"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:custom",
-      "message": "Variable \"custom\" is referenced but never set in this process.",
-      "processId": "ai-agent-chat-with-tools",
-      "severity": "warning",
-      "suggestion": "\"custom\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "consumes": [
         "camunda"
       ],
       "elementIds": [
@@ -119,36 +74,6 @@
       "processId": "ai-agent-chat-with-tools",
       "severity": "warning",
       "suggestion": "\"camunda\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "consumes": [
-        "apiKey"
-      ],
-      "elementIds": [
-        "AI_Agent"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:apiKey",
-      "message": "Variable \"apiKey\" is referenced but never set in this process.",
-      "processId": "ai-agent-chat-with-tools",
-      "severity": "warning",
-      "suggestion": "\"apiKey\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "consumes": [
-        "modelDefault"
-      ],
-      "elementIds": [
-        "AI_Agent"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:modelDefault",
-      "message": "Variable \"modelDefault\" is referenced but never set in this process.",
-      "processId": "ai-agent-chat-with-tools",
-      "severity": "warning",
-      "suggestion": "\"modelDefault\" is never set on any path through this process."
     },
     {
       "category": "data-flow",
@@ -209,36 +134,6 @@
       "processId": "ai-agent-chat-with-tools",
       "severity": "warning",
       "suggestion": "\"inputDocuments\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "consumes": [
-        "WAIT_FOR_TOOL_CALL_RESULTS"
-      ],
-      "elementIds": [
-        "AI_Agent"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:WAIT_FOR_TOOL_CALL_RESULTS",
-      "message": "Variable \"WAIT_FOR_TOOL_CALL_RESULTS\" is referenced but never set in this process.",
-      "processId": "ai-agent-chat-with-tools",
-      "severity": "warning",
-      "suggestion": "\"WAIT_FOR_TOOL_CALL_RESULTS\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "consumes": [
-        "text"
-      ],
-      "elementIds": [
-        "AI_Agent"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:text",
-      "message": "Variable \"text\" is referenced but never set in this process.",
-      "processId": "ai-agent-chat-with-tools",
-      "severity": "warning",
-      "suggestion": "\"text\" is never set on any path through this process."
     },
     {
       "category": "data-flow",
@@ -573,26 +468,19 @@
     {
       "category": "data-flow",
       "consumes": [
-        "openai",
-        "responses",
-        "custom",
         "camunda",
-        "apiKey",
-        "modelDefault",
         "followUpInput",
         "inputText",
         "followUpDocuments",
         "inputDocuments",
-        "agent",
-        "WAIT_FOR_TOOL_CALL_RESULTS",
-        "text"
+        "agent"
       ],
       "elementIds": [
         "AI_Agent"
       ],
       "fixable": false,
       "id": "data-flow/role:AI_Agent",
-      "message": "Element \"AI_Agent\" produces: provider.type, provider.openai.api.type, provider.openai.backend.type, provider.openai.backend.custom.endpoint, provider.openai.backend.custom.authentication.type, provider.openai.backend.custom.authentication.apiKey, provider.openai.model.model, provider.openai.api.responses.effort, data.systemPrompt.prompt, data.userPrompt.prompt, data.userPrompt.documents, agentContext, data.memory.storage.type, data.memory.contextWindowSize, data.limits.maxModelCalls, data.events.behavior, data.response.format.type, data.response.format.parseJson, data.response.includeAssistantMessage, data.response.includeAgentContext, agent; consumes: openai, responses, custom, camunda, apiKey, modelDefault, followUpInput, inputText, followUpDocuments, inputDocuments, agent, WAIT_FOR_TOOL_CALL_RESULTS, text.",
+      "message": "Element \"AI_Agent\" produces: provider.type, provider.openai.api.type, provider.openai.backend.type, provider.openai.backend.custom.endpoint, provider.openai.backend.custom.authentication.type, provider.openai.backend.custom.authentication.apiKey, provider.openai.model.model, provider.openai.api.responses.effort, data.systemPrompt.prompt, data.userPrompt.prompt, data.userPrompt.documents, agentContext, data.memory.storage.type, data.memory.contextWindowSize, data.limits.maxModelCalls, data.events.behavior, data.response.format.type, data.response.format.parseJson, data.response.includeAssistantMessage, data.response.includeAgentContext, agent; consumes: camunda, followUpInput, inputText, followUpDocuments, inputDocuments, agent.",
       "processId": "ai-agent-chat-with-tools",
       "produces": [
         "provider.type",
@@ -846,7 +734,7 @@
     "byCategory": {
       "agentic": 0,
       "connector": 0,
-      "data-flow": 42,
+      "data-flow": 35,
       "deploy": 0,
       "extract": 0,
       "feel": 1,
@@ -859,8 +747,8 @@
     "bySeverity": {
       "error": 0,
       "info": 29,
-      "warning": 18
+      "warning": 11
     },
-    "total": 47
+    "total": 40
   }
 }

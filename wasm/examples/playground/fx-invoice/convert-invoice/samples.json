@@ -1,0 +1,61 @@
+[
+	{
+		"name": "eur to usd, rounded per unit",
+		"job_type": "convert-invoice",
+		"variables": {
+			"targetCurrency": "USD",
+			"rates": { "USD": 1.0935, "JPY": 168.42 },
+			"lines": [
+				{ "description": "Widget", "quantity": 2, "unitPrice": 12.5 },
+				{ "description": "Gizmo", "quantity": 1, "unitPrice": 9.99 }
+			]
+		},
+		"expect": "complete"
+	},
+	{
+		"name": "eur to jpy, no minor units",
+		"job_type": "convert-invoice",
+		"variables": {
+			"targetCurrency": "JPY",
+			"rates": { "USD": 1.0935, "JPY": 168.42 },
+			"lines": [{ "description": "Widget", "quantity": 3, "unitPrice": 12.5 }]
+		},
+		"expect": "complete"
+	},
+	{
+		"name": "eur to eur needs no rate",
+		"job_type": "convert-invoice",
+		"variables": {
+			"targetCurrency": "EUR",
+			"rates": {},
+			"lines": [{ "description": "Widget", "quantity": 1, "unitPrice": 12.5 }]
+		},
+		"expect": "complete"
+	},
+	{
+		"name": "unsupported currency",
+		"job_type": "convert-invoice",
+		"variables": {
+			"targetCurrency": "XXX",
+			"rates": { "USD": 1.0935 },
+			"lines": [{ "description": "Widget", "quantity": 1, "unitPrice": 12.5 }]
+		},
+		"expect": "throw-error"
+	},
+	{
+		"name": "negative price",
+		"job_type": "convert-invoice",
+		"variables": {
+			"targetCurrency": "USD",
+			"rates": { "USD": 1.0935 },
+			"lines": [{ "description": "Widget", "quantity": 1, "unitPrice": -1 }]
+		},
+		"expect": "fail"
+	},
+	{
+		"name": "bad input",
+		"job_type": "convert-invoice",
+		"variables": { "lines": "nope" },
+		"expect": "fail"
+	}
+]

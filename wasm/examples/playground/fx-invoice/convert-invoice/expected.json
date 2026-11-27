@@ -1,0 +1,6 @@
+{
+	"eur to usd, rounded per unit": "complete {\"convertedLines\":[{\"description\":\"Widget\",\"lineTotal\":27.34,\"quantity\":2,\"unitPrice\":13.67},{\"description\":\"Gizmo\",\"lineTotal\":10.92,\"quantity\":1,\"unitPrice\":10.92}],\"currency\":\"USD\",\"invoiceTotal\":38.26,\"rate\":1.0935}",
+	"eur to jpy, no minor units": "complete {\"convertedLines\":[{\"description\":\"Widget\",\"lineTotal\":6315.0,\"quantity\":3,\"unitPrice\":2105.0}],\"currency\":\"JPY\",\"invoiceTotal\":6315.0,\"rate\":168.42}",
+	"eur to eur needs no rate": "complete {\"convertedLines\":[{\"description\":\"Widget\",\"lineTotal\":12.5,\"quantity\":1,\"unitPrice\":12.5}],\"currency\":\"EUR\",\"invoiceTotal\":12.5,\"rate\":1.0}",
+	"unsupported currency": "throw-error UNSUPPORTED_CURRENCY: no EUR rate for XXX"
+}

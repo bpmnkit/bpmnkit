@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_fx" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="fx-invoice" name="FX invoice" isExecutable="true">
+    <bpmn:startEvent id="start" name="Invoice drafted">
+      <bpmn:documentation>Inputs: targetCurrency (ISO code), lines [{description, quantity, unitPrice}] in EUR; optional fxBase overrides https://api.frankfurter.dev.</bpmn:documentation>
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="rates" name="Fetch EUR rates">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" retries="3" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="GET" target="method" />
+          <zeebe:input source="=(if fxBase = null then &quot;https://api.frankfurter.dev&quot; else fxBase) + &quot;/v1/latest&quot;" target="url" />
+          <zeebe:input source="={base: &quot;EUR&quot;}" target="queryParameters" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="retryBackoff" value="PT20S" />
+          <zeebe:header key="errorExpression" value="=if error.code = &quot;404&quot; or error.code = &quot;422&quot; then bpmnError(&quot;RATES_UNAVAILABLE&quot;, error.message) else null" />
+          <zeebe:header key="resultExpression" value="={rates: response.body.rates, rateDate: response.body.date}" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="convert" name="Convert line items">
+      <bpmn:extensionElements><zeebe:taskDefinition type="convert-invoice" retries="3" /></bpmn:extensionElements>
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="unsupported" name="Unsupported currency" attachedToRef="convert">
+      <bpmn:outgoing>f4</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="unsupported-def" errorRef="error-unsupported" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="no-rates" name="Rates unavailable" attachedToRef="rates">
+      <bpmn:outgoing>f6</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="no-rates-def" errorRef="error-no-rates" />
+    </bpmn:boundaryEvent>
+    <bpmn:scriptTask id="outage" name="Note rates outage">
+      <bpmn:extensionElements><zeebe:script expression="=&quot;rates unavailable, invoice left in EUR&quot;" resultVariable="reviewNote" /></bpmn:extensionElements>
+      <bpmn:incoming>f6</bpmn:incoming>
+      <bpmn:outgoing>f7</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="unpriced" name="Left in EUR">
+      <bpmn:incoming>f7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="converted" name="Invoice converted">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:scriptTask id="review" name="Flag for manual review">
+      <bpmn:extensionElements><zeebe:script expression="=&quot;manual review: no rate for &quot; + unsupportedCurrency" resultVariable="reviewNote" /></bpmn:extensionElements>
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="needs-review" name="Needs review">
+      <bpmn:incoming>f5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="rates" />
+    <bpmn:sequenceFlow id="f2" sourceRef="rates" targetRef="convert" />
+    <bpmn:sequenceFlow id="f3" sourceRef="convert" targetRef="converted" />
+    <bpmn:sequenceFlow id="f4" sourceRef="unsupported" targetRef="review" />
+    <bpmn:sequenceFlow id="f5" sourceRef="review" targetRef="needs-review" />
+    <bpmn:sequenceFlow id="f6" sourceRef="no-rates" targetRef="outage" />
+    <bpmn:sequenceFlow id="f7" sourceRef="outage" targetRef="unpriced" />
+  </bpmn:process>
+  <bpmn:error id="error-no-rates" name="Rates unavailable" errorCode="RATES_UNAVAILABLE" />
+  <bpmn:error id="error-unsupported" name="Unsupported currency" errorCode="UNSUPPORTED_CURRENCY" />
+  <bpmndi:BPMNDiagram id="Diagram_fx">
+    <bpmndi:BPMNPlane id="Plane_fx" bpmnElement="fx-invoice">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="152" y="102" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="132" y="145" width="76" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="rates_di" bpmnElement="rates"><dc:Bounds x="240" y="80" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="convert_di" bpmnElement="convert"><dc:Bounds x="390" y="80" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="converted_di" bpmnElement="converted"><dc:Bounds x="552" y="102" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="526" y="145" width="88" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="review_di" bpmnElement="review"><dc:Bounds x="390" y="220" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="needs-review_di" bpmnElement="needs-review"><dc:Bounds x="552" y="242" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="536" y="285" width="68" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="unsupported_di" bpmnElement="unsupported"><dc:Bounds x="422" y="142" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="468" y="175" width="70" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="no-rates_di" bpmnElement="no-rates"><dc:Bounds x="272" y="142" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="218" y="175" width="54" height="27" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="outage_di" bpmnElement="outage"><dc:Bounds x="240" y="220" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="unpriced_di" bpmnElement="unpriced"><dc:Bounds x="152" y="242" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="138" y="285" width="64" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6"><di:waypoint x="290" y="178" /><di:waypoint x="290" y="220" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7"><di:waypoint x="240" y="260" /><di:waypoint x="188" y="260" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="188" y="120" /><di:waypoint x="240" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2"><di:waypoint x="340" y="120" /><di:waypoint x="390" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3"><di:waypoint x="490" y="120" /><di:waypoint x="552" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4"><di:waypoint x="440" y="178" /><di:waypoint x="440" y="220" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5"><di:waypoint x="490" y="260" /><di:waypoint x="552" y="260" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

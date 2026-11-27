@@ -1,0 +1,9 @@
+[worker]
+name = "convert-invoice"
+version = "0.1.0"
+job_types = ["convert-invoice"]
+
+[limits]
+memory_mb = 32
+timeout_ms = 2_000
+max_concurrent = 8

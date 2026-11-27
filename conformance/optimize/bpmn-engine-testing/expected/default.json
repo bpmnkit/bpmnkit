@@ -453,6 +453,85 @@
       "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
     },
     {
+      "category": "data-flow",
+      "elementIds": [
+        "fetch_weather"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:weatherResponse",
+      "message": "Variable \"weatherResponse\" is set but never read by any downstream element.",
+      "processId": "connector-process",
+      "produces": [
+        "weatherResponse"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"weatherResponse\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "fetch_weather"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:temperature",
+      "message": "Variable \"temperature\" is set but never read by any downstream element.",
+      "processId": "connector-process",
+      "produces": [
+        "temperature"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"temperature\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "fetch_weather"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:ok",
+      "message": "Variable \"ok\" is set but never read by any downstream element.",
+      "processId": "connector-process",
+      "produces": [
+        "ok"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"ok\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "fetch_weather"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:fetch_weather",
+      "message": "Element \"fetch_weather\" produces: weatherResponse, temperature, ok.",
+      "processId": "connector-process",
+      "produces": [
+        "weatherResponse",
+        "temperature",
+        "ok"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "cf2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:cf2",
+      "message": "Variables in scope at flow \"cf2\": ok, temperature, weatherResponse.",
+      "processId": "connector-process",
+      "produces": [
+        "ok",
+        "temperature",
+        "weatherResponse"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
       "category": "naming",
       "elementIds": [
         "p_start"
@@ -506,7 +585,7 @@
     "byCategory": {
       "agentic": 0,
       "connector": 0,
-      "data-flow": 2,
+      "data-flow": 7,
       "deploy": 6,
       "extract": 0,
       "feel": 0,
@@ -518,9 +597,9 @@
     },
     "bySeverity": {
       "error": 7,
-      "info": 17,
+      "info": 22,
       "warning": 17
     },
-    "total": 41
+    "total": 46
   }
 }

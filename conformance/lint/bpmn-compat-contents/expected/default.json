@@ -14,8 +14,8 @@
   ],
   "counts": {
     "error": 45,
-    "info": 38,
-    "warning": 68
+    "info": 40,
+    "warning": 67
   },
   "diagnostics": [
     {
@@ -1023,20 +1023,7 @@
     {
       "category": "data-flow",
       "elementIds": [
-        "secretsTask"
-      ],
-      "fixable": false,
-      "id": "data-flow/undefined-variable:secrets",
-      "message": "Variable \"secrets\" is referenced but never set in this process.",
-      "processId": "contents",
-      "severity": "warning",
-      "suggestion": "\"secrets\" is never set on any path through this process."
-    },
-    {
-      "category": "data-flow",
-      "elementIds": [
         "secretsTask",
-        "secretLiteral",
         "secretList",
         "secretIfContext",
         "secretFine"
@@ -1216,6 +1203,18 @@
     {
       "category": "data-flow",
       "elementIds": [
+        "badResult"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:a-b",
+      "message": "Variable \"a-b\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"a-b\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
         "badDecisionResult"
       ],
       "fixable": false,
@@ -1300,6 +1299,18 @@
     {
       "category": "data-flow",
       "elementIds": [
+        "badResult"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:badResult",
+      "message": "Element \"badResult\" produces: a-b.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
         "badDecisionResult"
       ],
       "fixable": false,
@@ -1316,7 +1327,7 @@
       ],
       "fixable": false,
       "id": "data-flow/role:secretsTask",
-      "message": "Element \"secretsTask\" produces: apiKey, token, ok; consumes: secrets, camunda.",
+      "message": "Element \"secretsTask\" produces: apiKey, token, ok; consumes: camunda.",
       "processId": "contents",
       "severity": "info",
       "suggestion": ""
@@ -1328,7 +1339,7 @@
       ],
       "fixable": false,
       "id": "data-flow/role:secretLiteral",
-      "message": "Element \"secretLiteral\" produces: a; consumes: camunda.",
+      "message": "Element \"secretLiteral\" produces: a.",
       "processId": "contents",
       "severity": "info",
       "suggestion": ""
@@ -1863,5 +1874,5 @@
     "name": "Camunda Cloud",
     "version": "8.10.0"
   },
-  "total": 151
+  "total": 152
 }

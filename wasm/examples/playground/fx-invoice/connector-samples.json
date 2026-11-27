@@ -1,0 +1,58 @@
+[
+	{
+		"name": "latest EUR rates",
+		"element": "rates",
+		"baseVar": "fxBase",
+		"variables": {},
+		"http": {
+			"method": "GET",
+			"path": "/v1/latest",
+			"status": 200,
+			"body": "{\"amount\":1.0,\"base\":\"EUR\",\"date\":\"2026-11-25\",\"rates\":{\"GBP\":0.8373,\"JPY\":168.42,\"USD\":1.0935}}"
+		},
+		"expect": {
+			"complete": {
+				"variables": {
+					"rates": {
+						"GBP": 0.8373,
+						"JPY": 168.42,
+						"USD": 1.0935
+					},
+					"rateDate": "2026-11-25"
+				}
+			}
+		}
+	},
+	{
+		"name": "404 is the BPMN error RATES_UNAVAILABLE",
+		"element": "rates",
+		"baseVar": "fxBase",
+		"variables": {},
+		"http": {
+			"method": "GET",
+			"path": "/v1/latest",
+			"status": 404,
+			"body": "{\"message\":\"not found\"}"
+		},
+		"expect": {
+			"throwError": {
+				"errorCode": "RATES_UNAVAILABLE"
+			}
+		}
+	},
+	{
+		"name": "rates api down",
+		"element": "rates",
+		"baseVar": "fxBase",
+		"variables": {},
+		"http": {
+			"method": "GET",
+			"path": "/v1/latest",
+			"status": 503,
+			"body": ""
+		},
+		"expect": {
+			"fail": {}
+		}
+	}
+]
