@@ -1,3 +1,4 @@
+# ci-minutes: allow concurrency releases must not cancel a publish in progress
 name: Release crates
 
 # Publishes the bpmnkit-* Rust crates to crates.io (doc/rust-crates-release.md). A run without

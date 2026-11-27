@@ -6,6 +6,7 @@ name: Worker e2e
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "crates/bpmnkit-worker/**"
       - "crates/bpmnkit-connector-runtime/**"
@@ -31,6 +32,7 @@ concurrency:
 jobs:
   worker-e2e:
     name: Worker e2e (reebe)
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     env:
       CARGO_TERM_COLOR: always

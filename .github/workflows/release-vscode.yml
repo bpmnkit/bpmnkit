@@ -1,3 +1,4 @@
+# ci-minutes: allow concurrency releases must not cancel a publish in progress
 name: Release VS Code extension
 
 # Publishes apps/vscode whenever its version changes on main — the Changesets release PR

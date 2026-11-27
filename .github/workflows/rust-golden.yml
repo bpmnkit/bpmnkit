@@ -6,6 +6,7 @@ name: Rust golden
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "crates/bpmnkit-codegen/**"
       - "crates/bpmnkit-jobspec/**"
@@ -24,9 +25,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   rust-golden:
     name: rust-golden
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -58,6 +64,7 @@ jobs:
 
   codegen-windows:
     name: codegen-windows
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: windows-latest
     steps:
       - name: Allow long paths, keep LF (Windows)

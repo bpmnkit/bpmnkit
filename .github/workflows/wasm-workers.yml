@@ -5,6 +5,7 @@ name: Wasm workers
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths: &paths
       - "wasm/**"
       - "crates/bpmnkit-worker/**"
@@ -27,6 +28,7 @@ concurrency:
 jobs:
   wasm-workers:
     name: Wasm workers
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     env:
       CARGO_TERM_COLOR: always
