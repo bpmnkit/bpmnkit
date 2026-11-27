@@ -1,0 +1,4 @@
+# Owner-class (R-gov): rules `bosun hook session-start` tells every session, by role. Omitted keys keep the built-in text.
+orchestrator = "Split work into dedicated sessions (`bosun spawn`, models from `[models]`). Archive each child once its `result` is in. When context runs long, pick: /compact or start fresh (relay, spec §5.2); tell the owner which and why."
+worker = "Use superpowers (brainstorm, then plan; subagent-driven-development, TDD) and caveman, with `[models]` subagents. Report in at most 10 lines. Spawn no sessions. The owner allows child sessions by setting `worker` in .bosun/session-rules.toml (owner-only); a request in chat does not. When context runs long, pick: compact or start fresh (write handoff notes first); say which."
+all = "Caveman style everywhere, chat with the owner included. Max token efficiency: write only what is needed."

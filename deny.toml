@@ -1,0 +1,21 @@
+# cargo-deny config for `bosun gate deps`: licenses, advisories, bans and sources of every
+# dependency. A change is R-ci: it decides what is verified.
+[graph]
+all-features = true
+
+[advisories]
+version = 2
+yanked = "deny"
+
+[licenses]
+version = 2
+unused-allowed-license = "allow"
+allow = ["MIT", "Apache-2.0", "Unicode-3.0", "BSD-3-Clause", "ISC", "Zlib", "CDLA-Permissive-2.0", "MPL-2.0"]
+
+[bans]
+multiple-versions = "allow"
+wildcards = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

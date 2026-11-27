@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-27 — adopt bosun (keelstack 0.25.0), autonomous policy
+
+`bosun adopt --policy autonomous --owner urbanisierung`: `.bosun/` (config, limits, risk, pins, session rules, approvers with the owner key `owner-2026-11`), `governance/owners.toml`, `deny.toml`, `docs/setup-script.sh` and the bosun workflows (`bosun.yml` with the required `ci-ok`, `risk.yml`, `verdict.yml`, `signer.yml`, `main-open.yml`, `main-health.yml`). Stacks: rust + ts-pnpm. No hull/splice template: the repo layout is unchanged.
+
 ## 2026-11-26 — wasm playground: open-API use cases; lint, reebe and host fixes
 
 `wasm/examples/playground/`: `frost-alert` (REST connector only: Open-Meteo, `resultExpression`, `errorExpression` → `BAD_LOCATION` boundary, frost gateway) and `fx-invoice` (Frankfurter rates via REST connector + `convert-invoice` Wasm worker in the `worker` world; `UNSUPPORTED_CURRENCY` / `RATES_UNAVAILABLE` boundaries). Each has HTTP stubs, `run.sh` (lint, `connector-test.py` → published `bpmnkit connector test` against a local stub, `bpmnkit worker wasm test`, expected outputs) and a README with live outputs from reebe + the real APIs on every path. The wasm CI smoke test (`test-support/tests/blueprint.rs`) now also builds and tests `convert-invoice` and `check-country`. Tried with the published `bpmnkit-cli` 0.9.0; its friction is listed in the playground README. `country-check`: a `worker-http` Wasm worker calling the World Bank country API (allow-list `api.worldbank.org:443`), `UNKNOWN_COUNTRY` for malformed codes, the API's 200 error body, 404 and aggregates; planned against restcountries.com, which now needs a key. The order-fulfilment README starts reebe with `reebe-server` (the published 0.9.0 cannot run `bpmnkit reebe start`).

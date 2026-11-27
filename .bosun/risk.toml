@@ -1,0 +1,44 @@
+# Risk rules (spec §8). risk-check reads this file from the PR's base branch, never from the
+# head, so a PR cannot change the rules that judge it. A rule only escalates. Add rules for the
+# paths of this project that need an owner (auth, payments, migrations, ...).
+
+[[rule]]
+id = "R-gov"
+why = "Governance files decide who approves what, and the rules agents and reviewers follow."
+paths = [".bosun/**", "governance/**", "CODEOWNERS", "docs/CODEOWNERS", ".github/CODEOWNERS", "**/codeowners", ".claude/**", "**/.claude/**", ".splice/**", "**/hoist.toml", "docs/setup-script.sh",
+  "REVIEW.md", "src/core/session_rules.rs", "src/core/session_rules/**", "src/hooks/session_rules.rs", "src/hooks/session_rules/**", ".claude-plugin/**", "docs/agents/**", "**/agents.md", "**/claude.md", "**/claude.local.md", "**/plans/**"]
+
+[[rule]]
+id = "R-ci"
+why = "CI decides what is verified."
+paths = [".github/workflows/**", ".github/actions/**", ".github/dependabot.yml", "scripts/**", "Makefile", "**/Makefile", "justfile", "**/justfile", "Dockerfile", "**/Dockerfile", ".husky/**", "**/action.yml", "**/action.yaml", ".circleci/**", ".gitlab-ci.yml", ".gitlab/ci/**", ".buildkite/**", "**/jenkinsfile", "azure-pipelines.y*ml", "bitbucket-pipelines.yml", ".travis.yml", ".drone.yml", "pins.toml", ".bosun/pins.toml", "**/deny.toml", "**/.deny.toml", "**/deny.exceptions.toml", "**/.deny.exceptions.toml", "rust-toolchain.toml", "rust-toolchain", "**/rust-toolchain.toml", "**/rust-toolchain", "**/clippy.toml", "**/.clippy.toml", "**/rustfmt.toml", "**/.rustfmt.toml", "**/.cargo/config", "**/.cargo/config.toml", "**/deny.local.toml", "**/.deny.local.toml", ".npmrc"]
+
+[[rule]]
+id = "R-secrets"
+why = "A secret in the repo is a leak."
+paths = ["**/secrets.toml", "**/access.toml", "**/*.sops.*"]
+# A name, an optional quote, then `=` and a value, or `:` and a quoted literal (a type, a field or a
+# reference after `:` is no secret); a URL with user:password; strong formats always.
+content = '''(?i)(?:(api[_-]?key|secret(?:[_-]?(?:access[_-]?)?key|[_-]?token)?|token|passw(or)?d|private[_-]?key)["']?\s*:?=\s*(?:={1,2}\s*["'](?:[^"'$]|\$\w)|[^\s$="'>]|["'](?:[^"'$]|\$\w)|\$[\w"']|$|\$\s*(?:\|\||\?\?|\?:|or\b|\.\s*(?:ok\(\)\s*\.\s*)?unwrap_or(?:_else)?\(\s*(?:\|[^|]*\|\s*)?)\s*["'])|(?:^\s*|\b(?:const|let|var|val|static|mut|final|private|public|protected|readonly)\s+)[\w.-]*(api[_-]?key|secret(?:[_-]?(?:access[_-]?)?key|[_-]?token)?|token|passw(or)?d|private[_-]?key)["']?\s*:\s*[\w&<>\[\].' ]+=\s*(?:[^\s$="'>]|["'](?:[^"'$]|\$\w)|\$[\w"']|$|\$\s*(?:\|\||\?\?|\?:|or\b|\.\s*(?:ok\(\)\s*\.\s*)?unwrap_or(?:_else)?\(\s*(?:\|[^|]*\|\s*)?)\s*["'])|(?:^|[{,])\s*(?:-\s+)?["']?(?:[\w.-]*(api[_-]?key|token|passw(or)?d|private[_-]?key)|(?:[\w.]*[_.-])?secret(?:[_-]?(?:access[_-]?)?key|[_-]?token)?)["']?\s*:\s*["']([^"'$]|\$\w))|AGE-SECRET-KEY-1|SOPS_AGE_KEY\s*[:=]|://[^/\s:@]+:(?:[^/\s@$]|\$\w)[^/\s@]*@'''
+
+[[rule]]
+id = "R-deps"
+why = "A new dependency adds code that nobody reviewed."
+# Package-source config redirects where every dependency comes from: Cargo [source] and
+# [registries], npm, pnpm and yarn registry and scope lines, and the hooks and binaries that
+# rewrite or resolve every package (.pnpmfile.cjs, bunfig.toml, .yarn plugins and releases).
+# Any change counts.
+paths = ["**/.cargo/config.toml", "**/.cargo/config", "**/.npmrc", "**/.yarnrc", "**/.yarnrc.yml", "**/.pnpmfile.cjs", "**/bunfig.toml", "**/.yarn/plugins/**", "**/.yarn/releases/**"]
+new_dependency = true
+
+[[rule]]
+id = "R-prod-write"
+why = "A write to production cannot be undone by a revert."
+capability = "prod-write"
+
+[[rule]]
+id = "R-weaken"
+why = "A change that loosens a gate weakens what verifies every later change."
+# risk-check adds the `weaken` capability when a base/head compare finds a loosened gate
+# (spec §8); its findings are the evidence.
+capability = "weaken"

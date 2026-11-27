@@ -1,0 +1,14 @@
+# Owners decide high-risk PRs, questions and budget raises (spec §8). risk-check reads this file
+# from the PR's base branch. `github` is the login whose approval on the head SHA counts.
+#
+# Bus factor: one owner is a bus-factor-1 risk. When the only owner is unavailable nothing that
+# needs an owner merges. List at least two owners, or a team (spec §16). A team alone may be
+# unreadable to sessions (it then counts no member), so also list one owner by login.
+
+[[owner]]
+github = "urbanisierung"
+
+
+# A team of the repo's org counts its members as owners once they can be read (spec §16):
+# [[owner]]
+# team = "<org>/<slug>"

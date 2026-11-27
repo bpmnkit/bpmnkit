@@ -1,0 +1,26 @@
+# Caps and budget (spec §5). Values and their evidence: docs/defaults.md. Only the owner raises
+# them: this file is R-gov, so a change needs an owner review on the head SHA.
+
+[sessions]
+max_depth = 2
+max_live_sessions = 4
+max_children = 3
+
+[waves]
+max_parallel = 6
+
+[turns]
+build = 100
+build_cap = 150
+review = 40
+fix_round = 40
+
+[models]
+read = "haiku"
+build = "sonnet"
+review = "sonnet"
+hard = "opus"
+
+[budget]
+daily_usd = 150
+per_task_usd = 25

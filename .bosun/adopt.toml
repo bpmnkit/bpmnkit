@@ -1,0 +1,71 @@
+# Written by `bosun adopt`; `bosun uninstall` reads it. Edit by hand only to drop a file from adopt's care.
+bosun_version = "0.25.0"
+dirs = [".bosun", "governance"]
+
+[[file]]
+path = ".bosun/approvers.toml"
+hash = "1aa81a80dedb699c"
+
+[[file]]
+path = ".bosun/bosun.toml"
+hash = "fa3afb8c3154492f"
+
+[[file]]
+path = ".bosun/fold-fragments.sh"
+hash = "37b5d6806c868533"
+
+[[file]]
+path = ".bosun/limits.toml"
+hash = "9fa8443885533d44"
+
+[[file]]
+path = ".bosun/pins.toml"
+hash = "dc8dafd426e4e8d3"
+
+[[file]]
+path = ".bosun/risk.toml"
+hash = "ef489e65cd7a28d5"
+
+[[file]]
+path = ".bosun/session-rules.toml"
+hash = "137bc95295756326"
+
+[[file]]
+path = ".bosun/version"
+hash = "27ca8c84cb21f792"
+
+[[file]]
+path = ".github/workflows/bosun.yml"
+hash = "292908473fdeb93e"
+
+[[file]]
+path = ".github/workflows/main-health.yml"
+hash = "ad3a23891a383582"
+
+[[file]]
+path = ".github/workflows/main-open.yml"
+hash = "bda5deede7a3cd89"
+
+[[file]]
+path = ".github/workflows/risk.yml"
+hash = "f3154bc07b350d73"
+
+[[file]]
+path = ".github/workflows/signer.yml"
+hash = "c3ec9c633d1528c6"
+
+[[file]]
+path = ".github/workflows/verdict.yml"
+hash = "2ad1c2e525115fd7"
+
+[[file]]
+path = "deny.toml"
+hash = "0740e8941d13ecd0"
+
+[[file]]
+path = "docs/setup-script.sh"
+hash = "26060681120f64ec"
+
+[[file]]
+path = "governance/owners.toml"
+hash = "7f526887f3f4856b"

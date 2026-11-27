@@ -1,0 +1,17 @@
+# The one source of the rust tool pins: bosun.yml, the CircleCI bosun-ok job and docs/setup-script.sh
+# read it (CI reads the base's copy). Plain `key = "value"` lines, no trailing comments. Owned by
+# the bosun channel: an update moves the pins. Move a pin with its checksums:
+# curl -fsSL <asset url> | sha256sum.
+[rust]
+# The toolchain when the repo has no rust-toolchain(.toml); a repo's file wins.
+fallback = "1.97"
+
+[nextest]
+version = "0.9.152"
+linux_x64_sha256 = "d039b43c3e0958441b6ad0a39c8884d018b3d2e8fb9928f209074b1100b5e17a"
+linux_arm64_sha256 = "ca1f81a5b86533eb45ab97e0064aa88e925e53aab9a698ca6331a7cad1f85f07"
+
+[cargo-deny]
+version = "0.20.2"
+linux_x64_sha256 = "9f12ed4c49936e09b48bf862b595cde2fe64fcbd9d74dfacac6131ca824c8d5f"
+linux_arm64_sha256 = "995c82be0defc7a025cae49a2aa2644ce8245c9a3318fc4103907c6a285e8c7d"

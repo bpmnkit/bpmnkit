@@ -1,0 +1,114 @@
+# Written by the bosun splice channel (owned).
+name: main-health
+
+# Keeps one bosun:main-red issue open while main fails (spec §9): it opens one when bosun's
+# gates (or the repo's own ci) fail on main or the weekly run fails, and closes it when main is
+# green again (with the repo's own ci, only when both workflows' latest main runs are green).
+# The report job runs the bosun release pinned on the default branch head (shell fallback while
+# the pin lacks the command); it never checks out PR code.
+on:
+  workflow_run:
+    workflows: [bosun]
+    types: [completed]
+    branches: [main]
+  # Weekly, not nightly: every push to main already runs the gates on all of main (CI minutes).
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+  statuses: write
+  # checks: read: the channel's weekly run calls bosun.yml, which reads check runs.
+  checks: read
+
+jobs:
+  # The gates of bosun.yml on all of main, weekly (`bosun gate <name> --all`), whatever the stacks are.
+  nightly:
+    if: github.event_name != 'workflow_run'
+    uses: ./.github/workflows/bosun.yml
+
+  report:
+    needs: nightly
+    # A fork PR from a branch named main also fires workflow_run: only pushes of this repo count.
+    if: >-
+      always() && (github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    steps:
+      # github.sha is the head of the default branch for workflow_run and schedule events.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      # Run the release pinned in .bosun/version (the same pinned-release steps as bosun.yml), so a
+      # broken main cannot stop this job. A pin that is `unreleased`, or a release without the
+      # command, runs the shell fallback below.
+      - name: pinned release
+        id: pin
+        run: |
+          v="$(tr -d '[:space:]' < .bosun/version 2>/dev/null || true)"
+          case "$v" in ""|unreleased) v="";; esac
+          # An exact x.y.z only: never a dist-tag, range, URL or path.
+          if [ -n "$v" ] && ! printf '%s' "$v" | grep -Eqx '[0-9]+\.[0-9]+\.[0-9]+'; then
+            echo "::error::.bosun/version must be 'unreleased' or an exact x.y.z, not '$v'"
+            exit 1
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      # If npm or the pin fails, the job still reaches the shell fallback.
+      - if: steps.pin.outputs.version != ''
+        name: install the pinned release
+        id: install
+        continue-on-error: true
+        env:
+          VERSION: ${{ steps.pin.outputs.version }}
+        run: |
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${VERSION}"
+          dir="$(cd "$(npm root -g)/@keelstackhq/bosun" && node -p "require('path').dirname(require.resolve('@keelstackhq/bosun-linux-x64/package.json'))")"
+          mkdir -p target/release
+          cp "$dir/bin/bosun" target/release/bosun
+          got="$(target/release/bosun --version)"
+          echo "$got"
+          test "$got" = "bosun ${VERSION}"
+      - name: release has `main-health`
+        id: has
+        env:
+          INSTALL: ${{ steps.install.outcome }}
+        run: |
+          if [ "$INSTALL" = success ] && [ -x target/release/bosun ] && target/release/bosun --help 2>&1 | grep -q main-health; then
+            echo "supported=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "supported=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::the pinned bosun has no main-health command yet; running the shell fallback"
+          fi
+      - if: steps.has.outputs.supported == 'true'
+        name: bosun main-health
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOSUN_REPO: ${{ github.repository }}
+          RESULT: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion || needs.nightly.result }}
+          RUN_URL: ${{ github.event.target_url || github.event.workflow_run.html_url || format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }}
+        run: ./target/release/bosun main-health --result "$RESULT" --run-url "$RUN_URL"
+      # Fallback: open or close the main-red issue in shell.
+      - if: steps.has.outputs.supported != 'true'
+        name: open or close the main-red issue (shell)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion || needs.nightly.result }}
+          RUN_URL: ${{ github.event.target_url || github.event.workflow_run.html_url || format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }}
+        run: |
+          repo="$GITHUB_REPOSITORY"
+          open=$(gh api "repos/$repo/issues?labels=bosun:main-red&state=open" --jq '.[0].number // empty')
+          if [ "$RESULT" = "success" ]; then
+            if [ -n "$open" ]; then
+              gh issue close "$open" --repo "$repo" --comment "main is green again: $RUN_URL"
+            fi
+          elif [ "$RESULT" = "failure" ] && [ -z "$open" ]; then
+            gh label create bosun:main-red --repo "$repo" --color B60205 \
+              --description "main is red; only mainfix work continues" 2>/dev/null || true
+            gh issue create --repo "$repo" --label bosun:main-red --title "main is red" \
+              --body "A run on main failed: $RUN_URL. Feature work pauses; fix it with a bosun:kind/mainfix PR (spec §9)."
+          fi

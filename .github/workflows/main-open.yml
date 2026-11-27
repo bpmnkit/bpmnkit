@@ -1,0 +1,115 @@
+# Written by the bosun splice channel (owned).
+name: main-open
+
+# Judges the required `main-open` status (spec §9): while an issue labelled bosun:main-red is open,
+# only PRs labelled bosun:kind/mainfix may pass. `bosun gate main-open` posts the status itself.
+#
+# pull_request_target runs this file from the base branch, so a PR cannot rewrite the job that
+# judges it. The job never checks out or runs PR-head code: it installs the bosun release pinned
+# in the base commit's .bosun/version (shell fallback while the pin lacks the command) and reads the PR through the API only. Event data reaches `run:` lines through `env:`
+# only, never as `${{ }}` in a script. The job is named `judge`, not `main-open`, so it does not
+# clash with the commit status of that name.
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled, ready_for_review]
+
+# A label event that the job skips gets a group of its own: it must never cancel or replace the
+# run that judges a new head.
+concurrency:
+  group: >-
+    main-open-${{ github.event.pull_request.number }}${{
+    (github.event.action == 'labeled' || github.event.action == 'unlabeled') &&
+    github.event.label.name != 'bosun:kind/mainfix' && format('-skip-{0}', github.run_id) || '' }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  statuses: write
+
+jobs:
+  judge:
+    # Not for a draft (no runner starts; `ready_for_review` judges it), except a mainfix label
+    # change, which judges a draft too so an old verdict never outlives the label. Other label
+    # events skip before a runner starts.
+    if: >-
+      (github.event.pull_request.draft == false &&
+      github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
+      github.event.label.name == 'bosun:kind/mainfix'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      # Run the release pinned in .bosun/version (the same pinned-release steps as bosun.yml), so a
+      # broken main cannot stop this job. A pin that is `unreleased`, or a release without the
+      # command, runs the shell fallback below.
+      - name: pinned release
+        id: pin
+        run: |
+          v="$(tr -d '[:space:]' < .bosun/version 2>/dev/null || true)"
+          case "$v" in ""|unreleased) v="";; esac
+          # An exact x.y.z only: never a dist-tag, range, URL or path.
+          if [ -n "$v" ] && ! printf '%s' "$v" | grep -Eqx '[0-9]+\.[0-9]+\.[0-9]+'; then
+            echo "::error::.bosun/version must be 'unreleased' or an exact x.y.z, not '$v'"
+            exit 1
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      # If npm or the pin fails, the job still reaches the shell fallback.
+      - if: steps.pin.outputs.version != ''
+        name: install the pinned release
+        id: install
+        continue-on-error: true
+        env:
+          VERSION: ${{ steps.pin.outputs.version }}
+        run: |
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${VERSION}"
+          dir="$(cd "$(npm root -g)/@keelstackhq/bosun" && node -p "require('path').dirname(require.resolve('@keelstackhq/bosun-linux-x64/package.json'))")"
+          mkdir -p target/release
+          cp "$dir/bin/bosun" target/release/bosun
+          got="$(target/release/bosun --version)"
+          echo "$got"
+          test "$got" = "bosun ${VERSION}"
+      - name: release has `gate main-open`
+        id: has
+        env:
+          INSTALL: ${{ steps.install.outcome }}
+        run: |
+          if [ "$INSTALL" = success ] && [ -x target/release/bosun ] && target/release/bosun gate --help 2>&1 | grep -q -- '--pr'; then
+            echo "supported=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "supported=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::the pinned bosun has no gate main-open command yet; running the shell fallback"
+          fi
+      - if: steps.has.outputs.supported == 'true'
+        name: bosun gate main-open
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOSUN_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        # Exit 4 (halted) is the verdict, carried by the status; only errors fail the job.
+        run: ./target/release/bosun gate main-open --pr "$PR" || test $? -eq 4
+      # Fallback: the same decision in shell, posted as the same `main-open` status. The head sha
+      # comes from the API and is only a status target; PR code is never fetched.
+      # The status carries the verdict, so the fallback exits 0 like the bosun path.
+      - if: steps.has.outputs.supported != 'true'
+        name: main is open, or this is a mainfix (shell)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          sha=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq '.head.sha')
+          red=$(gh api "repos/$GITHUB_REPOSITORY/issues?labels=bosun:main-red&state=open" --jq 'map(.number) | join(" ")')
+          state=success; desc="main is open"
+          if [ -n "$red" ]; then
+            case ",$LABELS," in
+              *",bosun:kind/mainfix,"*) desc="main is red (#$red); mainfix passes";;
+              *) state=failure; desc="main is red (#$red): only mainfix PRs may merge";;
+            esac
+          fi
+          echo "$state: $desc"
+          gh api "repos/$GITHUB_REPOSITORY/statuses/$sha" -f state="$state" -f context=main-open -f description="$desc" >/dev/null
