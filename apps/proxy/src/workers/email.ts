@@ -73,7 +73,8 @@ export async function handleFetch(job: WorkerJob): Promise<Record<string, unknow
 						subject: env.subject ?? "",
 						from: env.from?.[0]?.address ?? "",
 						to: env.to?.[0]?.address ?? "",
-						date: env.date?.toISOString() ?? "",
+						// imapflow 2 types the envelope date as `string | Date`.
+						date: env.date instanceof Date ? env.date.toISOString() : (env.date ?? ""),
 						body,
 					})
 				}
