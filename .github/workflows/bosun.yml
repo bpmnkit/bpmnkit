@@ -107,7 +107,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD: ${{ github.event.pull_request.head.sha }}
-          CHECK: ci-ok
+          CHECK: bosun-ok
         run: |
           mode=run
           prev="$(gh api "repos/$GITHUB_REPOSITORY/commits/$HEAD/check-runs?check_name=$CHECK&filter=all&per_page=100" \
@@ -432,7 +432,13 @@ jobs:
         name: bosun gates
         id: gates
         env:
-          GATES: test-integrity ci-minutes deps fmt lint test
+          # The repo's own ci.yml already runs fmt, lint, test and deps; only test-integrity is
+          # unique to bosun (with ci-minutes). So a pull request runs just those and relies on the repo's own ci-ok
+          # for the rest; if that CI lacks one (cargo-deny, say), set the repo variable
+          # BOSUN_ALL_GATES to '1' to run all of them on pull requests too. Every other event (push
+          # to main, merge queue, the weekly run main-health calls, where github.event_name is
+          # the caller's, e.g. schedule) runs every gate.
+          GATES: ${{ (vars.BOSUN_ALL_GATES == '1' || github.event_name != 'pull_request') && 'test-integrity ci-minutes deps fmt lint test' || 'test-integrity ci-minutes' }}
           # An edit after a success runs test-integrity only (see the edit step).
           ONLY: ${{ steps.plan.outputs.only }}
           BOSUN_SHA256: ${{ steps.bin.outputs.sha256 }}
@@ -523,7 +529,7 @@ jobs:
   # Then it installs the PR's dependencies and runs the gates that run PR code (fmt, lint,
   # test). Nothing it does reaches bosun-trusted, which finished first and restores no cache
   # this job saves.
-  ci-ok:
+  bosun-ok:
     needs: bosun-trusted
     # always(), not !cancelled(): a cancelled run would skip this job, and a skipped required
     # check counts as passed. The first step fails on a draft and unless bosun-trusted succeeded.

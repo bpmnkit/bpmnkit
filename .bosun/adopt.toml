@@ -38,7 +38,7 @@ hash = "27ca8c84cb21f792"
 
 [[file]]
 path = ".github/workflows/bosun.yml"
-hash = "292908473fdeb93e"
+hash = "e28d377fa4512e7a"
 
 [[file]]
 path = ".github/workflows/main-health.yml"

@@ -1,6 +1,6 @@
 # bpmnkit's repository setup for hoist. Apply with `hoist apply --area github` (admin token).
 [github]
 # bosun's gates; status mode (no gate App), so plain contexts.
-required_checks = ["ci-ok", "risk-check", "review-verdict", "main-open"]
+required_checks = ["ci-ok", "bosun-ok", "risk-check", "review-verdict", "main-open"]
 merge_queue = false
 allow_auto_merge = true

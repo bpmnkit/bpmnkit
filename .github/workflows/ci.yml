@@ -322,3 +322,21 @@ jobs:
 
       - name: Test
         run: cargo +"$MSRV" test --workspace --locked
+
+  # The required aggregate (bosun's `ci-ok`). always(): a skipped required check counts as
+  # passed, so it runs even when a job above was skipped and fails on a draft or any failure.
+  ci-ok:
+    name: ci-ok
+    if: always()
+    needs: [generated, zeebe-check, changeset-check, ci, conformance-rs, msrv-rs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All jobs passed
+        env:
+          DRAFT: ${{ github.event.pull_request.draft == true }}
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          if [ "$DRAFT" = true ]; then echo "::error::draft: CI not run, mark ready for review"; exit 1; fi
+          for r in $RESULTS; do
+            case "$r" in success | skipped) ;; *) echo "::error::a CI job ended $r"; exit 1 ;; esac
+          done
