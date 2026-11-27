@@ -117,7 +117,8 @@ export async function dryRun(
 		})
 	}
 
-	const test = await createProcessTest({ bpmn: definitions })
+	// Mocks return no variables, so a condition on one is null: take the default flow then.
+	const test = await createProcessTest({ bpmn: definitions, lenientConditions: true })
 	const steps: DryRunStep[] = []
 	try {
 		const response = options.response ?? DEFAULT_RESPONSE

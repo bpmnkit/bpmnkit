@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-26 — Engine: gateway and join semantics (#334–#337)
+
+Camunda 8 parity in `@bpmnkit/engine`. Inclusive and complex gateways fail like exclusive ones when no condition is true and there is no default flow (#334). A gateway condition that is not boolean (null, unset variable, string, number) fails the instance: `Condition of flow "f" at gateway "gw" must evaluate to BOOLEAN, but was NULL` (#337). A non-boolean multi-instance `completionCondition` fails the same way; `lenientConditions` (engine and `createProcessTest` option, used by `dryRun`) reads them as false. A parallel join holding only some tokens keeps its scope open, so the instance stays `active`; `waitingJoins` on `ProcessInstance`/`ProcessRun`, and `toHaveCompleted` names the waiting join (#335). Missing `incoming`/`outgoing` are derived from sequence flows in the engine's element table, leaving the parsed model untouched (#336). Regression tests for each.
+
 ## 2026-11-26 — FEEL: `sum([])` is null (#327)
 
 `sum` of an empty list (or no arguments) now returns null, as DMN 1.5 Table 75 and Camunda 8 do; it returned 0, so `sum(items) > 100` on an empty list silently took a branch. TS and the Rust twin both changed. Regression tests (vitest, Rust unit) and conformance `lists/61`–`lists/64`.
