@@ -1,5 +1,13 @@
 # @bpmnkit/feel
 
+## 2.1.1
+
+### Patch Changes
+
+- b8999e6: A `{` in a regex that does not start a counted repetition (`{}`, `{,2}`, `a{a}`) makes `matches`, `replace` and `extract` return null, as in Java and the Rust twin; whitespace inside `{ 2 , 3 }` is ignored. Days-time duration seconds are now split, added and subtracted exactly: `string(76.542 * @"PT36H")` is `P114DT19H30M43.2S`, and time/date-time differences and time shifts keep fractional seconds exact.
+- d323491: `list contains` compares lists, contexts and dates by value, like `index of` and the Rust evaluator: `list contains([[1]], [1])` is now `true` (was `false`).
+- 8711af9: `sum([])` (and `sum()`) now returns null, as DMN 1.5 (Table 75) and Camunda 8 do, instead of 0. `sum([0])` is still 0.
+
 ## 2.1.0
 
 ### Minor Changes

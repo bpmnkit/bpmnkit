@@ -1,5 +1,15 @@
 # @bpmnkit/ai-server
 
+## 0.8.2
+
+### Patch Changes
+
+- 1044167: Update `nodemailer` to 10 and `imapflow` to 2 to pick up fixes for high-severity advisories (addressparser denial of service, `raw` option file access, OAuth2 TLS validation, `ip-address` via `socks`).
+- Updated dependencies [edb874a]
+- Updated dependencies [462a0f0]
+  - @bpmnkit/engine@1.6.0
+  - @bpmnkit/core@1.18.4
+
 ## 0.8.1
 
 ### Patch Changes
