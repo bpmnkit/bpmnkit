@@ -1,5 +1,12 @@
 # @bpmnkit/demo
 
+## 0.1.26
+
+### Patch Changes
+
+- Updated dependencies [462a0f0]
+  - @bpmnkit/core@1.18.4
+
 ## 0.1.25
 
 ### Patch Changes

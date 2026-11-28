@@ -328,7 +328,7 @@ checksum = "f781dba93de3a5ef6dc5b17c9958b208f6f3f021623b360fb605ea51ce443f10"
 
 [[package]]
 name = "bpmnkit-bpmn"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-spec",
@@ -339,7 +339,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-compat"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-feel",
@@ -351,7 +351,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-dmn"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-xml",
@@ -361,7 +361,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-feel"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "bpmnkit-spec",
  "chrono",
@@ -374,11 +374,11 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-spec"
-version = "0.9.0"
+version = "0.9.1"
 
 [[package]]
 name = "bpmnkit-xml"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "indexmap 2.14.2",
  "quick-xml",

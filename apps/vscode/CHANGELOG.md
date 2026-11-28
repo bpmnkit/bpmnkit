@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.25
+
+### Patch Changes
+
+- Updated dependencies [edb874a]
+- Updated dependencies [462a0f0]
+  - @bpmnkit/engine@1.6.0
+  - @bpmnkit/core@1.18.4
+
 ## 0.5.24
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # @bpmnkit/engine
 
+## 1.6.0
+
+### Minor Changes
+
+- edb874a: Gateway and join semantics match Camunda 8 (#334–#337). Inclusive and complex gateways fail when no condition is true and there is no default flow. A gateway or multi-instance completion condition that is not a boolean fails the instance (`lenientConditions` restores the old reading as false; `dryRun` uses it). A parallel join still waiting for tokens keeps the instance `active`, listed in the new `waitingJoins`. Missing `incoming`/`outgoing` are derived from the sequence flows.
+
+### Patch Changes
+
+- Updated dependencies [b8999e6]
+- Updated dependencies [d323491]
+- Updated dependencies [8711af9]
+- Updated dependencies [462a0f0]
+  - @bpmnkit/feel@2.1.1
+  - @bpmnkit/core@1.18.4
+
 ## 1.5.0
 
 ### Minor Changes

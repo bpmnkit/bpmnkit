@@ -1,5 +1,11 @@
 # @crates/bpmnkit-lint
 
+## 0.9.1
+
+### Patch Changes
+
+- 462a0f0: Lint `data-flow` no longer warns on connector tasks: static input values (`GET`, `noAuth`) are not read as undefined variables, and variables set by `resultExpression` or a script's `resultVariable` count as set.
+
 ## 0.9.0
 
 ## 0.8.0

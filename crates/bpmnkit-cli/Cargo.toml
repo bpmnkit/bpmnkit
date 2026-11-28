@@ -25,10 +25,10 @@ name = "bpmnkit"
 path = "src/main.rs"
 
 [dependencies]
-bpmnkit-codegen = { path = "../bpmnkit-codegen", version = "0.9.0" }
-bpmnkit-connector-runtime = { path = "../bpmnkit-connector-runtime", version = "0.9.0" }
-bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.9.0" }
-bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.9.0" }
+bpmnkit-codegen = { path = "../bpmnkit-codegen", version = "0.9.1" }
+bpmnkit-connector-runtime = { path = "../bpmnkit-connector-runtime", version = "0.9.1" }
+bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.9.1" }
+bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.9.1" }
 bpmnkit-bpmn = { workspace = true }
 bpmnkit-compat = { workspace = true }
 bpmnkit-connectors = { workspace = true }
