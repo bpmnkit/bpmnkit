@@ -118,7 +118,7 @@ const service: ApiService = {"id":"plaid","name":"Plaid API","baseUrl":"https://
 	{"method":"POST","path":"/protect/cash_advance/feedback/upload","summary":"Upload a file of cash advance feedback","body":["feedback_type*","file*"]},
 	{"method":"POST","path":"/protect/compute","summary":"Compute Protect Trust Index scores and subscores","body":["model*","user*","client_id","secret","model_inputs"]},
 	{"method":"POST","path":"/business_verification/get","summary":"Get a Business Verification","body":["business_verification_id*","secret","client_id"]},
-	{"method":"POST","path":"/business_verification/create","summary":"Create a Business Verification","body":["client_user_id*","business*","client_id","secret"]},
+	{"method":"POST","path":"/business_verification/create","summary":"Create a Business Verification","body":["client_user_id*","business*","options","client_id","secret"]},
 	{"method":"POST","path":"/processor/auth/get","summary":"Retrieve Auth data","body":["processor_token*","client_id","secret"]},
 	{"method":"POST","path":"/processor/account/get","summary":"Retrieve the account associated with a processor token","body":["processor_token*","client_id","secret"]},
 	{"method":"POST","path":"/processor/investments/holdings/get","summary":"Retrieve Investment Holdings","body":["processor_token*","client_id","secret"]},
