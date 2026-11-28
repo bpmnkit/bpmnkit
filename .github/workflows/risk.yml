@@ -1,0 +1,94 @@
+# Written by the bosun splice channel (owned).
+name: risk
+
+# Posts the required `risk-check` status (spec §8, D32). It runs again on a PR comment
+# `/bosun approve <head sha>` (an owner's approval) or `/bosun recheck` (a repo owner, member or
+# collaborator: it only re-judges; anyone else's runs no job, which limits CI minutes only, since
+# an outsider's `/bosun approve` still re-judges, harmlessly). A recheck from an owner with private
+# org membership or from an app (author_association NONE) is dropped too: re-run the workflow.
+# An owner's GitHub review is read on the next run (a push, `/bosun recheck` or a re-run): there
+# is no review trigger, because `pull_request_review` runs the PR's own copy of this file, with
+# this token, so a PR could rewrite the job and post its own `risk-check`. So a withdrawal
+# changes nothing by itself: to withdraw, request changes or dismiss the approval, then comment
+# `/bosun recheck` (or re-run the risk workflow; it re-judges and fails); turning off auto-merge
+# also stops a merge.
+#
+# pull_request_target and issue_comment run this file from the base (default) branch, so a PR
+# cannot rewrite the job that judges it. The job never checks out or runs PR-head code: it
+# installs the bosun release pinned in the PR's base commit (on a comment: the default branch)
+# and reads the PR through the API only. Event data reaches `run:` lines through `env:` only, never as `${{ }}` in a script.
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+  issue_comment:
+    types: [created]
+  # The base moved: re-judge every open PR against main, since a verdict is stale once main
+  # changes (risk rules, plan, owner approvals read from the base). One job, one run per push.
+  push:
+    branches: [main]
+
+# A comment that is neither an approval nor a recheck by the repo's people gets a group of its
+# own: its run is skipped and must never cancel the run that judges a new head.
+concurrency:
+  group: >-
+    risk-${{ github.event.pull_request.number || github.event.issue.number || 'main' }}-${{
+    (github.event_name == 'issue_comment' && !contains(github.event.comment.body, '/bosun approve')
+    && !(contains(github.event.comment.body, '/bosun recheck') &&
+    contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)))
+    && github.run_id || 'judge' }}
+  cancel-in-progress: true
+
+# Least privilege: statuses for the verdict; pull-requests: write only because risk-check writes
+# the Risk note into the PR body (spec §8); read for the base files, comments and linked issues.
+permissions:
+  contents: read
+  issues: read
+  pull-requests: write
+  statuses: write
+
+jobs:
+  risk:
+    # On a comment: only PR comments that ask for an approval (open to all: bosun counts only an
+    # owner's) or a recheck from the repo's owners, members and collaborators (a recheck only
+    # re-judges; the filter limits CI minutes only). On the PR events: not for a draft (no runner
+    # starts; `ready_for_review` judges it). A comment on a draft still judges, as before.
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request_target' && github.event.pull_request.draft == false) ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && (contains(github.event.comment.body, '/bosun approve') ||
+      (contains(github.event.comment.body, '/bosun recheck') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+          persist-credentials: false
+      # The bosun release pinned on the base branch (on a comment: the default branch).
+      - name: install the pinned bosun
+        run: |
+          v="$(tr -d '[:space:]' < .bosun/version)"
+          printf '%s' "$v" | grep -Eqx '[0-9]+\.[0-9]+\.[0-9]+' || { echo "::error::bad .bosun/version '$v'"; exit 1; }
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${v}"
+          bosun --version
+      - name: bosun risk-check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOSUN_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+        # Exit 5 (needs-human) is the verdict, carried by the status; only errors fail the job.
+        # On a push to main: every open PR against main is judged again (the base moved).
+        run: |
+          if [ "$EVENT" = "push" ]; then
+            prs="$(gh api --paginate "repos/$BOSUN_REPO/pulls?state=open&base=main&per_page=100" --jq '.[] | select(.draft | not) | .number')"
+            rc=0
+            for n in $prs; do
+              bosun risk-check "$n" || test $? -eq 5 || rc=1
+            done
+            exit $rc
+          else
+            bosun risk-check "$PR" || test $? -eq 5
+          fi

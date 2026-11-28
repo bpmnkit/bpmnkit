@@ -1,3 +1,4 @@
+# ci-minutes: allow concurrency releases must not cancel a publish in progress
 name: Release desktop app
 
 # Builds the Tauri desktop app for Linux, Windows and macOS (Apple silicon and Intel) and

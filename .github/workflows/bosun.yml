@@ -1,0 +1,669 @@
+name: bosun
+
+# Written by the bosun splice channel (owned: `splice update --channel bosun` replaces it, so a
+# local edit is drift). Every gate runs `bosun gate <name>`; change a gate's command in
+# .bosun/profiles/<profile>.toml. The repo's own ci.yml, if any, is never touched.
+#
+# CI minutes (docs/ci-minutes.md in keelstackhq/bosun): a private repo pays for every job, each
+# rounded up to a whole minute, so a rust stack runs everything in ONE job that carries the
+# required check's name. A ts-pnpm (or mixed) stack runs two: bosun-trusted runs the gates that
+# run no PR code, and the required check's job installs and runs the PR's code only after that
+# passed (see bosun-trusted). A draft PR skips the heavy jobs (job-level `if:`) and fails the
+# required check at once, never skipped (a skipped required check counts as passed);
+# `ready_for_review` runs everything. After a PR body or title edit only test-integrity (which reads the body) runs again on a head that
+# passed. Run the same gates locally first: AGENTS.md has the one command.
+on:
+  pull_request:
+    branches: [main]
+    # `edited` covers a stacked PR being retargeted to main and a new `snapshot-change:` line.
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+  push:
+    branches: [main]
+  merge_group:
+  # main-health runs the same gates weekly on all of main.
+  workflow_call:
+
+# One group per PR. A push (or a retarget) cancels the older run of the PR. A body or title edit
+# never cancels: it waits for the running run, then keeps that run's file gates when it passed
+# and runs test-integrity on its own body (else every gate). So an edit never leaves a cancelled
+# run and a red aggregate check behind.
+concurrency:
+  group: bosun-${{ github.event.pull_request.number || github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && !(github.event.action == 'edited' && !github.event.changes.base) }}
+
+# checks: read lets a body edit read the head's earlier result.
+permissions:
+  contents: read
+  checks: read
+  # step `task allow list` reads the PR body and its linked task.
+  issues: read
+  pull-requests: read
+
+# A PR's .cargo/config.toml must not swap the compiler cargo runs (a rustc wrapper or
+# build.rustc would run PR code in rust-cache and the gates before lint): cargo takes these over
+# its config files. The rust toolchain step refuses a toolchain file that names a path.
+env:
+  RUSTC: rustc
+  RUSTC_WRAPPER: ""
+  RUSTC_WORKSPACE_WRAPPER: ""
+  CARGO_BUILD_RUSTC_WRAPPER: ""
+  CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER: ""
+
+jobs:
+  # ts-pnpm (and mixed) stacks: two jobs, so that no PR code (install scripts, a pnpmfile,
+  # patches, dependency names, workspace settings, cargo or npm config) runs before or beside the
+  # gates that must not trust it. This job runs test-integrity and deps: it never installs the
+  # PR's dependencies and restores no cache, and pnpm runs here only for the deps gate's audit,
+  # which reads the PR's pnpm-lock.yaml as data while every pnpm config file is the base's. The
+  # required check's job below runs fmt, lint and test (PR code) only after this job passed.
+  # Read-only token, no secrets (both jobs).
+  bosun-trusted:
+    # Not for a draft: no runner starts (CI minutes); `ready_for_review` runs it.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Defence in depth: the pnpmfile here is the base's, and no pnpm call loads it; pnpm never
+      # switches to another release (packageManager, devEngines). Both env spellings (pnpm 11
+      # reads pnpm_config_*).
+      npm_config_ignore_pnpmfile: "true"
+      pnpm_config_ignore_pnpmfile: "true"
+      npm_config_manage_package_manager_versions: "false"
+      pnpm_config_manage_package_manager_versions: "false"
+    outputs:
+      version: ${{ steps.pin.outputs.version }}
+      sha256: ${{ steps.bin.outputs.sha256 }}
+      # The gates the required check's job runs; empty: none (an edit, docs only, own_ci).
+      pr_gates: ${{ steps.gates.outputs.pr_gates }}
+      # The ts-pnpm stack directories (step `ts-pnpm stack paths`).
+      ts_path: ${{ steps.stack.outputs.path }}
+      ts_paths: ${{ steps.stack.outputs.paths }}
+      ts_lock: ${{ steps.stack.outputs.lock }}
+      rust: ${{ steps.toolchain.outputs.channel }}
+      rust_file: ${{ steps.toolchain.outputs.file }}
+      rust_fallback: ${{ steps.pins.outputs.rust_fallback }}
+      nextest: ${{ steps.pins.outputs.nextest }}
+      deny: ${{ steps.pins.outputs.deny }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # Docs-only fast path (pull requests only): when every changed file is a *.md under docs/ or
+      # plans/ or at the root (not README.md), no gate runs and the check passes. Not for the
+      # ts-pnpm stack: its fmt gate (prettier) checks Markdown too, so docs_only is always false.
+      # Any other event, an empty diff or a diff that cannot be computed gives docs_only=false
+      # (fail closed). risk.yml and verdict.yml are separate workflows and still judge such a PR.
+      - id: diff
+        run: echo "docs_only=false" >> "$GITHUB_OUTPUT"
+
+      # A body or title edit that did not retarget the PR changes no file, so the gates that read
+      # only files keep the result of the head's newest finished run of this check (GitHub
+      # Actions, not this run). test-integrity also reads the PR body, and that run may have read
+      # another body (an edit can replace a pending run), so after a success it runs again on the
+      # body of this event (mode=integrity). After anything else, or none, every gate runs.
+      - if: github.event.action == 'edited' && !github.event.changes.base
+        id: edit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          CHECK: bosun-ok
+        run: |
+          mode=run
+          prev="$(gh api "repos/$GITHUB_REPOSITORY/commits/$HEAD/check-runs?check_name=$CHECK&filter=all&per_page=100" \
+            --jq "[.check_runs[] | select(.app.slug == \"github-actions\" and .status == \"completed\" and (.details_url | contains(\"/runs/$GITHUB_RUN_ID/\") | not))] | max_by(.id) | .conclusion // \"\"" || true)"
+          if [ "$prev" = success ]; then mode=integrity; fi
+          echo "the head's earlier $CHECK: ${prev:-none}; mode=$mode"
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+      # work: run the pinned bosun and gates; setup: install the stack's tools; only: the gates.
+      - id: plan
+        env:
+          DRAFT: ${{ github.event.pull_request.draft || false }}
+          DOCS_ONLY: ${{ steps.diff.outputs.docs_only }}
+          MODE: ${{ steps.edit.outputs.mode || 'run' }}
+        run: |
+          if [ "$DRAFT" = true ]; then echo "::error::draft: CI not run, mark ready for review"; exit 1; fi
+          if [ "$DOCS_ONLY" = true ]; then
+            echo "work=false" >> "$GITHUB_OUTPUT"; echo "docs only: no gate runs"
+          elif [ "$MODE" = integrity ]; then
+            { echo "work=true"; echo "setup=false"; echo "only=test-integrity"; } >> "$GITHUB_OUTPUT"
+            echo "this head passed the file gates; test-integrity runs on this body"
+          else
+            { echo "work=true"; echo "setup=true"; } >> "$GITHUB_OUTPUT"
+          fi
+      # The gates run the bosun release pinned in the base commit's .bosun/version, so a change to
+      # the pin takes effect only after it merges. (A change to this file runs at once: R-ci.)
+      - if: steps.plan.outputs.work == 'true'
+        name: pinned release of the base
+        id: pin
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          v=""
+          if [ -n "$BASE" ]; then v="$(git show "$BASE:.bosun/version" 2>/dev/null | tr -d '[:space:]' || true)"; fi
+          if [ -z "$v" ]; then
+            # No base (weekly run), or a base with no bosun yet (the setup PR): this commit's pin.
+            v="$(tr -d '[:space:]' < .bosun/version)"
+            if [ "$EVENT" = pull_request ]; then
+              echo "::warning::the base pins no bosun release yet; using this change's pin $v (setup PR)"
+            fi
+          fi
+          # An exact x.y.z only: never a dist-tag, range, URL or path.
+          printf '%s' "$v" | grep -Eqx '[0-9]+\.[0-9]+\.[0-9]+' || {
+            echo "::error::.bosun/version must be an exact x.y.z, not '$v'"
+            exit 1
+          }
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      - if: steps.plan.outputs.work == 'true'
+        name: install the pinned release
+        id: bin
+        env:
+          VERSION: ${{ steps.pin.outputs.version }}
+        run: |
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${VERSION}"
+          dir="$(cd "$(npm root -g)/@keelstackhq/bosun" && node -p "require('path').dirname(require.resolve('@keelstackhq/bosun-linux-x64/package.json'))")"
+          mkdir -p "$RUNNER_TEMP/bin"
+          cp "$dir/bin/bosun" "$RUNNER_TEMP/bin/bosun"
+          got="$("$RUNNER_TEMP/bin/bosun" --version)"
+          echo "$got"
+          test "$got" = "bosun ${VERSION}"
+          # The gates check the binary against this hash before each gate.
+          echo "sha256=$(sha256sum "$RUNNER_TEMP/bin/bosun" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      # The pin a change sets must be a published release that reports its own version.
+      - if: steps.plan.outputs.work == 'true'
+        name: the pinned release installs and reports its version
+        env:
+          BASE_VERSION: ${{ steps.pin.outputs.version }}
+        run: |
+          v="$(tr -d '[:space:]' < .bosun/version)"
+          printf '%s' "$v" | grep -Eqx '[0-9]+\.[0-9]+\.[0-9]+' || {
+            echo "::error::.bosun/version must be an exact x.y.z, not '$v'"
+            exit 1
+          }
+          if [ "$v" = "$BASE_VERSION" ]; then echo "same pin as the base: installed above"; exit 0; fi
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${v}"
+          got="$(bosun --version)"
+          echo "$got"
+          test "$got" = "bosun ${v}"
+      # Before anything runs rustc, cargo or the stack's tools (rust-cache included).
+      - if: steps.plan.outputs.work == 'true'
+        name: the base's config for the gates
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+        run: |
+          case "$BASE" in ""|0000000000000000000000000000000000000000) BASE="$GITHUB_SHA";; esac
+          # The gates use the base commit's copies of the files that decide what runs: .bosun/ (the gate
+          # commands are in its profiles), every .cargo directory (aliases, includes, rustc wrappers)
+          # every rust-toolchain(.toml) (a path would run a compiler from the PR), every .npmrc
+          # (node-options would load PR code into each pnpm call), every .pnpmfile and every
+          # deny.toml (cargo deny's policy). Files the base
+          # lacks are deleted, also when the PR made the path a symlink. A PR's changes to them take
+          # effect after it merges; they are R-gov or R-ci, so the owner sees them.
+          pat='(^|/)\.cargo(/|$)|(^|/)rust-toolchain(\.toml)?$|(^|/)\.npmrc$|(^|/)\.pnpmfile\.[cm]?js$|(^|/)\.?deny(\.exceptions)?\.toml$|^\.bosun(/|$)'
+          if ! git cat-file -e "$BASE:.bosun/version" 2>/dev/null; then
+            echo "::warning::the base has no .bosun yet (setup PR): this change's .bosun is used"
+            pat='(^|/)\.cargo(/|$)|(^|/)rust-toolchain(\.toml)?$|(^|/)\.npmrc$|(^|/)\.pnpmfile\.[cm]?js$|(^|/)\.?deny(\.exceptions)?\.toml$'
+          fi
+          changed="$(git diff --name-only -z "$BASE" HEAD | { grep -zE "$pat" || true; } | tr '\0' ' ')"
+          if [ -n "$changed" ]; then
+            echo "::notice::this change edits ${changed}; its gates run with the base's copies (they apply after merge)"
+          fi
+          git ls-tree -r -z --name-only HEAD | { grep -zE "$pat" || true; } | while IFS= read -r -d '' p; do
+            rm -rf -- "$p"
+          done
+          top="$(pwd -P)"
+          git ls-tree -r -z --name-only "$BASE" | { grep -zE "$pat" || true; } | while IFS= read -r -d '' p; do
+            case "$(realpath -m -- "$(dirname -- "$p")")" in
+              "$top"|"$top"/*) ;;
+              *) echo "::error::$p: its directory links outside the checkout"; exit 1 ;;
+            esac
+            mkdir -p -- "$(dirname -- "$p")"
+            git show "$BASE:$p" > "$p"
+          done
+      # ts-pnpm stacks: their directories come from the base's .bosun/bosun.toml, where the gates
+      # run (an owner may have moved a stack since the render), never from the render alone, and
+      # nothing is created in the checkout. `path`: the first with a pnpm-lock.yaml (its
+      # packageManager names pnpm); `lock`: true when one has a lockfile (none: a new repo).
+      - if: steps.plan.outputs.work == 'true'
+        name: ts-pnpm stack paths
+        id: stack
+        run: |
+          # The ts-pnpm stacks of .bosun/bosun.toml (the base's here: the gates run in them).
+          paths=""; first=""; sect=""; p=""; prof=""
+          cfg=.bosun/bosun.toml; [ -f "$cfg" ] || cfg=/dev/null
+          top="$(pwd -P)"
+          add() {
+            if [ "$sect" = stack ] && [ "$prof" = ts-pnpm ]; then
+              p="${p:-.}"
+              if ! [[ "$p" =~ ^[A-Za-z0-9._/-]+$ ]] || [[ "$p" == /* ]] || [[ "/$p/" == */../* ]]; then
+                echo "::error::.bosun/bosun.toml: stack path '$p' must be a plain relative path"; exit 1
+              fi
+              case "$(realpath -m -- "$p")" in
+                "$top"|"$top"/*) ;;
+                *) echo "::error::.bosun/bosun.toml: stack path '$p' links outside the checkout"; exit 1 ;;
+              esac
+              paths="$paths $p"
+              if [ -z "$first" ] && [ -f "$p/pnpm-lock.yaml" ]; then first="$p"; fi
+            fi
+            p=""; prof=""
+          }
+          q="[\"']"; v="[^\"']*"; w='[[:space:]]*'
+          while IFS= read -r l || [ -n "$l" ]; do
+            if [[ "$l" =~ ^$w\[ ]]; then
+              add
+              if [[ "$l" =~ ^$w\[\[${w}stack$w\]\]$w(#.*)?$ ]]; then sect=stack; else sect=""; fi
+            elif [[ "$l" =~ ^$w(path|profile)$w=$w$q($v)$q$w(#.*)?$ ]]; then
+              if [ "${BASH_REMATCH[1]}" = path ]; then p="${BASH_REMATCH[2]}"; else prof="${BASH_REMATCH[2]}"; fi
+            fi
+          done < "$cfg"
+          add
+          paths="${paths# }"
+          if [ -z "$paths" ] && grep -q ts-pnpm "$cfg"; then
+            echo "::warning::.bosun/bosun.toml names ts-pnpm, but no [[stack]] table with plain path = \"...\" and profile = \"ts-pnpm\" lines was read (inline tables and quoted keys are not supported): the pnpm steps are skipped"
+          fi
+          if [ -n "$first" ]; then lock=true; else lock=false; fi
+          { echo "paths=$paths"; echo "path=$first"; echo "lock=$lock"; } >> "$GITHUB_OUTPUT"
+      # The tool pins: .bosun/pins.toml, the base's copy (step `the base's config for the gates`,
+      # never the PR's; only while the base has none yet, the change that adds it, its copy is used).
+      # One source for this job, the PR-code job, docs/setup-script.sh and CircleCI.
+      - if: steps.plan.outputs.work == 'true' && steps.plan.outputs.setup == 'true'
+        name: tool pins
+        id: pins
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+        run: |
+          case "$BASE" in ""|0000000000000000000000000000000000000000) BASE="$GITHUB_SHA";; esac
+          f=.bosun/pins.toml
+          if [ ! -f "$f" ]; then
+            echo "::warning::the base has no .bosun/pins.toml yet (first adoption): this change's copy is used"
+            mkdir -p .bosun
+            git show HEAD:.bosun/pins.toml > "$f" || { echo "::error::.bosun/pins.toml is missing: run splice update --channel bosun"; exit 1; }
+          fi
+          pin() { awk -v s="[$1]" -v k="$2" '$0 == s { on = 1; next } /^\[/ { on = 0 } on && $1 == k && $2 == "=" { gsub(/"/, "", $3); print $3; exit }' "$f"; }
+          fallback="$(pin rust fallback)"; nextest="$(pin nextest version)"; deny="$(pin cargo-deny version)"
+          # A repo whose base has hull's pins.toml and scripts/pins.mjs takes the versions from the
+          # base's pins.toml [pins] table (read with awk here, never the PR's copy).
+          if git cat-file -e "$BASE:pins.toml" 2>/dev/null && git cat-file -e "$BASE:scripts/pins.mjs" 2>/dev/null; then
+            git show "$BASE:pins.toml" > "$RUNNER_TEMP/hull-pins.toml"
+            f="$RUNNER_TEMP/hull-pins.toml"
+            v="$(pin pins rust)"; [ -z "$v" ] || fallback="$v"
+            v="$(pin pins nextest)"; [ -z "$v" ] || nextest="$v"
+            v="$(pin pins cargo_deny)"; [ -z "$v" ] || deny="$v"
+          fi
+          [[ "$fallback" =~ ^[0-9A-Za-z._-]+$ ]] || { echo "::error::.bosun/pins.toml: [rust] fallback is missing or not a toolchain name"; exit 1; }
+          [[ "$nextest" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::.bosun/pins.toml: [nextest] version is missing or not X.Y.Z"; exit 1; }
+          [[ "$deny" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::.bosun/pins.toml: [cargo-deny] version is missing or not X.Y.Z"; exit 1; }
+          echo "PIN_RUST_FALLBACK=$fallback" >> "$GITHUB_ENV"
+          { echo "rust_fallback=$fallback"; echo "nextest=$nextest"; echo "deny=$deny"; } >> "$GITHUB_OUTPUT"
+      # rust stack: one toolchain install. With a rust-toolchain(.toml) in rust_path or a parent
+      # up to the repo root, `rustup toolchain install` installs what it names. Without one, the
+      # fallback pin of .bosun/pins.toml (docs/setup-script.sh has none: it skips Rust without the file): a bare
+      # `rustup toolchain install` would install the runner's default (stable).
+      - if: steps.plan.outputs.work == 'true' && steps.plan.outputs.setup == 'true'
+        name: rust toolchain
+        id: toolchain
+        working-directory: .
+        run: |
+          d="$PWD"; found=""
+          while :; do
+            if [ -f "$d/rust-toolchain.toml" ] || [ -f "$d/rust-toolchain" ]; then found=1; break; fi
+            if [ "$d" = "$GITHUB_WORKSPACE" ] || [ "$d" = / ]; then break; fi
+            d="$(dirname "$d")"
+          done
+          # The toolchain file is the base's here (step `the base's config for the gates`). A
+          # TOML parser still checks it: only a [toolchain] with a plain channel, components,
+          # targets and profile (a `path` would make rustup run another compiler), and later
+          # steps get RUSTUP_TOOLCHAIN, so rustup reads no toolchain file after this step.
+          ch="$PIN_RUST_FALLBACK"
+          if [ -n "$found" ]; then
+            ch="$(python3 -I - "$d" <<'PY'
+          import os, re, sys, tomllib
+          name = re.compile(r"[0-9A-Za-z._-]+")
+          def ok(s):
+              return isinstance(s, str) and name.fullmatch(s) is not None
+          def check(p):
+              with open(p, "rb") as f:
+                  raw = f.read()
+              text = raw.decode("utf-8", "strict")
+              if p.endswith("rust-toolchain") and ok(text.strip()) and "\n" not in text.strip():
+                  return text.strip()
+              t = tomllib.loads(text)
+              tc = t.get("toolchain")
+              if set(t) != {"toolchain"} or not isinstance(tc, dict):
+                  sys.exit(f"{p}: only a [toolchain] table is allowed")
+              extra = set(tc) - {"channel", "components", "targets", "profile"}
+              if extra or not ok(tc.get("channel")):
+                  sys.exit(f"{p}: name a released channel; only channel, components, targets and profile are allowed")
+              for k in ("components", "targets"):
+                  v = tc.get(k, [])
+                  if not isinstance(v, list) or not all(ok(x) for x in v):
+                      sys.exit(f"{p}: {k} must be a list of plain names")
+              if "profile" in tc and not ok(tc["profile"]):
+                  sys.exit(f"{p}: profile must be a plain name")
+              return tc["channel"]
+          d = sys.argv[1]
+          chosen = None
+          # rustup reads rust-toolchain over rust-toolchain.toml when both exist; both must pass.
+          for fn in ("rust-toolchain.toml", "rust-toolchain"):
+              p = os.path.join(d, fn)
+              if os.path.lexists(p):
+                  try:
+                      chosen = check(p)
+                  except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as e:
+                      sys.exit(f"{p}: not readable ({e})")
+          print(chosen)
+          PY
+          )"
+          fi
+          echo "RUSTUP_TOOLCHAIN=$ch" >> "$GITHUB_ENV"
+          { echo "channel=$ch"; echo "file=$found"; } >> "$GITHUB_OUTPUT"
+          if [ -n "$found" ]; then
+            rustup toolchain install
+          else
+            rustup toolchain install "$ch" --profile minimal -c rustfmt,clippy
+            rustup default "$ch"
+          fi
+          rustup component add rustfmt clippy
+      # No cache here: a cache is saved by the job that runs PR code. cargo-deny only (deps).
+      - if: steps.plan.outputs.work == 'true' && steps.plan.outputs.setup == 'true'
+        uses: taiki-e/install-action@4a76afe23f9e08d2d9550fb56e556444e8611d21 # v2.90.4
+        with:
+          tool: cargo-deny@${{ steps.pins.outputs.deny }}
+      # ts-pnpm stack, for the deps gate's `pnpm audit` only: Node 24 and the pnpm release that the
+      # base's package.json `packageManager` names (the PR's while the base names none), an exact
+      # version 9 or later from the registry, never a path, URL or range. No install, no cache. Skipped
+      # while no stack has a lockfile yet (a new repo).
+      - uses: actions/setup-node@v4
+        if: steps.plan.outputs.work == 'true' && steps.plan.outputs.setup == 'true' && steps.stack.outputs.lock == 'true'
+        with:
+          node-version: 24
+      - if: steps.plan.outputs.work == 'true' && steps.plan.outputs.setup == 'true' && steps.stack.outputs.lock == 'true'
+        name: pnpm for the audit
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+          TS_PATH: ${{ steps.stack.outputs.path }}
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          case "$BASE" in ""|0000000000000000000000000000000000000000) BASE="$GITHUB_SHA";; esac
+          # A push to the default branch is merged: deps reads its own manifests, so its pnpm too.
+          if [ "$EVENT" = push ] && [ "$REF" = "refs/heads/$DEFAULT_BRANCH" ]; then BASE="$GITHUB_SHA"; fi
+          pm() { python3 -I -c 'import json, sys; d = json.load(sys.stdin); v = d.get("packageManager", "") if isinstance(d, dict) else ""; print(v if isinstance(v, str) else "!")'; }
+          v="$(git show "$BASE:$TS_PATH/package.json" 2>/dev/null | pm || true)"
+          if [ -z "$v" ]; then v="$(pm < "$TS_PATH/package.json" || true)"; fi
+          # pnpm@x.y.z (9 or later: older releases read other config files), with an optional
+          # +sha hash (the registry checks the tarball).
+          v="${v%%+*}"
+          [[ "$v" =~ ^pnpm@(9|[1-9][0-9]+)\.[0-9]+\.[0-9]+$ ]] || {
+            echo "::error::$TS_PATH/package.json: packageManager must name pnpm@x.y.z (9 or later), not '$v'"
+            exit 1
+          }
+          cd "$RUNNER_TEMP"
+          npm install -g --ignore-scripts "$v"
+          # pnpm 12 ships a native binary that its install.js puts in place.
+          if [ -f "$(npm root -g)/pnpm/install.js" ]; then (cd "$(npm root -g)/pnpm" && node install.js); fi
+          got="$(pnpm --version)"
+          echo "pnpm $got"
+          test "pnpm@$got" = "$v"
+      # The kinds test-integrity may allow come from the PR's linked task (the plan's `allow:`),
+      # read with this run's read-only token before any PR code runs, and never in the gates
+      # step, where lint and test run PR code. Only known kinds pass; any failure (a pinned
+      # bosun without `--pr`, an API error) allows nothing.
+      - if: steps.plan.outputs.work == 'true' && github.event_name == 'pull_request'
+        id: allow
+        name: task allow list
+        env:
+          BOSUN_SHA256: ${{ steps.bin.outputs.sha256 }}
+          GITHUB_TOKEN: ${{ github.token }}
+          BOSUN_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          bosun="$RUNNER_TEMP/bin/bosun"
+          echo "$BOSUN_SHA256  $bosun" | sha256sum -c --quiet || { echo "::error::$bosun changed"; exit 1; }
+          kinds="$("$bosun" test-integrity --pr "$PR" 2>/dev/null \
+            | jq -r '[.data.allow // [] | .[] | select(IN("delete-test","skip","only","fewer-asserts"))] | join(",")' 2>/dev/null)" || kinds=""
+          echo "test-integrity allows: ${kinds:-nothing}"
+          echo "kinds=$kinds" >> "$GITHUB_OUTPUT"
+      # The gates run in order and stop at the first failure: here test-integrity and deps, which
+      # run no PR code; the step's output names the rest for the required check's job.
+      - if: steps.plan.outputs.work == 'true'
+        name: bosun gates
+        id: gates
+        env:
+          # The repo's own ci.yml already runs fmt, lint, test and deps; only test-integrity is
+          # unique to bosun (with ci-minutes). So a pull request runs just those and relies on the repo's own ci-ok
+          # for the rest; if that CI lacks one (cargo-deny, say), set the repo variable
+          # BOSUN_ALL_GATES to '1' to run all of them on pull requests too. Every other event (push
+          # to main, merge queue, the weekly run main-health calls, where github.event_name is
+          # the caller's, e.g. schedule) runs every gate.
+          GATES: ${{ (vars.BOSUN_ALL_GATES == '1' || github.event_name != 'pull_request') && 'test-integrity ci-minutes deps fmt lint test' || 'test-integrity ci-minutes' }}
+          # An edit after a success runs test-integrity only (see the edit step).
+          ONLY: ${{ steps.plan.outputs.only }}
+          BOSUN_SHA256: ${{ steps.bin.outputs.sha256 }}
+          # The linked task's allowed kinds (step `task allow list`); empty off a pull request.
+          BOSUN_INTEGRITY_ALLOW: ${{ steps.allow.outputs.kinds }}
+          # test-integrity reads the snapshot-change line from the PR body.
+          BOSUN_PR_BODY: ${{ github.event.pull_request.body }}
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+          TS_PATHS: ${{ steps.stack.outputs.paths }}
+          REF: ${{ github.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          bosun="$RUNNER_TEMP/bin/bosun"
+          GATES="${ONLY:-$GATES}"
+          # A PR runs each gate on what it changed; main and the queue run it on everything.
+          if [ "$EVENT" = "pull_request" ]; then all=""; else all="--all"; fi
+          # Here only the gates that run no PR code; the required check's job runs the rest.
+          case "$BASE" in ""|0000000000000000000000000000000000000000) BASE="$GITHUB_SHA";; esac
+          later=""
+          for g in $GATES; do
+            # ci-minutes came with bosun 0.7.0: a repo that pins an older release skips it.
+            if [ "$g" = ci-minutes ]; then
+              v="$("$bosun" --version | cut -d' ' -f2)"
+              if [ "$(printf '%s\n' 0.7.0 "$v" | sort -V | head -n1)" != 0.7.0 ]; then
+                echo "::notice::bosun $v has no ci-minutes gate; skipped"
+                continue
+              fi
+            fi
+            case "$g" in test-integrity|ci-minutes|deps) ;; *) later="$later $g"; continue ;; esac
+            # test-integrity has read the PR's manifests. From here pnpm reads only the base's
+            # config: `pnpm audit` reads the PR's pnpm-lock.yaml as data, and every package.json
+            # and pnpm-workspace.yaml (where a PR could name a pnpmfile, config dependencies or
+            # any pnpm setting) is the base's; one the base lacks is deleted. A ts-pnpm stack
+            # (step `ts-pnpm stack paths`) with a lockfile but no package.json left (a PR that
+            # adds the stack) gets a `{}` stand-in for the audit only: it is removed right after
+            # deps, so no created file reaches a later gate. No file is written
+            # through a directory link that leaves the checkout. Also when the PR has no
+            # lockfile: what pnpm reads never depends on the PR. So a PR's change to these
+            # (auditConfig too) applies after it merges: a push to the default branch is merged,
+            # so there deps reads the pushed commit's own copies.
+            if [ "$g" = deps ]; then
+              top="$(pwd -P)"
+              if [ "$EVENT" = push ] && [ "$REF" = "refs/heads/$DEFAULT_BRANCH" ]; then
+                echo "deps (pnpm audit) reads this merged commit's package.json and pnpm-workspace.yaml"
+              else
+                pat='(^|/)package\.json$|(^|/)pnpm-workspace\.ya?ml$'
+                changed="$(git diff --name-only -z "$BASE" HEAD | { grep -zE "$pat" || true; } | tr '\0' ' ')"
+                if [ -n "$changed" ]; then
+                  echo "::notice::this change edits ${changed}; deps (pnpm audit) uses the base's copies (they apply after merge)"
+                fi
+                git ls-tree -r -z --name-only HEAD | { grep -zE "$pat" || true; } | while IFS= read -r -d '' p; do
+                  rm -rf -- "$p"
+                done
+                git ls-tree -r -z --name-only "$BASE" | { grep -zE "$pat" || true; } | while IFS= read -r -d '' p; do
+                  case "$(realpath -m -- "$(dirname -- "$p")")" in
+                    "$top"|"$top"/*) ;;
+                    *) echo "::error::$p: its directory links outside the checkout"; exit 1 ;;
+                  esac
+                  mkdir -p -- "$(dirname -- "$p")"
+                  git show "$BASE:$p" > "$p"
+                done
+              fi
+              stand=""
+              for d in $TS_PATHS; do
+                if [ -f "$d/pnpm-lock.yaml" ] && [ ! -e "$d/package.json" ]; then
+                  case "$(realpath -m -- "$d")" in
+                    "$top"|"$top"/*) echo '{}' > "$d/package.json"; stand="$stand $d/package.json" ;;
+                    *) echo "::error::$d: links outside the checkout"; exit 1 ;;
+                  esac
+                fi
+              done
+            fi
+            echo "::group::bosun gate $g"
+            # Defence in depth: the pinned bosun, unchanged since step bin.
+            echo "$BOSUN_SHA256  $bosun" | sha256sum -c --quiet || { echo "::error::$bosun changed"; exit 1; }
+            "$bosun" gate "$g" $all || { echo "::error::gate $g failed; later gates did not run"; exit 1; }
+            for f in ${stand:-}; do rm -f -- "$f"; done
+            stand=""
+            echo "::endgroup::"
+          done
+          echo "pr_gates=${later# }" >> "$GITHUB_OUTPUT"
+
+  # The required CI check (spec D15). Beside a repo's own ci.yml and its ci-ok, it is called
+  # bosun-ok. It needs bosun-trusted and fails at once unless that passed (a failed gate, a
+  # cancel, a timeout) or on a draft (bosun-trusted is skipped then): never skipped, since a
+  # skipped required check counts as passed.
+  # Then it installs the PR's dependencies and runs the gates that run PR code (fmt, lint,
+  # test). Nothing it does reaches bosun-trusted, which finished first and restores no cache
+  # this job saves.
+  bosun-ok:
+    needs: bosun-trusted
+    # always(), not !cancelled(): a cancelled run would skip this job, and a skipped required
+    # check counts as passed. The first step fails on a draft and unless bosun-trusted succeeded.
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      # always(): after a cancel a step without `if` would be skipped, not fail.
+      - if: always()
+        name: bosun-trusted passed
+        env:
+          RESULT: ${{ needs.bosun-trusted.result }}
+          PR_GATES: ${{ needs.bosun-trusted.outputs.pr_gates }}
+          DRAFT: ${{ github.event.pull_request.draft || false }}
+        run: |
+          if [ "$DRAFT" = true ]; then echo "::error::draft: CI not run, mark ready for review"; exit 1; fi
+          echo "bosun-trusted: $RESULT; gates here: ${PR_GATES:-none}"
+          test "$RESULT" = success
+      - if: needs.bosun-trusted.outputs.pr_gates != ''
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # The same pinned release as bosun-trusted, checked against its hash.
+      - if: needs.bosun-trusted.outputs.pr_gates != ''
+        name: install the pinned release
+        env:
+          VERSION: ${{ needs.bosun-trusted.outputs.version }}
+          SHA256: ${{ needs.bosun-trusted.outputs.sha256 }}
+        run: |
+          cd "$RUNNER_TEMP"
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${VERSION}"
+          dir="$(cd "$(npm root -g)/@keelstackhq/bosun" && node -p "require('path').dirname(require.resolve('@keelstackhq/bosun-linux-x64/package.json'))")"
+          mkdir -p "$RUNNER_TEMP/bin"
+          cp "$dir/bin/bosun" "$RUNNER_TEMP/bin/bosun"
+          echo "$SHA256  $RUNNER_TEMP/bin/bosun" | sha256sum -c --quiet
+      # The gate commands are the base's .bosun/ profiles, as in bosun-trusted (the same step).
+      - if: needs.bosun-trusted.outputs.pr_gates != ''
+        name: the base's config for the gates
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+        run: |
+          case "$BASE" in ""|0000000000000000000000000000000000000000) BASE="$GITHUB_SHA";; esac
+          # The gates use the base commit's copies of the files that decide what runs: .bosun/ (the gate
+          # commands are in its profiles), every .cargo directory (aliases, includes, rustc wrappers)
+          # every rust-toolchain(.toml) (a path would run a compiler from the PR), every .npmrc
+          # (node-options would load PR code into each pnpm call), every .pnpmfile and every
+          # deny.toml (cargo deny's policy). Files the base
+          # lacks are deleted, also when the PR made the path a symlink. A PR's changes to them take
+          # effect after it merges; they are R-gov or R-ci, so the owner sees them.
+          pat='(^|/)\.cargo(/|$)|(^|/)rust-toolchain(\.toml)?$|(^|/)\.npmrc$|(^|/)\.pnpmfile\.[cm]?js$|(^|/)\.?deny(\.exceptions)?\.toml$|^\.bosun(/|$)'
+          if ! git cat-file -e "$BASE:.bosun/version" 2>/dev/null; then
+            echo "::warning::the base has no .bosun yet (setup PR): this change's .bosun is used"
+            pat='(^|/)\.cargo(/|$)|(^|/)rust-toolchain(\.toml)?$|(^|/)\.npmrc$|(^|/)\.pnpmfile\.[cm]?js$|(^|/)\.?deny(\.exceptions)?\.toml$'
+          fi
+          changed="$(git diff --name-only -z "$BASE" HEAD | { grep -zE "$pat" || true; } | tr '\0' ' ')"
+          if [ -n "$changed" ]; then
+            echo "::notice::this change edits ${changed}; its gates run with the base's copies (they apply after merge)"
+          fi
+          git ls-tree -r -z --name-only HEAD | { grep -zE "$pat" || true; } | while IFS= read -r -d '' p; do
+            rm -rf -- "$p"
+          done
+          top="$(pwd -P)"
+          git ls-tree -r -z --name-only "$BASE" | { grep -zE "$pat" || true; } | while IFS= read -r -d '' p; do
+            case "$(realpath -m -- "$(dirname -- "$p")")" in
+              "$top"|"$top"/*) ;;
+              *) echo "::error::$p: its directory links outside the checkout"; exit 1 ;;
+            esac
+            mkdir -p -- "$(dirname -- "$p")"
+            git show "$BASE:$p" > "$p"
+          done
+      # The toolchain bosun-trusted checked in the same base file (or the old pin without one).
+      - if: needs.bosun-trusted.outputs.pr_gates != ''
+        name: rust toolchain
+        working-directory: .
+        env:
+          CHANNEL: ${{ needs.bosun-trusted.outputs.rust }}
+          FILE: ${{ needs.bosun-trusted.outputs.rust_file }}
+          FALLBACK: ${{ needs.bosun-trusted.outputs.rust_fallback }}
+        run: |
+          if [ -n "$FILE" ]; then
+            rustup toolchain install
+          else
+            rustup toolchain install "$FALLBACK" --profile minimal -c rustfmt,clippy
+          fi
+          echo "RUSTUP_TOOLCHAIN=$CHANNEL" >> "$GITHUB_ENV"
+          RUSTUP_TOOLCHAIN="$CHANNEL" rustup component add rustfmt clippy
+      - if: needs.bosun-trusted.outputs.pr_gates != ''
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: .
+          cache-bin: "false"
+      - if: needs.bosun-trusted.outputs.pr_gates != ''
+        uses: taiki-e/install-action@4a76afe23f9e08d2d9550fb56e556444e8611d21 # v2.90.4
+        with:
+          tool: cargo-nextest@${{ needs.bosun-trusted.outputs.nextest }}
+      # Node 24, pnpm from package.json `packageManager`, the Turborepo cache through hoard. A
+      # plain install: the PR's install scripts run here, after bosun-trusted passed.
+      - uses: pnpm/action-setup@v4
+        if: needs.bosun-trusted.outputs.pr_gates != '' && needs.bosun-trusted.outputs.ts_lock == 'true'
+        with:
+          package_json_file: ${{ needs.bosun-trusted.outputs.ts_path }}/package.json
+      - uses: actions/setup-node@v4
+        if: needs.bosun-trusted.outputs.pr_gates != '' && needs.bosun-trusted.outputs.ts_lock == 'true'
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: ${{ needs.bosun-trusted.outputs.ts_path }}/pnpm-lock.yaml
+      # Each ts-pnpm stack of the base's .bosun/bosun.toml that has a lockfile.
+      - if: needs.bosun-trusted.outputs.pr_gates != '' && needs.bosun-trusted.outputs.ts_lock == 'true'
+        name: pnpm install
+        env:
+          TS_PATHS: ${{ needs.bosun-trusted.outputs.ts_paths }}
+        run: |
+          for d in $TS_PATHS; do
+            if [ -f "$d/pnpm-lock.yaml" ]; then (cd "$d" && pnpm install --frozen-lockfile); fi
+          done
+      - uses: keelstackhq/keelstack/hoard@v0
+        if: needs.bosun-trusted.outputs.pr_gates != '' && needs.bosun-trusted.outputs.ts_lock == 'true'
+      # The gates bosun-trusted left (fmt, lint, test), in order; the first failure stops the job.
+      - if: needs.bosun-trusted.outputs.pr_gates != ''
+        name: bosun gates
+        env:
+          GATES: ${{ needs.bosun-trusted.outputs.pr_gates }}
+          BOSUN_SHA256: ${{ needs.bosun-trusted.outputs.sha256 }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          bosun="$RUNNER_TEMP/bin/bosun"
+          if [ "$EVENT" = "pull_request" ]; then all=""; else all="--all"; fi
+          for g in $GATES; do
+            echo "::group::bosun gate $g"
+            echo "$BOSUN_SHA256  $bosun" | sha256sum -c --quiet || { echo "::error::$bosun changed"; exit 1; }
+            "$bosun" gate "$g" $all || { echo "::error::gate $g failed; later gates did not run"; exit 1; }
+            echo "::endgroup::"
+          done

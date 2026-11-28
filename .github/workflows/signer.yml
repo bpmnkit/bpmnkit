@@ -1,0 +1,113 @@
+# Written by the bosun splice channel (owned).
+name: signer
+
+# The keyless fast lane (spec §8, D-017): a session with no key asks for an autonomous approval
+# with `bosun approve <pr>@<head> --via-signer`, which returns the dispatch call for this
+# workflow. Run only from the default branch, never checks out the PR: the signing decision runs
+# from default-branch code with the release pinned in .bosun/version. `sign` holds the signer key
+# (environment bosun-signer: deployment branches limited to the default branch, secret
+# BOSUN_SIGNER_KEY) and never the App key; `judge` holds the App key and never the signer key,
+# because a comment posted with GITHUB_TOKEN starts no workflow. `bosun approve --as signer`
+# signs only under the autonomous policy, for the PR's current head, after every D-017 check and
+# a green ci-ok. Event data reaches `run:` lines through `env:` only, never as `${{ }}` in a script.
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: PR number
+        required: true
+        type: string
+      head:
+        description: The 40-hex head sha to approve (must still be the PR head)
+        required: true
+        type: string
+      requester:
+        description: The session that asked (never the independent reviewer)
+        required: true
+        type: string
+
+concurrency:
+  group: signer-${{ inputs.pr }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sign:
+    # Only the default branch's copy of this file may sign.
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    environment: bosun-signer
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # A dispatch runs on the default branch: github.sha is its head, never a PR's.
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: install the pinned bosun
+        run: |
+          v="$(tr -d '[:space:]' < .bosun/version)"
+          printf '%s' "$v" | grep -Eqx '[0-9]+\.[0-9]+\.[0-9]+' || { echo "::error::bad .bosun/version '$v'"; exit 1; }
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${v}"
+          got="$(bosun --version)"
+          echo "$got"
+          test "$got" = "bosun ${v}"
+      - name: sign
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOSUN_REPO: ${{ github.repository }}
+          BOSUN_SESSION: signer-ci-${{ github.run_id }}
+          SIGNER_KEY: ${{ secrets.BOSUN_SIGNER_KEY }}
+          PR: ${{ inputs.pr }}
+          HEAD: ${{ inputs.head }}
+          REQUESTER: ${{ inputs.requester }}
+        run: |
+          printf '%s' "$PR" | grep -Eqx '[0-9]+' || { echo "::error::pr must be digits"; exit 1; }
+          printf '%s' "$HEAD" | grep -Eqx '[0-9a-f]{40}' || { echo "::error::head must be 40 hex digits"; exit 1; }
+          printf '%s' "$REQUESTER" | grep -Eqx '[A-Za-z0-9._/:-]{1,200}' || { echo "::error::requester must be a plain session id"; exit 1; }
+          umask 077
+          printf '%s\n' "$SIGNER_KEY" > "$RUNNER_TEMP/signer.pem"
+          bosun approve "$PR@$HEAD" --sign-key "$RUNNER_TEMP/signer.pem" --bootstrap --as signer --requester "$REQUESTER"
+      - name: remove the key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/signer.pem"
+
+  judge:
+    needs: sign
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: write
+      statuses: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # A dispatch runs on the default branch: github.sha is its head, never a PR's.
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: install the pinned bosun
+        run: |
+          v="$(tr -d '[:space:]' < .bosun/version)"
+          printf '%s' "$v" | grep -Eqx '[0-9]+\.[0-9]+\.[0-9]+' || { echo "::error::bad .bosun/version '$v'"; exit 1; }
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${v}"
+          got="$(bosun --version)"
+          echo "$got"
+          test "$got" = "bosun ${v}"
+      - name: validate inputs
+        env:
+          PR: ${{ inputs.pr }}
+        run: printf '%s' "$PR" | grep -Eqx '[0-9]+' || { echo "::error::pr must be digits"; exit 1; }
+      - name: bosun risk-check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOSUN_REPO: ${{ github.repository }}
+          PR: ${{ inputs.pr }}
+        # Exit 5 (needs-human) is the verdict, carried by the status; only errors fail the job.
+        run: bosun risk-check "$PR" || test $? -eq 5

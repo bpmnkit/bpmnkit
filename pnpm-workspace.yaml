@@ -33,3 +33,16 @@ minimumReleaseAgeExclude:
 
 patchedDependencies:
   '@preact/signals-react@2.3.0': patches/@preact__signals-react@2.3.0.patch
+
+# Transitive-only fixes for `pnpm audit --prod --audit-level high`. Each key is
+# scoped to the vulnerable range so already-patched copies are left alone. Drop
+# an entry once its parent (vitest 3, @anthropic-ai/sdk) ships a patched range.
+overrides:
+  'form-data@>=4.0.0 <4.0.6': ^4.0.6
+  'nanoid@<3.3.18': ^3.3.18
+  'picomatch@>=4.0.0 <4.0.4': ^4.0.4
+  'postcss@<8.5.18': ^8.5.18
+  'rollup@>=4.0.0 <4.59.0': ^4.59.0
+  'source-map-js@>=1.0.0 <1.2.2': ^1.2.2
+  'tinypool@<2.1.2': ^2.1.2
+  'vite@>=7.0.0 <7.3.8': ^7.3.8

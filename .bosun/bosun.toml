@@ -1,0 +1,24 @@
+# bosun's project config (spec §3). Unknown keys are an error. The bosun channel merges its
+# changes to this file key by key; your own values stay.
+project = "bpmnkit"
+
+[[stack]]
+path = "."
+profile = "rust"
+
+[[stack]]
+path = "."
+profile = "ts-pnpm"
+
+[ci]
+# Which CI the repo runs (spec §9): github, circleci or none (bosun then checks locally).
+provider = "github"
+
+[review]
+# "subagent" (mode a): a fresh subagent reviews each PR (spec §7).
+mode = "subagent"
+
+[approvals]
+# Who may approve (spec §8); the pinned release must know this value.
+policy = "autonomous"
+

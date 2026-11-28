@@ -1,0 +1,85 @@
+# Written by the bosun splice channel (owned).
+name: verdict
+
+# Posts the required `review-verdict` status from a verdict comment (spec §7). Cloud sessions
+# cannot write commit statuses, so the reviewer runs `bosun verdict comment` and this workflow
+# runs `bosun verdict apply`, which checks the comment (unedited, by a member, on its PR, for the
+# current head) before it posts the status. A bot listed in `[approvals] verdict_bots` needs no
+# marker: a Bot comment with "head_sha" and a ```json fence runs it too, and `apply` refuses others neutrally.
+#
+# issue_comment runs this file from the default branch. The job never checks out or runs PR
+# code: it installs the bosun release pinned on the default branch and reads the PR through the
+# API. Event data reaches `run:` lines through `env:` only, never as `${{ }}` in a script.
+on:
+  issue_comment:
+    types: [created]
+
+# Verdict comments on one PR apply one at a time, in order; `apply` also refuses a comment that
+# a newer one for the same head replaces. Other comments get a group of their own: a new run
+# replaces the pending one in a group, and a skipped run must never replace a verdict.
+concurrency:
+  group: >-
+    verdict-${{ github.event.issue.number }}-${{
+    !(contains(github.event.comment.body, '<!-- bosun:verdict -->') ||
+    (github.event.comment.user.type == 'Bot' && contains(github.event.comment.body, '"head_sha"') && contains(github.event.comment.body, '```json'))) && github.run_id || 'apply' }}
+  cancel-in-progress: false
+
+# Least privilege: statuses for the verdict; pull-requests: write for the verdict record comment
+# (a workflow token needs it to comment on a PR; issues: write is not enough); issues: write for
+# the linked task's state labels.
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  statuses: write
+
+jobs:
+  verdict:
+    if: >-
+      github.event.issue.pull_request && (contains(github.event.comment.body, '<!-- bosun:verdict -->') ||
+      (github.event.comment.user.type == 'Bot' && contains(github.event.comment.body, '"head_sha"') && contains(github.event.comment.body, '```json')))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      # The bosun release pinned on the base branch (on a comment: the default branch).
+      - name: install the pinned bosun
+        run: |
+          v="$(tr -d '[:space:]' < .bosun/version)"
+          printf '%s' "$v" | grep -Eqx '[0-9]+\.[0-9]+\.[0-9]+' || { echo "::error::bad .bosun/version '$v'"; exit 1; }
+          npm install -g --ignore-scripts "@keelstackhq/bosun@${v}"
+          bosun --version
+      - name: bosun verdict check
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOSUN_REPO: ${{ github.repository }}
+          BOSUN_SESSION: verdict-workflow
+          COMMENT: ${{ github.event.comment.id }}
+        run: |
+          # bosun < 0.22.0 has no --check/--require: run plain `verdict apply` in the record step.
+          cur="$(bosun --version | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)"
+          [ -n "$cur" ] || { echo "::error::cannot read the bosun version"; exit 1; }
+          if [ "$(printf '%s\n%s\n' "$cur" 0.22.0 | sort -V | head -n1)" != "0.22.0" ]; then
+            echo "accepted=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          out="$(bosun verdict apply "$COMMENT" --check)"
+          printf '%s\n' "$out"
+          if printf '%s' "$out" | grep -Eq '"accepted": *true'; then
+            echo "accepted=true" >> "$GITHUB_OUTPUT"
+            echo "require=--require" >> "$GITHUB_OUTPUT"
+          fi
+      - name: bosun verdict record ${{ github.event.issue.number }} ${{ github.event.comment.id }}
+        if: steps.check.outputs.accepted == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BOSUN_REPO: ${{ github.repository }}
+          BOSUN_SESSION: verdict-workflow
+          COMMENT: ${{ github.event.comment.id }}
+          BOSUN_RUN_ID: ${{ github.run_id }}
+          BOSUN_RUN_ATTEMPT: ${{ github.run_attempt }}
+          REQUIRE: ${{ steps.check.outputs.require }}
+        run: bosun verdict apply "$COMMENT" $REQUIRE

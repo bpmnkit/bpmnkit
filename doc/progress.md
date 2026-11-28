@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-27 — `pnpm audit --prod --audit-level high` clean
+
+Root `vitest` ^3.2.7; `@bpmnkit/proxy` `nodemailer` ^10.6.1 (ships its own types, so root `@types/nodemailer` is gone) and `imapflow` ^2.12.2 (no longer depends on nodemailer, newer `socks`/`ip-address`; its envelope `date` is `string | Date`, handled in `workers/email.ts`). Transitive-only fixes (form-data, nanoid, picomatch, postcss, rollup, source-map-js, tinypool, vite) are `overrides` in `pnpm-workspace.yaml`, each scoped to the vulnerable range. No audit ignore list.
+
+## 2026-11-27 — adopt bosun (keelstack 0.25.0), autonomous policy
+
+`bosun adopt --policy autonomous --owner urbanisierung`: `.bosun/` (config, limits, risk, pins, session rules, approvers with the owner key `owner-2026-11`), `governance/owners.toml`, `deny.toml`, `docs/setup-script.sh` and the bosun workflows (`bosun.yml` with the required `ci-ok`, `risk.yml`, `verdict.yml`, `signer.yml`, `main-open.yml`, `main-health.yml`). Stacks: rust + ts-pnpm. No hull/splice template: the repo layout is unchanged. The existing workflows pass `bosun gate ci-minutes`: drafts skip the heavy jobs, `ready_for_review` runs them, PR runs cancel superseded ones (releases are allowed not to), and the macOS/Windows `cli-npm-smoke` matrix moved to `cli-npm-smoke.yml`, which runs on main and on PRs touching the CLI's inputs.
+
 ## 2026-11-26 — wasm playground: open-API use cases; lint, reebe and host fixes
 
 `wasm/examples/playground/`: `frost-alert` (REST connector only: Open-Meteo, `resultExpression`, `errorExpression` → `BAD_LOCATION` boundary, frost gateway) and `fx-invoice` (Frankfurter rates via REST connector + `convert-invoice` Wasm worker in the `worker` world; `UNSUPPORTED_CURRENCY` / `RATES_UNAVAILABLE` boundaries). Each has HTTP stubs, `run.sh` (lint, `connector-test.py` → published `bpmnkit connector test` against a local stub, `bpmnkit worker wasm test`, expected outputs) and a README with live outputs from reebe + the real APIs on every path. The wasm CI smoke test (`test-support/tests/blueprint.rs`) now also builds and tests `convert-invoice` and `check-country`. Tried with the published `bpmnkit-cli` 0.9.0; its friction is listed in the playground README. `country-check`: a `worker-http` Wasm worker calling the World Bank country API (allow-list `api.worldbank.org:443`), `UNKNOWN_COUNTRY` for malformed codes, the API's 200 error body, 404 and aggregates; planned against restcountries.com, which now needs a key. The order-fulfilment README starts reebe with `reebe-server` (the published 0.9.0 cannot run `bpmnkit reebe start`).

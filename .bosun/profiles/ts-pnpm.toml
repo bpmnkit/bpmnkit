@@ -1,0 +1,26 @@
+# Repo override of bosun's ts-pnpm profile. Only the test gate differs: packages import their
+# workspace deps' dist/, so tests go through turbo (`test` dependsOn `^build`), never `pnpm -r`.
+manifest = "package.json"
+[adapters]
+packages = "pnpm-workspace"
+pending = "ts-skip"
+assertions = "ts"
+
+[gates.fmt]
+cmd = ["pnpm", "run", "format:check"]
+
+[gates.lint]
+cmd = ["pnpm", "run", "lint"]
+
+[gates.types]
+cmd = ["pnpm", "run", "typecheck"]
+
+[gates.test]
+cmd = ["pnpm", "turbo", "run", "test", "{packages}"]
+each_package = ["--filter", "...{package}"]
+all = []
+when_no_package = "skip"
+
+[gates.deps]
+requires = "pnpm-lock.yaml"
+cmd = ["pnpm", "audit", "--prod", "--audit-level", "high"]

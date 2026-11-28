@@ -6,6 +6,7 @@ name: Java golden
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "crates/bpmnkit-codegen/**"
       - "crates/bpmnkit-jobspec/**"
@@ -22,9 +23,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   java-golden:
     name: java-golden
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -72,6 +78,7 @@ jobs:
   # Compile only: the Camunda Process Test stubs are already run by the Maven jobs above.
   java-golden-gradle:
     name: java-golden-gradle
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
