@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-28 — deny.toml: main green under bosun's cargo-deny gate
+
+`deny.toml` allows `BSD-2-Clause` (`arrayref`) and `OFL-1.1` (bundled fonts) and ignores RUSTSEC-2026-0543/0555 (chrono and chrono-tz unmaintained, no safe upgrade; `bpmnkit-feel` depends on both, a migration is its own task). The setup merge ran cargo-deny with the base's (missing) config, so it fell back to defaults.
+
 ## 2026-11-27 — `pnpm audit --prod --audit-level high` clean
 
 Root `vitest` ^3.2.7; `@bpmnkit/proxy` `nodemailer` ^10.6.1 (ships its own types, so root `@types/nodemailer` is gone) and `imapflow` ^2.12.2 (no longer depends on nodemailer, newer `socks`/`ip-address`; its envelope `date` is `string | Date`, handled in `workers/email.ts`). Transitive-only fixes (form-data, nanoid, picomatch, postcss, rollup, source-map-js, tinypool, vite) are `overrides` in `pnpm-workspace.yaml`, each scoped to the vulnerable range. No audit ignore list.

@@ -6,11 +6,17 @@ all-features = true
 [advisories]
 version = 2
 yanked = "deny"
+# FEEL dates and durations are built on chrono/chrono-tz; no maintained release exists and the
+# swap (jiff) is its own task. Revisit when that lands.
+ignore = [
+  { id = "RUSTSEC-2026-0543", reason = "chrono unmaintained; bpmnkit-feel migration tracked separately" },
+  { id = "RUSTSEC-2026-0555", reason = "chrono-tz unmaintained; bpmnkit-feel migration tracked separately" },
+]
 
 [licenses]
 version = 2
 unused-allowed-license = "allow"
-allow = ["MIT", "Apache-2.0", "Unicode-3.0", "BSD-3-Clause", "ISC", "Zlib", "CDLA-Permissive-2.0", "MPL-2.0"]
+allow = ["MIT", "Apache-2.0", "Unicode-3.0", "BSD-3-Clause", "ISC", "Zlib", "CDLA-Permissive-2.0", "MPL-2.0", "BSD-2-Clause", "OFL-1.1"]
 
 [bans]
 multiple-versions = "allow"
